@@ -3,9 +3,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 # Authors
 
 1. Elohim Baron Tshibasu
-2. 
-3. Nompilo
-4. 
+2. Sunday Victor Okoromi
+3. Nompilo Ngwenya
+4. git
 
 # Description
 
