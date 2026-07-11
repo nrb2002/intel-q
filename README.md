@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 1. Elohim Baron Tshibasu
 2. 
-3. 
+3. Nompilo
 4. 
 
 # Description
