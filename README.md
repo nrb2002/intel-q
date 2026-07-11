@@ -4,8 +4,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 1. Elohim Baron Tshibasu
 2. Sunday Victor Okoromi
-3. Maisela Manhla Madise
-4. 
+3. 
+4. Maisela Manhla Madise
 
 # Description
 
