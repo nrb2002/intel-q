@@ -6,7 +6,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 2. Sunday Victor Okoromi
 3. Nompilo Ngwenya
 4. Maisela Manhla Madise
-5. Test
 
 # Description
 
