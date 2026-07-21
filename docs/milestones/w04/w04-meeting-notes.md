@@ -17,11 +17,12 @@ The goal of Week 04 is to establish the core foundation of the Intel-Q applicati
 
 ---
 
+
 ## Included Issues
 
 ### Issue #1 – Project Setup and Development Environment (P1)
 
-**Owner:** Team Member 2 - Baron Tshibasu
+**Owner:** Team Member 2 - Elohim Baron Tshibasu
 
 **Description**
 
@@ -57,7 +58,7 @@ Configure MongoDB using Mongoose and implement the application's core data model
 
 ### Issue #3 – Implement Authentication with Auth.js v5
 
-**Owner:** Team Member 4 - Sunday
+**Owner:** Team Member 4 - Sunday Victor Okoromoni
 
 **Description**
 
@@ -93,7 +94,7 @@ Develop reusable layout components that provide a consistent user experience thr
 
 ### Issue #5 – Build Shared UI Component Library
 
-**Owner:** Team Member 5 -Derick Shanana
+**Owner:** Team Member 5 - Derick Shanana
 
 **Description**
 
