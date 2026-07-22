@@ -65,7 +65,7 @@ These colors should be applied consistently throughout dashboards, queue lists, 
 
 # Typography
 
-Intel-Q will use **Geist Sans**, the default font provided by modern Next.js applications. It offers excellent readability, clean aesthetics, and consistent rendering across platforms.
+Intel-Q will use **Roboto**, the default font provided by modern Next.js applications. It offers excellent readability, clean aesthetics, and consistent rendering across platforms.
 
 ## Type Scale
 

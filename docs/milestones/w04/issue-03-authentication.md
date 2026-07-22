@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-MongoDB working
+Postgres working
 
 ---
 

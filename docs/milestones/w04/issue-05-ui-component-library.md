@@ -14,6 +14,8 @@ npx shadcn@latest init
 
 Generate components
 
+Make sure to follow the UI theme and branding in docs/ui-them-and-branding.md . 
+
 ```bash
 npx shadcn add button
 ```
