@@ -57,5 +57,5 @@ Before starting development, install:
 Clone the team's repository:
 
 ```bash
-git clone https://github.com/<organization>/intel-q.git
+git clone https://github.com/nrb2002/intel-q.git
 cd intel-q
