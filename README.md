@@ -2,11 +2,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 # Authors
 
-1. Elohim Baron Tshibasu
-2. Sunday Victor Okoromi
+1. Maisela Manhla Madise
+2. Elohim Baron Tshibasu
 3. Nompilo Ngwenya
-4. Maisela Manhla Madise
-5. Test
+4. Sunday Victor Okoromi
+5. Derick Shanana
 
 # Description
 
