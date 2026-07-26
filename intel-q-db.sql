@@ -160,8 +160,8 @@ INSERT INTO branches (
 )
 VALUES (
     'Intel-Q Main Branch',
-    '123 Main Street',
-    'Johannesburg'
+    '123 Boulevard du 30 Juin',
+    'Kinshasa-Gombe'
 );
 
 
