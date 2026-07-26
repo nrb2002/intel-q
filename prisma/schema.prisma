@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -6,12 +7,25 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
+=======
+// Intel-Q Queue Management System
+// Prisma Database Schema
+// Database: PostgreSQL
+// ORM: Prisma 7
+//
+// The database connection URL is configured in prisma.config.ts.
+// Do not add `url = env("DATABASE_URL")` to this file.
+
+generator client {
+  provider = "prisma-client"
+>>>>>>> Stashed changes
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+<<<<<<< Updated upstream
 enum UserRole {
   customer
   staff
@@ -35,10 +49,31 @@ model User {
   tickets   QueueTicket[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+=======
+// =========================================================
+// USER
+// =========================================================
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  firstName    String   @map("first_name") @db.VarChar(100)
+  lastName     String   @map("last_name") @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  password     String   @db.VarChar(255)
+  role         UserRole @default(CUSTOMER)
+
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relationship:
+  // One User can have many Queue Tickets
+  queueTickets QueueTicket[]
+>>>>>>> Stashed changes
 
   @@map("users")
 }
 
+<<<<<<< Updated upstream
 model Branch {
   id        String        @id @default(cuid())
   name      String        @unique
@@ -67,3 +102,90 @@ model QueueTicket {
   @@index([branchId, status, createdAt])
   @@map("queue_tickets")
 }
+=======
+// =========================================================
+// BRANCH
+// =========================================================
+
+model Branch {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @db.VarChar(150)
+  address      String        @db.VarChar(255)
+  city         String        @db.VarChar(100)
+
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relationship:
+  // One Branch can have many Queue Tickets
+  queueTickets QueueTicket[]
+
+  @@index([name], map: "branches_name_idx")
+  @@map("branches")
+}
+
+// =========================================================
+// QUEUE TICKET
+// =========================================================
+
+model QueueTicket {
+  id           String            @id @default(uuid()) @db.Uuid
+  ticketNumber Int               @map("ticket_number")
+  customerId   String            @map("customer_id") @db.Uuid
+  branchId     String            @map("branch_id") @db.Uuid
+  serviceType  String            @map("service_type") @db.VarChar(150)
+  status       QueueStatus       @default(WAITING)
+
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  calledAt     DateTime?         @map("called_at") @db.Timestamptz(6)
+  completedAt  DateTime?         @map("completed_at") @db.Timestamptz(6)
+
+  // Relationships
+  customer     User              @relation(
+    fields: [customerId],
+    references: [id],
+    onDelete: Restrict,
+    onUpdate: Cascade
+  )
+
+  branch       Branch            @relation(
+    fields: [branchId],
+    references: [id],
+    onDelete: Restrict,
+    onUpdate: Cascade
+  )
+
+  @@index([ticketNumber], map: "queue_tickets_ticket_number_idx")
+  @@index([customerId], map: "queue_tickets_customer_id_idx")
+  @@index([branchId], map: "queue_tickets_branch_id_idx")
+  @@index([status], map: "queue_tickets_status_idx")
+  @@map("queue_tickets")
+}
+
+// =========================================================
+// ENUMS
+// =========================================================
+
+// Matches the PostgreSQL CHECK constraint:
+// role IN ('customer', 'staff', 'admin')
+
+enum UserRole {
+  CUSTOMER @map("customer")
+  STAFF    @map("staff")
+  ADMIN    @map("admin")
+
+  @@map("user_role")
+}
+
+// Matches the PostgreSQL CHECK constraint:
+// status IN ('Waiting', 'In Service', 'Completed', 'Cancelled')
+
+enum QueueStatus {
+  WAITING    @map("Waiting")
+  IN_SERVICE @map("In Service")
+  COMPLETED  @map("Completed")
+  CANCELLED  @map("Cancelled")
+
+  @@map("queue_status")
+}
+>>>>>>> Stashed changes

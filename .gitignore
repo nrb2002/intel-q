@@ -45,4 +45,9 @@ next-env.d.ts
 =======
 .vercel
 .env*
+<<<<<<< Updated upstream
 >>>>>>> ec33b719c1aff5556b7200d335acfb947b351aa0
+=======
+
+/app/generated/prisma
+>>>>>>> Stashed changes
