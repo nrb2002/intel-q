@@ -45,7 +45,7 @@ query: fetching the live, ordered queue for a specific branch.
 - `QueueTicket.branch` → `Branch._id`
 
 ## Connection
-`lib/db.ts` exports `connectDB()`, which caches the Mongoose connection across
+`lib/prisma.ts` exports `connectDB()`, which caches the Mongoose connection across
 Next.js hot reloads in development and reuses a single connection in
 production (serverless-safe pattern). All API routes and Server Components
 must call `await connectDB()` before querying any model.
