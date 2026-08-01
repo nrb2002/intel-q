@@ -1,23 +1,12 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-// import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { db } from "./lib/db" // dependent on Nompilon PR
+import { prisma } from "./lib/prisma" 
 import { PasswordHasher } from "@/util"
 import NeonAdapter from "@auth/neon-adapter"
 import { Pool } from "@neondatabase/serverless"
+import { signInSchema } from "./lib/validation/signIn"
 
-// this will be moved to lib/zod folder
-import { object, string } from "zod"
 
-export const signInSchema = object({
-  email: string()
-    .min(1, "Email is required")
-    .email("Invalid email"),
-  password: string()
-    .min(1, "Password is required")
-    .min(8, "Password must be more than 8 characters")
-    .max(32, "Password must be less than 32 characters"),
-})
 
 
 export const { handlers, auth, signIn, signOut } = NextAuth(() => {
@@ -37,9 +26,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
         authorize: async (credentials) => {
           if (!credentials?.email || !credentials?.password) return null;
           const { email, password } = await signInSchema.parseAsync(credentials)
-          
+
           // logic to verify if the user exists
-          const user = await db.user.findUnique({
+          const user = await prisma.user.findUnique({
             where: { email: (email as string).toLowerCase() },
           });
 
@@ -64,10 +53,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
       // false to redirect unauthenticated users to the signIn page above.
       authorized({ auth, request: { nextUrl } }) {
         const isLoggedIn = !!auth?.user;
-        const publicRoutes = ["/login", "/register"];
-        const isPublic = publicRoutes.some((route) =>
-          nextUrl.pathname.startsWith(route)
-        );
+        const { pathname } = nextUrl;
+        const publicPrefixes = ["/login", "/register"];
+        const isPublic =
+          pathname === "/" ||
+          publicPrefixes.some((route) => pathname.startsWith(route));
         if (isPublic) return true;
         return isLoggedIn;
       },
