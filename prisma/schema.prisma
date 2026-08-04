@@ -1,69 +1,120 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file.
+// Learn more about it at:
+// https://pris.ly/d/prisma-schema
+//
+// Intel-Q Queue Management System
+// Database: PostgreSQL
+// ORM: Prisma
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// =========================================================
+// PRISMA CLIENT
+// =========================================================
 
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
+// =========================================================
+// DATABASE
+// =========================================================
+//
+// The database connection URL is configured in prisma.config.ts.
+//
+// Do not add:
+// url = env("DATABASE_URL")
+//
+// Prisma's newer configuration approach uses prisma.config.ts
+// for the database connection URL.
+//
+// =========================================================
+
 datasource db {
   provider = "postgresql"
 }
 
+// =========================================================
+// ENUMS
+// =========================================================
+
 enum UserRole {
-  customer
-  staff
-  admin
+  CUSTOMER
+  STAFF
+  ADMIN
 }
 
-enum TicketStatus {
-  waiting
-  called
-  completed
-  cancelled
+enum QueueStatus {
+  WAITING
+  IN_SERVICE
+  COMPLETED
+  CANCELLED
 }
+
+// =========================================================
+// USER
+// =========================================================
 
 model User {
-  id        String        @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String        @unique
-  password  String
-  role      UserRole      @default(customer)
-  tickets   QueueTicket[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String        @unique
+  password     String
+  role         UserRole      @default(CUSTOMER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  @@map("users")
+  // Relationship:
+  // One User can have many Queue Tickets.
+  queueTickets QueueTicket[]
 }
 
-model Branch {
-  id        String        @id @default(cuid())
-  name      String        @unique
-  address   String
-  city      String
-  tickets   QueueTicket[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-
-  @@map("branches")
-}
+// =========================================================
+// QUEUE TICKET
+// =========================================================
 
 model QueueTicket {
-  id           String       @id @default(cuid())
-  ticketNumber String       @unique
-  customer     User         @relation(fields: [customerId], references: [id])
+  id           String      @id @default(cuid())
+  ticketNumber Int
   customerId   String
-  branch       Branch       @relation(fields: [branchId], references: [id])
   branchId     String
   serviceType  String
-  status       TicketStatus @default(waiting)
+  status       QueueStatus @default(WAITING)
+  createdAt    DateTime    @default(now())
   calledAt     DateTime?
   completedAt  DateTime?
-  createdAt    DateTime     @default(now())
 
-  @@index([branchId, status, createdAt])
-  @@map("queue_tickets")
+  // Relationship:
+  // Many Queue Tickets belong to one User.
+  customer User @relation(fields: [customerId], references: [id])
+
+  // Relationship:
+  // Many Queue Tickets belong to one Branch.
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  // Indexes for common queries.
+  @@index([customerId])
+  @@index([branchId])
+  @@index([status])
+  @@index([branchId, status])
+}
+
+// =========================================================
+// BRANCH
+// =========================================================
+
+model Branch {
+  id           String        @id @default(cuid())
+  name         String
+  address      String
+  city         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relationship:
+  // One Branch can have many Queue Tickets.
+  queueTickets QueueTicket[]
+
+  // Index for branch name searches.
+  @@index([name])
 }
