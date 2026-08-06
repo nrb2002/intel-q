@@ -42,12 +42,12 @@ This structure ensures agents have clear success criteria, boundaries, necessary
 
 Loki Mode uses confidence scores to determine how much oversight a task needs. This is enabled by default (`LOKI_CONFIDENCE_ROUTING=true`).
 
-| Confidence | Dispatch Strategy |
-|------------|-------------------|
-| >= 0.95 | Direct execution with fast-tier model, no review |
-| 0.70-0.95 | Direct execution + asynchronous review |
-| 0.40-0.70 | Supervisor orchestration, mandatory review |
-| < 0.40 | Flag for human decision |
+| Confidence | Dispatch Strategy                                |
+| ---------- | ------------------------------------------------ |
+| >= 0.95    | Direct execution with fast-tier model, no review |
+| 0.70-0.95  | Direct execution + asynchronous review           |
+| 0.40-0.70  | Supervisor orchestration, mandatory review       |
+| < 0.40     | Flag for human decision                          |
 
 Confidence is calculated from five factors:
 
@@ -90,15 +90,16 @@ CoVe catches errors early via factored checking. Blind review catches remaining 
 
 The 5-specialist pool (detailed in `skills/quality-gates.md`) uses trigger-keyword matching to select the most relevant reviewers:
 
-| Specialist | Trigger Keywords |
-|-----------|-----------------|
-| security-sentinel | auth, login, password, token, api, sql, query, cookie, cors, csrf |
-| performance-oracle | database, query, cache, render, loop, fetch, load, index, join, pool |
-| architecture-strategist | (always included) |
-| test-coverage-auditor | test, spec, coverage, assert, mock, fixture, expect, describe |
-| dependency-analyst | package, import, require, dependency, npm, pip, yarn, lock |
+| Specialist              | Trigger Keywords                                                     |
+| ----------------------- | -------------------------------------------------------------------- |
+| security-sentinel       | auth, login, password, token, api, sql, query, cookie, cors, csrf    |
+| performance-oracle      | database, query, cache, render, loop, fetch, load, index, join, pool |
+| architecture-strategist | (always included)                                                    |
+| test-coverage-auditor   | test, spec, coverage, assert, mock, fixture, expect, describe        |
+| dependency-analyst      | package, import, require, dependency, npm, pip, yarn, lock           |
 
 **Selection rules:**
+
 1. architecture-strategist fills slot 1 (always)
 2. Score remaining 4 specialists by counting keyword matches in the diff
 3. Top 2 fill the remaining slots
@@ -109,10 +110,12 @@ The 5-specialist pool (detailed in `skills/quality-gates.md`) uses trigger-keywo
 Code review is split into two distinct stages. Mixing them causes "technically correct but wrong feature" problems.
 
 **Stage 1: Spec Compliance** -- "Does this code implement what the spec requires?"
+
 - 1 reviewer (spec compliance is objective)
 - Must pass before proceeding to Stage 2
 
 **Stage 2: Code Quality** -- "Is this code well-written, maintainable, secure?"
+
 - 3 reviewers (blind, parallel)
 - Anti-sycophancy check on unanimous approval
 
@@ -123,6 +126,7 @@ If Stage 1 fails, return to implementation. Do NOT proceed to Stage 2 (reviewing
 The compound learning system extracts reusable knowledge from completed tasks. It has two phases:
 
 **Deepen-Plan Phase:** Before implementation begins, 4 parallel research agents enhance the plan:
+
 - Technical feasibility researcher
 - Similar project pattern finder
 - Risk assessment analyst

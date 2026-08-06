@@ -7,6 +7,7 @@
 ## How Agents Actually Work
 
 **Claude Code's Task tool has these subagent_types:**
+
 - `general-purpose` - Most work (implementation, review, testing)
 - `Explore` - Codebase exploration and search
 - `Plan` - Architecture and planning
@@ -61,6 +62,7 @@ Task(
 ```
 
 **Example:**
+
 ```python
 Task(
     subagent_type="general-purpose",
@@ -130,6 +132,7 @@ Task(
 ```
 
 **Rules:**
+
 - ALWAYS use sonnet for reviews (balanced quality/cost)
 - ALWAYS launch all 3 in single message (parallel, blind)
 - WAIT for all 3 before aggregating
@@ -140,14 +143,15 @@ Task(
 
 ## Confidence-Based Routing
 
-| Confidence | Dispatch Strategy |
-|------------|-------------------|
-| >= 0.95 | Direct haiku execution, no review |
-| 0.70-0.95 | Direct execution + async review |
-| 0.40-0.70 | Supervisor orchestration, mandatory review |
-| < 0.40 | Flag for human decision |
+| Confidence | Dispatch Strategy                          |
+| ---------- | ------------------------------------------ |
+| >= 0.95    | Direct haiku execution, no review          |
+| 0.70-0.95  | Direct execution + async review            |
+| 0.40-0.70  | Supervisor orchestration, mandatory review |
+| < 0.40     | Flag for human decision                    |
 
 **Confidence factors:**
+
 - Requirement clarity (30%)
 - Similar past successes (20%)
 - Technical complexity match (25%)
@@ -185,6 +189,7 @@ Task(
 **IF target project has AGENTS.md, read it first.** (OpenAI/AAIF standard)
 
 Priority order for context:
+
 1. `AGENTS.md` in current directory
 2. `CLAUDE.md` project instructions
 3. `.loki/CONTINUITY.md` session state
@@ -231,15 +236,15 @@ Priority order for context:
 
 **Patterns used in Loki Mode:**
 
-| Pattern | Implementation |
-|---------|---------------|
-| Sub-Agent Spawning | Task tool with focused prompts |
-| Plan-Then-Execute | Architect -> Engineer workflow |
-| Dual LLM | Opus for planning, Haiku for execution |
-| CI Feedback Loop | Test results injected into retry prompts |
-| Self-Critique | Constitutional AI revision cycle |
-| Semantic Context Filtering | Only relevant files in context |
-| Episodic Memory | `.loki/memory/episodic/` traces |
+| Pattern                    | Implementation                           |
+| -------------------------- | ---------------------------------------- |
+| Sub-Agent Spawning         | Task tool with focused prompts           |
+| Plan-Then-Execute          | Architect -> Engineer workflow           |
+| Dual LLM                   | Opus for planning, Haiku for execution   |
+| CI Feedback Loop           | Test results injected into retry prompts |
+| Self-Critique              | Constitutional AI revision cycle         |
+| Semantic Context Filtering | Only relevant files in context           |
+| Episodic Memory            | `.loki/memory/episodic/` traces          |
 
 **Key insight (moridinamael.github.io):** Simple orchestration beats complex frameworks. "Ralph Wiggum Mode" - basic continuation prompts work better than elaborate coordination systems.
 
@@ -249,14 +254,14 @@ Priority order for context:
 
 See `references/agent-types.md` for complete specifications. Summary:
 
-| Swarm | Agent Types | Count |
-|-------|-------------|-------|
-| Engineering | frontend, backend, database, mobile, api, qa, perf, infra | 8 |
-| Operations | devops, sre, security, monitor, incident, release, cost, compliance | 8 |
-| Business | marketing, sales, finance, legal, support, hr, investor, partnerships | 8 |
-| Data | ml, eng, analytics | 3 |
-| Product | pm, design, techwriter | 3 |
-| Growth | hacker, community, success, lifecycle | 4 |
-| Review | code, business, security | 3 |
+| Swarm       | Agent Types                                                           | Count |
+| ----------- | --------------------------------------------------------------------- | ----- |
+| Engineering | frontend, backend, database, mobile, api, qa, perf, infra             | 8     |
+| Operations  | devops, sre, security, monitor, incident, release, cost, compliance   | 8     |
+| Business    | marketing, sales, finance, legal, support, hr, investor, partnerships | 8     |
+| Data        | ml, eng, analytics                                                    | 3     |
+| Product     | pm, design, techwriter                                                | 3     |
+| Growth      | hacker, community, success, lifecycle                                 | 4     |
+| Review      | code, business, security                                              | 3     |
 
 **Spawn only what you need.** Simple project: 5-10 agents. Complex startup: more as needed.

@@ -12,6 +12,7 @@ OpenClaw is a standardized protocol for multi-agent coordination across differen
 - **State synchronization** - Keep agent state consistent across systems
 
 Compatible with:
+
 - AutoGPT
 - MetaGPT
 - CrewAI
@@ -33,14 +34,14 @@ loki start --openclaw ./prd.md
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_OPENCLAW_ENABLED` | `false` | Enable OpenClaw bridge |
-| `LOKI_OPENCLAW_ENDPOINT` | - | OpenClaw server endpoint URL (required) |
-| `LOKI_OPENCLAW_AGENT_ID` | `loki-{pid}` | Unique agent ID for this Loki instance |
-| `LOKI_OPENCLAW_NAMESPACE` | `default` | Namespace for multi-tenant deployments |
-| `LOKI_OPENCLAW_HEARTBEAT` | `30` | Heartbeat interval in seconds |
-| `LOKI_OPENCLAW_TIMEOUT` | `120` | Message timeout in seconds |
+| Variable                  | Default      | Description                             |
+| ------------------------- | ------------ | --------------------------------------- |
+| `LOKI_OPENCLAW_ENABLED`   | `false`      | Enable OpenClaw bridge                  |
+| `LOKI_OPENCLAW_ENDPOINT`  | -            | OpenClaw server endpoint URL (required) |
+| `LOKI_OPENCLAW_AGENT_ID`  | `loki-{pid}` | Unique agent ID for this Loki instance  |
+| `LOKI_OPENCLAW_NAMESPACE` | `default`    | Namespace for multi-tenant deployments  |
+| `LOKI_OPENCLAW_HEARTBEAT` | `30`         | Heartbeat interval in seconds           |
+| `LOKI_OPENCLAW_TIMEOUT`   | `120`        | Message timeout in seconds              |
 
 ### Configuration File
 
@@ -87,17 +88,17 @@ OpenClaw uses JSON messages over HTTP/WebSocket:
 
 ### Message Types
 
-| Type | Direction | Description |
-|------|-----------|-------------|
-| `register` | Loki → OpenClaw | Agent registration with capabilities |
-| `heartbeat` | Loki → OpenClaw | Keep-alive signal |
-| `task_offer` | OpenClaw → Loki | Task offered for execution |
-| `task_accept` | Loki → OpenClaw | Accept task offer |
-| `task_reject` | Loki → OpenClaw | Reject task offer |
-| `task_update` | Loki → OpenClaw | Progress update |
-| `task_complete` | Loki → OpenClaw | Task completion |
-| `state_sync` | Bidirectional | State synchronization |
-| `capability_query` | OpenClaw → Loki | Query agent capabilities |
+| Type               | Direction       | Description                          |
+| ------------------ | --------------- | ------------------------------------ |
+| `register`         | Loki → OpenClaw | Agent registration with capabilities |
+| `heartbeat`        | Loki → OpenClaw | Keep-alive signal                    |
+| `task_offer`       | OpenClaw → Loki | Task offered for execution           |
+| `task_accept`      | Loki → OpenClaw | Accept task offer                    |
+| `task_reject`      | Loki → OpenClaw | Reject task offer                    |
+| `task_update`      | Loki → OpenClaw | Progress update                      |
+| `task_complete`    | Loki → OpenClaw | Task completion                      |
+| `state_sync`       | Bidirectional   | State synchronization                |
+| `capability_query` | OpenClaw → Loki | Query agent capabilities             |
 
 ## Agent Registration
 
@@ -119,8 +120,12 @@ When OpenClaw bridge starts, Loki Mode registers with the OpenClaw server:
       "business_operations"
     ],
     "agent_types": [
-      "eng-frontend", "eng-backend", "eng-qa",
-      "ops-devops", "ops-sre", "biz-marketing"
+      "eng-frontend",
+      "eng-backend",
+      "eng-qa",
+      "ops-devops",
+      "ops-sre",
+      "biz-marketing"
     ],
     "max_concurrent_tasks": 10,
     "supported_models": ["opus", "sonnet", "haiku"]
@@ -174,7 +179,7 @@ Loki Mode can offer tasks to other agents via OpenClaw:
     "description": "Analyze user behavior logs",
     "requirements": {
       "skills": ["data_science", "ml"],
-      "estimated_cost": 0.50
+      "estimated_cost": 0.5
     }
   }
 }
@@ -237,7 +242,7 @@ Response:
     "supported": true,
     "agent_types": ["eng-frontend"],
     "confidence": 0.95,
-    "estimated_cost": 0.10
+    "estimated_cost": 0.1
   }
 }
 ```
@@ -362,7 +367,7 @@ while True:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 services:
   openclaw-server:
     image: openclaw/server:latest
@@ -424,13 +429,13 @@ spec:
         app: openclaw
     spec:
       containers:
-      - name: openclaw
-        image: openclaw/server:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: OPENCLAW_REDIS_URL
-          value: redis://redis:6379
+        - name: openclaw
+          image: openclaw/server:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OPENCLAW_REDIS_URL
+              value: redis://redis:6379
 ```
 
 ## Security

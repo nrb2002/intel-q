@@ -61,6 +61,7 @@ docker-compose run loki start ./prd.md
 ```
 
 Key volume mounts:
+
 - `.:/workspace:rw` -- Your project directory (read-write)
 - `~/.gitconfig:/home/loki/.gitconfig:ro` -- Git configuration (read-only)
 - `~/.ssh:/home/loki/.ssh:ro` -- SSH keys for git operations (read-only)
@@ -158,21 +159,21 @@ export LOKI_BUDGET_LIMIT=10.00
 
 Loki Mode monitors system resources during execution:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_RESOURCE_CHECK_INTERVAL` | `300` | Check resources every N seconds |
-| `LOKI_RESOURCE_CPU_THRESHOLD` | `80` | CPU % threshold to warn |
-| `LOKI_RESOURCE_MEM_THRESHOLD` | `80` | Memory % threshold to warn |
+| Variable                       | Default | Description                     |
+| ------------------------------ | ------- | ------------------------------- |
+| `LOKI_RESOURCE_CHECK_INTERVAL` | `300`   | Check resources every N seconds |
+| `LOKI_RESOURCE_CPU_THRESHOLD`  | `80`    | CPU % threshold to warn         |
+| `LOKI_RESOURCE_MEM_THRESHOLD`  | `80`    | Memory % threshold to warn      |
 
 ### Iteration Limits
 
 Control how many iterations the agent loop runs:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_MAX_ITERATIONS` | `1000` | Max loop iterations before exit |
-| `LOKI_MAX_RETRIES` | `50` | Max retry attempts on failure |
-| `LOKI_PERPETUAL_MODE` | `false` | Ignore all completion signals |
+| Variable              | Default | Description                     |
+| --------------------- | ------- | ------------------------------- |
+| `LOKI_MAX_ITERATIONS` | `1000`  | Max loop iterations before exit |
+| `LOKI_MAX_RETRIES`    | `50`    | Max retry attempts on failure   |
+| `LOKI_PERPETUAL_MODE` | `false` | Ignore all completion signals   |
 
 ### Parallel Execution
 
@@ -182,24 +183,24 @@ For parallel mode with git worktrees (Claude only):
 loki start --parallel ./prd.md
 ```
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_PARALLEL_MODE` | `false` | Enable worktree-based parallelism |
-| `LOKI_MAX_WORKTREES` | `5` | Maximum parallel worktrees |
-| `LOKI_MAX_PARALLEL_SESSIONS` | `3` | Maximum concurrent AI sessions |
+| Variable                     | Default | Description                       |
+| ---------------------------- | ------- | --------------------------------- |
+| `LOKI_PARALLEL_MODE`         | `false` | Enable worktree-based parallelism |
+| `LOKI_MAX_WORKTREES`         | `5`     | Maximum parallel worktrees        |
+| `LOKI_MAX_PARALLEL_SESSIONS` | `3`     | Maximum concurrent AI sessions    |
 
 ## Completion Council
 
 The completion council prevents premature termination and infinite loops. It is a group of agents that vote on whether the project is truly complete.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_COUNCIL_ENABLED` | `true` | Enable completion council |
-| `LOKI_COUNCIL_SIZE` | `3` | Number of council members |
-| `LOKI_COUNCIL_THRESHOLD` | `2` | Votes needed for completion |
-| `LOKI_COUNCIL_CHECK_INTERVAL` | `5` | Check every N iterations |
-| `LOKI_COUNCIL_MIN_ITERATIONS` | `3` | Min iterations before council runs |
-| `LOKI_COUNCIL_STAGNATION_LIMIT` | `5` | Max iterations with no git changes |
+| Variable                        | Default | Description                        |
+| ------------------------------- | ------- | ---------------------------------- |
+| `LOKI_COUNCIL_ENABLED`          | `true`  | Enable completion council          |
+| `LOKI_COUNCIL_SIZE`             | `3`     | Number of council members          |
+| `LOKI_COUNCIL_THRESHOLD`        | `2`     | Votes needed for completion        |
+| `LOKI_COUNCIL_CHECK_INTERVAL`   | `5`     | Check every N iterations           |
+| `LOKI_COUNCIL_MIN_ITERATIONS`   | `3`     | Min iterations before council runs |
+| `LOKI_COUNCIL_STAGNATION_LIMIT` | `5`     | Max iterations with no git changes |
 
 CLI commands:
 
@@ -215,16 +216,16 @@ loki council report        # Generate council report
 
 Individual QA sub-phases can be enabled or disabled:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_PHASE_UNIT_TESTS` | `true` | Run unit tests |
-| `LOKI_PHASE_API_TESTS` | `true` | Functional API testing |
-| `LOKI_PHASE_E2E_TESTS` | `true` | E2E/UI testing with Playwright |
-| `LOKI_PHASE_SECURITY` | `true` | Security scanning (OWASP/auth) |
-| `LOKI_PHASE_CODE_REVIEW` | `true` | 3-reviewer parallel code review |
-| `LOKI_PHASE_PERFORMANCE` | `true` | Load/performance testing |
-| `LOKI_PHASE_ACCESSIBILITY` | `true` | WCAG compliance testing |
-| `LOKI_PHASE_REGRESSION` | `true` | Regression testing |
+| Variable                   | Default | Description                     |
+| -------------------------- | ------- | ------------------------------- |
+| `LOKI_PHASE_UNIT_TESTS`    | `true`  | Run unit tests                  |
+| `LOKI_PHASE_API_TESTS`     | `true`  | Functional API testing          |
+| `LOKI_PHASE_E2E_TESTS`     | `true`  | E2E/UI testing with Playwright  |
+| `LOKI_PHASE_SECURITY`      | `true`  | Security scanning (OWASP/auth)  |
+| `LOKI_PHASE_CODE_REVIEW`   | `true`  | 3-reviewer parallel code review |
+| `LOKI_PHASE_PERFORMANCE`   | `true`  | Load/performance testing        |
+| `LOKI_PHASE_ACCESSIBILITY` | `true`  | WCAG compliance testing         |
+| `LOKI_PHASE_REGRESSION`    | `true`  | Regression testing              |
 
 ## Health Monitoring
 

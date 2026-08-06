@@ -10,10 +10,12 @@
 ### 1. Flat Coordination Fails at Scale
 
 **What they tried:**
+
 - Equal-status agents self-coordinating through shared files
 - File-based locking mechanisms
 
 **What happened:**
+
 - "Twenty agents would slow down to the effective throughput of two or three"
 - Most time spent waiting on locks
 - Agents failed while holding locks, creating deadlocks
@@ -25,16 +27,19 @@
 ### 2. Integrator Roles Create Bottlenecks
 
 **What they tried:**
+
 - Dedicated integrator agents to coordinate and merge work
 - Quality control checkpoints between workers
 
 **What happened:**
+
 - "Created more bottlenecks than it solved"
 - Workers were already capable of handling conflicts themselves
 
 **Lesson:** Trust workers to handle conflicts. Remove unnecessary oversight layers at scale.
 
 **Implication for Loki Mode:** The 3-reviewer blind review system may become a bottleneck at 100+ agent scale. Consider:
+
 - Making review optional for low-risk changes
 - Allowing workers to self-merge trivial fixes
 - Escalating only high-risk changes to full review
@@ -44,10 +49,12 @@
 ### 3. Optimistic Concurrency Control
 
 **What they tried:**
+
 - File locking (failed - deadlocks, bottlenecks)
 - Optimistic concurrency (succeeded)
 
 **How it works:**
+
 ```
 1. Agent reads current state (no lock)
 2. Agent performs work
@@ -57,6 +64,7 @@
 ```
 
 **Benefits:**
+
 - No waiting for locks
 - No deadlock risk
 - Failed writes are cheap (just retry)
@@ -68,6 +76,7 @@
 ### 4. Recursive Sub-Planners
 
 **Pattern:**
+
 ```
 Main Planner
     |
@@ -87,6 +96,7 @@ Main Planner
 **Key insight:** "Planners continuously explore the codebase and create tasks. They can spawn sub-planners for specific areas, making planning itself parallel and recursive."
 
 **Benefits:**
+
 - Planning scales horizontally
 - Each sub-planner has focused context
 - Prevents single-planner bottleneck
@@ -98,11 +108,13 @@ Main Planner
 **Role:** Determine whether execution cycles should continue or terminate.
 
 **When to use:**
+
 - After major milestones
 - When workers report completion
 - When detecting diminishing returns
 
 **Implementation:**
+
 ```yaml
 judge_agent:
   inputs:
@@ -124,6 +136,7 @@ judge_agent:
 **Cursor's finding:** "A surprising amount of the system's behavior comes down to how we prompt the agents... The harness and models matter, but the prompts matter more."
 
 **Implication:** Don't over-engineer the coordination infrastructure. Invest in:
+
 - Clear, specific prompts
 - Role definitions
 - Context injection
@@ -134,6 +147,7 @@ judge_agent:
 ### 7. Periodic Fresh Starts Combat Drift
 
 **Problem:** Extended autonomous operation leads to:
+
 - Context drift
 - Tunnel vision
 - Accumulated assumptions
@@ -141,9 +155,10 @@ judge_agent:
 **Solution:** "We still need periodic fresh starts to combat drift and tunnel vision."
 
 **Implementation:**
+
 ```yaml
 drift_prevention:
-  context_reset_interval: 25_iterations  # Already in Loki Mode
+  context_reset_interval: 25_iterations # Already in Loki Mode
   mandatory_state_dump: true
   fresh_planner_spawn: every_major_milestone
 ```
@@ -152,13 +167,13 @@ drift_prevention:
 
 ## Scale Metrics Achieved
 
-| Project | Scale | Duration |
-|---------|-------|----------|
-| Web browser | 1M+ LoC, 1,000 files | ~1 week |
+| Project                  | Scale                          | Duration |
+| ------------------------ | ------------------------------ | -------- |
+| Web browser              | 1M+ LoC, 1,000 files           | ~1 week  |
 | Solid-to-React migration | 266K additions, 193K deletions | 3+ weeks |
-| Java LSP | 7.4K commits, 550K LoC | - |
-| Windows 7 emulator | 14.6K commits, 1.2M LoC | - |
-| Excel implementation | 12K commits, 1.6M LoC | - |
+| Java LSP                 | 7.4K commits, 550K LoC         | -        |
+| Windows 7 emulator       | 14.6K commits, 1.2M LoC        | -        |
+| Excel implementation     | 12K commits, 1.6M LoC          | -        |
 
 ---
 
@@ -188,16 +203,19 @@ drift_prevention:
 ## Integration Recommendations
 
 ### Phase 1: Low Risk
+
 - Add judge agents (new agent type)
 - Document optimistic concurrency option
 - Add scale considerations to quality gates
 
 ### Phase 2: Medium Risk
+
 - Implement recursive sub-planners
 - Make review intensity configurable
 - Add optimistic concurrency mode
 
 ### Phase 3: Validation Required
+
 - Test at 100+ agent scale
 - Measure reviewer bottleneck impact
 - Compare file signals vs optimistic concurrency

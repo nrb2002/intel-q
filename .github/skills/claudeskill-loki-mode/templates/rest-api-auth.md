@@ -1,9 +1,11 @@
 # PRD: REST API with JWT Authentication
 
 ## Overview
+
 A production-ready REST API with JWT-based authentication, user registration, login, token refresh, protected routes, rate limiting, and input validation. Serves as a backend starter for any application requiring secure user authentication.
 
 ## Target Users
+
 - Backend developers building authenticated APIs
 - Teams needing a secure auth starter with best practices
 - Developers learning JWT authentication patterns
@@ -11,6 +13,7 @@ A production-ready REST API with JWT-based authentication, user registration, lo
 ## Features
 
 ### MVP Features
+
 1. **User Registration** - Email/password signup with validation
 2. **User Login** - Authenticate and receive JWT access + refresh tokens
 3. **Token Refresh** - Exchange refresh token for new access token
@@ -21,6 +24,7 @@ A production-ready REST API with JWT-based authentication, user registration, lo
 8. **Input Validation** - Schema-based request validation on all endpoints
 
 ### User Flow
+
 1. User registers via POST /api/auth/register with email and password
 2. Server validates input, hashes password, stores user, returns tokens
 3. User includes access token in Authorization header for protected routes
@@ -31,6 +35,7 @@ A production-ready REST API with JWT-based authentication, user registration, lo
 ## Tech Stack
 
 ### Option A: Node.js (Express)
+
 - Runtime: Node.js 20+
 - Framework: Express.js with TypeScript
 - Database: PostgreSQL with Prisma ORM
@@ -40,6 +45,7 @@ A production-ready REST API with JWT-based authentication, user registration, lo
 - Testing: Vitest + supertest
 
 ### Option B: Python (FastAPI)
+
 - Runtime: Python 3.11+
 - Framework: FastAPI
 - Database: PostgreSQL with SQLAlchemy
@@ -51,6 +57,7 @@ A production-ready REST API with JWT-based authentication, user registration, lo
 Choose whichever framework the agent determines is most appropriate, or default to Express.js.
 
 ### Project Structure (Express + TypeScript)
+
 ```
 /
 ├── src/
@@ -89,6 +96,7 @@ Choose whichever framework the agent determines is most appropriate, or default 
 ## Environment Variables
 
 ### .env.example
+
 ```bash
 # Server
 PORT=3000
@@ -153,34 +161,40 @@ CREATE TABLE password_resets (
 ### Authentication
 
 #### POST /api/auth/register
+
 - Body: `{ email, password, name? }`
 - Validation: email format, password min 8 chars with complexity
 - Response: `201 { user: { id, email, name, role }, accessToken, refreshToken }`
 - Error: `400` validation, `409` email already exists
 
 #### POST /api/auth/login
+
 - Body: `{ email, password }`
 - Response: `200 { user: { id, email, name, role }, accessToken, refreshToken }`
 - Error: `401` invalid credentials
 - Rate limit: 5 attempts per 15 minutes per IP
 
 #### POST /api/auth/refresh
+
 - Body: `{ refreshToken }`
 - Response: `200 { accessToken, refreshToken }`
 - Error: `401` invalid/expired/revoked token
 
 #### POST /api/auth/logout
+
 - Headers: `Authorization: Bearer <accessToken>`
 - Body: `{ refreshToken }`
 - Revokes the refresh token
 - Response: `200 { message: "Logged out" }`
 
 #### POST /api/auth/forgot-password
+
 - Body: `{ email }`
 - Sends password reset token (logs to console in dev)
 - Response: `200 { message: "Reset email sent" }` (always, even if email not found)
 
 #### POST /api/auth/reset-password
+
 - Body: `{ token, newPassword }`
 - Response: `200 { message: "Password reset successful" }`
 - Error: `400` invalid/expired token
@@ -188,15 +202,18 @@ CREATE TABLE password_resets (
 ### Users (Protected)
 
 #### GET /api/users/me
+
 - Headers: `Authorization: Bearer <accessToken>`
 - Response: `200 { id, email, name, role, createdAt }`
 
 #### PATCH /api/users/me
+
 - Headers: `Authorization: Bearer <accessToken>`
 - Body: `{ name?, email? }`
 - Response: `200 { id, email, name, role, updatedAt }`
 
 #### POST /api/users/me/change-password
+
 - Headers: `Authorization: Bearer <accessToken>`
 - Body: `{ currentPassword, newPassword }`
 - Response: `200 { message: "Password changed" }`
@@ -205,11 +222,13 @@ CREATE TABLE password_resets (
 ### Health Check
 
 #### GET /health
+
 - Response: `200 { status: "ok", timestamp, version }`
 
 ## Requirements
 
 ### Security
+
 - Passwords hashed with bcrypt (cost factor 12)
 - JWT access tokens expire in 15 minutes
 - JWT refresh tokens expire in 7 days, stored in database, revocable
@@ -219,18 +238,21 @@ CREATE TABLE password_resets (
 - Helmet.js (Express) or equivalent security headers
 
 ### Validation
+
 - Email: valid format, lowercase, trimmed
 - Password: minimum 8 characters, at least one uppercase, one lowercase, one number
 - Name: 1-100 characters, trimmed
 - All request bodies validated before processing
 
 ### Rate Limiting
+
 - Auth endpoints (login, register): 5 requests per 15 minutes per IP
 - Password reset: 3 requests per hour per IP
 - General API: 100 requests per 15 minutes per user
 - Returns `429 Too Many Requests` with `Retry-After` header
 
 ### Error Handling
+
 - Consistent error format: `{ error: { code, message, details? } }`
 - No stack traces in production
 - Proper HTTP status codes (400, 401, 403, 404, 409, 429, 500)
@@ -238,12 +260,14 @@ CREATE TABLE password_resets (
 ## Testing
 
 ### Unit Tests
+
 - Password hashing and comparison
 - JWT generation and verification
 - Input validation schemas
 - Rate limiter behavior
 
 ### Integration Tests
+
 - Full registration flow
 - Login with valid and invalid credentials
 - Token refresh with valid, expired, and revoked tokens
@@ -253,11 +277,13 @@ CREATE TABLE password_resets (
 - Rate limit enforcement
 
 ### Test Coverage
+
 - Target: 90%+ line coverage
 - All error paths tested
 - All validation rules tested
 
 ## Out of Scope
+
 - OAuth/social login (Google, GitHub, etc.)
 - Two-factor authentication (2FA)
 - Email verification on registration
@@ -269,6 +295,7 @@ CREATE TABLE password_resets (
 - Frontend/UI
 
 ## Success Criteria
+
 - User can register, login, and access protected routes
 - Tokens refresh correctly and expired tokens are rejected
 - Rate limiting prevents brute force attempts

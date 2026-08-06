@@ -31,12 +31,7 @@ import type {
   LearningSuggestion,
   LearningSuggestionsResponse,
 } from "../types/memory.ts";
-import {
-  LokiApiError,
-  ErrorCodes,
-  validateBody,
-  successResponse,
-} from "../middleware/error.ts";
+import { LokiApiError, ErrorCodes, validateBody, successResponse } from "../middleware/error.ts";
 
 // Base path for memory storage
 const MEMORY_BASE_PATH = ".loki/memory";
@@ -116,7 +111,7 @@ function escapePythonString(str: string): string {
  */
 async function executePythonMemory(
   script: string,
-  timeoutMs: number = SUBPROCESS_TIMEOUT_MS
+  timeoutMs: number = SUBPROCESS_TIMEOUT_MS,
 ): Promise<string> {
   const command = new Deno.Command("python3", {
     args: ["-c", script],
@@ -135,27 +130,24 @@ async function executePythonMemory(
       } catch {
         // Process may have already exited
       }
-      reject(new LokiApiError(
-        `Python subprocess timed out after ${timeoutMs}ms`,
-        ErrorCodes.INTERNAL_ERROR,
-        { timeout: timeoutMs }
-      ));
+      reject(
+        new LokiApiError(
+          `Python subprocess timed out after ${timeoutMs}ms`,
+          ErrorCodes.INTERNAL_ERROR,
+          { timeout: timeoutMs },
+        ),
+      );
     }, timeoutMs);
   });
 
   // Race between process completion and timeout
-  const output = await Promise.race([
-    process.output(),
-    timeoutPromise,
-  ]);
+  const output = await Promise.race([process.output(), timeoutPromise]);
 
   if (output.code !== 0) {
     const errorText = new TextDecoder().decode(output.stderr);
-    throw new LokiApiError(
-      `Memory system error: ${errorText}`,
-      ErrorCodes.INTERNAL_ERROR,
-      { stderr: errorText }
-    );
+    throw new LokiApiError(`Memory system error: ${errorText}`, ErrorCodes.INTERNAL_ERROR, {
+      stderr: errorText,
+    });
   }
 
   return new TextDecoder().decode(output.stdout);
@@ -283,10 +275,7 @@ print(json.dumps(result))
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      "Memory index not available",
-      ErrorCodes.SERVICE_UNAVAILABLE
-    );
+    throw new LokiApiError("Memory index not available", ErrorCodes.SERVICE_UNAVAILABLE);
   }
 }
 
@@ -336,10 +325,7 @@ print(json.dumps(result))
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      "Memory timeline not available",
-      ErrorCodes.SERVICE_UNAVAILABLE
-    );
+    throw new LokiApiError("Memory timeline not available", ErrorCodes.SERVICE_UNAVAILABLE);
   }
 }
 
@@ -416,10 +402,7 @@ print(json.dumps(results))
 // GET /api/memory/episodes/:id - Get specific episode
 // -----------------------------------------------------------------------------
 
-export async function getEpisode(
-  _req: Request,
-  episodeId: string
-): Promise<Response> {
+export async function getEpisode(_req: Request, episodeId: string): Promise<Response> {
   // Escape episodeId for Python
   const escapedEpisodeId = escapePythonString(episodeId);
 
@@ -463,10 +446,7 @@ else:
     const trimmed = result.trim();
 
     if (trimmed === "null") {
-      throw new LokiApiError(
-        `Episode not found: ${episodeId}`,
-        ErrorCodes.NOT_FOUND
-      );
+      throw new LokiApiError(`Episode not found: ${episodeId}`, ErrorCodes.NOT_FOUND);
     }
 
     const episode: EpisodeDetail = JSON.parse(trimmed);
@@ -475,10 +455,7 @@ else:
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      `Episode not found: ${episodeId}`,
-      ErrorCodes.NOT_FOUND
-    );
+    throw new LokiApiError(`Episode not found: ${episodeId}`, ErrorCodes.NOT_FOUND);
   }
 }
 
@@ -542,10 +519,7 @@ print(json.dumps(results))
 // GET /api/memory/patterns/:id - Get specific pattern
 // -----------------------------------------------------------------------------
 
-export async function getPattern(
-  _req: Request,
-  patternId: string
-): Promise<Response> {
+export async function getPattern(_req: Request, patternId: string): Promise<Response> {
   // Escape patternId for Python
   const escapedPatternId = escapePythonString(patternId);
 
@@ -584,10 +558,7 @@ else:
     const trimmed = result.trim();
 
     if (trimmed === "null") {
-      throw new LokiApiError(
-        `Pattern not found: ${patternId}`,
-        ErrorCodes.NOT_FOUND
-      );
+      throw new LokiApiError(`Pattern not found: ${patternId}`, ErrorCodes.NOT_FOUND);
     }
 
     const pattern: PatternDetail = JSON.parse(trimmed);
@@ -596,10 +567,7 @@ else:
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      `Pattern not found: ${patternId}`,
-      ErrorCodes.NOT_FOUND
-    );
+    throw new LokiApiError(`Pattern not found: ${patternId}`, ErrorCodes.NOT_FOUND);
   }
 }
 
@@ -648,10 +616,7 @@ print(json.dumps(results))
 // GET /api/memory/skills/:id - Get specific skill
 // -----------------------------------------------------------------------------
 
-export async function getSkill(
-  _req: Request,
-  skillId: string
-): Promise<Response> {
+export async function getSkill(_req: Request, skillId: string): Promise<Response> {
   // Escape skillId for Python
   const escapedSkillId = escapePythonString(skillId);
 
@@ -687,10 +652,7 @@ else:
     const trimmed = result.trim();
 
     if (trimmed === "null") {
-      throw new LokiApiError(
-        `Skill not found: ${skillId}`,
-        ErrorCodes.NOT_FOUND
-      );
+      throw new LokiApiError(`Skill not found: ${skillId}`, ErrorCodes.NOT_FOUND);
     }
 
     const skill: SkillDetail = JSON.parse(trimmed);
@@ -699,10 +661,7 @@ else:
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      `Skill not found: ${skillId}`,
-      ErrorCodes.NOT_FOUND
-    );
+    throw new LokiApiError(`Skill not found: ${skillId}`, ErrorCodes.NOT_FOUND);
   }
 }
 
@@ -713,10 +672,7 @@ else:
 export async function retrieveMemories(req: Request): Promise<Response> {
   const startTime = Date.now();
   const body = await req.json().catch(() => ({}));
-  const data = validateBody<RetrieveRequest>(body, ["query"], [
-    "taskType",
-    "topK",
-  ]);
+  const data = validateBody<RetrieveRequest>(body, ["query"], ["taskType", "topK"]);
 
   const query = data.query;
   const rawTaskType = data.taskType || "auto";
@@ -730,7 +686,7 @@ export async function retrieveMemories(req: Request): Promise<Response> {
     throw new LokiApiError(
       "Query exceeds maximum length of 10,000 characters",
       ErrorCodes.VALIDATION_ERROR,
-      { maxLength: 10000, actualLength: query.length }
+      { maxLength: 10000, actualLength: query.length },
     );
   }
 
@@ -802,36 +758,26 @@ print(json.dumps(result, default=str))
 
     // Emit learning signals for memory retrieval
     const retrievedIds = response.memories.map((m) => m.id);
-    learningCollector.emitMemoryRetrieval(
-      query,
-      retrievedIds,
-      startTime,
-      {
-        taskType,
-        context: {
-          topK,
-          tokenMetrics: response.tokenMetrics,
-        },
-      }
-    );
+    learningCollector.emitMemoryRetrieval(query, retrievedIds, startTime, {
+      taskType,
+      context: {
+        topK,
+        tokenMetrics: response.tokenMetrics,
+      },
+    });
 
     return successResponse(response);
   } catch (error) {
     // Emit error signal for failed retrieval
-    learningCollector.emitContextRelevance(
-      "memory_retrieve_failed",
-      query,
-      [],
-      {
-        precision: 0,
-        recall: 0,
-        context: {
-          taskType,
-          error: error instanceof Error ? error.message : "Unknown error",
-          durationMs: Date.now() - startTime,
-        },
-      }
-    );
+    learningCollector.emitContextRelevance("memory_retrieve_failed", query, [], {
+      precision: 0,
+      recall: 0,
+      context: {
+        taskType,
+        error: error instanceof Error ? error.message : "Unknown error",
+        durationMs: Date.now() - startTime,
+      },
+    });
 
     if (error instanceof LokiApiError) {
       throw error;
@@ -930,11 +876,9 @@ except ImportError:
     if (error instanceof LokiApiError) {
       throw error;
     }
-    throw new LokiApiError(
-      "Consolidation failed",
-      ErrorCodes.INTERNAL_ERROR,
-      { error: error instanceof Error ? error.message : "Unknown error" }
-    );
+    throw new LokiApiError("Consolidation failed", ErrorCodes.INTERNAL_ERROR, {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 }
 
@@ -1014,14 +958,13 @@ export async function getSuggestions(req: Request): Promise<Response> {
   const startTime = Date.now();
 
   // Rate limiting check
-  const clientId = req.headers.get("x-forwarded-for") ||
-    req.headers.get("x-real-ip") ||
-    "localhost";
+  const clientId =
+    req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "localhost";
   if (!rateLimiter.isAllowed(clientId)) {
     throw new LokiApiError(
       "Rate limit exceeded. Maximum 10 requests per second.",
       ErrorCodes.VALIDATION_ERROR,
-      { retryAfter: 1 }
+      { retryAfter: 1 },
     );
   }
 
@@ -1037,10 +980,7 @@ export async function getSuggestions(req: Request): Promise<Response> {
   const limit = Math.min(Math.max(1, rawLimit), 50);
 
   if (!context) {
-    throw new LokiApiError(
-      "Missing required parameter: context",
-      ErrorCodes.VALIDATION_ERROR
-    );
+    throw new LokiApiError("Missing required parameter: context", ErrorCodes.VALIDATION_ERROR);
   }
 
   // Validate context length (max 10,000 characters)
@@ -1048,7 +988,7 @@ export async function getSuggestions(req: Request): Promise<Response> {
     throw new LokiApiError(
       "Context exceeds maximum length of 10,000 characters",
       ErrorCodes.VALIDATION_ERROR,
-      { maxLength: 10000, actualLength: context.length }
+      { maxLength: 10000, actualLength: context.length },
     );
   }
 
@@ -1135,36 +1075,26 @@ print(json.dumps(result, default=str))
 
     // Emit learning signals for suggestions retrieval
     const suggestionIds = response.suggestions.map((s) => s.id);
-    learningCollector.emitContextRelevance(
-      "get_suggestions",
-      context,
-      suggestionIds,
-      {
-        context: {
-          taskType: response.taskType,
-          suggestionCount: response.suggestions.length,
-          durationMs: Date.now() - startTime,
-        },
-      }
-    );
+    learningCollector.emitContextRelevance("get_suggestions", context, suggestionIds, {
+      context: {
+        taskType: response.taskType,
+        suggestionCount: response.suggestions.length,
+        durationMs: Date.now() - startTime,
+      },
+    });
 
     return successResponse(response);
   } catch (error) {
     // Emit error signal for failed suggestions
-    learningCollector.emitContextRelevance(
-      "get_suggestions_failed",
-      context,
-      [],
-      {
-        precision: 0,
-        recall: 0,
-        context: {
-          taskType,
-          error: error instanceof Error ? error.message : "Unknown error",
-          durationMs: Date.now() - startTime,
-        },
-      }
-    );
+    learningCollector.emitContextRelevance("get_suggestions_failed", context, [], {
+      precision: 0,
+      recall: 0,
+      context: {
+        taskType,
+        error: error instanceof Error ? error.message : "Unknown error",
+        durationMs: Date.now() - startTime,
+      },
+    });
 
     if (error instanceof LokiApiError) {
       throw error;
@@ -1184,25 +1114,19 @@ print(json.dumps(result, default=str))
 // -----------------------------------------------------------------------------
 
 // Valid learning suggestion types
-const VALID_LEARNING_SUGGESTION_TYPES = new Set([
-  "command",
-  "error",
-  "practice",
-  "tool",
-]);
+const VALID_LEARNING_SUGGESTION_TYPES = new Set(["command", "error", "practice", "tool"]);
 
 export async function getLearningSuggestions(req: Request): Promise<Response> {
   const startTime = Date.now();
 
   // Rate limiting check (reuse existing rate limiter)
-  const clientId = req.headers.get("x-forwarded-for") ||
-    req.headers.get("x-real-ip") ||
-    "localhost";
+  const clientId =
+    req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "localhost";
   if (!rateLimiter.isAllowed(clientId)) {
     throw new LokiApiError(
       "Rate limit exceeded. Maximum 10 requests per second.",
       ErrorCodes.VALIDATION_ERROR,
-      { retryAfter: 1 }
+      { retryAfter: 1 },
     );
   }
 
@@ -1224,7 +1148,7 @@ export async function getLearningSuggestions(req: Request): Promise<Response> {
     throw new LokiApiError(
       "Context exceeds maximum length of 10,000 characters",
       ErrorCodes.VALIDATION_ERROR,
-      { maxLength: 10000, actualLength: context.length }
+      { maxLength: 10000, actualLength: context.length },
     );
   }
 
@@ -1260,7 +1184,7 @@ context = SuggestionContext(
 )
 
 # Parse type filter
-type_filter_raw = ${typeFilter || 'None'}
+type_filter_raw = ${typeFilter || "None"}
 type_filter = None
 if type_filter_raw:
     type_map = {
@@ -1305,19 +1229,15 @@ print(json.dumps(result, default=str))
     const response: LearningSuggestionsResponse = JSON.parse(result.trim());
 
     // Emit learning signal for successful retrieval
-    learningCollector.emitToolEfficiency(
-      "get_learning_suggestions",
-      "api:suggestions:learning",
-      {
-        executionTimeMs: Date.now() - startTime,
-        outcome: response.count > 0 ? "success" : "partial",
-        context: {
-          suggestionCount: response.count,
-          types: rawTypes || "all",
-          limit,
-        },
-      }
-    );
+    learningCollector.emitToolEfficiency("get_learning_suggestions", "api:suggestions:learning", {
+      executionTimeMs: Date.now() - startTime,
+      outcome: response.count > 0 ? "success" : "partial",
+      context: {
+        suggestionCount: response.count,
+        types: rawTypes || "all",
+        limit,
+      },
+    });
 
     return successResponse(response);
   } catch (error) {
@@ -1332,7 +1252,7 @@ print(json.dumps(result, default=str))
           limit,
           types: rawTypes || "all",
         },
-      }
+      },
     );
 
     if (error instanceof LokiApiError) {

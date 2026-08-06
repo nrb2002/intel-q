@@ -26,11 +26,11 @@ sarifLog
 
 ### Level Values
 
-| Level | Subgraph |
-|-------|----------|
-| `error` | `sarif:error` |
+| Level               | Subgraph        |
+| ------------------- | --------------- |
+| `error`             | `sarif:error`   |
 | `warning` (default) | `sarif:warning` |
-| `note` | `sarif:note` |
+| `note`              | `sarif:note`    |
 
 ### Example SARIF Result
 
@@ -38,13 +38,15 @@ sarifLog
 {
   "ruleId": "python.lang.security.audit.exec-detected",
   "level": "warning",
-  "message": {"text": "Detected use of exec()"},
-  "locations": [{
-    "physicalLocation": {
-      "artifactLocation": {"uri": "src/handler.py"},
-      "region": {"startLine": 42, "endLine": 42}
+  "message": { "text": "Detected use of exec()" },
+  "locations": [
+    {
+      "physicalLocation": {
+        "artifactLocation": { "uri": "src/handler.py" },
+        "region": { "startLine": 42, "endLine": 42 }
+      }
     }
-  }]
+  ]
 }
 ```
 
@@ -75,18 +77,18 @@ root
 
 ### Entry Types
 
-| entryType | AnnotationKind | Subgraph |
-|-----------|---------------|----------|
-| 0 (Finding) | `finding` | `weaudit:findings` |
-| 1 (Note) | `audit_note` | `weaudit:notes` |
+| entryType   | AnnotationKind | Subgraph           |
+| ----------- | -------------- | ------------------ |
+| 0 (Finding) | `finding`      | `weaudit:findings` |
+| 1 (Note)    | `audit_note`   | `weaudit:notes`    |
 
 ### Severity Values
 
-| Severity | Subgraph |
-|----------|----------|
-| `High` | `weaudit:high` |
-| `Medium` | `weaudit:medium` |
-| `Low` | `weaudit:low` |
+| Severity        | Subgraph                |
+| --------------- | ----------------------- |
+| `High`          | `weaudit:high`          |
+| `Medium`        | `weaudit:medium`        |
+| `Low`           | `weaudit:low`           |
 | `Informational` | `weaudit:informational` |
 
 ### Example weAudit Entry
@@ -104,13 +106,15 @@ root
     "exploit": "Attacker injects malicious SQL.",
     "recommendation": "Use parameterized queries."
   },
-  "locations": [{
-    "path": "src/database/queries.py",
-    "startLine": 41,
-    "endLine": 44,
-    "label": "executeQuery function",
-    "description": ""
-  }]
+  "locations": [
+    {
+      "path": "src/database/queries.py",
+      "startLine": 41,
+      "endLine": 44,
+      "label": "executeQuery function",
+      "description": ""
+    }
+  ]
 }
 ```
 

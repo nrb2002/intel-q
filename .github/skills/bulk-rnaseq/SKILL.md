@@ -14,6 +14,7 @@ metadata:
 This skill orchestrates a complete, **defensible** bulk RNA-seq differential-expression study, from raw sequencing reads to enriched pathways and figures. It is a router, not a reimplementation: most stages already have dedicated skills in this repo, and this skill connects them in the right order, fills the one real gap (raw reads → a gene-level counts matrix), and enforces the design and QC decisions that determine whether the final result is trustworthy.
 
 "Defensible" means three things, applied throughout:
+
 - **Reproducible** — pinned pipeline/tool versions, containers where possible, recorded parameters, fixed random seeds.
 - **Quality-gated** — QC is inspected and acted on before, during, and after quantification, not skipped.
 - **Statistically sound** — adequate replication, a design that matches the biology, counts handled correctly, and FDR-controlled testing.
@@ -23,6 +24,7 @@ The pipeline is: **FastQC/trim → align/quant (STAR/Salmon) → counts → DE (
 ## When to Use This Skill
 
 Use this skill when the user wants to:
+
 - Go from FASTQ files (or a sequencing run) to differentially expressed genes and pathways.
 - Run or configure `nf-core/rnaseq`, or align/quantify with STAR, Salmon, or featureCounts.
 - Turn Salmon/STAR/featureCounts output into a counts matrix ready for DESeq2/PyDESeq2.
@@ -55,12 +57,12 @@ flowchart TD
 
 The reads → counts stage can be run two ways. They produce equivalent gene counts; choose by context, then stay on that path.
 
-| Use **Path A — `nf-core/rnaseq`** when… | Use **Path B — standalone tools** when… |
-|------------------------------------------|------------------------------------------|
-| You want the field-standard, audited, citable pipeline with one command | You have a few samples and want to learn/inspect each step |
-| Many samples, or you'll scale to HPC/cloud | No Nextflow/containers available, or a constrained environment |
-| Reproducibility and a full MultiQC report matter most | You need a non-standard step the pipeline doesn't expose |
-| → Drive it through the **`nextflow`** skill | → Follow `references/upstream-manual.md` |
+| Use **Path A — `nf-core/rnaseq`** when…                                 | Use **Path B — standalone tools** when…                        |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| You want the field-standard, audited, citable pipeline with one command | You have a few samples and want to learn/inspect each step     |
+| Many samples, or you'll scale to HPC/cloud                              | No Nextflow/containers available, or a constrained environment |
+| Reproducibility and a full MultiQC report matter most                   | You need a non-standard step the pipeline doesn't expose       |
+| → Drive it through the **`nextflow`** skill                             | → Follow `references/upstream-manual.md`                       |
 
 When unsure, prefer **Path A**: `nf-core/rnaseq` already wires together FastQC → trimming → STAR/Salmon → quantification → tximport → MultiQC with sensible, reviewed defaults, which is the most defensible option. Path B exists for transparency and constrained setups.
 
@@ -145,7 +147,7 @@ Work top to bottom. Each stage names the skill or file that owns the detail. Don
 4. **Align / quantify.** STAR (genome alignment + `--quantMode GeneCounts`) and/or Salmon (transcript quasi-mapping, decoy-aware). Determine strandedness — it is easy to get wrong and silently halves your counts. Detail: `references/upstream-manual.md`; pipeline params: `references/upstream-nfcore.md`.
 5. **Build the counts matrix.** Turn quant output into a gene × sample integer matrix and a metadata template (`scripts/build_counts_matrix.py`). The estimated-count and gene-ID-mapping nuances live in `references/counts-and-handoff.md`.
 6. **Differential expression → `pydeseq2` skill.** Load `counts.csv` + `metadata.csv`, set the design (e.g. `~batch + condition`), fit, and test with FDR control. Inspect the PCA and p-value histogram as QC.
-7. **Enrichment → `pathway-enrichment` skill.** For GSEA, rank the *full* gene list by the DESeq2 `stat`; for ORA, pass the thresholded hit list (padj < 0.05, optionally |log2FC| > 1). Map gene IDs to symbols first.
+7. **Enrichment → `pathway-enrichment` skill.** For GSEA, rank the _full_ gene list by the DESeq2 `stat`; for ORA, pass the thresholded hit list (padj < 0.05, optionally |log2FC| > 1). Map gene IDs to symbols first.
 8. **Figures → `scientific-visualization` skill.** Volcano, MA, sample-distance heatmap, PCA, and enrichment dotplots, plus the MultiQC report for the QC narrative.
 
 ## The counts → DE bridge (the key glue)

@@ -70,33 +70,34 @@ jobs:
           mode: review
           provider: claude
           max_iterations: 3
-          budget_limit: '5.00'
+          budget_limit: "5.00"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
 **Prerequisites:**
+
 - API key for your provider (set as repository secret): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `GOOGLE_API_KEY`
 - The action auto-installs `loki-mode` and `@anthropic-ai/claude-code`
 
 **Action Inputs:**
 
-| Input | Default | Description |
-|-------|---------|-------------|
-| `mode` | `review` | `review`, `fix`, or `test` |
-| `provider` | `claude` | `claude`, `codex`, or `gemini` |
-| `budget_limit` | `5.00` | Max cost in USD |
-| `max_iterations` | `3` | Max RARV cycles |
-| `github_token` | (required) | GitHub token for PR comments |
-| `prd_file` | | Path to PRD file (for fix/test modes) |
+| Input            | Default    | Description                           |
+| ---------------- | ---------- | ------------------------------------- |
+| `mode`           | `review`   | `review`, `fix`, or `test`            |
+| `provider`       | `claude`   | `claude`, `codex`, or `gemini`        |
+| `budget_limit`   | `5.00`     | Max cost in USD                       |
+| `max_iterations` | `3`        | Max RARV cycles                       |
+| `github_token`   | (required) | GitHub token for PR comments          |
+| `prd_file`       |            | Path to PRD file (for fix/test modes) |
 
 **Modes:**
 
-| Mode | Description |
-|------|-------------|
+| Mode     | Description                                           |
+| -------- | ----------------------------------------------------- |
 | `review` | Analyze PR diff, post structured review as PR comment |
-| `fix` | Automatically fix issues found in the codebase |
-| `test` | Run autonomous test generation and validation |
+| `fix`    | Automatically fix issues found in the codebase        |
+| `test`   | Run autonomous test generation and validation         |
 
 **Best for:** Automated PR review and CI/CD integration.
 

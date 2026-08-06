@@ -1,6 +1,7 @@
 # Welcome Opener Plan (the "magic opener")
 
 ## Goal
+
 A polished welcome experience shown when people install the loki CLI or
 run the Docker image. It (1) introduces Loki/Autonomi with the dashboard's
 design language, (2) subtly highlights the research backing + memory
@@ -9,6 +10,7 @@ role / business / tools, transmitted to PostHog on click, and (4) links to
 autonomi.dev/docs.
 
 ## Hard constraints (from the user + CLAUDE.md)
+
 - Anonymous usage analytics for PRODUCT IMPROVEMENT ONLY. NEVER transmit
   prompts, PRDs, code, or any project content. Disclosed, not covert.
 - Reuse the EXISTING PostHog contract already in the codebase:
@@ -25,8 +27,10 @@ autonomi.dev/docs.
 ## Components
 
 ### 1. web-app-less static page: `assets/welcome/welcome.html`
+
 Self-contained single HTML file (inline CSS + JS, Google Fonts link), so
 it works opened directly from disk OR served. Sections:
+
 - Hero: "Loki Mode by Autonomi" + tagline "Describe it. Walk away. Get
   working, tested software." + version (templated at serve time or left
   generic).
@@ -55,15 +59,17 @@ it works opened directly from disk OR served. Sections:
   is replaced with a "analytics disabled" note and the submit is a no-op.
 
 ### 2. CLI command: `loki welcome`
+
 - Mirrors cmd_dashboard_open idiom. Resolves the welcome.html path inside
   the package, opens it with `open`/`xdg-open`. If no browser opener
   (headless/Docker), prints the terminal fallback (see #4) + the file path
-  + the autonomi.dev/docs URL.
+  - the autonomi.dev/docs URL.
 - Passes ?telemetry=off when opt-out env is set.
 - Dispatch: add `welcome) cmd_welcome "$@" ;;` near the `demo)` case
   (~autonomy/loki:12505) and a help line.
 
 ### 3. First-run auto-open (once)
+
 - Marker file: `~/.loki/.welcomed`. On first `loki start` (and at end of
   postinstall when a browser is available + not CI + not opt-out), if the
   marker is absent: open the welcome page once, then write the marker.
@@ -74,12 +80,14 @@ it works opened directly from disk OR served. Sections:
   postinstall to avoid surprising npm installs).
 
 ### 4. Terminal fallback
+
 - A clean ASCII/ANSI welcome (loki accent color) printed when no browser:
   product one-liner, the 3 highlights as one line each, the docs URL, the
   quick-start command, and the consent/opt-out line. No network call from
   the terminal fallback (the form is browser-only; terminal just informs).
 
 ## Files
+
 - ADD `assets/welcome/welcome.html`
 - ADD `assets/welcome/welcome.terminal.sh` (sourced helper that prints the
   terminal welcome) OR inline in cmd_welcome.
@@ -92,6 +100,7 @@ it works opened directly from disk OR served. Sections:
 - Version bump 14 locations + CHANGELOG.
 
 ## Privacy test matrix (must pass)
+
 - Page load makes ZERO network calls (only submit does).
 - Submit payload contains ONLY {role, company_size, tools, source,
   loki_version, distinct_id}; never any file/prompt/PRD content.
@@ -101,6 +110,7 @@ it works opened directly from disk OR served. Sections:
 - First-run marker opens once and not again.
 
 ## Honesty
+
 Highlights cite real, documented research (already in README Research
 Foundation) and frame the memory moat as "retrieval/compounding," NOT a
 claimed task-success number (consistent with prior honesty fixes).

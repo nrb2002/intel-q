@@ -14,9 +14,11 @@ Avoid deprecated I/O aliases such as `ad.read`; use `ad.read_h5ad` or `anndata.i
 ## Native Formats
 
 ### H5AD (HDF5-based)
+
 The recommended native format for AnnData objects, providing efficient storage and fast access.
 
 #### Writing H5AD files
+
 ```python
 import anndata as ad
 
@@ -31,6 +33,7 @@ adata.write_h5ad('data.h5ad', compression='gzip', compression_opts=9)
 ```
 
 #### Reading H5AD files
+
 ```python
 # Read entire file into memory
 adata = ad.read_h5ad('data.h5ad')
@@ -45,6 +48,7 @@ adata = ad.read_h5ad('data.h5ad', backed='r+')  # Read-write for X
 ```
 
 #### Backed mode operations
+
 ```python
 # Open in backed mode
 adata = ad.read_h5ad('large_dataset.h5ad', backed='r')
@@ -64,9 +68,11 @@ adata_memory = adata.to_memory()
 ```
 
 ### Zarr
+
 Hierarchical array storage format, optimized for cloud storage and parallel I/O.
 
 #### Writing Zarr
+
 ```python
 # Write to Zarr store
 adata.write_zarr('data.zarr')
@@ -76,12 +82,14 @@ adata.write_zarr('data.zarr', chunks=(100, 100))
 ```
 
 #### Reading Zarr
+
 ```python
 # Read Zarr store
 adata = ad.read_zarr('data.zarr')
 ```
 
 #### Zarr v3 (anndata 0.12+)
+
 ```python
 import anndata
 
@@ -95,6 +103,7 @@ adata.write_zarr('data.zarr', chunks=(1000, 1000))
 Zarr v3 writing is available in anndata 0.12, with structured-array exceptions and evolving performance guidance. Consolidated metadata is recommended for remote Zarr stores.
 
 #### Remote Zarr access
+
 Only open remote stores from trusted, expected locations. Prefer allowlisted HTTPS/S3/GCS paths or signed URLs, and avoid asking an agent to fetch arbitrary user-supplied URLs.
 
 ```python
@@ -112,6 +121,7 @@ adata = ad.read_zarr(store)
 ## Alternative Input Formats
 
 ### CSV/TSV
+
 ```python
 from anndata.io import read_csv
 
@@ -126,6 +136,7 @@ adata = read_csv('data.csv', first_column_names=True)
 ```
 
 ### Excel
+
 ```python
 from anndata.io import read_excel
 
@@ -137,6 +148,7 @@ adata = read_excel('data.xlsx', sheet='Sheet1')
 ```
 
 ### Matrix Market (MTX)
+
 Common format for sparse matrices in genomics.
 
 ```python
@@ -158,6 +170,7 @@ adata = adata.T
 ```
 
 ### 10X Genomics formats
+
 10X readers are provided by **scanpy**, not anndata. After loading, the result is a standard `AnnData` object.
 
 ```python
@@ -174,6 +187,7 @@ adata = sc.read_10x_h5('data.h5', genome='GRCh38')
 ```
 
 ### Loom
+
 ```python
 from anndata.io import read_loom
 
@@ -189,6 +203,7 @@ adata = read_loom(
 ```
 
 ### Text files
+
 ```python
 from anndata.io import read_text
 
@@ -205,6 +220,7 @@ adata = read_text(
 ```
 
 ### UMI tools
+
 ```python
 from anndata.io import read_umi_tools
 
@@ -213,6 +229,7 @@ adata = read_umi_tools('counts.tsv')
 ```
 
 ### HDF5 (generic)
+
 ```python
 from anndata.io import read_hdf
 
@@ -223,6 +240,7 @@ adata = read_hdf('data.h5', key='dataset')
 ## Alternative Output Formats
 
 ### CSV
+
 ```python
 # Write to CSV files (creates multiple files)
 adata.write_csvs('output_dir/')
@@ -238,6 +256,7 @@ adata.write_csvs('output_dir/', skip_data=True)  # Skip X matrix
 ```
 
 ### Loom
+
 ```python
 # Write to Loom format
 adata.write_loom('output.loom')
@@ -295,6 +314,7 @@ with h5py.File('large_data.h5ad', 'r') as f:
 ## Common I/O Patterns
 
 ### Convert between formats
+
 ```python
 from anndata.io import read_mtx, read_csv
 
@@ -312,6 +332,7 @@ adata.write_zarr('data.zarr')
 ```
 
 ### Load metadata without data
+
 ```python
 # Backed mode allows inspecting metadata without loading X
 adata = ad.read_h5ad('large_file.h5ad', backed='r')
@@ -322,6 +343,7 @@ print(adata.var.columns)
 ```
 
 ### Update backed data or write a new file
+
 ```python
 # Open in read-write mode for X updates
 adata = ad.read_h5ad('data.h5ad', backed='r+')
@@ -336,6 +358,7 @@ adata_memory.write_h5ad('data_with_metadata.h5ad')
 ```
 
 ### Download from a trusted URL
+
 Validate remote sources before downloading. Prefer local files or vetted object-store paths over arbitrary URLs.
 
 ```python
@@ -357,6 +380,7 @@ adata = ad.read_h5ad('reference.h5ad')
 ## Performance Tips
 
 ### Reading
+
 - Use `backed='r'` for large files you only need to query
 - Use `backed='r+'` only for `X` updates; write a new file for metadata changes
 - H5AD format is generally fastest for random access
@@ -364,6 +388,7 @@ adata = ad.read_h5ad('reference.h5ad')
 - Consider compression for storage, but note it may slow down reading
 
 ### Writing
+
 - Use compression for long-term storage: `compression='gzip'` or `compression='lzf'`
 - LZF compression is faster but compresses less than GZIP
 - For Zarr, tune chunk sizes based on access patterns:
@@ -372,6 +397,7 @@ adata = ad.read_h5ad('reference.h5ad')
 - Convert string columns to categorical before writing (smaller files)
 
 ### Memory management
+
 ```python
 # Convert strings to categoricals (reduces file size and memory)
 adata.strings_to_categoricals()
@@ -388,6 +414,7 @@ if isinstance(adata.X, np.ndarray):
 ## Handling Large Datasets
 
 ### Strategy 1: Backed mode
+
 ```python
 # Work with dataset larger than RAM
 adata = ad.read_h5ad('100GB_file.h5ad', backed='r')
@@ -400,6 +427,7 @@ adata_memory = filtered.to_memory()
 ```
 
 ### Strategy 2: Chunked processing
+
 ```python
 # Process data in chunks
 adata = ad.read_h5ad('large_file.h5ad', backed='r')
@@ -415,6 +443,7 @@ for i in range(0, adata.n_obs, chunk_size):
 ```
 
 ### Strategy 3: Use AnnCollection
+
 ```python
 import anndata as ad
 from anndata.experimental import AnnCollection
@@ -437,19 +466,25 @@ collection = AnnCollection(
 ## Common Issues and Solutions
 
 ### Issue: Out of memory when reading
+
 **Solution**: Use backed mode or read in chunks
+
 ```python
 adata = ad.read_h5ad('file.h5ad', backed='r')
 ```
 
 ### Issue: Slow reading from cloud storage
+
 **Solution**: Use Zarr format with appropriate chunking
+
 ```python
 adata.write_zarr('data.zarr', chunks=(1000, 1000))
 ```
 
 ### Issue: Large file sizes
+
 **Solution**: Use compression and convert to sparse/categorical
+
 ```python
 adata.strings_to_categoricals()
 from scipy.sparse import csr_matrix
@@ -458,7 +493,9 @@ adata.write_h5ad('compressed.h5ad', compression='gzip')
 ```
 
 ### Issue: Cannot modify backed metadata
+
 **Solution**: Load to memory and write a new file. Backed mode only persists updates to `X`.
+
 ```python
 adata = adata.to_memory()
 adata.obs['new_column'] = values

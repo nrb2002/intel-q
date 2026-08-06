@@ -1,14 +1,17 @@
 # PRD: npm Library
 
 ## Overview
+
 A well-structured npm package with TypeScript support, comprehensive documentation, tree-shakeable exports, and automated publishing. Designed as a reusable utility library.
 
 ## Target Users
+
 - JavaScript and TypeScript developers looking for reusable utilities
 - Teams standardizing shared logic across multiple projects
 - Open source contributors publishing packages to npm
 
 ## Core Features
+
 1. **TypeScript First** - Written in TypeScript with generated .d.ts declaration files
 2. **Dual Format** - Publish both ESM and CommonJS builds for maximum compatibility
 3. **Tree Shaking** - Named exports with proper sideEffects configuration for optimal bundling
@@ -18,6 +21,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 7. **Playground** - Interactive examples in a docs site for trying the library
 
 ## Technical Requirements
+
 - TypeScript 5+ with strict mode
 - tsup for dual ESM/CJS builds
 - Vitest for testing
@@ -27,6 +31,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 - package.json exports map for subpath exports
 
 ## Quality Gates
+
 - Unit tests with 90%+ code coverage
 - Type tests verifying public API type signatures
 - Bundle size tracked and budgeted (fail CI if over limit)
@@ -35,6 +40,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 - Documentation generated without warnings
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -60,6 +66,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 ```
 
 ## Out of Scope
+
 - Runtime dependencies (library must be zero-dep)
 - Framework-specific integrations (React hooks, Vue composables)
 - Polyfills for legacy environments (ES2020+ baseline)
@@ -69,6 +76,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 - Benchmarking suite
 
 ## Acceptance Criteria
+
 - `npm pack` produces a tarball with both ESM and CJS builds
 - Importing the package in a TypeScript project shows correct type hints
 - Tree shaking eliminates unused exports in a Rollup/webpack build
@@ -77,6 +85,7 @@ A well-structured npm package with TypeScript support, comprehensive documentati
 - `npx changeset version` bumps version and updates changelog
 
 ## Success Metrics
+
 - Package installs and imports correctly in ESM and CJS projects
 - All public functions have TSDoc comments and generated docs
 - Test coverage exceeds 90% across all modules

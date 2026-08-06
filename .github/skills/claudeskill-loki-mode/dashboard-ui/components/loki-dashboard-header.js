@@ -9,9 +9,9 @@
  * <loki-dashboard-header api-url="http://localhost:57374"></loki-dashboard-header>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
-import { LokiTheme } from '../core/loki-theme.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
+import { LokiTheme } from "../core/loki-theme.js";
 
 /**
  * @class LokiDashboardHeader
@@ -21,15 +21,15 @@ import { LokiTheme } from '../core/loki-theme.js';
  */
 export class LokiDashboardHeader extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'project-name', 'theme'];
+    return ["api-url", "project-name", "theme"];
   }
 
   constructor() {
     super();
     this._connected = false;
-    this._projectName = '';
+    this._projectName = "";
     this._uptimeSeconds = 0;
-    this._status = 'offline';
+    this._status = "offline";
     this._api = null;
     this._pollInterval = null;
   }
@@ -45,34 +45,43 @@ export class LokiDashboardHeader extends LokiElement {
     super.disconnectedCallback();
     this._stopPolling();
     if (this._api) {
-      if (this._statusHandler) this._api.removeEventListener(ApiEvents.STATUS_UPDATE, this._statusHandler);
+      if (this._statusHandler)
+        this._api.removeEventListener(ApiEvents.STATUS_UPDATE, this._statusHandler);
       if (this._connHandler) this._api.removeEventListener(ApiEvents.CONNECTED, this._connHandler);
-      if (this._discHandler) this._api.removeEventListener(ApiEvents.DISCONNECTED, this._discHandler);
+      if (this._discHandler)
+        this._api.removeEventListener(ApiEvents.DISCONNECTED, this._discHandler);
     }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'project-name') {
-      this._projectName = newValue || '';
+    if (name === "project-name") {
+      this._projectName = newValue || "";
       this.render();
     }
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadStatus();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
 
     this._statusHandler = (e) => this._updateFromStatus(e.detail);
-    this._connHandler = () => { this._connected = true; this.render(); };
-    this._discHandler = () => { this._connected = false; this._status = 'offline'; this.render(); };
+    this._connHandler = () => {
+      this._connected = true;
+      this.render();
+    };
+    this._discHandler = () => {
+      this._connected = false;
+      this._status = "offline";
+      this.render();
+    };
 
     this._api.addEventListener(ApiEvents.STATUS_UPDATE, this._statusHandler);
     this._api.addEventListener(ApiEvents.CONNECTED, this._connHandler);
@@ -85,7 +94,7 @@ export class LokiDashboardHeader extends LokiElement {
       this._updateFromStatus(status);
     } catch {
       this._connected = false;
-      this._status = 'offline';
+      this._status = "offline";
     }
     this.render();
   }
@@ -93,7 +102,7 @@ export class LokiDashboardHeader extends LokiElement {
   _updateFromStatus(status) {
     if (!status) return;
     this._connected = true;
-    this._status = status.status || 'offline';
+    this._status = status.status || "offline";
     this._uptimeSeconds = status.uptime_seconds || 0;
     if (status.project_name) {
       this._projectName = status.project_name;
@@ -112,7 +121,7 @@ export class LokiDashboardHeader extends LokiElement {
   }
 
   _formatUptime(seconds) {
-    if (!seconds || seconds < 0) return '--';
+    if (!seconds || seconds < 0) return "--";
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     if (hours > 0) return `${hours}h ${minutes}m`;
@@ -125,10 +134,10 @@ export class LokiDashboardHeader extends LokiElement {
   }
 
   render() {
-    const isDark = this._theme && (this._theme.includes('dark') || this._theme === 'high-contrast');
-    const connClass = this._connected ? 'connected' : 'disconnected';
-    const connLabel = this._connected ? 'Connected' : 'Disconnected';
-    const projectName = this._projectName || 'No project';
+    const isDark = this._theme && (this._theme.includes("dark") || this._theme === "high-contrast");
+    const connClass = this._connected ? "connected" : "disconnected";
+    const connLabel = this._connected ? "Connected" : "Disconnected";
+    const projectName = this._projectName || "No project";
     const uptime = this._formatUptime(this._uptimeSeconds);
 
     // Sun icon for light mode toggle, moon icon for dark mode toggle
@@ -307,20 +316,24 @@ export class LokiDashboardHeader extends LokiElement {
       </header>
     `;
 
-    const themeBtn = this.shadowRoot.getElementById('theme-btn');
+    const themeBtn = this.shadowRoot.getElementById("theme-btn");
     if (themeBtn) {
-      themeBtn.addEventListener('click', () => this._toggleTheme());
+      themeBtn.addEventListener("click", () => this._toggleTheme());
     }
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 }
 
-if (!customElements.get('loki-dashboard-header')) {
-  customElements.define('loki-dashboard-header', LokiDashboardHeader);
+if (!customElements.get("loki-dashboard-header")) {
+  customElements.define("loki-dashboard-header", LokiDashboardHeader);
 }
 
 export default LokiDashboardHeader;

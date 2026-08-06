@@ -1,15 +1,18 @@
 # PRD: Full-Stack Demo App
 
 ## Overview
+
 A complete full-stack application demonstrating Loki Mode's end-to-end capabilities. A bookmark manager called "Stash" with tags, search, and a clean UI.
 
 ## Target Users
+
 - Users who want to save and organize bookmarks with tags
 - Developers testing Loki Mode's full-stack generation pipeline
 
 ## Features
 
 ### Core Features
+
 1. **Add Bookmark** - Save URL with title and optional tags
    - Acceptance: Form validates URL format, title is required, tags are comma-separated, form clears on submit
 2. **View Bookmarks** - List all bookmarks with search and tag filter
@@ -22,6 +25,7 @@ A complete full-stack application demonstrating Loki Mode's end-to-end capabilit
    - Acceptance: Tag sidebar shows all tags with bookmark counts, clicking a tag filters the list, unused tags cleaned up on bookmark delete
 
 ### User Flow
+
 1. User opens app -> sees bookmark list (or empty state if none)
 2. Clicks "Add Bookmark" -> form appears
 3. Enters URL, title, tags -> submits
@@ -33,18 +37,21 @@ A complete full-stack application demonstrating Loki Mode's end-to-end capabilit
 ## Tech Stack
 
 ### Frontend
+
 - React 18 with TypeScript
 - Vite for bundling
 - TailwindCSS for styling
 - React Query for data fetching
 
 ### Backend
+
 - Node.js 18+
 - Express.js
 - SQLite with better-sqlite3
 - zod for validation
 
 ### Structure
+
 ```
 /
 ├── frontend/
@@ -92,18 +99,22 @@ A complete full-stack application demonstrating Loki Mode's end-to-end capabilit
 ## API Endpoints
 
 ### Bookmarks
+
 - `GET /api/bookmarks` - List all (query: `?tag=`, `?search=`)
 - `POST /api/bookmarks` - Create new (body: `{ url, title, tags? }`)
 - `PUT /api/bookmarks/:id` - Update (body: `{ url?, title?, tags? }`)
 - `DELETE /api/bookmarks/:id` - Delete (returns 204)
 
 ### Tags
+
 - `GET /api/tags` - List all tags with bookmark counts
 
 ### Health
+
 - `GET /health` - Returns `{ status: "ok" }`
 
 ## Database Schema
+
 ```sql
 CREATE TABLE bookmarks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -126,6 +137,7 @@ CREATE TABLE bookmark_tags (
 ```
 
 ## Requirements
+
 - TypeScript throughout
 - Input validation (frontend + backend): URL format, title required
 - Error handling with user-visible feedback (toast or inline messages)
@@ -135,12 +147,14 @@ CREATE TABLE bookmark_tags (
 - Responsive design (single-column on mobile, sidebar on desktop)
 
 ## Testing
+
 - Backend API tests: Bookmark CRUD, tag listing, search/filter queries (Vitest + supertest)
 - Frontend component tests: BookmarkCard rendering, BookmarkForm validation, SearchBar debounce (Vitest + React Testing Library)
 - Minimum 10 test cases across frontend and backend
 - All tests required to pass (no optional tests)
 
 ## Out of Scope
+
 - User authentication
 - Import/export
 - Browser extension
@@ -148,6 +162,7 @@ CREATE TABLE bookmark_tags (
 - Real-time sync
 
 ## Success Criteria
+
 - All CRUD operations work end-to-end (create, read, update, delete)
 - Search filters bookmarks by title with debounce
 - Tag filter shows only bookmarks with selected tag

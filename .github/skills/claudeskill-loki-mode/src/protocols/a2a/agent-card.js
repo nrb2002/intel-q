@@ -1,15 +1,23 @@
-'use strict';
+"use strict";
 
-var crypto = require('crypto');
+var crypto = require("crypto");
 
 var DEFAULT_SKILLS = [
-  { id: 'prd-to-product', name: 'PRD to Product', description: 'Takes a PRD and builds a fully deployed product' },
-  { id: 'code-review', name: 'Code Review', description: 'Multi-reviewer parallel code review with anti-sycophancy' },
-  { id: 'testing', name: 'Testing', description: 'Comprehensive test generation and execution' },
-  { id: 'deployment', name: 'Deployment', description: 'Production deployment with verification' },
+  {
+    id: "prd-to-product",
+    name: "PRD to Product",
+    description: "Takes a PRD and builds a fully deployed product",
+  },
+  {
+    id: "code-review",
+    name: "Code Review",
+    description: "Multi-reviewer parallel code review with anti-sycophancy",
+  },
+  { id: "testing", name: "Testing", description: "Comprehensive test generation and execution" },
+  { id: "deployment", name: "Deployment", description: "Production deployment with verification" },
 ];
 
-var DEFAULT_AUTH_SCHEMES = ['bearer', 'api-key'];
+var DEFAULT_AUTH_SCHEMES = ["bearer", "api-key"];
 
 /**
  * A2A Agent Card - advertises agent capabilities per the A2A spec.
@@ -28,10 +36,10 @@ class AgentCard {
    */
   constructor(opts) {
     opts = opts || {};
-    this._name = opts.name || 'Loki Mode';
-    this._description = opts.description || 'Multi-agent autonomous system by Autonomi';
-    this._url = opts.url || 'http://localhost:8080';
-    this._version = opts.version || '1.0.0';
+    this._name = opts.name || "Loki Mode";
+    this._description = opts.description || "Multi-agent autonomous system by Autonomi";
+    this._url = opts.url || "http://localhost:8080";
+    this._version = opts.version || "1.0.0";
     this._skills = opts.skills || DEFAULT_SKILLS.slice();
     this._authSchemes = opts.authSchemes || DEFAULT_AUTH_SCHEMES.slice();
     this._streaming = opts.streaming !== false;
@@ -59,8 +67,8 @@ class AgentCard {
       authentication: {
         schemes: this._authSchemes.slice(),
       },
-      defaultInputModes: ['text/plain', 'application/json'],
-      defaultOutputModes: ['text/plain', 'application/json'],
+      defaultInputModes: ["text/plain", "application/json"],
+      defaultOutputModes: ["text/plain", "application/json"],
     };
   }
 
@@ -71,14 +79,14 @@ class AgentCard {
    * @returns {boolean} true if handled
    */
   handleRequest(req, res) {
-    if (req.url === '/.well-known/agent.json' && (req.method === 'GET' || req.method === 'HEAD')) {
+    if (req.url === "/.well-known/agent.json" && (req.method === "GET" || req.method === "HEAD")) {
       var body = JSON.stringify(this.toJSON(), null, 2);
       res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-        'Cache-Control': 'public, max-age=3600',
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(body),
+        "Cache-Control": "public, max-age=3600",
       });
-      if (req.method !== 'HEAD') res.end(body);
+      if (req.method !== "HEAD") res.end(body);
       else res.end();
       return true;
     }
@@ -87,15 +95,23 @@ class AgentCard {
 
   addSkill(skill) {
     if (!skill || !skill.id || !skill.name) {
-      throw new Error('Skill requires id and name');
+      throw new Error("Skill requires id and name");
     }
-    this._skills.push({ id: skill.id, name: skill.name, description: skill.description || '' });
+    this._skills.push({ id: skill.id, name: skill.name, description: skill.description || "" });
   }
 
-  getSkills() { return this._skills.slice(); }
-  getName() { return this._name; }
-  getUrl() { return this._url; }
-  getId() { return this._id; }
+  getSkills() {
+    return this._skills.slice();
+  }
+  getName() {
+    return this._name;
+  }
+  getUrl() {
+    return this._url;
+  }
+  getId() {
+    return this._id;
+  }
 }
 
 module.exports = { AgentCard, DEFAULT_SKILLS, DEFAULT_AUTH_SCHEMES };

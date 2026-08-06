@@ -12,13 +12,14 @@ AFL++ is a fork of the original AFL fuzzer that offers better fuzzing performanc
 
 ## When to Use
 
-| Fuzzer | Best For | Complexity |
-|--------|----------|------------|
-| AFL++ | Multi-core fuzzing, diverse mutations, mature projects | Medium |
-| libFuzzer | Quick setup, single-threaded, simple harnesses | Low |
-| LibAFL | Custom fuzzers, research, advanced use cases | High |
+| Fuzzer    | Best For                                               | Complexity |
+| --------- | ------------------------------------------------------ | ---------- |
+| AFL++     | Multi-core fuzzing, diverse mutations, mature projects | Medium     |
+| libFuzzer | Quick setup, single-threaded, simple harnesses         | Low        |
+| LibAFL    | Custom fuzzers, research, advanced use cases           | High       |
 
 **Choose AFL++ when:**
+
 - You need multi-core fuzzing to maximize throughput
 - Your project can be compiled with Clang or GCC
 - You want diverse mutation strategies and mature tooling
@@ -36,6 +37,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 ```
 
 Compile and run:
+
 ```bash
 # Setup AFL++ wrapper script first (see Installation)
 ./afl++ docker afl-clang-fast++ -DNO_MAIN=1 -O2 -fsanitize=fuzzer harness.cc main.cc -o fuzz
@@ -47,22 +49,20 @@ mkdir seeds && echo "aaaa" > seeds/minimal_seed
 
 AFL++ has many dependencies including LLVM, Python, and Rust. We recommend using a current Debian or Ubuntu distribution for fuzzing with AFL++.
 
-| Method | When to Use | Supported Compilers |
-|--------|-------------|---------------------|
-| Ubuntu/Debian repos | Recent Ubuntu, basic features only | Ubuntu 23.10: Clang 14 & GCC 13<br>Debian 12: Clang 14 & GCC 12 |
-| Docker (from Docker Hub) | Specific AFL++ version, Apple Silicon support | As of 4.35c: Clang 19 & GCC 11 |
-| Docker (from source) | Test unreleased features, apply patches | Configurable in Dockerfile |
-| From source | Avoid Docker, need specific patches | Adjustable via `LLVM_CONFIG` env var |
+| Method                   | When to Use                                   | Supported Compilers                                             |
+| ------------------------ | --------------------------------------------- | --------------------------------------------------------------- |
+| Ubuntu/Debian repos      | Recent Ubuntu, basic features only            | Ubuntu 23.10: Clang 14 & GCC 13<br>Debian 12: Clang 14 & GCC 12 |
+| Docker (from Docker Hub) | Specific AFL++ version, Apple Silicon support | As of 4.35c: Clang 19 & GCC 11                                  |
+| Docker (from source)     | Test unreleased features, apply patches       | Configurable in Dockerfile                                      |
+| From source              | Avoid Docker, need specific patches           | Adjustable via `LLVM_CONFIG` env var                            |
 
 ### Ubuntu/Debian
 
 Prior to installing afl++, check the clang version dependency of the packge with `apt-cache show afl++`, and install the matching `lld` version (e.g., `lld-17`).
 
-
 ```bash
 apt install afl++ lld-17
 ```
-
 
 ### Docker (from Docker Hub)
 
@@ -159,13 +159,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 ### Harness Rules
 
-| Do | Don't |
-|----|-------|
+| Do                              | Don't                            |
+| ------------------------------- | -------------------------------- |
 | Reset global state between runs | Rely on state from previous runs |
-| Handle edge cases gracefully | Exit on invalid input |
-| Keep harness deterministic | Use random number generators |
-| Free allocated memory | Create memory leaks |
-| Validate input sizes | Process unbounded input |
+| Handle edge cases gracefully    | Exit on invalid input            |
+| Keep harness deterministic      | Use random number generators     |
+| Free allocated memory           | Create memory leaks              |
+| Validate input sizes            | Process unbounded input          |
 
 > **See Also:** For detailed harness writing techniques, patterns for handling complex inputs,
 > and advanced strategies, see the **fuzz-harness-writing** technique skill.
@@ -177,6 +177,7 @@ AFL++ offers multiple compilation modes with different trade-offs.
 ### Compilation Mode Decision Tree
 
 Choose your compilation mode:
+
 - **LTO mode** (`afl-clang-lto`): Best performance and instrumentation. Try this first.
 - **LLVM mode** (`afl-clang-fast`): Fall back if LTO fails to compile.
 - **GCC plugin** (`afl-gcc-fast`): For projects requiring GCC.
@@ -208,12 +209,12 @@ Choose your compilation mode:
 
 Note that `-g` is not necessary, it is added by default by the AFL++ compilers.
 
-| Flag | Purpose |
-|------|---------|
-| `-DNO_MAIN=1` | Skip main function when using libFuzzer harness |
-| `-O2` | Production optimization level (recommended for fuzzing) |
-| `-fsanitize=fuzzer` | Enable libFuzzer compatibility mode and adds the fuzzer runtime when linking executable |
-| `-fsanitize=fuzzer-no-link` | Instrument without linking fuzzer runtime (for static libraries and object files) |
+| Flag                        | Purpose                                                                                 |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| `-DNO_MAIN=1`               | Skip main function when using libFuzzer harness                                         |
+| `-O2`                       | Production optimization level (recommended for fuzzing)                                 |
+| `-fsanitize=fuzzer`         | Enable libFuzzer compatibility mode and adds the fuzzer runtime when linking executable |
+| `-fsanitize=fuzzer-no-link` | Instrument without linking fuzzer runtime (for static libraries and object files)       |
 
 ## Corpus Management
 
@@ -227,6 +228,7 @@ echo "aaaa" > seeds/minimal_seed
 ```
 
 For real projects, gather representative inputs:
+
 - Download example files for the format you're fuzzing
 - Extract test cases from the project's test suite
 - Use minimal valid inputs for your file format
@@ -260,13 +262,13 @@ After a campaign, minimize the corpus to keep only unique coverage:
 
 The AFL++ UI shows real-time fuzzing statistics:
 
-| Output | Meaning |
-|--------|---------|
-| **execs/sec** | Execution speed - higher is better |
-| **cycles done** | Number of queue passes completed |
-| **corpus count** | Number of unique test cases in queue |
-| **saved crashes** | Number of unique crashes found |
-| **stability** | % of stable edges (should be near 100%) |
+| Output            | Meaning                                 |
+| ----------------- | --------------------------------------- |
+| **execs/sec**     | Execution speed - higher is better      |
+| **cycles done**   | Number of queue passes completed        |
+| **corpus count**  | Number of unique test cases in queue    |
+| **saved crashes** | Number of unique crashes found          |
+| **stability**     | % of stable edges (should be near 100%) |
 
 ### Output Directory Structure
 
@@ -306,12 +308,12 @@ apt install gnuplot
 
 ### Fuzzer Options
 
-| Option | Purpose |
-|--------|---------|
-| `-G 4000` | Maximum test input length (default: 1048576 bytes) |
-| `-t 1000` | Timeout in milliseconds for each test case (default: 1000ms) |
-| `-m 1000` | Memory limit in megabytes (default: 0 = unlimited) |
-| `-x ./dict.dict` | Use dictionary file to guide mutations |
+| Option           | Purpose                                                      |
+| ---------------- | ------------------------------------------------------------ |
+| `-G 4000`        | Maximum test input length (default: 1048576 bytes)           |
+| `-t 1000`        | Timeout in milliseconds for each test case (default: 1000ms) |
+| `-m 1000`        | Memory limit in megabytes (default: 0 = unlimited)           |
+| `-x ./dict.dict` | Use dictionary file to guide mutations                       |
 
 ## Environment Variables That Matter
 
@@ -364,15 +366,16 @@ Unbounded fuzzing in CI wastes resources. Set time limits or use exit conditions
 
 ### Variables to Avoid
 
-| Variable | Why Skip It |
-|----------|-------------|
-| `AFL_NO_ARITH` | Can hurt coverage on binary formats, but may be useful for text-based targets |
-| `AFL_SHUFFLE_QUEUE` | Only for exotic setups, usually harmful |
-| `AFL_DISABLE_TRIM` | Trimming is valuable, don't disable without reason |
+| Variable            | Why Skip It                                                                   |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `AFL_NO_ARITH`      | Can hurt coverage on binary formats, but may be useful for text-based targets |
+| `AFL_SHUFFLE_QUEUE` | Only for exotic setups, usually harmful                                       |
+| `AFL_DISABLE_TRIM`  | Trimming is valuable, don't disable without reason                            |
 
 ## Multi-Core Fuzzing
 
 AFL++ excels at multi-core fuzzing with two major advantages:
+
 1. More executions per second (scales linearly with physical cores)
 2. Asymmetrical fuzzing (e.g., one ASan job, rest without sanitizers)
 
@@ -471,11 +474,11 @@ Sanitizers are essential for finding memory corruption bugs that don't cause imm
 
 ### Common Sanitizer Issues
 
-| Issue | Solution |
-|-------|----------|
-| ASan slows fuzzing | Use only 1 ASan job in multi-core setup |
-| Stack exhaustion | Increase stack with `ASAN_OPTIONS=stack_size=...` |
-| GCC version mismatch | Ensure system GCC matches AFL++ plugin version |
+| Issue                | Solution                                          |
+| -------------------- | ------------------------------------------------- |
+| ASan slows fuzzing   | Use only 1 ASan job in multi-core setup           |
+| Stack exhaustion     | Increase stack with `ASAN_OPTIONS=stack_size=...` |
+| GCC version mismatch | Ensure system GCC matches AFL++ plugin version    |
 
 > **See Also:** For comprehensive sanitizer configuration and troubleshooting,
 > see the **address-sanitizer** technique skill.
@@ -484,13 +487,13 @@ Sanitizers are essential for finding memory corruption bugs that don't cause imm
 
 ### Tips and Tricks
 
-| Tip | Why It Helps |
-|-----|--------------|
+| Tip                                                 | Why It Helps                                                                                                                                         |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Use LLVMFuzzerTestOneInput harnesses where possible | If a fuzzing campaign has at least 85% stability then this is the most efficient fuzzing style. If not then try standard input or file input fuzzing |
-| Use dictionaries | Helps fuzzer discover format-specific keywords and magic bytes |
-| Set realistic timeouts | Prevents false positives from system load |
-| Limit input size | Larger inputs don't necessarily explore more space |
-| Monitor stability | Low stability indicates non-deterministic behavior |
+| Use dictionaries                                    | Helps fuzzer discover format-specific keywords and magic bytes                                                                                       |
+| Set realistic timeouts                              | Prevents false positives from system load                                                                                                            |
+| Limit input size                                    | Larger inputs don't necessarily explore more space                                                                                                   |
+| Monitor stability                                   | Low stability indicates non-deterministic behavior                                                                                                   |
 
 ### Standard Input Fuzzing
 
@@ -569,42 +572,42 @@ Compile and run:
 
 ### Performance Tuning
 
-| Setting | Impact |
-|---------|--------|
-| CPU core count | Linear scaling with physical cores |
-| Persistent mode | 10-20x faster than fork server |
+| Setting               | Impact                              |
+| --------------------- | ----------------------------------- |
+| CPU core count        | Linear scaling with physical cores  |
+| Persistent mode       | 10-20x faster than fork server      |
 | `-G` input size limit | Smaller = faster, but may miss bugs |
-| ASan ratio | 1 ASan job per 4-8 non-ASan jobs |
+| ASan ratio            | 1 ASan job per 4-8 non-ASan jobs    |
 
 ## Troubleshooting
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| Low exec/sec (<1k) | Not using persistent mode | Create a LLVMFuzzerTestOneInput style harness |
-| Low stability (<85%) | Non-deterministic code | Fuzz a program via stdin or file inputs, or create such a harness |
-| GCC plugin error | GCC version mismatch | Ensure system GCC matches AFL++ build and install gcc-$GCC_VERSION-plugin-dev |
-| No crashes found | Need sanitizers | Recompile with `AFL_USE_ASAN=1` |
-| Memory limit exceeded | ASan uses 20TB virtual | Remove `-m` flag when using ASan |
-| Docker performance loss | Virtualization overhead | Use bare metal or VM for production fuzzing |
+| Problem                 | Cause                     | Solution                                                                      |
+| ----------------------- | ------------------------- | ----------------------------------------------------------------------------- |
+| Low exec/sec (<1k)      | Not using persistent mode | Create a LLVMFuzzerTestOneInput style harness                                 |
+| Low stability (<85%)    | Non-deterministic code    | Fuzz a program via stdin or file inputs, or create such a harness             |
+| GCC plugin error        | GCC version mismatch      | Ensure system GCC matches AFL++ build and install gcc-$GCC_VERSION-plugin-dev |
+| No crashes found        | Need sanitizers           | Recompile with `AFL_USE_ASAN=1`                                               |
+| Memory limit exceeded   | ASan uses 20TB virtual    | Remove `-m` flag when using ASan                                              |
+| Docker performance loss | Virtualization overhead   | Use bare metal or VM for production fuzzing                                   |
 
 ## Related Skills
 
 ### Technique Skills
 
-| Skill | Use Case |
-|-------|----------|
-| **fuzz-harness-writing** | Detailed guidance on writing effective harnesses |
-| **address-sanitizer** | Memory error detection during fuzzing |
-| **undefined-behavior-sanitizer** | Detect undefined behavior bugs |
-| **fuzzing-corpus** | Building and managing seed corpora |
-| **fuzzing-dictionaries** | Creating dictionaries for format-aware fuzzing |
+| Skill                            | Use Case                                         |
+| -------------------------------- | ------------------------------------------------ |
+| **fuzz-harness-writing**         | Detailed guidance on writing effective harnesses |
+| **address-sanitizer**            | Memory error detection during fuzzing            |
+| **undefined-behavior-sanitizer** | Detect undefined behavior bugs                   |
+| **fuzzing-corpus**               | Building and managing seed corpora               |
+| **fuzzing-dictionaries**         | Creating dictionaries for format-aware fuzzing   |
 
 ### Related Fuzzers
 
-| Skill | When to Consider |
-|-------|------------------|
+| Skill         | When to Consider                                         |
+| ------------- | -------------------------------------------------------- |
 | **libfuzzer** | Quick prototyping, single-threaded fuzzing is sufficient |
-| **libafl** | Need custom mutators or research-grade features |
+| **libafl**    | Need custom mutators or research-grade features          |
 
 ## Resources
 

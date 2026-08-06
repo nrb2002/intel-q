@@ -14,6 +14,7 @@ memory system, telemetry, and agent dispatch. Found and fixed 13 bugs across 3 f
 ## Bugs Fixed
 
 ### BUG-PU-001: Worktree creation doesn't cleanup on failure
+
 **File:** `autonomy/run.sh` (create_worktree function)
 **Problem:** When `git worktree add` fails, partial worktree directories and orphaned
 branches are left behind. The `loki worktree clean` command also didn't delete
@@ -23,6 +24,7 @@ failure. Enhanced `loki worktree clean` to track and delete associated parallel
 branches, and added `git worktree prune` call.
 
 ### BUG-PU-002: MCP server loses connection after idle timeout
+
 **File:** `mcp/server.py`
 **Problem:** The StateManager singleton was never refreshed when the working directory
 changed (e.g., user switches projects). ChromaDB reconnection lacked a heartbeat
@@ -33,6 +35,7 @@ verifies heartbeat after reconnect and properly nulls both client and collection
 on failure.
 
 ### BUG-PU-003: `loki agent run` doesn't properly pass agent definitions
+
 **File:** `autonomy/loki` (cmd_agent run/start)
 **Problem:** The persona was concatenated with the user prompt using a single space,
 making it impossible for the AI to distinguish the role instruction from the task.
@@ -43,6 +46,7 @@ following specialist agent:" / "USER TASK:") separated by delimiters. Changed te
 PRD location from /tmp to .loki/ directory so it persists alongside the project.
 
 ### BUG-PU-004: `loki telemetry status` fails silently when Jaeger is down
+
 **File:** `autonomy/loki` (cmd_telemetry status)
 **Problem:** The status command showed the configured endpoint but never tested
 whether the collector was actually reachable. Users had no way to diagnose
@@ -52,6 +56,7 @@ endpoint with a 3-second timeout. Displays "YES", "NO (connection failed)", or
 HTTP status code feedback.
 
 ### BUG-PU-005: Multiple simultaneous `loki quick` commands corrupt shared state
+
 **File:** `autonomy/loki` (cmd_quick)
 **Problem:** All `loki quick` invocations wrote to the same `$LOKI_DIR/quick-prd.md`
 file. Running two concurrent `loki quick` commands in the same project would cause
@@ -60,12 +65,14 @@ one to overwrite the other's PRD before `exec` was called.
 `$LOKI_DIR/quick-prd-$$.md` so each invocation uses a unique file.
 
 ### BUG-PU-006: `loki worktree merge` uses `exit 1` instead of `return 1`
+
 **File:** `autonomy/loki` (cmd_worktree merge)
 **Problem:** On invalid merge signal file, the command called `exit 1` which
 terminated the entire shell process instead of just the subcommand.
 **Fix:** Changed `exit 1` to `return 1`.
 
 ### BUG-PU-007: `loki audit log/count` use `exit 0` instead of `return 0`
+
 **File:** `autonomy/loki` (cmd_audit log, count, scan)
 **Problem:** When the audit log file doesn't exist, `exit 0` was used instead of
 `return 0`, killing the entire CLI process. Same issue in `cmd_audit scan` with
@@ -74,6 +81,7 @@ multiple `exit` calls on error paths.
 respectively in `cmd_audit` subcommands.
 
 ### BUG-PU-008: `loki worktree merge` doesn't validate branch existence
+
 **File:** `autonomy/loki` (cmd_worktree merge)
 **Problem:** If the branch extracted from the merge signal file was empty or didn't
 exist (e.g., already cleaned up), `git merge --no-ff ""` would fail with a confusing
@@ -82,6 +90,7 @@ error message.
 exists via `git rev-parse --verify` before attempting the merge.
 
 ### BUG-PU-010: `loki memory search` has shell/Python injection via heredoc
+
 **File:** `autonomy/loki` (cmd_memory search)
 **Problem:** The search query was embedded directly in a Python heredoc using
 `query = """$query"""`. A query containing triple-quotes or other Python syntax
@@ -90,6 +99,7 @@ could break out of the string and execute arbitrary code.
 a quoted heredoc delimiter (`'PYEOF'`) to prevent all shell expansion.
 
 ### BUG-PU-011: `loki telemetry enable` silently overwrites config on python3 failure
+
 **File:** `autonomy/loki` (cmd_telemetry enable)
 **Problem:** The `if/else/fi` structure around the heredoc meant that if python3
 failed to parse the existing config (e.g., corrupted JSON), the `else` branch would
@@ -100,11 +110,13 @@ failure produces a warning and explicitly recreates the config, rather than sile
 falling through.
 
 ### BUG-PU-012: `loki memory show` and `clear` use `exit 1` on unknown type
+
 **File:** `autonomy/loki` (cmd_memory show, clear)
 **Problem:** `exit 1` on invalid memory type kills the entire process.
 **Fix:** Changed to `return 1`.
 
 ### BUG-MCP-006: `mem_search` ignores `collection` parameter
+
 **File:** `mcp/server.py` (mem_search tool)
 **Problem:** The `collection` parameter (episodes, patterns, skills, all) was
 accepted in the function signature but never used to filter results.
@@ -117,6 +129,7 @@ after retrieval.
 ## Verification
 
 All three modified files pass syntax validation:
+
 - `bash -n autonomy/loki` -- PASS
 - `bash -n autonomy/run.sh` -- PASS
 - `python3 -c "import ast; ast.parse(open('mcp/server.py').read())"` -- PASS

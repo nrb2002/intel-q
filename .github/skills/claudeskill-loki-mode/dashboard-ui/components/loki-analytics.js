@@ -8,16 +8,26 @@
  * <loki-analytics api-url="http://localhost:57374"></loki-analytics>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** Map model name fragments to provider -- ordered longest-first to avoid false prefix matches */
 const MODEL_TO_PROVIDER = [
-  ['claude-opus', 'claude'], ['claude-sonnet', 'claude'], ['claude-haiku', 'claude'],
-  ['opus', 'claude'], ['sonnet', 'claude'], ['haiku', 'claude'], ['claude', 'claude'],
-  ['gpt-4', 'codex'], ['gpt-5', 'codex'], ['gpt', 'codex'], ['codex', 'codex'], ['o1', 'codex'], ['o3', 'codex'],
-  ['cline', 'cline'],
-  ['aider', 'aider'],
+  ["claude-opus", "claude"],
+  ["claude-sonnet", "claude"],
+  ["claude-haiku", "claude"],
+  ["opus", "claude"],
+  ["sonnet", "claude"],
+  ["haiku", "claude"],
+  ["claude", "claude"],
+  ["gpt-4", "codex"],
+  ["gpt-5", "codex"],
+  ["gpt", "codex"],
+  ["codex", "codex"],
+  ["o1", "codex"],
+  ["o3", "codex"],
+  ["cline", "cline"],
+  ["aider", "aider"],
 ];
 
 /**
@@ -28,11 +38,16 @@ function getRARVTier(iteration) {
   if (iteration == null) return null;
   const step = iteration % 4;
   switch (step) {
-    case 0: return { tier: 'planning', model: 'opus', provider: 'claude' };
-    case 1: return { tier: 'development', model: 'sonnet', provider: 'claude' };
-    case 2: return { tier: 'development', model: 'sonnet', provider: 'claude' };
-    case 3: return { tier: 'fast', model: 'haiku', provider: 'claude' };
-    default: return { tier: 'development', model: 'sonnet', provider: 'claude' };
+    case 0:
+      return { tier: "planning", model: "opus", provider: "claude" };
+    case 1:
+      return { tier: "development", model: "sonnet", provider: "claude" };
+    case 2:
+      return { tier: "development", model: "sonnet", provider: "claude" };
+    case 3:
+      return { tier: "fast", model: "haiku", provider: "claude" };
+    default:
+      return { tier: "development", model: "sonnet", provider: "claude" };
   }
 }
 
@@ -42,11 +57,11 @@ function classifyProvider(modelName, iteration) {
     const rarv = getRARVTier(iteration);
     if (rarv) return rarv.provider;
   }
-  const lower = (modelName || '').toLowerCase();
+  const lower = (modelName || "").toLowerCase();
   for (const [key, provider] of MODEL_TO_PROVIDER) {
     if (lower.includes(key)) return provider;
   }
-  return 'unknown';
+  return "unknown";
 }
 
 /**
@@ -55,20 +70,20 @@ function classifyProvider(modelName, iteration) {
  */
 export class LokiAnalytics extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
     super();
     this._api = null;
     this._pollInterval = null;
-    this._activeTab = 'heatmap';
+    this._activeTab = "heatmap";
     this._activity = [];
     this._tools = [];
     this._cost = {};
     this._context = {};
     this._trends = [];
-    this._toolTimeRange = '7d';
+    this._toolTimeRange = "7d";
     this._connected = false;
     this._loading = false;
   }
@@ -87,14 +102,14 @@ export class LokiAnalytics extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -126,16 +141,16 @@ export class LokiAnalytics extends LokiElement {
         this._api.getLearningTrends({ timeRange: this._toolTimeRange }),
       ]);
 
-      if (results[0].status === 'fulfilled') this._activity = results[0].value || [];
-      if (results[1].status === 'fulfilled') this._tools = results[1].value || [];
-      if (results[2].status === 'fulfilled') this._cost = results[2].value || {};
-      if (results[3].status === 'fulfilled') this._context = results[3].value || {};
-      if (results[4].status === 'fulfilled') {
+      if (results[0].status === "fulfilled") this._activity = results[0].value || [];
+      if (results[1].status === "fulfilled") this._tools = results[1].value || [];
+      if (results[2].status === "fulfilled") this._cost = results[2].value || {};
+      if (results[3].status === "fulfilled") this._context = results[3].value || {};
+      if (results[4].status === "fulfilled") {
         const trendsRaw = results[4].value || {};
-        this._trends = Array.isArray(trendsRaw) ? trendsRaw : (trendsRaw.dataPoints || []);
+        this._trends = Array.isArray(trendsRaw) ? trendsRaw : trendsRaw.dataPoints || [];
       }
 
-      this._connected = results.some(r => r.status === 'fulfilled');
+      this._connected = results.some((r) => r.status === "fulfilled");
       this.render();
     } finally {
       this._loading = false;
@@ -146,19 +161,25 @@ export class LokiAnalytics extends LokiElement {
     this._pollInterval = setInterval(() => this._loadData(), 30000);
     this._visibilityHandler = () => {
       if (document.hidden) {
-        if (this._pollInterval) { clearInterval(this._pollInterval); this._pollInterval = null; }
+        if (this._pollInterval) {
+          clearInterval(this._pollInterval);
+          this._pollInterval = null;
+        }
       } else if (!this._pollInterval) {
         this._loadData();
         this._pollInterval = setInterval(() => this._loadData(), 30000);
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
-    if (this._pollInterval) { clearInterval(this._pollInterval); this._pollInterval = null; }
+    if (this._pollInterval) {
+      clearInterval(this._pollInterval);
+      this._pollInterval = null;
+    }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -204,15 +225,28 @@ export class LokiAnalytics extends LokiElement {
     if (count === 0 || maxCount === 0) return 0;
     const ratio = count / maxCount;
     if (ratio <= 0.25) return 1;
-    if (ratio <= 0.50) return 2;
+    if (ratio <= 0.5) return 2;
     if (ratio <= 0.75) return 3;
     return 4;
   }
 
   _renderHeatmap() {
     const { cells, maxCount } = this._computeHeatmap();
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const dayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""];
 
     // Compute month label positions (place at the week containing month's first day)
     const monthPositions = [];
@@ -227,18 +261,20 @@ export class LokiAnalytics extends LokiElement {
       }
     }
 
-    const monthLabelsHTML = monthPositions.map(m =>
-      `<span class="heatmap-month" style="grid-column: ${m.col}">${m.month}</span>`
-    ).join('');
+    const monthLabelsHTML = monthPositions
+      .map((m) => `<span class="heatmap-month" style="grid-column: ${m.col}">${m.month}</span>`)
+      .join("");
 
-    const cellsHTML = cells.map(c => {
-      const level = this._getHeatmapLevel(c.count, maxCount);
-      return `<div class="heatmap-cell level-${level}" title="${c.date}: ${c.count} activities"></div>`;
-    }).join('');
+    const cellsHTML = cells
+      .map((c) => {
+        const level = this._getHeatmapLevel(c.count, maxCount);
+        return `<div class="heatmap-cell level-${level}" title="${c.date}: ${c.count} activities"></div>`;
+      })
+      .join("");
 
-    const dayLabelsHTML = dayLabels.map(d =>
-      `<span class="heatmap-day-label">${d}</span>`
-    ).join('');
+    const dayLabelsHTML = dayLabels
+      .map((d) => `<span class="heatmap-day-label">${d}</span>`)
+      .join("");
 
     return `
       <div class="heatmap-container">
@@ -267,7 +303,7 @@ export class LokiAnalytics extends LokiElement {
     // Aggregate by tool name
     const byName = {};
     for (const t of tools) {
-      const name = t.tool || t.name || t.tool_name || (t.data && t.data.tool_name) || 'unknown';
+      const name = t.tool || t.name || t.tool_name || (t.data && t.data.tool_name) || "unknown";
       const count = t.count ?? t.calls ?? t.frequency ?? (t.data && t.data.count) ?? 1;
       byName[name] = (byName[name] || 0) + count;
     }
@@ -285,9 +321,10 @@ export class LokiAnalytics extends LokiElement {
       return '<div class="empty-state">No tool usage data available</div>';
     }
 
-    const barsHTML = tools.map(([name, count]) => {
-      const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
-      return `
+    const barsHTML = tools
+      .map(([name, count]) => {
+        const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
+        return `
         <div class="tool-row">
           <span class="tool-name" title="${this._esc(name)}">${this._esc(name)}</span>
           <div class="tool-bar-track">
@@ -296,9 +333,10 @@ export class LokiAnalytics extends LokiElement {
           <span class="tool-count">${count}</span>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
-    return '<div class="tool-bars">' + barsHTML + '</div>';
+    return '<div class="tool-bars">' + barsHTML + "</div>";
   }
 
   // --- Velocity computation ---
@@ -306,16 +344,17 @@ export class LokiAnalytics extends LokiElement {
   _computeVelocity() {
     const ctx = this._context || {};
     const iterations = ctx.per_iteration || ctx.iterations || [];
-    const totalIterations = Array.isArray(iterations) && iterations.length > 0
-      ? iterations.length
-      : ((ctx.totals && ctx.totals.iterations_tracked) || ctx.total_iterations || 0);
+    const totalIterations =
+      Array.isArray(iterations) && iterations.length > 0
+        ? iterations.length
+        : (ctx.totals && ctx.totals.iterations_tracked) || ctx.total_iterations || 0;
 
     // Calculate iterations/hour from timestamps
     let iterPerHour = 0;
     if (Array.isArray(iterations) && iterations.length >= 2) {
       const timestamps = iterations
-        .map(it => new Date(it.timestamp || it.started_at || it.ts).getTime())
-        .filter(t => !isNaN(t))
+        .map((it) => new Date(it.timestamp || it.started_at || it.ts).getTime())
+        .filter((t) => !isNaN(t))
         .sort((a, b) => a - b);
 
       if (timestamps.length >= 2) {
@@ -355,20 +394,23 @@ export class LokiAnalytics extends LokiElement {
     const { iterPerHour, totalIterations, hourlyBuckets } = this._computeVelocity();
 
     const maxBucket = Math.max(1, ...hourlyBuckets);
-    const sparkBars = hourlyBuckets.length > 0
-      ? hourlyBuckets.map(v => {
-          const pct = (v / maxBucket) * 100;
-          return `<div class="spark-bar" style="height: ${Math.max(2, pct)}%" title="${v}"></div>`;
-        }).join('')
-      : '<div class="empty-state" style="padding: 12px">No trend data</div>';
+    const sparkBars =
+      hourlyBuckets.length > 0
+        ? hourlyBuckets
+            .map((v) => {
+              const pct = (v / maxBucket) * 100;
+              return `<div class="spark-bar" style="height: ${Math.max(2, pct)}%" title="${v}"></div>`;
+            })
+            .join("")
+        : '<div class="empty-state" style="padding: 12px">No trend data</div>';
 
     const trendFilterHTML = `
       <div class="tool-filter">
         <select class="tool-time-select" id="tool-time-range">
-          <option value="1h" ${this._toolTimeRange === '1h' ? 'selected' : ''}>Trend: Last hour</option>
-          <option value="24h" ${this._toolTimeRange === '24h' ? 'selected' : ''}>Trend: Last 24h</option>
-          <option value="7d" ${this._toolTimeRange === '7d' ? 'selected' : ''}>Trend: Last 7 days</option>
-          <option value="30d" ${this._toolTimeRange === '30d' ? 'selected' : ''}>Trend: Last 30 days</option>
+          <option value="1h" ${this._toolTimeRange === "1h" ? "selected" : ""}>Trend: Last hour</option>
+          <option value="24h" ${this._toolTimeRange === "24h" ? "selected" : ""}>Trend: Last 24h</option>
+          <option value="7d" ${this._toolTimeRange === "7d" ? "selected" : ""}>Trend: Last 7 days</option>
+          <option value="30d" ${this._toolTimeRange === "30d" ? "selected" : ""}>Trend: Last 30 days</option>
         </select>
       </div>
     `;
@@ -412,7 +454,8 @@ export class LokiAnalytics extends LokiElement {
 
     // Estimate iterations from context
     const totals = this._context.totals || {};
-    const totalIter = totals.iterations_tracked || this._context.total_iterations || this._context.iteration || 0;
+    const totalIter =
+      totals.iterations_tracked || this._context.total_iterations || this._context.iteration || 0;
     const totalCost = this._cost.estimated_cost_usd || 0;
 
     for (const prov of Object.values(providers)) {
@@ -428,11 +471,11 @@ export class LokiAnalytics extends LokiElement {
   _renderProviders() {
     const providers = this._computeProviders();
     const providerConfig = {
-      claude: { label: 'Claude', color: 'var(--loki-accent)' },
-      codex: { label: 'Codex', color: 'var(--loki-success)' },
-      cline: { label: 'Cline', color: 'var(--loki-info)' },
-      aider: { label: 'Aider', color: 'var(--loki-blue)' },
-      unknown: { label: 'Other', color: 'var(--loki-text-muted)' },
+      claude: { label: "Claude", color: "var(--loki-accent)" },
+      codex: { label: "Codex", color: "var(--loki-success)" },
+      cline: { label: "Cline", color: "var(--loki-info)" },
+      aider: { label: "Aider", color: "var(--loki-blue)" },
+      unknown: { label: "Other", color: "var(--loki-text-muted)" },
     };
 
     const entries = Object.entries(providers);
@@ -442,23 +485,28 @@ export class LokiAnalytics extends LokiElement {
 
     return `
       <div class="provider-grid">
-        ${entries.map(([key, data]) => {
-          const cfg = providerConfig[key] || providerConfig.unknown;
-          const costPerIter = data.iterations > 0 ? (data.cost / data.iterations).toFixed(4) : '--';
-          const tokensPerIter = data.iterations > 0 ? Math.round(data.tokens / data.iterations).toLocaleString() : '--';
+        ${entries
+          .map(([key, data]) => {
+            const cfg = providerConfig[key] || providerConfig.unknown;
+            const costPerIter =
+              data.iterations > 0 ? (data.cost / data.iterations).toFixed(4) : "--";
+            const tokensPerIter =
+              data.iterations > 0
+                ? Math.round(data.tokens / data.iterations).toLocaleString()
+                : "--";
 
-          return `
+            return `
             <div class="provider-card">
               <div class="provider-accent" style="background: ${cfg.color}"></div>
               <div class="provider-body">
                 <div class="provider-name">${cfg.label}</div>
                 <div class="provider-stat">
                   <span class="provider-stat-label">Total Cost</span>
-                  <span class="provider-stat-value">${data.cost > 0 ? '$' + data.cost.toFixed(2) : '$0.00'}</span>
+                  <span class="provider-stat-value">${data.cost > 0 ? "$" + data.cost.toFixed(2) : "$0.00"}</span>
                 </div>
                 <div class="provider-stat">
                   <span class="provider-stat-label">Cost / Iteration</span>
-                  <span class="provider-stat-value">${costPerIter !== '--' ? '$' + costPerIter : costPerIter}</span>
+                  <span class="provider-stat-value">${costPerIter !== "--" ? "$" + costPerIter : costPerIter}</span>
                 </div>
                 <div class="provider-stat">
                   <span class="provider-stat-label">Tokens / Iteration</span>
@@ -468,26 +516,32 @@ export class LokiAnalytics extends LokiElement {
                   <span class="provider-stat-label">Total Tokens</span>
                   <span class="provider-stat-value">${(data.tokens ?? 0).toLocaleString()}</span>
                 </div>
-                <div class="provider-models">${data.models.map(m => this._esc(m)).join(', ')}</div>
+                <div class="provider-models">${data.models.map((m) => this._esc(m)).join(", ")}</div>
               </div>
             </div>
           `;
-        }).join('')}
+          })
+          .join("")}
       </div>
     `;
   }
 
   _esc(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#x27;");
   }
 
   _localDateKey(d) {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   }
 
   _handleTabClick(e) {
-    const tab = e.target.closest('[data-tab]');
+    const tab = e.target.closest("[data-tab]");
     if (!tab) return;
     this._activeTab = tab.dataset.tab;
     this.render();
@@ -500,18 +554,42 @@ export class LokiAnalytics extends LokiElement {
 
   render() {
     const tabs = [
-      { id: 'heatmap', label: 'Activity', icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>' },
-      { id: 'tools', label: 'Tools', icon: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>' },
-      { id: 'velocity', label: 'Velocity', icon: '<svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' },
-      { id: 'providers', label: 'Providers', icon: '<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
+      {
+        id: "heatmap",
+        label: "Activity",
+        icon: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+      },
+      {
+        id: "tools",
+        label: "Tools",
+        icon: '<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
+      },
+      {
+        id: "velocity",
+        label: "Velocity",
+        icon: '<svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+      },
+      {
+        id: "providers",
+        label: "Providers",
+        icon: '<svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+      },
     ];
 
-    let content = '';
+    let content = "";
     switch (this._activeTab) {
-      case 'heatmap': content = this._renderHeatmap(); break;
-      case 'tools': content = this._renderToolUsage(); break;
-      case 'velocity': content = this._renderVelocity(); break;
-      case 'providers': content = this._renderProviders(); break;
+      case "heatmap":
+        content = this._renderHeatmap();
+        break;
+      case "tools":
+        content = this._renderToolUsage();
+        break;
+      case "velocity":
+        content = this._renderVelocity();
+        break;
+      case "providers":
+        content = this._renderProviders();
+        break;
     }
 
     this.shadowRoot.innerHTML = `
@@ -870,14 +948,18 @@ export class LokiAnalytics extends LokiElement {
       </style>
 
       <div class="analytics-container">
-        ${!this._connected ? '<div class="offline-notice">Connecting to analytics API...</div>' : ''}
+        ${!this._connected ? '<div class="offline-notice">Connecting to analytics API...</div>' : ""}
 
         <div class="tab-bar">
-          ${tabs.map(t => `
-            <button class="tab-btn ${this._activeTab === t.id ? 'active' : ''}" data-tab="${t.id}" aria-label="${t.label}">
+          ${tabs
+            .map(
+              (t) => `
+            <button class="tab-btn ${this._activeTab === t.id ? "active" : ""}" data-tab="${t.id}" aria-label="${t.label}">
               ${t.icon}<span>${t.label}</span>
             </button>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
 
         <div class="tab-content">
@@ -887,19 +969,19 @@ export class LokiAnalytics extends LokiElement {
     `;
 
     // Bind event listeners
-    this.shadowRoot.querySelectorAll('[data-tab]').forEach(btn => {
-      btn.addEventListener('click', (e) => this._handleTabClick(e));
+    this.shadowRoot.querySelectorAll("[data-tab]").forEach((btn) => {
+      btn.addEventListener("click", (e) => this._handleTabClick(e));
     });
 
-    const timeSelect = this.shadowRoot.getElementById('tool-time-range');
+    const timeSelect = this.shadowRoot.getElementById("tool-time-range");
     if (timeSelect) {
-      timeSelect.addEventListener('change', (e) => this._handleTimeRangeChange(e));
+      timeSelect.addEventListener("change", (e) => this._handleTimeRangeChange(e));
     }
   }
 }
 
-if (!customElements.get('loki-analytics')) {
-  customElements.define('loki-analytics', LokiAnalytics);
+if (!customElements.get("loki-analytics")) {
+  customElements.define("loki-analytics", LokiAnalytics);
 }
 
 export default LokiAnalytics;

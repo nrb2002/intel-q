@@ -21,6 +21,7 @@ Investigated and fixed 5 integration bugs between Purple Lab (web-app/server.py)
 **Files:** `web-app/server.py` (3 locations), `autonomy/run.sh`
 
 **Root cause:** The web server read session state from `.loki/state/session.json`, but the CLI never writes that file. The CLI writes:
+
 - `.loki/dashboard-state.json` (via `write_dashboard_state()` in run.sh) -- contains phase, iteration, complexity, tasks, tokens, agents
 - `.loki/state/orchestrator.json` -- contains currentPhase
 - `.loki/autonomy-state.json` -- contains retryCount, iterationCount, status
@@ -28,11 +29,13 @@ Investigated and fixed 5 integration bugs between Purple Lab (web-app/server.py)
 The web server was reading from a nonexistent file, so status fields (phase, iteration, complexity, cost, pending tasks) were always default values.
 
 **Fix:** Changed 3 locations in server.py to read from `dashboard-state.json` (primary) with `state/orchestrator.json` fallback:
+
 1. `get_status()` endpoint (GET /api/session/status)
 2. `_push_state_to_client()` WebSocket push loop
 3. `_infer_session_status()` for session history
 
 Field mapping updated to match `dashboard-state.json` structure:
+
 - `tasks.pending` instead of `pending_tasks` (nested object)
 - `tasks.inProgress` for current task detection
 - `tokens.cost_usd` for cost (same structure, just different file)
@@ -72,6 +75,7 @@ The check should only examine path components RELATIVE to the project directory,
 Additionally, 3 other `loki quick` invocations (monitor auto-fix, Docker service fix, fix endpoint) also had no provider passthrough.
 
 **Fix:**
+
 1. Chat endpoint now reads the provider from `session.provider` and `.loki/state/provider` file
 2. Max mode passes the detected provider to `--provider` flag
 3. Quick/standard modes pass provider via `LOKI_PROVIDER` env var
@@ -81,10 +85,10 @@ Additionally, 3 other `loki quick` invocations (monitor auto-fix, Docker service
 
 ## Files Modified
 
-| File | Changes |
-|------|---------|
-| `web-app/server.py` | BUG-INT-001 through BUG-INT-005: provider passthrough, state file path correction, file watcher relative path |
-| `web-app/src/api/client.ts` | BUG-INT-003: WebSocket ping/pong handler |
+| File                        | Changes                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `web-app/server.py`         | BUG-INT-001 through BUG-INT-005: provider passthrough, state file path correction, file watcher relative path |
+| `web-app/src/api/client.ts` | BUG-INT-003: WebSocket ping/pong handler                                                                      |
 
 ## Verification
 

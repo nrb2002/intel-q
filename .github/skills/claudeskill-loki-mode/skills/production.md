@@ -105,6 +105,7 @@ git worktree remove ../project-feature-auth
 ```
 
 **Benefits:**
+
 - Multiple agents can work in parallel without conflicts
 - Each agent has clean, isolated file state
 - Merges happen explicitly, not through file racing
@@ -188,14 +189,14 @@ dependency_workflow:
 
 ### When to Use Batch API
 
-| Use Case | Batch? | Reasoning |
-|----------|--------|-----------|
-| Single code review | No | Immediate feedback needed |
-| Review 100+ files | Yes | 50% savings, async OK |
-| Generate tests for all modules | Yes | Bulk operation |
-| Interactive development | No | Need real-time responses |
-| Large-scale evaluations | Yes | Cost-critical at scale |
-| QA phase bulk analysis | Yes | Can wait for results |
+| Use Case                       | Batch? | Reasoning                 |
+| ------------------------------ | ------ | ------------------------- |
+| Single code review             | No     | Immediate feedback needed |
+| Review 100+ files              | Yes    | 50% savings, async OK     |
+| Generate tests for all modules | Yes    | Bulk operation            |
+| Interactive development        | No     | Need real-time responses  |
+| Large-scale evaluations        | Yes    | Cost-critical at scale    |
+| QA phase bulk analysis         | Yes    | Can wait for results      |
 
 ### Batch API Limits
 
@@ -286,6 +287,7 @@ requests = [
 ```
 
 **Cost math:**
+
 - Base: $3/MTok input, $15/MTok output (Sonnet)
 - Batch discount: 50% -> $1.50/$7.50
 - Cache hit: 90% reduction on cached tokens

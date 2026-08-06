@@ -15,6 +15,7 @@ Date: 2026-03-24 | Version: v6.71.1
 **Fix:** Added JSON validity checks in `_ensure_index()` and `_ensure_timeline()`. When the file exists but is corrupted (JSONDecodeError), it is now logged and recreated from scratch. This restores memory system functionality without requiring manual file deletion.
 
 **Before:**
+
 ```python
 def _ensure_index(self) -> None:
     index_path = self.base_path / "index.json"
@@ -23,6 +24,7 @@ def _ensure_index(self) -> None:
 ```
 
 **After:**
+
 ```python
 def _ensure_index(self) -> None:
     index_path = self.base_path / "index.json"
@@ -90,18 +92,22 @@ output=$(cd "${TARGET_DIR:-.}" && timeout "$gate_timeout" npx vitest run --repor
 ## Bugs Identified But Not Fixed (4 bugs, require design decisions)
 
 ### BUG-EP-004: check_provider_health() validates key exists, not validity
+
 - **Location:** run.sh:6864
 - **Reason not fixed:** Validating key validity requires an API call to each provider, which has cost/rate-limit implications. Requires design decision on whether to add a lightweight health check endpoint call.
 
 ### BUG-CU-002: No automatic dashboard port increment
+
 - **Location:** run.sh dashboard startup
 - **Reason not fixed:** Changing port allocation logic requires coordination between the dashboard server, the CLI status display, and the web frontend (which connects to a hardcoded port). Needs design discussion on port discovery mechanism.
 
 ### BUG-CU-005: Export reads state files without cross-file consistency
+
 - **Location:** loki:5034
 - **Reason not fixed:** True cross-file consistency requires either a snapshot mechanism or a single monolithic state file. The current multi-file approach is by design for performance. Low impact since export is typically used after pausing.
 
 ### BUG-EC-002: No PRD size limit or truncation before context injection
+
 - **Location:** run.sh build_prompt
 - **Reason not fixed:** The PRD is passed as a file path reference, not inline content. Truncation would lose requirements. The AI provider handles context window overflow. However, a warning for very large PRDs (> 50KB) would be useful.
 
@@ -110,10 +116,12 @@ output=$(cd "${TARGET_DIR:-.}" && timeout "$gate_timeout" npx vitest run --repor
 ## Test Impact
 
 The fixes touch three files:
+
 1. `memory/storage.py` - Memory system initialization (covered by `tests/test-memory-engine.sh`, `tests/test-unified-memory.sh`)
 2. `autonomy/run.sh` - Core orchestration loop (covered by `tests/test-state-recovery.sh`, `tests/test-v6-features.sh`)
 
 All fixes are backward-compatible:
+
 - Memory corruption recovery only triggers on actual corruption (no behavioral change for healthy systems)
 - Temp file cleanup only removes files older than 5 minutes (safe with concurrent processes)
 - Empty output detection is a strict subset (only overrides exit_code when output is literally 0 bytes AND exit was 0)

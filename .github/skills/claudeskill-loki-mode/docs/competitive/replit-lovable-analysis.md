@@ -24,14 +24,14 @@ Replit and Lovable represent two dominant players in the "vibe coding" / AI app 
 
 **Key takeaway:** Replit and Lovable are building consumer-grade "app factories" -- fast, visual, credit-gated, and increasingly unreliable at scale. Loki Mode is building an autonomous engineering team. The competitive overlap is narrow today but will widen as all three platforms push toward production-ready output.
 
-| Metric | Replit | Lovable | Loki Mode |
-|--------|--------|---------|-----------|
-| Valuation | $9B (Mar 2026) | $6.6B (Dec 2025) | Open source |
-| ARR | $265M+ (targeting $1B) | $400M+ (Feb 2026) | N/A (open source) |
-| Users | 50M+ registered | 8M+ users | Developer community |
-| Total Funding | $650M+ | $653M | $0 |
-| Employees | ~1,000+ | ~817 | Solo maintainer |
-| Target User | Non-technical to semi-technical | Non-technical to semi-technical | Professional developers |
+| Metric        | Replit                          | Lovable                         | Loki Mode               |
+| ------------- | ------------------------------- | ------------------------------- | ----------------------- |
+| Valuation     | $9B (Mar 2026)                  | $6.6B (Dec 2025)                | Open source             |
+| ARR           | $265M+ (targeting $1B)          | $400M+ (Feb 2026)               | N/A (open source)       |
+| Users         | 50M+ registered                 | 8M+ users                       | Developer community     |
+| Total Funding | $650M+                          | $653M                           | $0                      |
+| Employees     | ~1,000+                         | ~817                            | Solo maintainer         |
+| Target User   | Non-technical to semi-technical | Non-technical to semi-technical | Professional developers |
 
 ---
 
@@ -42,12 +42,14 @@ Replit and Lovable represent two dominant players in the "vibe coding" / AI app 
 **Current Agent Version: Agent 4 (March 2026)**
 
 Replit Agent has evolved rapidly through four major versions:
+
 - Agent v2 (Feb 2025): Powered by Claude 3.7 Sonnet, 2x speed improvement
 - Agent 3 (Sep 2025): Self-testing/debugging loop, 200-minute autonomous sessions, can spawn sub-agents
 - Design Mode (Nov 2025): Interactive design generation in under 2 minutes
 - Agent 4 (Mar 2026): Parallel task execution, Design Canvas, plan-while-building, multi-app projects
 
 **Core Capabilities:**
+
 - Natural language to full-stack app generation
 - Support for 50+ programming languages
 - Web apps, data visualization, 3D games (Three.js), agents, automations
@@ -63,6 +65,7 @@ Replit Agent has evolved rapidly through four major versions:
 - Git/GitHub integration
 
 **Agent 4 Specific Features:**
+
 - Design Canvas: Infinite board replacing Design Mode, supports all artifact types, live previews, direct manipulation, variant generation
 - Parallel Agents: Auth, database, backend, and frontend built simultaneously with visible progress; AI resolves merge conflicts automatically 90% of the time
 - Plan-While-Building: No longer sequential plan-then-build; continuous planning alongside development
@@ -71,6 +74,7 @@ Replit Agent has evolved rapidly through four major versions:
 - Tool Integration: BigQuery, Linear, Slack, Notion accessible from chat
 
 **Deployment:**
+
 - One-click deployment (Feb 2025)
 - Autoscale deployments (traffic-responsive resource allocation)
 - Reserved VM instances for persistent apps
@@ -82,6 +86,7 @@ Replit Agent has evolved rapidly through four major versions:
 ### 2. UX Patterns
 
 **Interface:**
+
 - Browser-based IDE with integrated terminal, file tree, and preview pane
 - Chat-based interaction with Agent in sidebar
 - Design Canvas for visual design iteration
@@ -90,28 +95,31 @@ Replit Agent has evolved rapidly through four major versions:
 - Import flow from Figma, Bolt, Lovable, and GitHub
 
 **Build Experience:**
+
 - Prompt describes desired app -> Agent plans -> Agent builds iteratively
 - Self-testing loop: generates code, executes it, identifies errors, applies fixes, reruns until tests pass
 - Fast Build mode (Dec 2025) produces high-fidelity apps quickly
 - Iterative refinement through conversation
 
 **Collaboration:**
+
 - Shared projects with agent-assisted merging (Agent 4)
 - Up to 15 builders on Pro plan
 - Role-based access control
 
 ### 3. Pricing
 
-| Plan | Price | Credits | Key Features |
-|------|-------|---------|--------------|
-| Starter | Free | Limited | Basic AI, 1 published app |
-| Core | $20/mo | $25 in credits | Agent access, private projects, hosting, up to 5 workspace members |
-| Pro | $100/mo | Tiered credit discounts | Turbo Mode (2x faster, best models), up to 15 builders, priority support, credit rollover |
-| Enterprise | Custom | Custom | SSO, SCIM, dedicated support, compliance features |
+| Plan       | Price   | Credits                 | Key Features                                                                              |
+| ---------- | ------- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| Starter    | Free    | Limited                 | Basic AI, 1 published app                                                                 |
+| Core       | $20/mo  | $25 in credits          | Agent access, private projects, hosting, up to 5 workspace members                        |
+| Pro        | $100/mo | Tiered credit discounts | Turbo Mode (2x faster, best models), up to 15 builders, priority support, credit rollover |
+| Enterprise | Custom  | Custom                  | SSO, SCIM, dedicated support, compliance features                                         |
 
 **Pricing Model:** "Effort-based pricing" -- cost scales with computational complexity of each Agent request. Simple tasks cost less; complex multi-step operations cost more. This replaced the per-checkpoint $0.25 model (Jun 2025).
 
 **Known Cost Issues:**
+
 - Users report spending $70-$350 in a single day/night on Agent 3
 - Editing existing apps costs significantly more than building new ones
 - A single prompt redesigning an interface cost one user $20
@@ -121,6 +129,7 @@ Replit Agent has evolved rapidly through four major versions:
 ### 4. Limitations
 
 **Technical Limitations:**
+
 - Agent can break other parts of the app while fixing one issue
 - Unreliable for multi-file refactors and dependency changes
 - Modifies unintended files, breaks builds, loops through expensive fix attempts
@@ -136,6 +145,7 @@ Replit Agent has evolved rapidly through four major versions:
 - US-only hosting (GCP) limits data residency options
 
 **User Complaints (aggregated from Reddit, The Register, Capterra, G2, community forums):**
+
 - Surprise cost overruns (The Register covered this extensively)
 - Agent 3 pricing backlash was significant enough to make tech news
 - Platform frequently fails to load environments
@@ -174,6 +184,7 @@ Replit Agent has evolved rapidly through four major versions:
 **Current Version: Lovable 2.0 (February 2026)**
 
 **Core Capabilities:**
+
 - Natural language prompt to full-stack web application
 - React + TypeScript frontend with Tailwind CSS, built with Vite
 - Supabase backend (PostgreSQL, auth, storage, edge functions, real-time)
@@ -188,6 +199,7 @@ Replit Agent has evolved rapidly through four major versions:
 - RAG-based AI system for large codebase handling
 
 **Lovable 2.0 Features:**
+
 - Real-time multi-user editing (up to 20 collaborators)
 - Chat Mode Agent: Multi-step reasoning without code edits; searches files, inspects logs, queries databases
 - Dev Mode: Direct code editing within Lovable's interface
@@ -197,6 +209,7 @@ Replit Agent has evolved rapidly through four major versions:
 - Shared credit pools for Teams
 
 **Development Modes:**
+
 1. Default Mode: Iterative feature requests with AI implementation
 2. Chat Mode: Advisory/planning without code changes
 3. Dev Mode: Direct code editing (paid plans only)
@@ -205,6 +218,7 @@ Replit Agent has evolved rapidly through four major versions:
 ### 2. UX Patterns
 
 **Interface:**
+
 - Browser-based builder with chat sidebar and live preview
 - Split-pane layout: prompt/chat on left, live app preview on right
 - Visual editor overlay for clicking on elements to modify
@@ -212,6 +226,7 @@ Replit Agent has evolved rapidly through four major versions:
 - GitHub sync status indicators
 
 **Build Experience:**
+
 - Describe app in natural language -> AI generates complete full-stack app
 - Initial generation gets approximately "70% of the way there" with polished designs
 - Basic MVPs take 10-30 minutes to prototype
@@ -219,20 +234,22 @@ Replit Agent has evolved rapidly through four major versions:
 - Chat Mode for planning before committing credits
 
 **Collaboration (2.0):**
+
 - Real-time multi-user editing (up to 20 collaborators)
 - Role-based permissions in Teams workspaces
 - Shared credit pools
 
 ### 3. Pricing
 
-| Plan | Price | Credits | Key Features |
-|------|-------|---------|--------------|
-| Free | $0 | 5/day (30/month cap) | Public projects, 5 subdomains, unlimited collaborators |
-| Pro | $25/mo | 100 + 5/day | Private projects, custom domains, GitHub sync, Code Mode, credit rollover |
-| Business | $50/mo | Shared pool | SSO, role-based access, security center, design templates |
-| Enterprise | Custom | Custom | Dedicated support, SCIM, audit logs, onboarding |
+| Plan       | Price  | Credits              | Key Features                                                              |
+| ---------- | ------ | -------------------- | ------------------------------------------------------------------------- |
+| Free       | $0     | 5/day (30/month cap) | Public projects, 5 subdomains, unlimited collaborators                    |
+| Pro        | $25/mo | 100 + 5/day          | Private projects, custom domains, GitHub sync, Code Mode, credit rollover |
+| Business   | $50/mo | Shared pool          | SSO, role-based access, security center, design templates                 |
+| Enterprise | Custom | Custom               | Dedicated support, SCIM, audit logs, onboarding                           |
 
 **Credit System:**
+
 - Usage-based: complexity determines credit cost
 - Simple styling change: ~0.5 credits
 - Complex feature (auth): ~1.2 credits
@@ -241,6 +258,7 @@ Replit Agent has evolved rapidly through four major versions:
 - Annual billing offers ~16% savings
 
 **Known Cost Issues:**
+
 - Credits are the #1 reason developers switch from Lovable (survey data)
 - One developer burned entire Pro monthly credits in a single afternoon debugging Stripe integration
 - Users report over $1,000 in underestimated API costs due to AI calculation errors
@@ -251,6 +269,7 @@ Replit Agent has evolved rapidly through four major versions:
 ### 4. Limitations
 
 **Technical Limitations:**
+
 - Web applications only -- no native mobile app generation
 - Client-side single-page apps only -- no server-side rendering (SSO implications)
 - Locked into React + TypeScript + Tailwind + Supabase stack (no choice)
@@ -263,6 +282,7 @@ Replit Agent has evolved rapidly through four major versions:
 - 2-tier architecture pushes all security onto Supabase RLS policies
 
 **User Complaints (aggregated from Reddit, Trustpilot, Product Hunt, Medium, survey data):**
+
 - "Credit trap" -- rapid credit depletion is the dominant complaint
 - Lovable 2.0 launch issues: credits disappearing, one user lost 360 paid credits after downgrading
 - "Bug loop" frustration: AI gets stuck trying to fix bugs, cascading failures
@@ -275,6 +295,7 @@ Replit Agent has evolved rapidly through four major versions:
 - Not suitable for long-term maintenance
 
 **Churn Data (DesignRevision 2026 Survey):**
+
 - Credit costs are the #1 churn reason (cited in 60% of negative reviews)
 - Backend development satisfaction is lowest at 20-30%
 - Satisfaction drops sharply with project complexity: 85%+ for landing pages, 20-30% for production SaaS
@@ -308,80 +329,80 @@ Replit Agent has evolved rapidly through four major versions:
 
 ### Core Capabilities
 
-| Capability | Replit Agent | Lovable.dev | Loki Mode |
-|-----------|:-----------:|:-----------:|:---------:|
-| Natural language to app | Yes | Yes | Yes (via PRD) |
-| Autonomous execution | 200 min sessions | Per-prompt | Unlimited (budget-gated) |
-| Multi-agent orchestration | Parallel agents (Agent 4) | No | Yes (41 agent types, 8 swarms) |
-| Self-testing loop | Yes | No | Yes (RARV cycle) |
-| Code review | No | No | Yes (3-reviewer blind review) |
-| Anti-sycophancy | No | No | Yes (devil's advocate) |
-| Quality gates | No | Security scan only | 10 gates |
-| Memory system | No | Project knowledge | Episodic/semantic/procedural |
-| Model selection | Platform-chosen | Platform-chosen | Task-aware (Opus/Sonnet/Haiku) |
-| Multi-provider support | No (Replit only) | No (Lovable only) | Yes (Claude/Codex/Gemini/Cline/Aider) |
+| Capability                |       Replit Agent        |    Lovable.dev     |               Loki Mode               |
+| ------------------------- | :-----------------------: | :----------------: | :-----------------------------------: |
+| Natural language to app   |            Yes            |        Yes         |             Yes (via PRD)             |
+| Autonomous execution      |     200 min sessions      |     Per-prompt     |       Unlimited (budget-gated)        |
+| Multi-agent orchestration | Parallel agents (Agent 4) |         No         |    Yes (41 agent types, 8 swarms)     |
+| Self-testing loop         |            Yes            |         No         |           Yes (RARV cycle)            |
+| Code review               |            No             |         No         |     Yes (3-reviewer blind review)     |
+| Anti-sycophancy           |            No             |         No         |        Yes (devil's advocate)         |
+| Quality gates             |            No             | Security scan only |               10 gates                |
+| Memory system             |            No             | Project knowledge  |     Episodic/semantic/procedural      |
+| Model selection           |      Platform-chosen      |  Platform-chosen   |    Task-aware (Opus/Sonnet/Haiku)     |
+| Multi-provider support    |     No (Replit only)      | No (Lovable only)  | Yes (Claude/Codex/Gemini/Cline/Aider) |
 
 ### Development Environment
 
-| Feature | Replit Agent | Lovable.dev | Loki Mode |
-|---------|:-----------:|:-----------:|:---------:|
-| Interface | Browser IDE | Browser builder | CLI |
-| Language support | 50+ languages | React/TypeScript only | Any (uses existing toolchain) |
-| Framework choice | Any | React + Tailwind only | Any |
-| Database | Built-in PostgreSQL | Supabase PostgreSQL | Any (uses existing infra) |
-| Auth system | Built-in | Supabase Auth | Any |
-| Local development | SSH sync | GitHub export | Native (runs locally) |
-| IDE integration | Browser-only | GitHub export | Claude Code, Cursor, any terminal |
-| Version control | Git/GitHub | GitHub sync | Full Git (worktrees, branches) |
-| Figma import | Yes (MCP + Import) | Yes (Builder.io) | No |
+| Feature           |    Replit Agent     |      Lovable.dev      |             Loki Mode             |
+| ----------------- | :-----------------: | :-------------------: | :-------------------------------: |
+| Interface         |     Browser IDE     |    Browser builder    |                CLI                |
+| Language support  |    50+ languages    | React/TypeScript only |   Any (uses existing toolchain)   |
+| Framework choice  |         Any         | React + Tailwind only |                Any                |
+| Database          | Built-in PostgreSQL |  Supabase PostgreSQL  |     Any (uses existing infra)     |
+| Auth system       |      Built-in       |     Supabase Auth     |                Any                |
+| Local development |      SSH sync       |     GitHub export     |       Native (runs locally)       |
+| IDE integration   |    Browser-only     |     GitHub export     | Claude Code, Cursor, any terminal |
+| Version control   |     Git/GitHub      |      GitHub sync      |  Full Git (worktrees, branches)   |
+| Figma import      | Yes (MCP + Import)  |   Yes (Builder.io)    |                No                 |
 
 ### Deployment & Hosting
 
-| Feature | Replit Agent | Lovable.dev | Loki Mode |
-|---------|:-----------:|:-----------:|:---------:|
-| One-click deploy | Yes | Yes | No (uses existing CI/CD) |
-| Autoscaling | Yes | No (Lovable Cloud) | Uses existing infra |
-| Custom domains | Yes | Yes | N/A |
-| Static hosting | Yes | Yes | N/A |
-| Reserved VMs | Yes | No | N/A |
-| Mobile deployment | Yes (Expo) | No | Yes (generates any output) |
-| Docker support | No | No | Yes (Dockerfile generation) |
-| Self-hosting | No | No | Yes (runs anywhere) |
-| Cloud lock-in | High (Replit infra) | Moderate (Supabase) | None |
+| Feature           |    Replit Agent     |     Lovable.dev     |          Loki Mode          |
+| ----------------- | :-----------------: | :-----------------: | :-------------------------: |
+| One-click deploy  |         Yes         |         Yes         |  No (uses existing CI/CD)   |
+| Autoscaling       |         Yes         | No (Lovable Cloud)  |     Uses existing infra     |
+| Custom domains    |         Yes         |         Yes         |             N/A             |
+| Static hosting    |         Yes         |         Yes         |             N/A             |
+| Reserved VMs      |         Yes         |         No          |             N/A             |
+| Mobile deployment |     Yes (Expo)      |         No          | Yes (generates any output)  |
+| Docker support    |         No          |         No          | Yes (Dockerfile generation) |
+| Self-hosting      |         No          |         No          |     Yes (runs anywhere)     |
+| Cloud lock-in     | High (Replit infra) | Moderate (Supabase) |            None             |
 
 ### Collaboration & Team
 
-| Feature | Replit Agent | Lovable.dev | Loki Mode |
-|---------|:-----------:|:-----------:|:---------:|
-| Real-time collab | Yes (Agent 4) | Yes (up to 20 users) | No (single operator) |
-| Role-based access | Yes | Yes (Teams/Business) | No |
-| Team billing | Yes (Pro, up to 15) | Yes (Teams, shared pool) | No |
-| SSO/SAML | Enterprise only | Business+ | N/A |
-| SOC 2 | Type 2 | Type 1 + Type 2 | N/A |
+| Feature           |    Replit Agent     |       Lovable.dev        |      Loki Mode       |
+| ----------------- | :-----------------: | :----------------------: | :------------------: |
+| Real-time collab  |    Yes (Agent 4)    |   Yes (up to 20 users)   | No (single operator) |
+| Role-based access |         Yes         |   Yes (Teams/Business)   |          No          |
+| Team billing      | Yes (Pro, up to 15) | Yes (Teams, shared pool) |          No          |
+| SSO/SAML          |   Enterprise only   |        Business+         |         N/A          |
+| SOC 2             |       Type 2        |     Type 1 + Type 2      |         N/A          |
 
 ### Integrations
 
-| Integration | Replit Agent | Lovable.dev | Loki Mode |
-|-------------|:-----------:|:-----------:|:---------:|
-| Stripe | Native connector | Via Supabase Edge | Manual (generates code) |
-| OpenAI/Anthropic | Via connectors | Via Edge Functions | Direct (multi-provider) |
-| Figma | MCP + Import | Builder.io plugin | No |
-| GitHub | Yes | Bidirectional sync | Full Git workflow |
-| Slack/Notion/Linear | Native connectors | No | Via MCP (extensible) |
-| Custom MCP | Yes | No | Yes (15 MCP tools) |
-| Salesforce | Native connector | No | No |
-| BigQuery/Snowflake | Native connectors | No | No |
+| Integration         |   Replit Agent    |    Lovable.dev     |        Loki Mode        |
+| ------------------- | :---------------: | :----------------: | :---------------------: |
+| Stripe              | Native connector  | Via Supabase Edge  | Manual (generates code) |
+| OpenAI/Anthropic    |  Via connectors   | Via Edge Functions | Direct (multi-provider) |
+| Figma               |   MCP + Import    | Builder.io plugin  |           No            |
+| GitHub              |        Yes        | Bidirectional sync |    Full Git workflow    |
+| Slack/Notion/Linear | Native connectors |         No         |  Via MCP (extensible)   |
+| Custom MCP          |        Yes        |         No         |   Yes (15 MCP tools)    |
+| Salesforce          | Native connector  |         No         |           No            |
+| BigQuery/Snowflake  | Native connectors |         No         |           No            |
 
 ### Pricing Comparison
 
-| Metric | Replit Agent | Lovable.dev | Loki Mode |
-|--------|:-----------:|:-----------:|:---------:|
-| Free tier | Yes (limited) | Yes (30 credits/mo) | Yes (open source, free) |
-| Entry paid | $20/mo (Core) | $25/mo (Pro) | $0 (bring your own API key) |
-| Team plan | $100/mo (Pro) | $50/mo (Business) | $0 |
-| Cost model | Effort-based credits | Per-prompt credits | API key costs only |
-| Cost predictability | Low (frequent complaints) | Low (frequent complaints) | High (direct API pricing) |
-| Vendor lock-in | High | Moderate | None |
+| Metric              |       Replit Agent        |        Lovable.dev        |          Loki Mode          |
+| ------------------- | :-----------------------: | :-----------------------: | :-------------------------: |
+| Free tier           |       Yes (limited)       |    Yes (30 credits/mo)    |   Yes (open source, free)   |
+| Entry paid          |       $20/mo (Core)       |       $25/mo (Pro)        | $0 (bring your own API key) |
+| Team plan           |       $100/mo (Pro)       |     $50/mo (Business)     |             $0              |
+| Cost model          |   Effort-based credits    |    Per-prompt credits     |     API key costs only      |
+| Cost predictability | Low (frequent complaints) | Low (frequent complaints) |  High (direct API pricing)  |
+| Vendor lock-in      |           High            |         Moderate          |            None             |
 
 ---
 
@@ -426,6 +447,7 @@ Loki Mode generates any type of application in any language/framework, runs comp
 ### 1. Visual Interface / Dashboard (HIGH PRIORITY)
 
 Both Replit and Lovable provide polished browser-based visual interfaces. Loki Mode has a dashboard (`dashboard/server.py`) but it is primarily a monitoring tool, not a building interface. Non-technical users cannot use Loki Mode at all. The web dashboard should evolve toward:
+
 - Real-time build progress visualization
 - Live app preview
 - Visual task queue management
@@ -462,6 +484,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 ### Tier 1: High Impact, Build Now
 
 **R1: Ship a "loki deploy" command with managed deployment targets**
+
 - Integrate with Vercel, Railway, Fly.io, Cloudflare Pages
 - Support custom domains, SSL, environment variables
 - One command: `loki deploy --target vercel`
@@ -469,6 +492,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 - Estimated effort: 1-2 weeks
 
 **R2: Evolve the dashboard into a build-along interface**
+
 - Add live app preview (iframe to running dev server)
 - Add chat/prompt input for guiding autonomy
 - Add visual task queue with drag-to-reorder
@@ -477,6 +501,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 - Estimated effort: 3-4 weeks
 
 **R3: Add Figma MCP integration**
+
 - Connect to Figma via MCP for design extraction
 - Generate component code from Figma frames
 - Replit and Lovable both have this; it is table stakes for design-to-code workflows
@@ -485,6 +510,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 ### Tier 2: Medium Impact, Build Next
 
 **R4: Create "starter kit" templates with built-in database/auth**
+
 - Supabase starter (React + Supabase + Tailwind)
 - Firebase starter (Next.js + Firebase)
 - Prisma starter (any framework + Prisma + PostgreSQL)
@@ -493,6 +519,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 - Estimated effort: 2-3 weeks
 
 **R5: Build a cost estimator and budget dashboard**
+
 - Track API token usage per task, per iteration, per SDLC phase
 - Display running cost in real-time during autonomous execution
 - Project total cost at start based on PRD complexity
@@ -500,6 +527,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 - Estimated effort: 1-2 weeks (extends existing token_economics.py)
 
 **R6: Pre-built MCP connector library**
+
 - Package common MCP server configs: Stripe, Slack, Notion, GitHub, Supabase, OpenAI
 - `loki connect stripe` to add pre-configured MCP connector
 - Estimated effort: 2 weeks
@@ -507,6 +535,7 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 ### Tier 3: Strategic, Build Later
 
 **R7: Multi-operator dashboard with shared project state**
+
 - Allow multiple developers to view and interact with an autonomous run
 - Share the dashboard URL for real-time monitoring
 - Enable task claiming (developer takes a task from the queue)
@@ -514,12 +543,14 @@ Replit now supports React Native/Expo with full backend and RevenueCat monetizat
 - Estimated effort: 4-6 weeks
 
 **R8: Mobile development workflow**
+
 - Add React Native/Expo PRD template
 - Include mobile-specific quality gates (responsive design, touch targets)
 - Add mobile preview via Expo tunnel
 - Estimated effort: 2-3 weeks
 
 **R9: "Vibe mode" for non-technical users**
+
 - Simplified chat interface in dashboard
 - Auto-generates PRD from conversation
 - Handles all technical decisions internally
@@ -538,14 +569,14 @@ When positioning Loki Mode against Replit and Lovable, emphasize:
 
 ### Key Metrics to Track
 
-| Metric | Current State | 6-Month Target |
-|--------|---------------|----------------|
-| Time to first deploy | Manual | `loki deploy` in < 5 min |
-| Dashboard active sessions | Monitoring only | Build-along interface |
-| Figma integration | None | MCP connector live |
-| Starter templates | 13 PRD templates | +5 full-stack starter kits |
-| MCP connectors | 15 tools | 25+ tools with common services |
-| Cost transparency | Token tracking exists | Real-time cost dashboard |
+| Metric                    | Current State         | 6-Month Target                 |
+| ------------------------- | --------------------- | ------------------------------ |
+| Time to first deploy      | Manual                | `loki deploy` in < 5 min       |
+| Dashboard active sessions | Monitoring only       | Build-along interface          |
+| Figma integration         | None                  | MCP connector live             |
+| Starter templates         | 13 PRD templates      | +5 full-stack starter kits     |
+| MCP connectors            | 15 tools              | 25+ tools with common services |
+| Cost transparency         | Token tracking exists | Real-time cost dashboard       |
 
 ---
 
@@ -572,12 +603,12 @@ The term "vibe coding" (coined by Andrej Karpathy) has driven explosive growth i
 
 ### Emerging Open-Source Competitors
 
-| Project | Description | Relevance to Loki Mode |
-|---------|-------------|------------------------|
-| December | Local Lovable/Bolt alternative, runs with own LLM, Docker-based, Next.js | Validates BYOK model; Loki Mode is more capable |
-| Tinykit | Self-hosted AI app builder, code gen + deployment | Validates self-hosted demand; Loki Mode has deeper autonomy |
-| Auto-Claude | Electron desktop app, 12 parallel agents, Graphiti memory | Closest competitor in autonomous space; see existing analysis |
-| Bolt.new (open-source) | StackBlitz-based, browser IDE, on-prem available | Enterprise self-hosting option; Loki Mode is CLI-native |
+| Project                | Description                                                              | Relevance to Loki Mode                                        |
+| ---------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| December               | Local Lovable/Bolt alternative, runs with own LLM, Docker-based, Next.js | Validates BYOK model; Loki Mode is more capable               |
+| Tinykit                | Self-hosted AI app builder, code gen + deployment                        | Validates self-hosted demand; Loki Mode has deeper autonomy   |
+| Auto-Claude            | Electron desktop app, 12 parallel agents, Graphiti memory                | Closest competitor in autonomous space; see existing analysis |
+| Bolt.new (open-source) | StackBlitz-based, browser IDE, on-prem available                         | Enterprise self-hosting option; Loki Mode is CLI-native       |
 
 ### Threat Assessment
 
@@ -592,6 +623,7 @@ The term "vibe coding" (coined by Andrej Karpathy) has driven explosive growth i
 ## Research Sources
 
 ### Replit
+
 - Replit 2025 Year in Review (blog.replit.com)
 - Replit Agent 4 Launch (blog.replit.com/introducing-agent-4-built-for-creativity)
 - Agent 3 to Agent 4 Changes (blog.replit.com/whats-changed-agent3-to-agent4)
@@ -604,6 +636,7 @@ The term "vibe coding" (coined by Andrej Karpathy) has driven explosive growth i
 - Replit Statistics 2026 (index.dev/blog/replit-usage-statistics)
 
 ### Lovable.dev
+
 - Lovable 2.0 Announcement (lovable.dev/blog/lovable-2-0)
 - Lovable Series B ($330M) Announcement (lovable.dev/blog/series-b)
 - TechCrunch: $6.6B Valuation (techcrunch.com, Dec 2025)
@@ -616,6 +649,7 @@ The term "vibe coding" (coined by Andrej Karpathy) has driven explosive growth i
 - DesignRevision: Why Developers Switch Survey (designrevision.com)
 
 ### Comparison Sources
+
 - Bolt vs Cursor vs Replit vs Lovable Guide (linkblink.medium.com)
 - "$500 Testing All Platforms" (medium.com/realworld-ai-use-cases)
 - AI For Dev Teams Comparison (aifordevteams.com)

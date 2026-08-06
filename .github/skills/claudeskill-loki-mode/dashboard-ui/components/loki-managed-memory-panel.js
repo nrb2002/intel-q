@@ -14,8 +14,8 @@
  * <loki-managed-memory-panel api-url="http://localhost:57374" theme="dark"></loki-managed-memory-panel>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 const DEFAULT_EVENT_LIMIT = 50;
 
@@ -27,7 +27,7 @@ const DEFAULT_EVENT_LIMIT = 50;
  */
 export class LokiManagedMemoryPanel extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -47,7 +47,7 @@ export class LokiManagedMemoryPanel extends LokiElement {
     this._eventsCount = 0;
 
     // Memory-version lookup state
-    this._lookupId = '';
+    this._lookupId = "";
     this._lookupLoading = false;
     this._lookupError = null;
     this._lookupResult = null;
@@ -68,13 +68,13 @@ export class LokiManagedMemoryPanel extends LokiElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
     switch (name) {
-      case 'api-url':
+      case "api-url":
         if (this._api) {
           this._api.baseUrl = newValue;
           this._loadStatus();
         }
         break;
-      case 'theme':
+      case "theme":
         this._applyTheme();
         this.render();
         break;
@@ -82,7 +82,7 @@ export class LokiManagedMemoryPanel extends LokiElement {
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -96,9 +96,9 @@ export class LokiManagedMemoryPanel extends LokiElement {
     this.render();
 
     try {
-      this._status = await this._api.get('/api/managed/status');
+      this._status = await this._api.get("/api/managed/status");
     } catch (err) {
-      this._statusError = (err && err.message) ? err.message : 'Failed to load managed status';
+      this._statusError = err && err.message ? err.message : "Failed to load managed status";
       this._status = null;
     } finally {
       this._statusLoading = false;
@@ -118,15 +118,15 @@ export class LokiManagedMemoryPanel extends LokiElement {
     this.render();
 
     try {
-      const data = await this._api.get('/api/managed/events?limit=' + encodeURIComponent(limit));
+      const data = await this._api.get("/api/managed/events?limit=" + encodeURIComponent(limit));
       // Endpoint shape: {events, count, source}; tolerate plain arrays too.
       if (Array.isArray(data)) {
         this._events = data;
         this._eventsCount = data.length;
         this._eventsSource = null;
-      } else if (data && typeof data === 'object') {
+      } else if (data && typeof data === "object") {
         this._events = Array.isArray(data.events) ? data.events : [];
-        this._eventsCount = typeof data.count === 'number' ? data.count : this._events.length;
+        this._eventsCount = typeof data.count === "number" ? data.count : this._events.length;
         this._eventsSource = data.source || null;
       } else {
         this._events = [];
@@ -134,7 +134,7 @@ export class LokiManagedMemoryPanel extends LokiElement {
         this._eventsSource = null;
       }
     } catch (err) {
-      this._eventsError = (err && err.message) ? err.message : 'Failed to load managed events';
+      this._eventsError = err && err.message ? err.message : "Failed to load managed events";
       this._events = [];
       this._eventsCount = 0;
       this._eventsSource = null;
@@ -145,9 +145,9 @@ export class LokiManagedMemoryPanel extends LokiElement {
   }
 
   async _lookupMemoryVersion() {
-    const id = (this._lookupId || '').trim();
+    const id = (this._lookupId || "").trim();
     if (!id) {
-      this._lookupError = 'Enter a memory ID to look up';
+      this._lookupError = "Enter a memory ID to look up";
       this._lookupResult = null;
       this.render();
       return;
@@ -159,10 +159,10 @@ export class LokiManagedMemoryPanel extends LokiElement {
     this.render();
 
     try {
-      const path = '/api/managed/memory_versions/' + encodeURIComponent(id);
+      const path = "/api/managed/memory_versions/" + encodeURIComponent(id);
       this._lookupResult = await this._api.get(path);
     } catch (err) {
-      this._lookupError = (err && err.message) ? err.message : 'Failed to load memory versions';
+      this._lookupError = err && err.message ? err.message : "Failed to load memory versions";
       this._lookupResult = null;
     } finally {
       this._lookupLoading = false;
@@ -171,11 +171,11 @@ export class LokiManagedMemoryPanel extends LokiElement {
   }
 
   _onLookupInput(event) {
-    this._lookupId = event && event.target ? event.target.value : '';
+    this._lookupId = event && event.target ? event.target.value : "";
   }
 
   _onLookupKeyDown(event) {
-    if (event && event.key === 'Enter') {
+    if (event && event.key === "Enter") {
       event.preventDefault();
       this._lookupMemoryVersion();
     }
@@ -185,49 +185,52 @@ export class LokiManagedMemoryPanel extends LokiElement {
     const root = this.shadowRoot;
     if (!root) return;
 
-    const refreshBtn = root.querySelector('#refresh-status-btn');
+    const refreshBtn = root.querySelector("#refresh-status-btn");
     if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => this._loadStatus());
+      refreshBtn.addEventListener("click", () => this._loadStatus());
     }
 
-    const refreshEventsBtn = root.querySelector('#refresh-events-btn');
+    const refreshEventsBtn = root.querySelector("#refresh-events-btn");
     if (refreshEventsBtn) {
-      refreshEventsBtn.addEventListener('click', () => this._loadEvents());
+      refreshEventsBtn.addEventListener("click", () => this._loadEvents());
     }
 
-    const lookupInput = root.querySelector('#lookup-input');
+    const lookupInput = root.querySelector("#lookup-input");
     if (lookupInput) {
-      lookupInput.addEventListener('input', (e) => this._onLookupInput(e));
-      lookupInput.addEventListener('keydown', (e) => this._onLookupKeyDown(e));
+      lookupInput.addEventListener("input", (e) => this._onLookupInput(e));
+      lookupInput.addEventListener("keydown", (e) => this._onLookupKeyDown(e));
     }
 
-    const lookupBtn = root.querySelector('#lookup-btn');
+    const lookupBtn = root.querySelector("#lookup-btn");
     if (lookupBtn) {
-      lookupBtn.addEventListener('click', () => this._lookupMemoryVersion());
+      lookupBtn.addEventListener("click", () => this._lookupMemoryVersion());
     }
   }
 
   _escapeHtml(value) {
-    if (value === null || value === undefined) return '';
+    if (value === null || value === undefined) return "";
     return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   _formatTimestamp(ts) {
-    if (!ts) return '';
+    if (!ts) return "";
     // Accept seconds, milliseconds, or ISO strings.
     let date;
-    if (typeof ts === 'number') {
+    if (typeof ts === "number") {
       date = new Date(ts > 1e12 ? ts : ts * 1000);
     } else {
       date = new Date(ts);
     }
     if (Number.isNaN(date.getTime())) return String(ts);
-    return date.toISOString().replace('T', ' ').replace(/\.\d+Z$/, 'Z');
+    return date
+      .toISOString()
+      .replace("T", " ")
+      .replace(/\.\d+Z$/, "Z");
   }
 
   _renderStatusSection() {
@@ -252,33 +255,36 @@ export class LokiManagedMemoryPanel extends LokiElement {
     const beta = this._status.beta_header;
     const fallback = this._status.last_fallback_ts;
 
-    const childSummary = child && typeof child === 'object'
-      ? Object.entries(child)
-          .map(([k, v]) => `${this._escapeHtml(k)}=${this._escapeHtml(v)}`)
-          .join(', ')
-      : (child === undefined || child === null ? '' : String(child));
+    const childSummary =
+      child && typeof child === "object"
+        ? Object.entries(child)
+            .map(([k, v]) => `${this._escapeHtml(k)}=${this._escapeHtml(v)}`)
+            .join(", ")
+        : child === undefined || child === null
+          ? ""
+          : String(child);
 
     return `
       <div class="status-grid">
         <div class="status-cell">
           <div class="status-label">Enabled</div>
-          <div class="status-value ${enabled ? 'on' : 'off'}">${enabled ? 'true' : 'false'}</div>
+          <div class="status-value ${enabled ? "on" : "off"}">${enabled ? "true" : "false"}</div>
         </div>
         <div class="status-cell">
           <div class="status-label">Parent flag</div>
-          <div class="status-value">${this._escapeHtml(parent === undefined ? '-' : parent)}</div>
+          <div class="status-value">${this._escapeHtml(parent === undefined ? "-" : parent)}</div>
         </div>
         <div class="status-cell">
           <div class="status-label">Child flags</div>
-          <div class="status-value">${this._escapeHtml(childSummary || '-')}</div>
+          <div class="status-value">${this._escapeHtml(childSummary || "-")}</div>
         </div>
         <div class="status-cell">
           <div class="status-label">Beta header</div>
-          <div class="status-value mono">${this._escapeHtml(beta || '-')}</div>
+          <div class="status-value mono">${this._escapeHtml(beta || "-")}</div>
         </div>
         <div class="status-cell">
           <div class="status-label">Last fallback</div>
-          <div class="status-value mono">${this._escapeHtml(this._formatTimestamp(fallback) || '-')}</div>
+          <div class="status-value mono">${this._escapeHtml(this._formatTimestamp(fallback) || "-")}</div>
         </div>
       </div>
     `;
@@ -313,16 +319,15 @@ export class LokiManagedMemoryPanel extends LokiElement {
       return '<div class="events-empty muted">No managed memory events recorded yet.</div>';
     }
 
-    const rows = this._events.map((event) => {
-      const ts = this._formatTimestamp(event && (event.ts || event.timestamp || event.time));
-      const type = event && (event.type || event.event_type || event.kind || 'event');
-      const memoryId = event && (event.memory_id || event.memoryId || event.id || '');
-      const summaryRaw = event && (event.summary || event.message || event.detail || '');
-      const summary = typeof summaryRaw === 'string'
-        ? summaryRaw
-        : JSON.stringify(summaryRaw);
+    const rows = this._events
+      .map((event) => {
+        const ts = this._formatTimestamp(event && (event.ts || event.timestamp || event.time));
+        const type = event && (event.type || event.event_type || event.kind || "event");
+        const memoryId = event && (event.memory_id || event.memoryId || event.id || "");
+        const summaryRaw = event && (event.summary || event.message || event.detail || "");
+        const summary = typeof summaryRaw === "string" ? summaryRaw : JSON.stringify(summaryRaw);
 
-      return `
+        return `
         <tr>
           <td class="mono nowrap">${this._escapeHtml(ts)}</td>
           <td><span class="badge">${this._escapeHtml(type)}</span></td>
@@ -330,11 +335,12 @@ export class LokiManagedMemoryPanel extends LokiElement {
           <td>${this._escapeHtml(summary)}</td>
         </tr>
       `;
-    }).join('');
+      })
+      .join("");
 
     const sourceLabel = this._eventsSource
       ? `<span class="source-tag">source: ${this._escapeHtml(this._eventsSource)}</span>`
-      : '';
+      : "";
 
     return `
       <div class="events-meta">
@@ -358,7 +364,7 @@ export class LokiManagedMemoryPanel extends LokiElement {
   }
 
   _renderLookupSection() {
-    let resultBlock = '';
+    let resultBlock = "";
     if (this._lookupLoading) {
       resultBlock = '<div class="lookup-result muted">Loading memory versions...</div>';
     } else if (this._lookupError) {
@@ -378,7 +384,7 @@ export class LokiManagedMemoryPanel extends LokiElement {
       resultBlock = `<pre class="lookup-result mono">${this._escapeHtml(pretty)}</pre>`;
     }
 
-    const inputValue = this._escapeHtml(this._lookupId || '');
+    const inputValue = this._escapeHtml(this._lookupId || "");
 
     return `
       <div class="lookup-controls">
@@ -693,7 +699,9 @@ export class LokiManagedMemoryPanel extends LokiElement {
           ${this._renderStatusSection()}
         </div>
 
-        ${showOperational ? `
+        ${
+          showOperational
+            ? `
           <div class="section">
             <div class="panel-header">
               <h3 class="section-title">Recent events (limit ${DEFAULT_EVENT_LIMIT})</h3>
@@ -706,7 +714,11 @@ export class LokiManagedMemoryPanel extends LokiElement {
             <h3 class="section-title">Memory version lookup</h3>
             ${this._renderLookupSection()}
           </div>
-        ` : (this._statusError ? '' : this._renderDisabledNotice())}
+        `
+            : this._statusError
+              ? ""
+              : this._renderDisabledNotice()
+        }
       </div>
     `;
 
@@ -714,8 +726,8 @@ export class LokiManagedMemoryPanel extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-managed-memory-panel')) {
-  customElements.define('loki-managed-memory-panel', LokiManagedMemoryPanel);
+if (!customElements.get("loki-managed-memory-panel")) {
+  customElements.define("loki-managed-memory-panel", LokiManagedMemoryPanel);
 }
 
 export default LokiManagedMemoryPanel;

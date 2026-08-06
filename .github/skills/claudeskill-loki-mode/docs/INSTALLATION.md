@@ -9,6 +9,7 @@ The flagship product of [Autonomi](https://www.autonomi.dev/). Loki Mode is a sp
 ## What's New in v7.5.x
 
 ### Phase 1 RARV-C closure (shipped v7.5.0, default-on as of v7.5.3)
+
 Phase 1 closure features now activate automatically when you run
 `loki start` -- no env flags required. Power users can opt out by
 setting any flag to `0`.
@@ -31,6 +32,7 @@ setting any flag to `0`.
 - See `skills/quality-gates.md` for full schema and reachability notes.
 
 ### Earlier highlights still in scope
+
 - Bash-to-Bun runtime migration in progress (see `UPGRADING.md`)
 - Provider-agnostic runtime: Claude (full), Codex, Cline, Aider (no vendor lock-in)
 - Memory system (episodic / semantic / procedural)
@@ -73,10 +75,12 @@ back to the bash CLI otherwise.
 faster routed commands and forward-compat with v8.0.0.
 
 **What it does:**
+
 - Installs the `loki` CLI binary to your PATH (`bin/loki` shim)
 - Subsequent `loki setup-skill` creates symlinks at `~/.claude/skills/loki-mode`, `~/.codex/skills/loki-mode`
 
 **Opt out of anonymous install telemetry:**
+
 ```bash
 LOKI_TELEMETRY_DISABLED=true npm install -g loki-mode
 # Or set DO_NOT_TRACK=1
@@ -232,6 +236,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-spec.md
 #### Human Input Security
 
 The `HUMAN_INPUT.md` file has security controls:
+
 - **Symlink protection**: Symlinks are rejected
 - **Size limit**: Maximum 1MB file size
 - **Path validation**: Must be within `.loki/` directory
@@ -251,14 +256,14 @@ Loki Mode supports four active providers across three tiers, plus historical/upc
 
 ### Supported Providers
 
-| Provider | Status | Tier | Notes |
-|----------|--------|------|-------|
-| `claude` | Active | Tier 1 (full) | Default. All features incl. Task subagents, MCP, council. |
-| `cline`  | Active | Tier 2 | Full feature set; small models (<13B) may fail tool-use. |
-| `codex`  | Active | Tier 3 (degraded) | Sequential only, no Task tool; aligned with `@openai/codex` v0.125+. |
-| `aider`  | Active | Tier 3 (degraded) | Sequential only; `ollama_chat/<model>` works for local models. |
-| `gemini` | DEPRECATED v7.5.18 | -- | Upstream Gemini CLI deprecated by Google. Runtime removed; `LOKI_PROVIDER=gemini` exits with migration message. |
-| `antigravity` | Coming soon | -- | Anthropic Antigravity CLI integration planned. |
+| Provider      | Status             | Tier              | Notes                                                                                                           |
+| ------------- | ------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| `claude`      | Active             | Tier 1 (full)     | Default. All features incl. Task subagents, MCP, council.                                                       |
+| `cline`       | Active             | Tier 2            | Full feature set; small models (<13B) may fail tool-use.                                                        |
+| `codex`       | Active             | Tier 3 (degraded) | Sequential only, no Task tool; aligned with `@openai/codex` v0.125+.                                            |
+| `aider`       | Active             | Tier 3 (degraded) | Sequential only; `ollama_chat/<model>` works for local models.                                                  |
+| `gemini`      | DEPRECATED v7.5.18 | --                | Upstream Gemini CLI deprecated by Google. Runtime removed; `LOKI_PROVIDER=gemini` exits with migration message. |
+| `antigravity` | Coming soon        | --                | Anthropic Antigravity CLI integration planned.                                                                  |
 
 ### Configuration
 
@@ -328,11 +333,13 @@ Loki Mode can be installed as a skill in three ways:
 ### Option A: Git Clone (Recommended)
 
 **Personal installation (available in all projects):**
+
 ```bash
 git clone https://github.com/asklokesh/loki-mode.git ~/.claude/skills/loki-mode
 ```
 
 **Project-specific installation:**
+
 ```bash
 # Navigate to your project directory first
 cd /path/to/your/project
@@ -444,6 +451,7 @@ cat ~/.claude/skills/loki-mode/SKILL.md | head -10
 ```
 
 **Expected output:** Should show YAML frontmatter starting with:
+
 ```yaml
 ---
 name: loki-mode
@@ -507,8 +515,8 @@ loki-mode/
 
 Loki Mode uses two network ports for different services:
 
-| Port | Service | Description |
-|------|---------|-------------|
+| Port      | Service                   | Description                                                                                                                                                                                                                                                              |
+| --------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **57374** | Dashboard + API (FastAPI) | Unified server serving both the web dashboard UI (real-time monitoring, task board, Completion Council, memory browser, log streaming) and the REST API (used by CLI tools, programmatic access, and the deprecated VS Code extension). Served by `dashboard/server.py`. |
 
 ### When to Use Which Port
@@ -633,15 +641,15 @@ loki start --pro<TAB>     # Should autocomplete to --provider
 
 The completion scripts support:
 
-* **Subcommands**
+- **Subcommands**
   `start`, `stop`, `pause`, `resume`, `status`, `dashboard`, `import`, `council`, `memory`, `provider`, `config`, `audit`, `metrics`, `watchdog`, `secrets`, `help`, `completions`
 
-* **Smart Context**
+- **Smart Context**
 
-  * `loki start --provider <TAB>` shows only installed providers (`claude`, `codex`, `cline`, `aider`).
-  * `loki start <TAB>` defaults to file completion for spec files (PRD templates, YAML).
+  - `loki start --provider <TAB>` shows only installed providers (`claude`, `codex`, `cline`, `aider`).
+  - `loki start <TAB>` defaults to file completion for spec files (PRD templates, YAML).
 
-* **Nested Commands**
+- **Nested Commands**
   Handles specific subcommands for `council`, `memory`, `config`, `audit`, `metrics`, `watchdog`, and `secrets`.
 
 ---
@@ -653,15 +661,19 @@ The completion scripts support:
 **Problem:** Claude doesn't recognize "Loki Mode" command.
 
 **Solutions:**
+
 1. **Check installation path:**
+
    ```bash
    ls -la ~/.claude/skills/loki-mode/SKILL.md
    ```
 
 2. **Verify YAML frontmatter:**
+
    ```bash
    cat ~/.claude/skills/loki-mode/SKILL.md | head -5
    ```
+
    Should show `name: loki-mode`
 
 3. **Restart Claude Code:**
@@ -674,6 +686,7 @@ The completion scripts support:
 **Problem:** Cannot create directories or download files.
 
 **Solution:**
+
 ```bash
 # Ensure skills directory exists
 mkdir -p ~/.claude/skills
@@ -687,9 +700,11 @@ ls -la ~/.claude/
 **Problem:** curl or wget commands fail.
 
 **Solutions:**
+
 1. **Check internet connection**
 
 2. **Try alternate download method:**
+
    ```bash
    # Use wget instead of curl
    wget -O ~/.claude/skills/loki-mode/SKILL.md \
@@ -705,12 +720,15 @@ ls -la ~/.claude/
 **Problem:** `./autonomy/run.sh` gives "command not found" or permission errors.
 
 **Solutions:**
+
 1. **Make executable:**
+
    ```bash
    chmod +x autonomy/run.sh
    ```
 
 2. **Run from repository root:**
+
    ```bash
    # Make sure you're in the loki-mode directory
    cd ~/.claude/skills/loki-mode
@@ -731,6 +749,7 @@ ls -la ~/.claude/
 **Problem:** Skill loads but agent definitions or deployment guides are missing.
 
 **Solution:**
+
 ```bash
 # Ensure all reference files are present
 ls -la ~/.claude/skills/loki-mode/references/
@@ -798,17 +817,20 @@ rm -rf ~/.claude/skills/loki-mode
 After installation:
 
 1. **Verify Setup:** Check your environment is ready
+
    ```bash
    loki doctor
    ```
 
 2. **Scaffold a Project:** Create a project from a template
+
    ```bash
    loki init my-app --template simple-todo-app
    cd my-app
    ```
 
 3. **Start Building:** Launch autonomous development from any spec (PRD, GitHub issue, or YAML)
+
    ```bash
    loki start spec.md
    ```
@@ -826,6 +848,7 @@ After installation:
 Follow this runbook when a release workflow fails to publish to npm.
 
 **Symptom:** The `publish-npm` step in `.github/workflows/release.yml` fails with:
+
 ```
 npm error 404 Not Found - PUT https://registry.npmjs.org/loki-mode
 ```
@@ -833,17 +856,20 @@ npm error 404 Not Found - PUT https://registry.npmjs.org/loki-mode
 A 404 on PUT means the registry rejected the credential, not that the package is missing.
 
 **Likely causes:**
+
 - The `NPM_TOKEN` Automation token has expired.
 - The token was revoked or its owner lost publish rights on the `loki-mode` package.
 - The npm account requires a 2FA refresh and the existing Automation token is no longer accepted.
 
 **Remediation steps:**
+
 1. Log in to npmjs.com as the publish account and regenerate an Automation token with publish access scoped to `loki-mode`.
 2. Open https://github.com/asklokesh/loki-mode/settings/secrets/actions
 3. Update the `NPM_TOKEN` repository secret with the new token value.
 4. Re-run the failed Release workflow: `gh run rerun <run-id>`. If re-run is not available for that run, push a no-op commit to `main` to retrigger.
 
 **Verification:**
+
 - Watch the new run: `gh run watch <new-run-id>` and confirm `publish-npm` and `publish-ts-sdk` succeed.
 - Confirm publish: `npm view loki-mode version` returns the new version.
 

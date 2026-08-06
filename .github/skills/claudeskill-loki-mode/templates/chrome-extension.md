@@ -1,9 +1,11 @@
 # PRD: Chrome Tab Manager Extension
 
 ## Overview
+
 A Chrome browser extension called "TabFlow" that helps users manage, organize, and save groups of browser tabs. Built with Manifest V3, it provides tab grouping, session saving, search, and memory usage insights.
 
 ## Target Users
+
 - Knowledge workers with 20+ tabs open regularly
 - Researchers managing multiple projects simultaneously
 - Developers switching between different work contexts
@@ -12,6 +14,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 ## Features
 
 ### MVP Features
+
 1. **Tab Overview** - Popup showing all open tabs across windows, grouped by domain
 2. **Tab Groups** - Create named groups, drag tabs between groups, color-code groups
 3. **Save Sessions** - Save all current tabs as a named session, restore later
@@ -22,6 +25,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 8. **Memory Monitor** - Show per-tab memory usage, highlight heavy tabs
 
 ### User Flow
+
 1. User clicks extension icon -> popup shows tab overview
 2. Tabs are grouped by domain with tab count per domain
 3. User can search tabs, click to switch, or right-click for actions
@@ -31,6 +35,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 7. Duplicate detector finds 3 duplicates -> user closes them
 
 ## Tech Stack
+
 - Platform: Chrome Extension (Manifest V3)
 - Popup UI: HTML + CSS + vanilla JavaScript (no framework, fast load)
 - Background: Service Worker (Manifest V3 requirement)
@@ -39,6 +44,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 - Build: esbuild for bundling service worker
 
 ### Structure
+
 ```
 /
 ├── manifest.json
@@ -89,16 +95,8 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
   "name": "TabFlow - Tab Manager",
   "version": "1.0.0",
   "description": "Organize, save, and manage browser tabs efficiently",
-  "permissions": [
-    "tabs",
-    "tabGroups",
-    "storage",
-    "activeTab",
-    "system.memory"
-  ],
-  "optional_permissions": [
-    "processes"
-  ],
+  "permissions": ["tabs", "tabGroups", "storage", "activeTab", "system.memory"],
+  "optional_permissions": ["processes"],
   "background": {
     "service_worker": "src/background/service-worker.js",
     "type": "module"
@@ -123,6 +121,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 ## Storage Schema
 
 ### chrome.storage.local (Sessions)
+
 ```json
 {
   "sessions": [
@@ -143,6 +142,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 ```
 
 ### chrome.storage.sync (Settings)
+
 ```json
 {
   "settings": {
@@ -161,6 +161,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 ## API (Chrome Extension APIs Used)
 
 ### Tabs
+
 - `chrome.tabs.query()` - Get all open tabs
 - `chrome.tabs.update()` - Switch to a tab
 - `chrome.tabs.remove()` - Close tabs
@@ -170,20 +171,24 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 - `chrome.tabs.discard()` - Discard tab to save memory
 
 ### Tab Groups
+
 - `chrome.tabGroups.update()` - Set group title and color
 - `chrome.tabGroups.query()` - Get existing groups
 
 ### Storage
+
 - `chrome.storage.local.get/set` - Sessions data (larger storage)
 - `chrome.storage.sync.get/set` - Settings (synced across devices)
 
 ### Events
+
 - `chrome.tabs.onCreated` - Track new tabs
 - `chrome.tabs.onRemoved` - Track closed tabs
 - `chrome.tabs.onUpdated` - Track URL/title changes
 - `chrome.runtime.onInstalled` - First install setup
 
 ## Requirements
+
 - Manifest V3 compliance (service worker, no persistent background)
 - Popup loads in under 200ms (even with 100+ tabs)
 - Session data persists across browser restarts
@@ -195,12 +200,14 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 - No external network requests (fully offline capable)
 
 ## Testing
+
 - Unit tests: Tab grouping logic, duplicate detection, fuzzy search, format utilities (Vitest)
 - Integration tests: Session save/restore with mocked chrome.storage API
 - Manual testing: Load as unpacked extension, test with 50+ tabs
 - Edge cases: Incognito tabs (excluded), pinned tabs, chrome:// URLs (not accessible)
 
 ## Out of Scope
+
 - Firefox or Safari support
 - Tab sharing between users
 - Cloud sync of sessions (beyond Chrome sync)
@@ -210,6 +217,7 @@ A Chrome browser extension called "TabFlow" that helps users manage, organize, a
 - Cross-browser extension framework (WebExtension polyfill)
 
 ## Success Criteria
+
 - Extension installs and popup opens correctly
 - All open tabs displayed and searchable in under 200ms
 - Tab groups can be created, named, and color-coded

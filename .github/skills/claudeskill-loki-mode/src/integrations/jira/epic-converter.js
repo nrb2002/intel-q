@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Convert a Jira epic and its child stories into a PRD markdown document.
@@ -12,70 +12,77 @@ function convertEpicToPrd(epic, children) {
   var lines = [];
 
   // Title
-  var summary = _extractText(epic.fields && epic.fields.summary) || 'Untitled PRD';
-  lines.push('# ' + summary);
-  lines.push('');
+  var summary = _extractText(epic.fields && epic.fields.summary) || "Untitled PRD";
+  lines.push("# " + summary);
+  lines.push("");
 
   // Metadata
-  lines.push('## Metadata');
-  lines.push('- Source: Jira');
-  lines.push('- Epic: ' + (epic.key || 'unknown'));
+  lines.push("## Metadata");
+  lines.push("- Source: Jira");
+  lines.push("- Epic: " + (epic.key || "unknown"));
   if (epic.fields && epic.fields.priority) {
-    lines.push('- Priority: ' + _extractText(epic.fields.priority.name));
+    lines.push("- Priority: " + _extractText(epic.fields.priority.name));
   }
   if (epic.fields && epic.fields.labels && epic.fields.labels.length > 0) {
-    lines.push('- Labels: ' + epic.fields.labels.join(', '));
+    lines.push("- Labels: " + epic.fields.labels.join(", "));
   }
-  lines.push('');
+  lines.push("");
 
   // Overview
-  lines.push('## Overview');
+  lines.push("## Overview");
   var desc = _extractDescription(epic.fields && epic.fields.description);
-  lines.push(desc || 'No description provided.');
-  lines.push('');
+  lines.push(desc || "No description provided.");
+  lines.push("");
 
   // Requirements / Features
   if (children.length > 0) {
-    lines.push('## Requirements');
-    lines.push('');
+    lines.push("## Requirements");
+    lines.push("");
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      var childSummary = _extractText(child.fields && child.fields.summary) || 'Untitled';
-      var childKey = child.key || '';
-      lines.push('### ' + (i + 1) + '. ' + childSummary + ' (' + childKey + ')');
+      var childSummary = _extractText(child.fields && child.fields.summary) || "Untitled";
+      var childKey = child.key || "";
+      lines.push("### " + (i + 1) + ". " + childSummary + " (" + childKey + ")");
       var childDesc = _extractDescription(child.fields && child.fields.description);
       if (childDesc) lines.push(childDesc);
 
-      var criteria = extractAcceptanceCriteria(childDesc || '');
+      var criteria = extractAcceptanceCriteria(childDesc || "");
       if (criteria.length > 0) {
-        lines.push('');
-        lines.push('**Acceptance Criteria:**');
+        lines.push("");
+        lines.push("**Acceptance Criteria:**");
         for (var j = 0; j < criteria.length; j++) {
-          lines.push('- ' + criteria[j]);
+          lines.push("- " + criteria[j]);
         }
       }
-      lines.push('');
+      lines.push("");
     }
   }
 
   // Technical constraints
   if (epic.fields && epic.fields.components && epic.fields.components.length > 0) {
-    lines.push('## Technical Constraints');
-    lines.push('- Components: ' + epic.fields.components.map(function (c) { return c.name; }).join(', '));
-    lines.push('');
+    lines.push("## Technical Constraints");
+    lines.push(
+      "- Components: " +
+        epic.fields.components
+          .map(function (c) {
+            return c.name;
+          })
+          .join(", "),
+    );
+    lines.push("");
   }
 
   // Success criteria from epic description
-  var epicCriteria = extractAcceptanceCriteria(desc || '');
+  var epicCriteria = extractAcceptanceCriteria(desc || "");
   if (epicCriteria.length > 0) {
-    lines.push('## Success Criteria');
+    lines.push("## Success Criteria");
     for (var k = 0; k < epicCriteria.length; k++) {
-      lines.push('- ' + epicCriteria[k]);
+      lines.push("- " + epicCriteria[k]);
     }
-    lines.push('');
+    lines.push("");
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -89,7 +96,7 @@ function convertEpicToPrd(epic, children) {
 function extractAcceptanceCriteria(text) {
   if (!text) return [];
   var criteria = [];
-  var lines = text.split('\n');
+  var lines = text.split("\n");
   var inAcSection = false;
 
   for (var i = 0; i < lines.length; i++) {
@@ -105,7 +112,7 @@ function extractAcceptanceCriteria(text) {
       continue;
     }
     if (inAcSection && /^[-*]\s+/.test(line)) {
-      criteria.push(line.replace(/^[-*]\s+/, ''));
+      criteria.push(line.replace(/^[-*]\s+/, ""));
       continue;
     }
     // Given/When/Then patterns anywhere
@@ -121,7 +128,7 @@ function extractAcceptanceCriteria(text) {
  */
 function generatePrdMetadata(epic) {
   return {
-    source: 'jira',
+    source: "jira",
     epicKey: epic.key || null,
     epicSummary: (epic.fields && epic.fields.summary) || null,
     importedAt: new Date().toISOString(),
@@ -132,25 +139,30 @@ function generatePrdMetadata(epic) {
  * Extract plain text from Jira ADF or plain string.
  */
 function _extractDescription(desc) {
-  if (!desc) return '';
-  if (typeof desc === 'string') return desc;
+  if (!desc) return "";
+  if (typeof desc === "string") return desc;
   // ADF (Atlassian Document Format)
-  if (desc.type === 'doc' && Array.isArray(desc.content)) {
-    return desc.content.map(function (block) {
-      if (block.type === 'paragraph' && Array.isArray(block.content)) {
-        return block.content.map(function (node) {
-          return node.text || '';
-        }).join('');
-      }
-      return '';
-    }).filter(Boolean).join('\n');
+  if (desc.type === "doc" && Array.isArray(desc.content)) {
+    return desc.content
+      .map(function (block) {
+        if (block.type === "paragraph" && Array.isArray(block.content)) {
+          return block.content
+            .map(function (node) {
+              return node.text || "";
+            })
+            .join("");
+        }
+        return "";
+      })
+      .filter(Boolean)
+      .join("\n");
   }
   return String(desc);
 }
 
 function _extractText(val) {
-  if (!val) return '';
-  if (typeof val === 'string') return val;
+  if (!val) return "";
+  if (typeof val === "string") return val;
   return String(val);
 }
 

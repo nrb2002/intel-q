@@ -1,2 +1,2 @@
-'use strict';
-module.exports = require('./adapter');
+"use strict";
+module.exports = require("./adapter");

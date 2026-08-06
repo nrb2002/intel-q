@@ -13,46 +13,46 @@ codebase. Phases 1-2 are deferred pending P0 value validation.
 
 ## 1. Compatibility Matrix
 
-| Integration Point | Status | Notes |
-|---|---|---|
-| PRD format parsing | Compatible (minor gaps) | 7/9 analyzer dimensions match BMAD headings directly |
-| Artifact chain discovery | New capability needed | Adapter must find `_bmad-output/planning-artifacts/` |
-| Agent personas | Complementary | BMAD pre-dev agents + Loki execution agents = full coverage |
-| Voice capabilities | Insufficient for P2 | voice.sh only does 4-section dictation, not structured dialogue |
-| Context budget | Safe | ~8-15K tokens per iteration (step files load one-at-a-time) |
-| License | MIT -- fully compatible | No restrictions on integration or redistribution |
-| Event bus integration | Ready | `.loki/events/pending/` accepts BMAD artifact events |
-| Memory system | Ready | BMAD artifacts can be stored as episodic memory |
-| CLI integration | Straightforward | `--bmad-project` flag pattern matches existing CLI architecture |
-| Dashboard | Deferred (P1) | Would need new "Elicitation" panel |
+| Integration Point        | Status                  | Notes                                                           |
+| ------------------------ | ----------------------- | --------------------------------------------------------------- |
+| PRD format parsing       | Compatible (minor gaps) | 7/9 analyzer dimensions match BMAD headings directly            |
+| Artifact chain discovery | New capability needed   | Adapter must find `_bmad-output/planning-artifacts/`            |
+| Agent personas           | Complementary           | BMAD pre-dev agents + Loki execution agents = full coverage     |
+| Voice capabilities       | Insufficient for P2     | voice.sh only does 4-section dictation, not structured dialogue |
+| Context budget           | Safe                    | ~8-15K tokens per iteration (step files load one-at-a-time)     |
+| License                  | MIT -- fully compatible | No restrictions on integration or redistribution                |
+| Event bus integration    | Ready                   | `.loki/events/pending/` accepts BMAD artifact events            |
+| Memory system            | Ready                   | BMAD artifacts can be stored as episodic memory                 |
+| CLI integration          | Straightforward         | `--bmad-project` flag pattern matches existing CLI architecture |
+| Dashboard                | Deferred (P1)           | Would need new "Elicitation" panel                              |
 
 ## 2. PRD Format Gap Analysis
 
 ### BMAD PRD Section Headings vs Loki Analyzer Dimensions
 
-| BMAD PRD Section | Loki Dimension | Match Type |
-|---|---|---|
-| `## Executive Summary` | -- | NO MATCH (no heading pattern covers "executive summary") |
-| `## Project Classification` | -- | NO MATCH |
-| `## Success Criteria` | `acceptance_criteria` | PARTIAL (heading pattern matches "criteria" keyword) |
-| `## Product Scope` | `feature_list` | MATCH (heading pattern matches "scope") |
-| `## User Journeys` | `user_stories` | MATCH (heading pattern matches "user.*journey") |
-| `## Domain-Specific Requirements` | -- | NO MATCH |
-| `## Innovation & Novel Patterns` | -- | NO MATCH |
-| `## [ProjectType] Specific Requirements` | `feature_list` | PARTIAL (matches "requirement") |
-| `## Project Scoping & Phased Development` | `feature_list` | PARTIAL (matches "scope") |
-| `## Functional Requirements` | `feature_list` | MATCH (matches "functional" and "requirement") |
-| `## Non-Functional Requirements` | Multiple | MATCH (content patterns for security, deployment, error handling) |
+| BMAD PRD Section                          | Loki Dimension        | Match Type                                                        |
+| ----------------------------------------- | --------------------- | ----------------------------------------------------------------- |
+| `## Executive Summary`                    | --                    | NO MATCH (no heading pattern covers "executive summary")          |
+| `## Project Classification`               | --                    | NO MATCH                                                          |
+| `## Success Criteria`                     | `acceptance_criteria` | PARTIAL (heading pattern matches "criteria" keyword)              |
+| `## Product Scope`                        | `feature_list`        | MATCH (heading pattern matches "scope")                           |
+| `## User Journeys`                        | `user_stories`        | MATCH (heading pattern matches "user.*journey")                   |
+| `## Domain-Specific Requirements`         | --                    | NO MATCH                                                          |
+| `## Innovation & Novel Patterns`          | --                    | NO MATCH                                                          |
+| `## [ProjectType] Specific Requirements`  | `feature_list`        | PARTIAL (matches "requirement")                                   |
+| `## Project Scoping & Phased Development` | `feature_list`        | PARTIAL (matches "scope")                                         |
+| `## Functional Requirements`              | `feature_list`        | MATCH (matches "functional" and "requirement")                    |
+| `## Non-Functional Requirements`          | Multiple              | MATCH (content patterns for security, deployment, error handling) |
 
 ### Content Pattern Matches
 
-| BMAD Content Pattern | Loki Content Pattern | Match? |
-|---|---|---|
-| `FR{N}: [Actor] can [capability]` | `user can/should/will` in `user_stories` | YES |
-| `Given/When/Then` (in epics) | `given.*when.*then` in `acceptance_criteria` | YES |
-| `As a {role}, I want {action}` (stories) | `as a \w+` in `user_stories` | YES |
-| Tech stack mentions in architecture.md | Tech keyword patterns in `tech_stack` | YES |
-| `### Performance`, `### Security` (NFRs) | Security/deployment heading patterns | YES |
+| BMAD Content Pattern                     | Loki Content Pattern                         | Match? |
+| ---------------------------------------- | -------------------------------------------- | ------ |
+| `FR{N}: [Actor] can [capability]`        | `user can/should/will` in `user_stories`     | YES    |
+| `Given/When/Then` (in epics)             | `given.*when.*then` in `acceptance_criteria` | YES    |
+| `As a {role}, I want {action}` (stories) | `as a \w+` in `user_stories`                 | YES    |
+| Tech stack mentions in architecture.md   | Tech keyword patterns in `tech_stack`        | YES    |
+| `### Performance`, `### Security` (NFRs) | Security/deployment heading patterns         | YES    |
 
 ### Gaps Requiring Adapter Work
 
@@ -76,6 +76,7 @@ codebase. Phases 1-2 are deferred pending P0 value validation.
 
 A well-formed BMAD PRD would score approximately **7.5-8.5/10** on the current analyzer
 without any changes:
+
 - `feature_list`: HIGH (## Functional Requirements + bullet lists)
 - `user_stories`: HIGH (## User Journeys + "As a..." stories in epics)
 - `acceptance_criteria`: HIGH (Given/When/Then in epics)
@@ -92,16 +93,16 @@ With an adapter that also feeds architecture.md into the analyzer, score would b
 
 ### BMAD Agents (8) vs Loki Agent Types (41)
 
-| BMAD Agent | Role | Loki Equivalent(s) | Relationship |
-|---|---|---|---|
-| Mary (Analyst) | Business analysis, research | `prod-pm` (partial) | Complementary -- BMAD analyst is pre-development |
-| John (PM) | PRD creation, validation | `prod-pm`, `orch-planner` | Overlapping -- Loki PM focuses on execution planning |
-| Winston (Architect) | Architecture design | `eng-infra`, `orch-planner` | Complementary -- BMAD architect is pre-code |
-| Sally (UX Designer) | UX specification | `prod-design` | Complementary -- BMAD UX is spec, Loki is implementation |
-| Amelia (Developer) | Code implementation | `eng-*` (8 agents) | Superseded -- Loki has specialized dev agents |
-| Bob (Scrum Master) | Sprint planning | `orch-coordinator` | Overlapping -- different abstraction level |
-| Quinn (QA) | E2E test generation | `eng-qa` | Overlapping -- both generate tests |
-| Barry (Quick Flow) | Solo rapid dev | No equivalent | Unique to BMAD |
+| BMAD Agent          | Role                        | Loki Equivalent(s)          | Relationship                                             |
+| ------------------- | --------------------------- | --------------------------- | -------------------------------------------------------- |
+| Mary (Analyst)      | Business analysis, research | `prod-pm` (partial)         | Complementary -- BMAD analyst is pre-development         |
+| John (PM)           | PRD creation, validation    | `prod-pm`, `orch-planner`   | Overlapping -- Loki PM focuses on execution planning     |
+| Winston (Architect) | Architecture design         | `eng-infra`, `orch-planner` | Complementary -- BMAD architect is pre-code              |
+| Sally (UX Designer) | UX specification            | `prod-design`               | Complementary -- BMAD UX is spec, Loki is implementation |
+| Amelia (Developer)  | Code implementation         | `eng-*` (8 agents)          | Superseded -- Loki has specialized dev agents            |
+| Bob (Scrum Master)  | Sprint planning             | `orch-coordinator`          | Overlapping -- different abstraction level               |
+| Quinn (QA)          | E2E test generation         | `eng-qa`                    | Overlapping -- both generate tests                       |
+| Barry (Quick Flow)  | Solo rapid dev              | No equivalent               | Unique to BMAD                                           |
 
 ### Assessment
 
@@ -116,32 +117,33 @@ With an adapter that also feeds architecture.md into the analyzer, score would b
 
 ### Current Capabilities (voice.sh)
 
-| Capability | Status |
-|---|---|
-| STT (Speech-to-Text) | Whisper API, local Whisper, macOS dictation |
-| TTS (Text-to-Speech) | macOS `say`, Linux espeak/festival |
-| Audio recording | sox, ffmpeg, arecord |
-| Guided dictation | 4-section template only (name, overview, requirements, tech stack) |
-| Structured dialogue | NOT SUPPORTED |
-| Agent handoff | NOT SUPPORTED |
-| Session persistence | NOT SUPPORTED |
-| Technical term correction | NOT SUPPORTED |
+| Capability                | Status                                                             |
+| ------------------------- | ------------------------------------------------------------------ |
+| STT (Speech-to-Text)      | Whisper API, local Whisper, macOS dictation                        |
+| TTS (Text-to-Speech)      | macOS `say`, Linux espeak/festival                                 |
+| Audio recording           | sox, ffmpeg, arecord                                               |
+| Guided dictation          | 4-section template only (name, overview, requirements, tech stack) |
+| Structured dialogue       | NOT SUPPORTED                                                      |
+| Agent handoff             | NOT SUPPORTED                                                      |
+| Session persistence       | NOT SUPPORTED                                                      |
+| Technical term correction | NOT SUPPORTED                                                      |
 
 ### What BMAD Voice Integration (P2) Would Require
 
-| Requirement | Effort | Description |
-|---|---|---|
-| Step-file-to-question mapper | Large | Convert BMAD step instructions to conversational prompts |
-| Multi-turn dialogue manager | Large | Track conversation state, handle clarifications, backtracking |
-| Agent persona injection | Medium | Voice TTS uses agent voice characteristics |
+| Requirement                    | Effort | Description                                                   |
+| ------------------------------ | ------ | ------------------------------------------------------------- |
+| Step-file-to-question mapper   | Large  | Convert BMAD step instructions to conversational prompts      |
+| Multi-turn dialogue manager    | Large  | Track conversation state, handle clarifications, backtracking |
+| Agent persona injection        | Medium | Voice TTS uses agent voice characteristics                    |
 | Technical term correction loop | Medium | Confirm jargon transcription ("Did you say React or Preact?") |
-| Session persistence | Medium | Resume BMAD workflows across voice sessions |
-| Dual-mode interface | Large | Voice for elicitation, visual for review |
+| Session persistence            | Medium | Resume BMAD workflows across voice sessions                   |
+| Dual-mode interface            | Large  | Voice for elicitation, visual for review                      |
 
 ### Assessment
 
 Voice integration (P2) is the highest-risk phase. The current voice.sh is a thin wrapper
 around STT/TTS tools. Transforming it into a structured dialogue system requires:
+
 - New conversation state machine (not just record-transcribe-write)
 - BMAD step-file interpreter (convert markdown instructions to conversational flow)
 - Feedback loop for transcription accuracy (critical for technical terms)
@@ -153,20 +155,20 @@ Voice integration can be revisited after P0 proves the BMAD artifact format is s
 
 ### Per-Iteration Context Cost (P0 Only)
 
-| Component | Tokens | Source |
-|---|---|---|
-| Loki SKILL.md | ~2,750 | Always loaded |
-| RARV instructions | ~1,500 | build_prompt() |
-| SDLC phases + rules | ~1,000 | build_prompt() |
-| Memory context | ~2,000-5,000 | Memory retrieval |
-| PRD content | ~5,000-12,000 | BMAD PRD document |
-| PRD observations | ~500-1,000 | prd-analyzer output |
-| **BMAD adapter metadata** | **~500-1,000** | **Project classification, artifact chain info** |
-| **BMAD architecture summary** | **~2,000-4,000** | **Condensed architecture decisions** |
-| **BMAD epic summary** | **~1,000-3,000** | **Active epic/story context** |
-| Checklist status | ~500-1,000 | verification-results.json |
-| Queue tasks | ~500-2,000 | .loki/queue/ |
-| **TOTAL** | **~17,250-32,250** | **Well under 150K ceiling** |
+| Component                     | Tokens             | Source                                          |
+| ----------------------------- | ------------------ | ----------------------------------------------- |
+| Loki SKILL.md                 | ~2,750             | Always loaded                                   |
+| RARV instructions             | ~1,500             | build_prompt()                                  |
+| SDLC phases + rules           | ~1,000             | build_prompt()                                  |
+| Memory context                | ~2,000-5,000       | Memory retrieval                                |
+| PRD content                   | ~5,000-12,000      | BMAD PRD document                               |
+| PRD observations              | ~500-1,000         | prd-analyzer output                             |
+| **BMAD adapter metadata**     | **~500-1,000**     | **Project classification, artifact chain info** |
+| **BMAD architecture summary** | **~2,000-4,000**   | **Condensed architecture decisions**            |
+| **BMAD epic summary**         | **~1,000-3,000**   | **Active epic/story context**                   |
+| Checklist status              | ~500-1,000         | verification-results.json                       |
+| Queue tasks                   | ~500-2,000         | .loki/queue/                                    |
+| **TOTAL**                     | **~17,250-32,250** | **Well under 150K ceiling**                     |
 
 ### Verdict
 
@@ -176,15 +178,15 @@ No context pressure risk.
 
 ## 6. Risk Register
 
-| Risk | Severity | Likelihood | Mitigation |
-|---|---|---|---|
-| BMAD output format changes in future versions | Medium | Medium | Adapter uses loose pattern matching, not exact schema; version-pin BMAD reference |
-| Malformed BMAD artifacts (partial workflow state) | Low | Medium | Adapter validates artifact completeness; falls back to freeform PRD path |
-| BMAD `_bmad-output/` not found | Low | Low | Clear error message; `--bmad-project` flag is explicit, not auto-detected |
-| prd-analyzer regression on freeform PRDs | High | Low | Test suite includes both BMAD and freeform PRD fixtures; backward compatibility gate |
-| Context budget exceeded with very large BMAD PRDs | Low | Low | PRD content is truncated at 12K tokens; architecture summary is condensed |
-| BMAD trademark concerns | Low | Low | MIT license permits code use; trademark applies to branding, not API integration |
-| Scope creep into P1/P2 during P0 implementation | Medium | Medium | Strict phase gates; P1/P2 deferred until P0 ships and proves value |
+| Risk                                              | Severity | Likelihood | Mitigation                                                                           |
+| ------------------------------------------------- | -------- | ---------- | ------------------------------------------------------------------------------------ |
+| BMAD output format changes in future versions     | Medium   | Medium     | Adapter uses loose pattern matching, not exact schema; version-pin BMAD reference    |
+| Malformed BMAD artifacts (partial workflow state) | Low      | Medium     | Adapter validates artifact completeness; falls back to freeform PRD path             |
+| BMAD `_bmad-output/` not found                    | Low      | Low        | Clear error message; `--bmad-project` flag is explicit, not auto-detected            |
+| prd-analyzer regression on freeform PRDs          | High     | Low        | Test suite includes both BMAD and freeform PRD fixtures; backward compatibility gate |
+| Context budget exceeded with very large BMAD PRDs | Low      | Low        | PRD content is truncated at 12K tokens; architecture summary is condensed            |
+| BMAD trademark concerns                           | Low      | Low        | MIT license permits code use; trademark applies to branding, not API integration     |
+| Scope creep into P1/P2 during P0 implementation   | Medium   | Medium     | Strict phase gates; P1/P2 deferred until P0 ships and proves value                   |
 
 ## 7. Integration Architecture (P0)
 

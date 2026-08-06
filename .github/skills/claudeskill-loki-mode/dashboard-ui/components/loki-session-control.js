@@ -8,9 +8,9 @@
  * <loki-session-control api-url="http://localhost:57374" theme="dark" compact></loki-session-control>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
-import { getState } from '../core/loki-state.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
+import { getState } from "../core/loki-state.js";
 
 /**
  * @class LokiSessionControl
@@ -25,13 +25,13 @@ import { getState } from '../core/loki-state.js';
  */
 export class LokiSessionControl extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme', 'compact'];
+    return ["api-url", "theme", "compact"];
   }
 
   constructor() {
     super();
     this._status = {
-      mode: 'offline',
+      mode: "offline",
       phase: null,
       iteration: null,
       complexity: null,
@@ -59,34 +59,44 @@ export class LokiSessionControl extends LokiElement {
     super.disconnectedCallback();
     this._stopPolling();
     if (this._api) {
-      if (this._statusUpdateHandler) this._api.removeEventListener(ApiEvents.STATUS_UPDATE, this._statusUpdateHandler);
-      if (this._connectedHandler) this._api.removeEventListener(ApiEvents.CONNECTED, this._connectedHandler);
-      if (this._disconnectedHandler) this._api.removeEventListener(ApiEvents.DISCONNECTED, this._disconnectedHandler);
+      if (this._statusUpdateHandler)
+        this._api.removeEventListener(ApiEvents.STATUS_UPDATE, this._statusUpdateHandler);
+      if (this._connectedHandler)
+        this._api.removeEventListener(ApiEvents.CONNECTED, this._connectedHandler);
+      if (this._disconnectedHandler)
+        this._api.removeEventListener(ApiEvents.DISCONNECTED, this._disconnectedHandler);
     }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
 
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadStatus();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
-    if (name === 'compact') {
+    if (name === "compact") {
       this.render();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
 
     this._statusUpdateHandler = (e) => this._updateFromStatus(e.detail);
-    this._connectedHandler = () => { this._status.connected = true; this.render(); };
-    this._disconnectedHandler = () => { this._status.connected = false; this._status.mode = 'offline'; this.render(); };
+    this._connectedHandler = () => {
+      this._status.connected = true;
+      this.render();
+    };
+    this._disconnectedHandler = () => {
+      this._status.connected = false;
+      this._status.mode = "offline";
+      this.render();
+    };
 
     this._api.addEventListener(ApiEvents.STATUS_UPDATE, this._statusUpdateHandler);
     this._api.addEventListener(ApiEvents.CONNECTED, this._connectedHandler);
@@ -99,7 +109,7 @@ export class LokiSessionControl extends LokiElement {
       this._updateFromStatus(status);
     } catch (error) {
       this._status.connected = false;
-      this._status.mode = 'offline';
+      this._status.mode = "offline";
       this.render();
     }
   }
@@ -110,7 +120,7 @@ export class LokiSessionControl extends LokiElement {
     this._status = {
       ...this._status,
       connected: true,
-      mode: status.status || 'running',
+      mode: status.status || "running",
       version: status.version,
       uptime: status.uptime_seconds || 0,
       activeAgents: status.running_agents || 0,
@@ -136,7 +146,7 @@ export class LokiSessionControl extends LokiElement {
         this._updateFromStatus(status);
       } catch (error) {
         this._status.connected = false;
-        this._status.mode = 'offline';
+        this._status.mode = "offline";
         this.render();
       }
     }, 3000);
@@ -150,7 +160,7 @@ export class LokiSessionControl extends LokiElement {
   }
 
   _formatUptime(seconds) {
-    if (!seconds || seconds < 0) return '--';
+    if (!seconds || seconds < 0) return "--";
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
@@ -165,56 +175,56 @@ export class LokiSessionControl extends LokiElement {
   }
 
   _escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = String(str ?? '');
+    const div = document.createElement("div");
+    div.textContent = String(str ?? "");
     return div.innerHTML;
   }
 
   _getStatusClass() {
     switch (this._status.mode) {
-      case 'running':
-      case 'autonomous':
-        return 'active';
-      case 'paused':
-        return 'paused';
-      case 'stopped':
-        return 'stopped';
-      case 'error':
-        return 'error';
+      case "running":
+      case "autonomous":
+        return "active";
+      case "paused":
+        return "paused";
+      case "stopped":
+        return "stopped";
+      case "error":
+        return "error";
       default:
-        return 'offline';
+        return "offline";
     }
   }
 
   _getStatusLabel() {
     switch (this._status.mode) {
-      case 'running':
-      case 'autonomous':
-        return 'AUTONOMOUS';
-      case 'paused':
-        return 'PAUSED';
-      case 'stopped':
-        return 'STOPPED';
-      case 'error':
-        return 'ERROR';
+      case "running":
+      case "autonomous":
+        return "AUTONOMOUS";
+      case "paused":
+        return "PAUSED";
+      case "stopped":
+        return "STOPPED";
+      case "error":
+        return "ERROR";
       default:
-        return 'OFFLINE';
+        return "OFFLINE";
     }
   }
 
   _triggerStart() {
-    this.dispatchEvent(new CustomEvent('session-start', { detail: this._status }));
+    this.dispatchEvent(new CustomEvent("session-start", { detail: this._status }));
   }
 
   async _triggerPause() {
     try {
       const result = await this._api.pauseSession();
       if (result && result.error) throw new Error(result.error);
-      this._status.mode = 'paused';
+      this._status.mode = "paused";
       this.render();
-      this.dispatchEvent(new CustomEvent('session-pause', { detail: this._status }));
+      this.dispatchEvent(new CustomEvent("session-pause", { detail: this._status }));
     } catch (err) {
-      console.error('Failed to pause session:', err);
+      console.error("Failed to pause session:", err);
       this.render();
     }
   }
@@ -223,11 +233,11 @@ export class LokiSessionControl extends LokiElement {
     try {
       const result = await this._api.resumeSession();
       if (result && result.error) throw new Error(result.error);
-      this._status.mode = 'running';
+      this._status.mode = "running";
       this.render();
-      this.dispatchEvent(new CustomEvent('session-resume', { detail: this._status }));
+      this.dispatchEvent(new CustomEvent("session-resume", { detail: this._status }));
     } catch (err) {
-      console.error('Failed to resume session:', err);
+      console.error("Failed to resume session:", err);
       this.render();
     }
   }
@@ -236,21 +246,21 @@ export class LokiSessionControl extends LokiElement {
     try {
       const result = await this._api.stopSession();
       if (result && result.error) throw new Error(result.error);
-      this._status.mode = 'stopped';
+      this._status.mode = "stopped";
       this.render();
-      this.dispatchEvent(new CustomEvent('session-stop', { detail: this._status }));
+      this.dispatchEvent(new CustomEvent("session-stop", { detail: this._status }));
     } catch (err) {
-      console.error('Failed to stop session:', err);
+      console.error("Failed to stop session:", err);
       this.render();
     }
   }
 
   render() {
-    const isCompact = this.hasAttribute('compact');
+    const isCompact = this.hasAttribute("compact");
     const statusClass = this._getStatusClass();
     const statusLabel = this._getStatusLabel();
-    const isRunning = ['running', 'autonomous'].includes(this._status.mode);
-    const isPaused = this._status.mode === 'paused';
+    const isRunning = ["running", "autonomous"].includes(this._status.mode);
+    const isPaused = this._status.mode === "paused";
 
     const styles = `
       <style>
@@ -446,18 +456,22 @@ export class LokiSessionControl extends LokiElement {
           </span>
         </div>
         <div class="control-buttons" role="group" aria-label="Session controls">
-          ${isPaused ? `
+          ${
+            isPaused
+              ? `
             <button class="control-btn resume" id="resume-btn" aria-label="Resume session">
               <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Resume
             </button>
-          ` : `
-            <button class="control-btn pause" id="pause-btn" aria-label="Pause session" ${!isRunning ? 'disabled' : ''}>
+          `
+              : `
+            <button class="control-btn pause" id="pause-btn" aria-label="Pause session" ${!isRunning ? "disabled" : ""}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
               Pause
             </button>
-          `}
-          <button class="control-btn stop" id="stop-btn" aria-label="Stop session" ${!isRunning && !isPaused ? 'disabled' : ''}>
+          `
+          }
+          <button class="control-btn stop" id="stop-btn" aria-label="Stop session" ${!isRunning && !isPaused ? "disabled" : ""}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
             Stop
           </button>
@@ -479,17 +493,17 @@ export class LokiSessionControl extends LokiElement {
 
         <div class="status-row">
           <span class="status-label">Phase</span>
-          <span class="status-value">${this._escapeHtml(this._status.phase || '--')}</span>
+          <span class="status-value">${this._escapeHtml(this._status.phase || "--")}</span>
         </div>
 
         <div class="status-row">
           <span class="status-label">Complexity</span>
-          <span class="status-value">${this._escapeHtml(String(this._status.complexity || '--').toUpperCase())}</span>
+          <span class="status-value">${this._escapeHtml(String(this._status.complexity || "--").toUpperCase())}</span>
         </div>
 
         <div class="status-row">
           <span class="status-label">Iteration</span>
-          <span class="status-value">${this._escapeHtml(this._status.iteration || '--')}</span>
+          <span class="status-value">${this._escapeHtml(this._status.iteration || "--")}</span>
         </div>
 
         <div class="status-row">
@@ -498,27 +512,31 @@ export class LokiSessionControl extends LokiElement {
         </div>
 
         <div class="control-buttons" role="group" aria-label="Session controls">
-          ${isPaused ? `
+          ${
+            isPaused
+              ? `
             <button class="control-btn resume" id="resume-btn" aria-label="Resume session">
               <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               Resume
             </button>
-          ` : `
-            <button class="control-btn pause" id="pause-btn" aria-label="Pause session" ${!isRunning ? 'disabled' : ''}>
+          `
+              : `
+            <button class="control-btn pause" id="pause-btn" aria-label="Pause session" ${!isRunning ? "disabled" : ""}>
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
               Pause
             </button>
-          `}
-          <button class="control-btn stop" id="stop-btn" aria-label="Stop session" ${!isRunning && !isPaused ? 'disabled' : ''}>
+          `
+          }
+          <button class="control-btn stop" id="stop-btn" aria-label="Stop session" ${!isRunning && !isPaused ? "disabled" : ""}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
             Stop
           </button>
         </div>
 
         <div class="connection-status">
-          <span class="connection-dot ${this._status.connected ? 'connected' : ''}"></span>
-          <span>${this._status.connected ? 'Connected' : 'Disconnected'}</span>
-          ${this._status.version ? `<span style="margin-left: auto">v${this._status.version}</span>` : ''}
+          <span class="connection-dot ${this._status.connected ? "connected" : ""}"></span>
+          <span>${this._status.connected ? "Connected" : "Disconnected"}</span>
+          ${this._status.version ? `<span style="margin-left: auto">v${this._status.version}</span>` : ""}
         </div>
 
         <div class="stats-row">
@@ -543,29 +561,29 @@ export class LokiSessionControl extends LokiElement {
   }
 
   _attachEventListeners() {
-    const pauseBtn = this.shadowRoot.getElementById('pause-btn');
-    const resumeBtn = this.shadowRoot.getElementById('resume-btn');
-    const stopBtn = this.shadowRoot.getElementById('stop-btn');
-    const startBtn = this.shadowRoot.getElementById('start-btn');
+    const pauseBtn = this.shadowRoot.getElementById("pause-btn");
+    const resumeBtn = this.shadowRoot.getElementById("resume-btn");
+    const stopBtn = this.shadowRoot.getElementById("stop-btn");
+    const startBtn = this.shadowRoot.getElementById("start-btn");
 
     if (pauseBtn) {
-      pauseBtn.addEventListener('click', () => this._triggerPause());
+      pauseBtn.addEventListener("click", () => this._triggerPause());
     }
     if (resumeBtn) {
-      resumeBtn.addEventListener('click', () => this._triggerResume());
+      resumeBtn.addEventListener("click", () => this._triggerResume());
     }
     if (stopBtn) {
-      stopBtn.addEventListener('click', () => this._triggerStop());
+      stopBtn.addEventListener("click", () => this._triggerStop());
     }
     if (startBtn) {
-      startBtn.addEventListener('click', () => this._triggerStart());
+      startBtn.addEventListener("click", () => this._triggerStart());
     }
   }
 }
 
 // Register the component
-if (!customElements.get('loki-session-control')) {
-  customElements.define('loki-session-control', LokiSessionControl);
+if (!customElements.get("loki-session-control")) {
+  customElements.define("loki-session-control", LokiSessionControl);
 }
 
 export default LokiSessionControl;

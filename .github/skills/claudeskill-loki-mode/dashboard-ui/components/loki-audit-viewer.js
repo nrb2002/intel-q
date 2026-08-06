@@ -8,8 +8,8 @@
  * <loki-audit-viewer api-url="http://localhost:57374" limit="100" theme="dark"></loki-audit-viewer>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * Format a timestamp to a locale-appropriate display string.
@@ -17,16 +17,16 @@ import { getApiClient } from '../core/loki-api-client.js';
  * @returns {string}
  */
 export function formatAuditTimestamp(timestamp) {
-  if (!timestamp) return '--';
+  if (!timestamp) return "--";
   try {
     const d = new Date(timestamp);
     return d.toLocaleString([], {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
   } catch {
     return String(timestamp);
@@ -41,12 +41,12 @@ export function formatAuditTimestamp(timestamp) {
 export function buildAuditQuery(filters) {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
-    if (value != null && value !== '') {
+    if (value != null && value !== "") {
       params.set(key, String(value));
     }
   }
   const qs = params.toString();
-  return qs ? `?${qs}` : '';
+  return qs ? `?${qs}` : "";
 }
 
 /**
@@ -58,7 +58,7 @@ export function buildAuditQuery(filters) {
  */
 export class LokiAuditViewer extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'limit', 'theme'];
+    return ["api-url", "limit", "theme"];
   }
 
   constructor() {
@@ -72,20 +72,20 @@ export class LokiAuditViewer extends LokiElement {
 
     // Filter state
     this._filters = {
-      action: '',
-      resource: '',
-      dateFrom: '',
-      dateTo: '',
+      action: "",
+      resource: "",
+      dateFrom: "",
+      dateTo: "",
     };
   }
 
   get limit() {
-    const val = this.getAttribute('limit');
+    const val = this.getAttribute("limit");
     return val ? parseInt(val, 10) : 50;
   }
 
   set limit(val) {
-    this.setAttribute('limit', String(val));
+    this.setAttribute("limit", String(val));
   }
 
   connectedCallback() {
@@ -100,20 +100,20 @@ export class LokiAuditViewer extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'limit') {
+    if (name === "limit") {
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -149,7 +149,7 @@ export class LokiAuditViewer extends LokiElement {
       this._verifyResult = null;
       this.render();
 
-      const result = await this._api._get('/api/v2/audit/verify');
+      const result = await this._api._get("/api/v2/audit/verify");
       this._verifyResult = result;
     } catch (err) {
       this._verifyResult = { valid: false, error: err.message };
@@ -166,12 +166,12 @@ export class LokiAuditViewer extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getStyles() {
@@ -393,11 +393,11 @@ export class LokiAuditViewer extends LokiElement {
   }
 
   _getStatusClass(status) {
-    if (!status) return 'status-warning';
+    if (!status) return "status-warning";
     const s = status.toLowerCase();
-    if (s === 'success' || s === 'ok' || s === 'pass') return 'status-success';
-    if (s === 'failure' || s === 'error' || s === 'fail') return 'status-failure';
-    return 'status-warning';
+    if (s === "success" || s === "ok" || s === "pass") return "status-success";
+    if (s === "failure" || s === "error" || s === "fail") return "status-failure";
+    return "status-warning";
   }
 
   render() {
@@ -406,12 +406,12 @@ export class LokiAuditViewer extends LokiElement {
 
     const entries = this._entries;
 
-    let verifyHtml = '';
+    let verifyHtml = "";
     if (this._verifyResult) {
       const isValid = this._verifyResult.valid !== false;
       verifyHtml = `
-        <div class="verify-result ${isValid ? 'verify-valid' : 'verify-invalid'}">
-          ${isValid ? '[VALID] Audit chain integrity verified.' : `[TAMPERED] ${this._escapeHtml(this._verifyResult.error || 'Integrity check failed.')}`}
+        <div class="verify-result ${isValid ? "verify-valid" : "verify-invalid"}">
+          ${isValid ? "[VALID] Audit chain integrity verified." : `[TAMPERED] ${this._escapeHtml(this._verifyResult.error || "Integrity check failed.")}`}
         </div>
       `;
     }
@@ -422,15 +422,19 @@ export class LokiAuditViewer extends LokiElement {
     } else if (entries.length === 0) {
       content = '<div class="empty-state">No audit entries found matching filters.</div>';
     } else {
-      const rows = entries.map(entry => `
+      const rows = entries
+        .map(
+          (entry) => `
         <tr>
           <td>${formatAuditTimestamp(entry.timestamp)}</td>
-          <td>${this._escapeHtml(entry.action || '--')}</td>
-          <td>${this._escapeHtml(entry.resource || entry.resource_type || '--')}</td>
-          <td>${this._escapeHtml(entry.user || entry.actor || '--')}</td>
-          <td><span class="status-badge ${this._getStatusClass(entry.status)}">${this._escapeHtml(entry.status || 'unknown')}</span></td>
+          <td>${this._escapeHtml(entry.action || "--")}</td>
+          <td>${this._escapeHtml(entry.resource || entry.resource_type || "--")}</td>
+          <td>${this._escapeHtml(entry.user || entry.actor || "--")}</td>
+          <td><span class="status-badge ${this._getStatusClass(entry.status)}">${this._escapeHtml(entry.status || "unknown")}</span></td>
         </tr>
-      `).join('');
+      `,
+        )
+        .join("");
 
       content = `
         <div class="entry-count">${entries.length} entries</div>
@@ -457,8 +461,8 @@ export class LokiAuditViewer extends LokiElement {
         <div class="header">
           <h2 class="title">Audit Log</h2>
           <div class="header-actions">
-            <button class="btn" id="verify-btn" ${this._verifying ? 'disabled' : ''}>
-              ${this._verifying ? 'Verifying...' : 'Verify Integrity'}
+            <button class="btn" id="verify-btn" ${this._verifying ? "disabled" : ""}>
+              ${this._verifying ? "Verifying..." : "Verify Integrity"}
             </button>
             <button class="btn" id="refresh-btn">Refresh</button>
           </div>
@@ -491,7 +495,7 @@ export class LokiAuditViewer extends LokiElement {
 
         ${verifyHtml}
         ${content}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -502,28 +506,36 @@ export class LokiAuditViewer extends LokiElement {
     const s = this.shadowRoot;
     if (!s) return;
 
-    const verifyBtn = s.getElementById('verify-btn');
-    if (verifyBtn) verifyBtn.addEventListener('click', () => this._verifyIntegrity());
+    const verifyBtn = s.getElementById("verify-btn");
+    if (verifyBtn) verifyBtn.addEventListener("click", () => this._verifyIntegrity());
 
-    const refreshBtn = s.getElementById('refresh-btn');
-    if (refreshBtn) refreshBtn.addEventListener('click', () => this._loadData());
+    const refreshBtn = s.getElementById("refresh-btn");
+    if (refreshBtn) refreshBtn.addEventListener("click", () => this._loadData());
 
-    const actionInput = s.getElementById('filter-action');
-    if (actionInput) actionInput.addEventListener('change', (e) => this._onFilterChange('action', e.target.value));
+    const actionInput = s.getElementById("filter-action");
+    if (actionInput)
+      actionInput.addEventListener("change", (e) => this._onFilterChange("action", e.target.value));
 
-    const resourceInput = s.getElementById('filter-resource');
-    if (resourceInput) resourceInput.addEventListener('change', (e) => this._onFilterChange('resource', e.target.value));
+    const resourceInput = s.getElementById("filter-resource");
+    if (resourceInput)
+      resourceInput.addEventListener("change", (e) =>
+        this._onFilterChange("resource", e.target.value),
+      );
 
-    const dateFromInput = s.getElementById('filter-date-from');
-    if (dateFromInput) dateFromInput.addEventListener('change', (e) => this._onFilterChange('dateFrom', e.target.value));
+    const dateFromInput = s.getElementById("filter-date-from");
+    if (dateFromInput)
+      dateFromInput.addEventListener("change", (e) =>
+        this._onFilterChange("dateFrom", e.target.value),
+      );
 
-    const dateToInput = s.getElementById('filter-date-to');
-    if (dateToInput) dateToInput.addEventListener('change', (e) => this._onFilterChange('dateTo', e.target.value));
+    const dateToInput = s.getElementById("filter-date-to");
+    if (dateToInput)
+      dateToInput.addEventListener("change", (e) => this._onFilterChange("dateTo", e.target.value));
   }
 }
 
-if (!customElements.get('loki-audit-viewer')) {
-  customElements.define('loki-audit-viewer', LokiAuditViewer);
+if (!customElements.get("loki-audit-viewer")) {
+  customElements.define("loki-audit-viewer", LokiAuditViewer);
 }
 
 export default LokiAuditViewer;

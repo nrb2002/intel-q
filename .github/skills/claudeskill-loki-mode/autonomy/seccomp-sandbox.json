@@ -4,16 +4,11 @@
   "archMap": [
     {
       "architecture": "SCMP_ARCH_X86_64",
-      "subArchitectures": [
-        "SCMP_ARCH_X86",
-        "SCMP_ARCH_X32"
-      ]
+      "subArchitectures": ["SCMP_ARCH_X86", "SCMP_ARCH_X32"]
     },
     {
       "architecture": "SCMP_ARCH_AARCH64",
-      "subArchitectures": [
-        "SCMP_ARCH_ARM"
-      ]
+      "subArchitectures": ["SCMP_ARCH_ARM"]
     }
   ],
   "syscalls": [
@@ -340,106 +335,73 @@
       "action": "SCMP_ACT_ALLOW"
     },
     {
-      "names": [
-        "ptrace"
-      ],
+      "names": ["ptrace"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block ptrace - no debugging in sandbox"
     },
     {
-      "names": [
-        "process_vm_readv",
-        "process_vm_writev"
-      ],
+      "names": ["process_vm_readv", "process_vm_writev"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block cross-process memory access"
     },
     {
-      "names": [
-        "kexec_load",
-        "kexec_file_load"
-      ],
+      "names": ["kexec_load", "kexec_file_load"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block kernel replacement"
     },
     {
-      "names": [
-        "init_module",
-        "finit_module",
-        "delete_module"
-      ],
+      "names": ["init_module", "finit_module", "delete_module"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block kernel module operations"
     },
     {
-      "names": [
-        "reboot"
-      ],
+      "names": ["reboot"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block system reboot"
     },
     {
-      "names": [
-        "swapon",
-        "swapoff"
-      ],
+      "names": ["swapon", "swapoff"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block swap management"
     },
     {
-      "names": [
-        "acct"
-      ],
+      "names": ["acct"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block process accounting"
     },
     {
-      "names": [
-        "umount",
-        "umount2"
-      ],
+      "names": ["umount", "umount2"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block unmount operations"
     },
     {
-      "names": [
-        "pivot_root"
-      ],
+      "names": ["pivot_root"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block root filesystem changes"
     },
     {
-      "names": [
-        "sethostname",
-        "setdomainname"
-      ],
+      "names": ["sethostname", "setdomainname"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block hostname changes"
     },
     {
-      "names": [
-        "settimeofday",
-        "adjtimex",
-        "clock_adjtime"
-      ],
+      "names": ["settimeofday", "adjtimex", "clock_adjtime"],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
       "comment": "Block system time changes"
     },
     {
-      "names": [
-        "personality"
-      ],
+      "names": ["personality"],
       "action": "SCMP_ACT_ALLOW",
       "args": [
         {
@@ -451,9 +413,7 @@
       "comment": "Allow personality only for reading"
     },
     {
-      "names": [
-        "personality"
-      ],
+      "names": ["personality"],
       "action": "SCMP_ACT_ALLOW",
       "args": [
         {

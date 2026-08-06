@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { EventEmitter } = require('events');
+const { EventEmitter } = require("events");
 
 /**
  * Base integration adapter interface.
@@ -18,7 +18,7 @@ class IntegrationAdapter extends EventEmitter {
   constructor(name, options = {}) {
     super();
     if (new.target === IntegrationAdapter) {
-      throw new Error('IntegrationAdapter is abstract and cannot be instantiated directly');
+      throw new Error("IntegrationAdapter is abstract and cannot be instantiated directly");
     }
     this.name = name;
     this.maxRetries = options.maxRetries ?? 3;
@@ -87,16 +87,13 @@ class IntegrationAdapter extends EventEmitter {
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
       try {
         const result = await fn();
-        this.emit('success', { integration: this.name, operation, attempt });
+        this.emit("success", { integration: this.name, operation, attempt });
         return result;
       } catch (err) {
         lastError = err;
         if (attempt < this.maxRetries) {
-          const delay = Math.min(
-            this.baseDelay * Math.pow(2, attempt),
-            this.maxDelay
-          );
-          this.emit('retry', {
+          const delay = Math.min(this.baseDelay * Math.pow(2, attempt), this.maxDelay);
+          this.emit("retry", {
             integration: this.name,
             operation,
             attempt: attempt + 1,
@@ -107,7 +104,7 @@ class IntegrationAdapter extends EventEmitter {
         }
       }
     }
-    this.emit('failure', {
+    this.emit("failure", {
       integration: this.name,
       operation,
       error: lastError.message,

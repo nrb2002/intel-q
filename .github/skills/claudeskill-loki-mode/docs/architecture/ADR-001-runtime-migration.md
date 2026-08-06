@@ -6,16 +6,17 @@
 
 ## Phase status (as of v7.5.7, 2026-04-29)
 
-| Phase | Description | Status | Shipped in |
-|---|---|---|---|
-| 1 | Scaffold `loki-ts/`, `ts-version` POC, CI matrix | DONE | v7.0.x |
-| 2 | Read-only sub-commands ported (provider show, status, stats, memory list) | DONE | v7.1.x |
-| 3 | Build/release tooling on Bun (`bun publish`, `bun build`, `bun test`) | DONE | v7.2.0 |
-| 4 | `build_prompt` + `run_autonomous` outer loop ported; `LOKI_LEGACY_BASH=1` fallback live | DONE | v7.3.0 |
-| 5 | `council_should_stop`, `run_code_review` ported; side-by-side parity verified | DONE | v7.3.0 -- v7.4.x |
-| 6 | Sunset bash: remove `LOKI_LEGACY_BASH`, delete `autonomy/run.sh` + `autonomy/loki` | **GATED** | Pending 30-day clean soak from v7.3.0 GA |
+| Phase | Description                                                                             | Status    | Shipped in                               |
+| ----- | --------------------------------------------------------------------------------------- | --------- | ---------------------------------------- |
+| 1     | Scaffold `loki-ts/`, `ts-version` POC, CI matrix                                        | DONE      | v7.0.x                                   |
+| 2     | Read-only sub-commands ported (provider show, status, stats, memory list)               | DONE      | v7.1.x                                   |
+| 3     | Build/release tooling on Bun (`bun publish`, `bun build`, `bun test`)                   | DONE      | v7.2.0                                   |
+| 4     | `build_prompt` + `run_autonomous` outer loop ported; `LOKI_LEGACY_BASH=1` fallback live | DONE      | v7.3.0                                   |
+| 5     | `council_should_stop`, `run_code_review` ported; side-by-side parity verified           | DONE      | v7.3.0 -- v7.4.x                         |
+| 6     | Sunset bash: remove `LOKI_LEGACY_BASH`, delete `autonomy/run.sh` + `autonomy/loki`      | **GATED** | Pending 30-day clean soak from v7.3.0 GA |
 
 **Phase 6 entry criteria (per founder call 2026-04-25, release_strategy memory):**
+
 - 30 consecutive days with zero parity-diff regressions on the Bun route
 - All 14 CLI tests passing on both routes (`tests/test-cli-commands.sh`)
 - Bun-parity matrix green on every workflow (added after v7.4.18 doctor-text drift bug)
@@ -32,6 +33,7 @@ When all criteria are met, Phase 6 PR (#159 per release_strategy) opens for coun
 **YES, verified.** Anthropic acquired Bun (Oven, Inc.) in December 2025. Bun remains MIT-licensed and open-source. Anthropic is positioning Bun as the runtime infrastructure for Claude Code, the Claude Agent SDK, and future AI coding products.
 
 Sources:
+
 - [Bun Blog: Bun is joining Anthropic](https://bun.com/blog/bun-joins-anthropic)
 - [Anthropic: Anthropic acquires Bun as Claude Code reaches $1B milestone](https://www.anthropic.com/news/anthropic-acquires-bun-as-claude-code-reaches-usd1b-milestone)
 
@@ -41,23 +43,23 @@ Sources:
 
 #### Layer 1: trivial hello-world cold start (hyperfine, 100 runs)
 
-| Runtime | Cold start mean | vs bash |
-|---|---|---|
-| **Go binary** (compiled) | **1.8 ms** | **2.5x faster** |
-| **bash hello-world** | **4.5 ms** | baseline |
-| **Bun binary** (`bun build --compile`) | 6.9 ms | 1.5x slower |
-| **Bun script** (`bun foo.ts`) | 7.6 ms | 1.7x slower |
-| **Python3 script** | 20.3 ms | 4.5x slower |
-| **Node.js script** | 45.2 ms | 10x slower |
+| Runtime                                | Cold start mean | vs bash         |
+| -------------------------------------- | --------------- | --------------- |
+| **Go binary** (compiled)               | **1.8 ms**      | **2.5x faster** |
+| **bash hello-world**                   | **4.5 ms**      | baseline        |
+| **Bun binary** (`bun build --compile`) | 6.9 ms          | 1.5x slower     |
+| **Bun script** (`bun foo.ts`)          | 7.6 ms          | 1.7x slower     |
+| **Python3 script**                     | 20.3 ms         | 4.5x slower     |
+| **Node.js script**                     | 45.2 ms         | 10x slower      |
 
 For a trivial 1-line script, bash beats Bun by ~3 ms.
 
 #### Layer 2: real Loki workload (50 runs, side-by-side, scripts/bench.ts)
 
-| Runtime | `loki version` mean | vs bash |
-|---|---|---|
-| **bash autonomy/loki version** | **106.71 ms** (min 96.54, max 125.35) | baseline |
-| **bun loki-ts/src/cli.ts version** | **12.36 ms** (min 11.63, max 13.52) | **8.63x FASTER** |
+| Runtime                            | `loki version` mean                   | vs bash          |
+| ---------------------------------- | ------------------------------------- | ---------------- |
+| **bash autonomy/loki version**     | **106.71 ms** (min 96.54, max 125.35) | baseline         |
+| **bun loki-ts/src/cli.ts version** | **12.36 ms** (min 11.63, max 13.52)   | **8.63x FASTER** |
 
 **This is the finding that flips the analysis.** When the bash script is 22,304 lines (the actual `autonomy/loki`), bash re-parses the entire AST every invocation. That parse cost dwarfs Bun's runtime startup cost by ~10x. **Bun is 8.6x faster than actual Loki bash.**
 
@@ -65,10 +67,10 @@ The user's premise ("Bun is faster than bash, no speed compromise") is correct f
 
 **Why the gap:** bash has no bytecode cache. Every `loki version` invocation re-parses 22k lines of shell. Bun parses TypeScript once at install (or even at compile time with `--compile`), then executes machine code. The asymmetry grows with script size:
 
-| Script size | Bash startup | Bun startup |
-|---|---|---|
-| 1 line | 4.5 ms | 7.6 ms (1.7x slower) |
-| 22,304 lines (real `autonomy/loki`) | 106.71 ms | 12.36 ms (**8.63x FASTER**) |
+| Script size                         | Bash startup | Bun startup                 |
+| ----------------------------------- | ------------ | --------------------------- |
+| 1 line                              | 4.5 ms       | 7.6 ms (1.7x slower)        |
+| 22,304 lines (real `autonomy/loki`) | 106.71 ms    | 12.36 ms (**8.63x FASTER**) |
 
 So: **for hello-world bash wins; for our actual codebase Bun wins decisively, by an order of magnitude.**
 
@@ -76,14 +78,14 @@ So: **for hello-world bash wins; for our actual codebase Bun wins decisively, by
 
 User constraint: "people use npm, I want to keep it the same way."
 
-| Runtime | npm distribution path | Complexity |
-|---|---|---|
-| **Bash** (today) | `package.json` `bin` field points to shell script | Trivial; current state |
-| **Bun runtime** | `npm install -g loki-mode` ships TS, requires Bun installed via `npm install -g bun` (peer) OR Bun standalone in postinstall | Medium; peer dependency convention |
-| **Bun compiled binary** | `bun build --compile` → 60 MB binary per platform; npm postinstall downloads correct binary (esbuild model) | Medium; per-platform binaries |
-| **Go binary** | Same model as Bun compiled — npm postinstall downloads platform binary (esbuild, biome, vite-rust, swc all use this) | Medium; mature pattern |
-| **Python** | npm postinstall would shell out to `pip install` or bundle Python — fragile, two package managers | High; do not recommend |
-| **Node.js** | Native — no postinstall needed | Trivial; but Node is 10x slower than bash on cold start |
+| Runtime                 | npm distribution path                                                                                                        | Complexity                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Bash** (today)        | `package.json` `bin` field points to shell script                                                                            | Trivial; current state                                  |
+| **Bun runtime**         | `npm install -g loki-mode` ships TS, requires Bun installed via `npm install -g bun` (peer) OR Bun standalone in postinstall | Medium; peer dependency convention                      |
+| **Bun compiled binary** | `bun build --compile` → 60 MB binary per platform; npm postinstall downloads correct binary (esbuild model)                  | Medium; per-platform binaries                           |
+| **Go binary**           | Same model as Bun compiled — npm postinstall downloads platform binary (esbuild, biome, vite-rust, swc all use this)         | Medium; mature pattern                                  |
+| **Python**              | npm postinstall would shell out to `pip install` or bundle Python — fragile, two package managers                            | High; do not recommend                                  |
+| **Node.js**             | Native — no postinstall needed                                                                                               | Trivial; but Node is 10x slower than bash on cold start |
 
 All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm install -g loki-mode` UX. Users see no change.
 
@@ -92,6 +94,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 ### Option A: Go
 
 **Pro:**
+
 - **Only language that strictly beats bash.** 2.5x faster cold-start (1.8 ms vs 4.5 ms). User's "no speed compromise" requirement is met without caveats.
 - Single static binary, ~2.4 MB (vs 60 MB Bun binary).
 - Mature CLI ecosystem (Docker, kubectl, Terraform, Helm all use Go).
@@ -99,6 +102,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 - Cross-compile to all platforms from any platform.
 
 **Con:**
+
 - Loki team has zero Go in the codebase today.
 - Anthropic does NOT own Go; less strategic alignment.
 - Rewriting 33,000+ lines of bash to idiomatic Go is a 3-6 month effort.
@@ -109,6 +113,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 ### Option B: Bun runtime + TypeScript
 
 **Pro:**
+
 - **Anthropic owns Bun.** Strategic alignment with the company that owns the model we depend on.
 - Native shell built in (`Bun.$\`echo hello\``) — minimal friction porting bash idioms.
 - Bun's `npm install` is 20-40x faster than npm — every CI run faster.
@@ -117,6 +122,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 - 98% Node.js compatibility — npm packages work directly.
 
 **Con:**
+
 - **1.7x SLOWER than bash on trivial cold-start** (7.6 ms vs 4.5 ms). The user explicitly said "no speed compromise". This is a genuine compromise, even if 3 ms is humanly invisible.
 - Bun runtime must be installed separately OR shipped via postinstall (60 MB if compiled).
 - Less mature than Node (Bun 1.3 in 2026; some npm packages still hit edge cases).
@@ -126,6 +132,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 ### Option C: Hybrid (recommended)
 
 **Pro:**
+
 - Keep tiny scripts in bash (where it wins by 3 ms): `loki version`, `loki status`, anything <100 LOC.
 - Migrate the 11k-line orchestrator (`run.sh`) and 22k-line CLI (`autonomy/loki`) to Bun TypeScript — where compiled+typed wins.
 - Keep `memory/`, `providers/`, `mcp/` in Python — they're already mature, no reason to rewrite.
@@ -133,6 +140,7 @@ All three viable options (Bun runtime, Bun compiled, Go binary) keep the `npm in
 - No speed regression for trivial commands; large gains for orchestrator.
 
 **Con:**
+
 - Three runtimes in the codebase (bash + Bun + Python) — operational complexity.
 - Cross-runtime debugging harder than monorepo.
 
@@ -155,24 +163,28 @@ Reasons:
 ## Migration plan (Option C)
 
 ### Phase 1: Scaffold (this branch, no behavior change)
+
 - Create `loki-ts/` directory parallel to `autonomy/`
 - `package.json` with Bun as engine, TypeScript config
-- Port ONE simple command: `loki ts-version` (proves the toolchain) 
+- Port ONE simple command: `loki ts-version` (proves the toolchain)
 - Add Bun to CI matrix (alongside existing Node/Python)
 - **No user-visible change.** All existing commands route to bash.
 
 ### Phase 2: Sub-commands
+
 - Migrate read-only commands: `loki provider show`, `loki status`, `loki stats`, `loki memory list`
 - Each migrated command goes through `loki-ts/` with bash as fallback flag
 - Performance benchmark each: must be ≤ 2x bash cold start
 
 ### Phase 3: Build/release tooling
+
 - Replace npm publish with `bun publish` in CI
 - Replace dashboard-ui esbuild with `bun build` (already 4-5x faster)
 - Replace pytest where possible with `bun test` for non-Python tests
 - Measure: full CI wall time, npm install time
 
 ### Phase 4: build_prompt + RARV-C migration
+
 - Port `build_prompt` (the 360-line bash function) to TypeScript
 - Port `run_autonomous` outer loop
 - Keep all Python subprocess invocations untouched (they're already fine)
@@ -180,10 +192,12 @@ Reasons:
 - Fallback flag: `LOKI_LEGACY_BASH=true` reverts
 
 ### Phase 5: completion-council + code-review
+
 - Port `council_should_stop` and `run_code_review` to TypeScript
 - Same validation discipline
 
 ### Phase 6: Sunset bash (only after 30 days clean in production) -- GATED as of v7.5.7
+
 - Remove `LOKI_LEGACY_BASH` flag
 - Delete `autonomy/run.sh` and `autonomy/loki` (keep in git history)
 - Bash -> Bun migration complete
@@ -191,14 +205,14 @@ Reasons:
 
 ## What we can do better for releases (Anthropic owns Bun → leverage)
 
-| Today | Tomorrow | Win |
-|---|---|---|
-| `npm publish` (45-60 sec) | `bun publish` | ~5x faster CI publish |
-| `npm install -g loki-mode` for users | Same UX, `bun install` under the hood when available | 20-40x faster install (verified) |
-| Tests via `npm test` (Node 20-25 sec) | `bun test` for non-Python | ~10x faster test runs |
-| Dashboard build with esbuild (122 ms) | `bun build` | 2-4x faster |
-| Per-iteration cold start in run.sh: bash 4.5ms × N | Compiled Bun start once, run 100s | Net negative if iteration count low; net positive for sessions >5 iterations |
-| Python `mcp/server.py` | Stays Python (already good) | No change |
+| Today                                              | Tomorrow                                             | Win                                                                          |
+| -------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm publish` (45-60 sec)                          | `bun publish`                                        | ~5x faster CI publish                                                        |
+| `npm install -g loki-mode` for users               | Same UX, `bun install` under the hood when available | 20-40x faster install (verified)                                             |
+| Tests via `npm test` (Node 20-25 sec)              | `bun test` for non-Python                            | ~10x faster test runs                                                        |
+| Dashboard build with esbuild (122 ms)              | `bun build`                                          | 2-4x faster                                                                  |
+| Per-iteration cold start in run.sh: bash 4.5ms × N | Compiled Bun start once, run 100s                    | Net negative if iteration count low; net positive for sessions >5 iterations |
+| Python `mcp/server.py`                             | Stays Python (already good)                          | No change                                                                    |
 
 ## Risks I'm not hiding
 
@@ -232,6 +246,7 @@ go-compiled-binary                  1.8 ± 0.3 ms     2.5x FASTER
 ```
 
 Local versions:
+
 - bash 5.x (macOS shipped /bin/bash 3.2 + brew bash)
 - Bun 1.3.13
 - Node v25.9.0
@@ -241,6 +256,7 @@ Local versions:
 These are real numbers from this exact Mac, not from a vendor blog. Run hyperfine yourself to reproduce.
 
 **Layer 2** (real Loki workload, 50 runs via `loki-ts/scripts/bench.ts`):
+
 ```
 bash autonomy/loki version             106.71 ms (min 96.54, max 125.35)
 bun loki-ts/src/cli.ts version          12.36 ms (min 11.63, max 13.52)

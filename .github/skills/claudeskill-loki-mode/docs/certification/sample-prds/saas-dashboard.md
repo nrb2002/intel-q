@@ -9,18 +9,21 @@ A web-based analytics dashboard for a SaaS product. Users can sign up, log in, v
 ## Requirements
 
 ### Authentication
+
 - Email/password registration with bcrypt hashing
 - Login with JWT token issuance
 - Protected routes requiring valid JWT
 - Password reset flow (email-based)
 
 ### Dashboard
+
 - Overview page with key metrics (active users, revenue, API calls)
 - Line chart showing daily active users over 30 days
 - Bar chart showing API call volume by endpoint
 - Date range selector for filtering data
 
 ### API
+
 - RESTful API with OpenAPI specification
 - `POST /api/auth/register` -- Create account
 - `POST /api/auth/login` -- Authenticate and receive JWT
@@ -31,6 +34,7 @@ A web-based analytics dashboard for a SaaS product. Users can sign up, log in, v
 - `PUT /api/account` -- Update account settings
 
 ### Database
+
 - PostgreSQL for persistent storage
 - Users table (id, email, password_hash, created_at)
 - Metrics table (id, user_id, metric_type, value, recorded_at)

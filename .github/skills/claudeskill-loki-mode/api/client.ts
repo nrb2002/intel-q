@@ -47,11 +47,7 @@ export class LokiClient {
   /**
    * Make an authenticated request
    */
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: unknown
-  ): Promise<T> {
+  private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -81,7 +77,7 @@ export class LokiClient {
         throw new LokiApiClientError(
           error.error || response.statusText,
           error.code || "UNKNOWN",
-          response.status
+          response.status,
         );
       }
 
@@ -93,7 +89,7 @@ export class LokiClient {
       }
       throw new LokiApiClientError(
         err instanceof Error ? err.message : "Request failed",
-        "NETWORK_ERROR"
+        "NETWORK_ERROR",
       );
     }
   }
@@ -123,9 +119,7 @@ export class LokiClient {
   /**
    * Start a new session
    */
-  async startSession(
-    options: StartSessionRequest = {}
-  ): Promise<StartSessionResponse> {
+  async startSession(options: StartSessionRequest = {}): Promise<StartSessionResponse> {
     return this.request<StartSessionResponse>("POST", "/api/sessions", options);
   }
 
@@ -133,31 +127,25 @@ export class LokiClient {
    * List all sessions
    */
   async listSessions(): Promise<{ sessions: Session[]; total: number }> {
-    return this.request<{ sessions: Session[]; total: number }>(
-      "GET",
-      "/api/sessions"
-    );
+    return this.request<{ sessions: Session[]; total: number }>("GET", "/api/sessions");
   }
 
   /**
    * Get session details
    */
   async getSession(sessionId: string): Promise<SessionStatusResponse> {
-    return this.request<SessionStatusResponse>(
-      "GET",
-      `/api/sessions/${sessionId}`
-    );
+    return this.request<SessionStatusResponse>("GET", `/api/sessions/${sessionId}`);
   }
 
   /**
    * Stop a session
    */
   async stopSession(
-    sessionId: string
+    sessionId: string,
   ): Promise<{ sessionId: string; status: string; message: string }> {
     return this.request<{ sessionId: string; status: string; message: string }>(
       "POST",
-      `/api/sessions/${sessionId}/stop`
+      `/api/sessions/${sessionId}/stop`,
     );
   }
 
@@ -167,12 +155,12 @@ export class LokiClient {
   async injectInput(
     sessionId: string,
     input: string,
-    context?: string
+    context?: string,
   ): Promise<{ sessionId: string; message: string }> {
     return this.request<{ sessionId: string; message: string }>(
       "POST",
       `/api/sessions/${sessionId}/input`,
-      { input, context }
+      { input, context },
     );
   }
 
@@ -185,7 +173,7 @@ export class LokiClient {
    */
   async getTasks(
     sessionId: string,
-    options: { status?: string; limit?: number; offset?: number } = {}
+    options: { status?: string; limit?: number; offset?: number } = {},
   ): Promise<{ tasks: Task[]; pagination: unknown }> {
     const params = new URLSearchParams();
     if (options.status) params.set("status", options.status);
@@ -195,7 +183,7 @@ export class LokiClient {
     const query = params.toString();
     return this.request<{ tasks: Task[]; pagination: unknown }>(
       "GET",
-      `/api/sessions/${sessionId}/tasks${query ? `?${query}` : ""}`
+      `/api/sessions/${sessionId}/tasks${query ? `?${query}` : ""}`,
     );
   }
 
@@ -203,20 +191,14 @@ export class LokiClient {
    * Get active tasks across all sessions
    */
   async getActiveTasks(): Promise<{ tasks: Task[]; count: number }> {
-    return this.request<{ tasks: Task[]; count: number }>(
-      "GET",
-      "/api/tasks/active"
-    );
+    return this.request<{ tasks: Task[]; count: number }>("GET", "/api/tasks/active");
   }
 
   /**
    * Get queued tasks
    */
   async getQueuedTasks(): Promise<{ tasks: Task[]; count: number }> {
-    return this.request<{ tasks: Task[]; count: number }>(
-      "GET",
-      "/api/tasks/queue"
-    );
+    return this.request<{ tasks: Task[]; count: number }>("GET", "/api/tasks/queue");
   }
 
   // ============================================================
@@ -226,10 +208,7 @@ export class LokiClient {
   /**
    * Subscribe to real-time events
    */
-  subscribe(
-    callback: (event: AnySSEEvent) => void,
-    filter: EventFilter = {}
-  ): () => void {
+  subscribe(callback: (event: AnySSEEvent) => void, filter: EventFilter = {}): () => void {
     this.eventCallbacks.push(callback);
 
     // Connect if not already connected
@@ -334,7 +313,7 @@ export class LokiClient {
    */
   async getEventHistory(
     filter: EventFilter = {},
-    limit = 100
+    limit = 100,
   ): Promise<{ events: AnySSEEvent[]; count: number }> {
     const params = new URLSearchParams();
     if (filter.sessionId) params.set("sessionId", filter.sessionId);
@@ -343,7 +322,7 @@ export class LokiClient {
 
     return this.request<{ events: AnySSEEvent[]; count: number }>(
       "GET",
-      `/api/events/history?${params.toString()}`
+      `/api/events/history?${params.toString()}`,
     );
   }
 

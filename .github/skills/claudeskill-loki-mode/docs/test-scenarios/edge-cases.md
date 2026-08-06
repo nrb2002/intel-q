@@ -21,6 +21,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user has an empty file at `./empty.md` (0 bytes)
 **When** they run `loki start ./empty.md`
 **Then** the system should:
+
 - Detect the PRD has 0 words in `detect_complexity()` (run.sh:1268)
 - Classify complexity as "simple" (words < 200, features < 5, sections < 3)
 - Enter codebase analysis mode since the PRD has no content
@@ -39,6 +40,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user provides a PRD file `bad.json` containing `{invalid json`
 **When** they run `loki start bad.json`
 **Then** the system should:
+
 - Attempt JSON parsing in `detect_complexity()` (run.sh:1276)
 - The `jq` command fails silently (`2>/dev/null || echo "0"`)
 - Fall back to `grep -c` which counts 0 features
@@ -55,6 +57,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** an autonomous session is running at iteration 15 of 1000
 **When** the network connection drops (DNS resolution fails, API timeout)
 **Then** the system should:
+
 - The provider CLI (claude/codex/gemini) exits with a non-zero exit code
 - `run_autonomous()` captures the exit code in `$exit_code` (run.sh:9406)
 - Rate limit detection runs via `is_rate_limited()` (checks for common rate limit strings)
@@ -74,6 +77,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** an autonomous session is running with a valid API key
 **When** the API key expires or is revoked mid-session
 **Then** the system should:
+
 - The provider CLI returns an authentication error (exit code non-zero)
 - The error output is captured in `$iter_output` and `$agent_log`
 - `is_rate_limited()` scans for rate-limit patterns but may not detect auth errors
@@ -91,6 +95,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** the filesystem has less than 1MB free space
 **When** the AI provider attempts to write generated code to disk
 **Then** the system should:
+
 - The provider CLI writes to `$iter_output` (a temp file in .loki/logs/)
 - `mktemp` fails when disk is full, causing the provider output to be lost
 - `save_state()` writes to `.loki/autonomy-state.json.tmp.$$` which also fails
@@ -110,6 +115,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user specifies `--provider codex` but `codex` is not in PATH
 **When** they run `loki start --provider codex ./prd.md`
 **Then** the system should:
+
 - `load_provider()` (loader.sh:25) sources `codex.sh`
 - `validate_provider_config()` checks required variables
 - The `provider_detect()` function (called by `check_provider_installed()`) fails
@@ -127,6 +133,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user runs `loki init -t nonexistent-template`
 **When** the init command processes the template flag
 **Then** the system should:
+
 - Check the `templates/` directory for a matching template
 - If not found, display available templates
 - Exit with a clear error message
@@ -140,6 +147,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a previous session crash left a partially-written `.loki/session.json` containing `{"status": "runn`
 **When** a user runs `loki status` or `loki start`
 **Then** the system should:
+
 - `load_state()` (run.sh:7956) calls `python3 -c "import json; print(json.load(...))"` which raises JSONDecodeError
 - The `2>/dev/null || echo "unknown"` fallback returns "unknown"
 - RETRY_COUNT defaults to 0, ITERATION_COUNT defaults to 0
@@ -156,6 +164,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user has the dashboard open with an active WebSocket connection
 **When** the network blips and the WebSocket disconnects
 **Then** the system should:
+
 - The `websocket_endpoint()` (server.py:1378) catches `WebSocketDisconnect`
 - `manager.disconnect(websocket)` removes the connection from `active_connections`
 - The autonomous build continues unaffected (it does not depend on WebSocket)
@@ -173,6 +182,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** an autonomous build is running
 **When** a user submits a chat message via the dashboard while the AI provider is processing
 **Then** the system should:
+
 - The chat message is written to `.loki/HUMAN_INPUT.md` (via dashboard control API)
 - `check_human_intervention()` (run.sh:~9292) detects the file at the start of the next iteration
 - The `LOKI_HUMAN_INPUT` variable is set with the content
@@ -190,6 +200,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** `LOKI_FAILOVER=false` (default) and the primary provider hits a rate limit
 **When** the rate limit error is detected via `is_rate_limited()`
 **Then** the system should:
+
 - Detect rate limit patterns in the output
 - Apply exponential backoff via `calculate_wait()` (base 60s, up to 3600s max)
 - Retry after the backoff period
@@ -206,6 +217,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** the `.loki/memory/index.json` file is corrupted (invalid JSON)
 **When** the next memory operation attempts to load the index
 **Then** the system should:
+
 - `MemoryStorage._load_json()` (storage.py:276) catches `json.JSONDecodeError` and returns `None`
 - The caller receives None and must handle it
 - `_ensure_index()` only runs on initialization (when index does not exist)
@@ -222,6 +234,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** parallel mode is enabled with multiple worktrees working on different features
 **When** two worktrees modify the same file and auto-merge is attempted
 **Then** the system should:
+
 - The auto-merge process detects the conflict
 - Mark the conflicting merge as failed
 - Log the conflicting files
@@ -236,6 +249,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user starts a build via the web dashboard and closes the browser tab
 **When** the build is at iteration 50 of 1000
 **Then** the system should:
+
 - The WebSocket connection drops (handled by EP-009 above)
 - The autonomous build continues in the background (it runs as a shell process)
 - The dashboard server continues running
@@ -250,6 +264,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** the system is mid-write in `create_checkpoint()` (run.sh:6283)
 **When** `kill -9` is sent to the Loki process
 **Then** the system should:
+
 - The process terminates immediately (SIGKILL cannot be caught)
 - The `trap cleanup INT TERM` handler does NOT run (SIGKILL bypasses traps)
 - Partial files may exist: `.loki/state/checkpoints/cp-*/metadata.json` may be incomplete
@@ -257,6 +272,7 @@ Version: v6.71.1 | Date: 2026-03-24
 - The `.loki/loki.pid` file is stale (points to dead process)
 
 **Expected behavior on next start:**
+
 - `load_state()` reads the last good `autonomy-state.json` (the temp file is never renamed)
 - The stale PID file is detected by `kill -0 "$dpid"` returning false
 - Checkpoint index may be inconsistent with actual checkpoint directories
@@ -274,6 +290,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** User A and User B both run `loki start` in the same project directory
 **When** both processes attempt to write to `.loki/autonomy-state.json` and `.loki/loki.pid`
 **Then** the system should:
+
 - The second invocation should detect an existing `loki.pid` and warn
 - If the PID in `loki.pid` is alive, refuse to start (or require `--force`)
 - If the PID is stale, overwrite and proceed
@@ -289,6 +306,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** User runs `loki start` in `/project-a/` and `/project-b/` simultaneously
 **When** both builds are running
 **Then** the system should:
+
 - Each project has its own `.loki/` directory
 - Dashboard server instances may conflict on port 57374 (the default)
 - The second build should either use a different port or detect the conflict
@@ -303,9 +321,10 @@ Version: v6.71.1 | Date: 2026-03-24
 
 **Given** a build is running via `loki start`
 **When** the user simultaneously:
+
 - Sends a "pause" command via the dashboard web UI
 - Runs `loki pause` in the terminal
-**Then** the system should:
+  **Then** the system should:
 - Both commands write `.loki/PAUSE` (creating it if it does not exist)
 - `check_human_intervention()` detects the PAUSE file on the next iteration
 - The system enters pause mode once
@@ -320,6 +339,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user has typed a chat message in the web dashboard
 **When** another terminal runs `loki pause`
 **Then** the system should:
+
 - The PAUSE file is created
 - On the next iteration, the system pauses
 - The chat message (if not yet submitted) remains in the browser's input field
@@ -334,6 +354,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** an autonomous build is running at iteration 42
 **When** the user runs `loki export json` in another terminal
 **Then** the system should:
+
 - `cmd_export()` reads from `.loki/` state files
 - It reads `state/orchestrator.json`, `queue/*.json`, etc.
 - These files may be mid-write by the running build
@@ -350,6 +371,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** User A runs `loki init -t` to list templates
 **When** User B simultaneously saves a new template to the `templates/` directory
 **Then** the system should:
+
 - The listing reads the directory contents at a point in time
 - The new template may or may not appear depending on timing
 - No crash or corruption occurs
@@ -363,6 +385,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** the memory consolidation pipeline is running (`run_memory_consolidation()`)
 **When** simultaneously, `retrieve_memory_context()` attempts to read memory
 **Then** the system should:
+
 - `MemoryStorage` uses `fcntl.flock()` for file-level locking (storage.py:198)
 - Retrieval acquires a shared lock (exclusive=False)
 - Consolidation acquires an exclusive lock for writes
@@ -379,6 +402,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user's auth token has expired
 **When** the WebSocket client attempts to reconnect with the expired token
 **Then** the system should:
+
 - `websocket_endpoint()` (server.py:1386) validates the token
 - `auth.validate_token(ws_token)` returns None for expired tokens
 - The server accepts the WebSocket, then immediately closes with code 1008 (Policy Violation)
@@ -393,6 +417,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a build is running with `--provider claude`
 **When** the user modifies the LOKI_PROVIDER environment variable and signals a config reload
 **Then** the system should:
+
 - The running process has already loaded provider config
 - Environment variable changes do NOT affect the running process
 - The provider can only be changed by stopping and restarting the session
@@ -408,6 +433,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a build is running
 **When** the user runs `loki config set maxTier sonnet` in another terminal
 **Then** the system should:
+
 - The config command writes to `.loki/config.json`
 - The running build re-reads config at certain checkpoints (e.g., each iteration)
 - If the running build does NOT re-read config, the change takes effect on next session
@@ -425,6 +451,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a project directory is at `/home/user/projects/cafe-app` (contains accented e)
 **When** the user runs `loki start ./prd.md` from that directory
 **Then** the system should:
+
 - Bash handles UTF-8 paths correctly on modern systems
 - Python's `Path()` and `open()` handle UTF-8 paths
 - The `.loki/` directory is created inside the Unicode-named directory
@@ -441,6 +468,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a PRD file is 100,000+ characters (approximately 150 pages)
 **When** `loki start very-long-prd.md` is run
 **Then** the system should:
+
 - `detect_complexity()` reads the full file for `wc -w` and `grep -c` (run.sh:1268)
 - The PRD content is injected into the prompt via `build_prompt()`
 - The prompt may exceed the provider's context window
@@ -456,6 +484,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a large monorepo with 5000+ source files
 **When** `detect_complexity()` runs
 **Then** the system should:
+
 - `find` command (run.sh:1240) counts all source files matching the pattern
 - With 5000+ files, the find command may take several seconds
 - The system classifies as "complex" since file_count > 50
@@ -470,6 +499,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a project contains .png, .woff2, and .mp4 files
 **When** the AI provider attempts to read the project structure
 **Then** the system should:
+
 - `detect_complexity()` only counts source code files by extension
 - Binary files are excluded from the file count
 - The AI provider's file reading may attempt to read binary files
@@ -484,6 +514,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a project has symlinks pointing to files outside the project directory
 **When** `detect_complexity()` runs `find` to count files
 **Then** the system should:
+
 - `find "$target_dir" -type f` follows symlinks by default on some systems
 - Symlinks pointing outside the project may inflate the file count
 - Circular symlinks could cause `find` to loop indefinitely
@@ -499,6 +530,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a project has a large `.git/` directory (multiple GB)
 **When** operations scan the project directory
 **Then** the system should:
+
 - `detect_complexity()` excludes `*/.git/*` in its find command (run.sh:1245)
 - Checkpoint operations use git commands, not direct .git/ access
 - Export operations skip .git/ contents
@@ -512,6 +544,7 @@ Version: v6.71.1 | Date: 2026-03-24
 **Given** a user runs `loki start` in a completely empty directory (no files, no .git)
 **When** the system initializes
 **Then** the system should:
+
 - `detect_complexity()` returns file_count=0
 - No PRD is provided, so codebase analysis mode activates
 - git commands fail since there is no git repository
@@ -525,12 +558,16 @@ Version: v6.71.1 | Date: 2026-03-24
 ### EC-008: PRD With Code Blocks That Look Like Commands
 
 **Given** a PRD contains markdown code blocks with shell commands:
+
 ```markdown
 ## Setup
+
 Run: `rm -rf / --no-preserve-root`
 ```
+
 **When** the AI provider interprets the PRD
 **Then** the system should:
+
 - The PRD content is passed as text to the AI provider
 - The AI provider may interpret code blocks as instructions
 - The `LOKI_BLOCKED_COMMANDS` env var (run.sh:44) should block dangerous commands
@@ -546,6 +583,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** an autonomous session is running in perpetual mode
 **When** the session exceeds 24 hours of continuous operation
 **Then** the system should:
+
 - Log files accumulate in `.loki/logs/` (one per day: autonomy-YYYYMMDD.log)
 - Agent log is trimmed at 1MB (run.sh:9347)
 - Memory consolidation runs periodically
@@ -563,6 +601,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** LOKI_MAX_ITERATIONS=1000 and the build is at iteration 150
 **When** the build continues running
 **Then** the system should:
+
 - Completion Council checks every `LOKI_COUNCIL_CHECK_INTERVAL` iterations (default 5)
 - Stagnation detector triggers after `LOKI_COUNCIL_STAGNATION_LIMIT` iterations without git changes (default 5)
 - Memory consolidation runs periodically
@@ -579,6 +618,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a PRD at `./prd.md` contains `See requirements in ./sub-prd.md` and `./sub-prd.md` references `./sub-sub-prd.md`
 **When** the AI provider processes the PRD
 **Then** the system should:
+
 - Loki passes only the top-level PRD path to the AI provider
 - The AI provider may or may not follow references to other files
 - Loki does not pre-resolve or inline nested references
@@ -592,6 +632,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a template file is missing required sections (e.g., no "## Requirements" heading)
 **When** `loki init -t broken-template` is used
 **Then** the system should:
+
 - The template content is loaded from `templates/`
 - Missing fields result in empty sections in the generated PRD
 - The generated PRD may be classified as "simple" due to low word/section counts
@@ -605,6 +646,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** the AI provider executes successfully (exit code 0) but returns no output
 **When** the iteration completes
 **Then** the system should:
+
 - `$iter_output` is empty (0 bytes)
 - `check_completion_promise()` finds no completion text -> returns 1
 - `is_rate_limited()` finds no rate limit patterns -> returns false
@@ -622,6 +664,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a quality gate (e.g., test coverage check) hangs indefinitely
 **When** `enforce_test_coverage()` runs `npx vitest run` which never completes
 **Then** the system should:
+
 - The test runner process runs as a child of the main shell
 - There is no explicit timeout on quality gate execution
 - The entire iteration blocks until the test runner exits
@@ -637,6 +680,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a checkpoint was created at version 6.70.0 of Loki
 **When** the user upgrades to 6.71.1 and runs `loki checkpoint restore cp-15-1711234567`
 **Then** the system should:
+
 - `rollback_to_checkpoint()` (run.sh:6383) restores state files from the checkpoint
 - The checkpoint contains `state/orchestrator.json` from v6.70.0
 - The new version may expect different fields in the state files
@@ -655,6 +699,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a project contains a single source file that is 50MB
 **When** the AI provider attempts to read it
 **Then** the system should:
+
 - `detect_complexity()` counts it as one file regardless of size
 - The AI provider's file reading depends on its own context window limits
 - Git operations (diff, commit) handle large files but may be slow
@@ -668,6 +713,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** 1000+ projects are registered in the cross-project registry
 **When** `GET /api/registry/projects` is called
 **Then** the system should:
+
 - The registry API returns all projects
 - No pagination is implemented for the registry endpoint
 - Large responses may cause client-side rendering issues
@@ -683,6 +729,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** LOKI_MAX_WS_CONNECTIONS is set to 100 (default)
 **When** the 101st WebSocket client attempts to connect
 **Then** the system should:
+
 - `ConnectionManager.connect()` (server.py:292) checks `len(self.active_connections) >= MAX_CONNECTIONS`
 - Returns False, accepts the WebSocket, then immediately closes with code 1013
 - Logs a warning about the connection limit
@@ -696,6 +743,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** LOKI_BUDGET_LIMIT="10.00" and current estimated cost is $9.99
 **When** the next iteration costs $0.02 (bringing total to $10.01)
 **Then** the system should:
+
 - `check_budget_limit()` (run.sh:7204) runs before each iteration
 - At $9.99, the check passes (9.99 < 10.00)
 - The iteration runs (costing $0.02)
@@ -714,6 +762,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** LOKI_MAX_ITERATIONS=1000 and ITERATION_COUNT is at 999
 **When** the next iteration begins
 **Then** the system should:
+
 - `ITERATION_COUNT` increments to 1000 (run.sh:9284)
 - `check_max_iterations()` (run.sh:7399) checks `$ITERATION_COUNT -ge $MAX_ITERATIONS`
 - 1000 >= 1000 is true
@@ -729,6 +778,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** the dashboard sends a very large state update (e.g., 10MB of task data)
 **When** `manager.broadcast()` sends the message to all WebSocket clients
 **Then** the system should:
+
 - FastAPI/Starlette WebSocket has no default message size limit for sending
 - The client (browser) has a default incoming message size limit (varies by browser)
 - Very large messages may cause client disconnection
@@ -743,6 +793,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a project has 10,000+ tasks in the database
 **When** `GET /api/projects/{id}/tasks` is called without pagination
 **Then** the system should:
+
 - All tasks are loaded from SQLAlchemy
 - All tasks are serialized to JSON
 - The response may be several MB
@@ -758,6 +809,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** a user creates a template with a 500-character name
 **When** `loki init -t <very-long-name>` is used
 **Then** the system should:
+
 - The template name is used as a filename in `templates/`
 - Most filesystems limit filenames to 255 bytes
 - A 500-character name would fail at file creation
@@ -773,6 +825,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** an autonomous session runs across midnight (UTC)
 **When** the log filename changes from `autonomy-20260324.log` to `autonomy-20260325.log`
 **Then** the system should:
+
 - `log_file=".loki/logs/autonomy-$(date +%Y%m%d).log"` is evaluated each iteration
 - The new iteration writes to the new day's log file
 - The old log file remains intact
@@ -787,6 +840,7 @@ Run: `rm -rf / --no-preserve-root`
 **Given** 1000 episodes have accumulated (the `limit=1000` in consolidation.py:145)
 **When** `consolidate(since_hours=24)` runs
 **Then** the system should:
+
 - Load up to 1000 episode IDs
 - Load each episode from disk (1000 file reads)
 - Cluster episodes by task type or embedding similarity
@@ -800,14 +854,14 @@ Run: `rm -rf / --no-preserve-root`
 
 ## Appendix: Bug Summary
 
-| Bug ID | Severity | Location | Description |
-|--------|----------|----------|-------------|
-| BUG-EP-004 | Medium | run.sh:6864 | `check_provider_health()` validates key exists, not that it works |
-| BUG-EP-008 | Low | run.sh:7956 | CLI `load_state()` does not attempt checkpoint-based recovery on corruption |
-| BUG-EP-012 | Medium | storage.py:170 | Corrupted index.json is not auto-recreated; silently breaks all memory |
-| BUG-EP-015 | Low | run.sh:7939 | Orphaned `.tmp.*` files accumulate on kill -9; no startup cleanup |
-| BUG-CU-002 | Medium | run.sh (dashboard) | No automatic port increment when default dashboard port is in use |
-| BUG-CU-005 | Low | loki:5034 | Export reads multiple state files without cross-file consistency |
-| BUG-EC-002 | Medium | run.sh (build_prompt) | No PRD size limit or truncation before context injection |
-| BUG-EC-013 | Medium | run.sh (iteration) | Empty provider output treated as success; wastes iterations |
-| BUG-EC-014 | High | run.sh:5516 | Quality gate subprocesses have no timeout; can hang indefinitely |
+| Bug ID     | Severity | Location              | Description                                                                 |
+| ---------- | -------- | --------------------- | --------------------------------------------------------------------------- |
+| BUG-EP-004 | Medium   | run.sh:6864           | `check_provider_health()` validates key exists, not that it works           |
+| BUG-EP-008 | Low      | run.sh:7956           | CLI `load_state()` does not attempt checkpoint-based recovery on corruption |
+| BUG-EP-012 | Medium   | storage.py:170        | Corrupted index.json is not auto-recreated; silently breaks all memory      |
+| BUG-EP-015 | Low      | run.sh:7939           | Orphaned `.tmp.*` files accumulate on kill -9; no startup cleanup           |
+| BUG-CU-002 | Medium   | run.sh (dashboard)    | No automatic port increment when default dashboard port is in use           |
+| BUG-CU-005 | Low      | loki:5034             | Export reads multiple state files without cross-file consistency            |
+| BUG-EC-002 | Medium   | run.sh (build_prompt) | No PRD size limit or truncation before context injection                    |
+| BUG-EC-013 | Medium   | run.sh (iteration)    | Empty provider output treated as success; wastes iterations                 |
+| BUG-EC-014 | High     | run.sh:5516           | Quality gate subprocesses have no timeout; can hang indefinitely            |

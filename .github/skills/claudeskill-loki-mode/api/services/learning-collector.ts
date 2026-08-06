@@ -129,7 +129,7 @@ function createSignal(
   type: SignalType,
   source: SignalSource,
   action: string,
-  options: Partial<LearningSignal> = {}
+  options: Partial<LearningSignal> = {},
 ): LearningSignal {
   return {
     id: options.id || generateId(),
@@ -149,7 +149,7 @@ function createUserPreferenceSignal(
   action: string,
   preferenceKey: string,
   preferenceValue: unknown,
-  options: Partial<UserPreferenceSignal> = {}
+  options: Partial<UserPreferenceSignal> = {},
 ): UserPreferenceSignal {
   const base = createSignal(SignalType.USER_PREFERENCE, source, action, {
     ...options,
@@ -170,7 +170,7 @@ function createErrorPatternSignal(
   action: string,
   errorType: string,
   errorMessage: string,
-  options: Partial<ErrorPatternSignal> = {}
+  options: Partial<ErrorPatternSignal> = {},
 ): ErrorPatternSignal {
   const base = createSignal(SignalType.ERROR_PATTERN, source, action, {
     ...options,
@@ -193,7 +193,7 @@ function createSuccessPatternSignal(
   action: string,
   patternName: string,
   actionSequence: string[],
-  options: Partial<SuccessPatternSignal> = {}
+  options: Partial<SuccessPatternSignal> = {},
 ): SuccessPatternSignal {
   const base = createSignal(SignalType.SUCCESS_PATTERN, source, action, {
     ...options,
@@ -215,7 +215,7 @@ function createToolEfficiencySignal(
   source: SignalSource,
   action: string,
   toolName: string,
-  options: Partial<ToolEfficiencySignal> = {}
+  options: Partial<ToolEfficiencySignal> = {},
 ): ToolEfficiencySignal {
   const base = createSignal(SignalType.TOOL_EFFICIENCY, source, action, {
     ...options,
@@ -238,7 +238,7 @@ function createContextRelevanceSignal(
   action: string,
   query: string,
   retrievedContextIds: string[],
-  options: Partial<ContextRelevanceSignal> = {}
+  options: Partial<ContextRelevanceSignal> = {},
 ): ContextRelevanceSignal {
   const precision = options.precision ?? 0.0;
   let outcome: Outcome;
@@ -408,7 +408,7 @@ export class LearningCollector {
       alternativesRejected?: unknown[];
       context?: Record<string, unknown>;
       confidence?: number;
-    } = {}
+    } = {},
   ): void {
     const signal = createUserPreferenceSignal(
       SignalSource.API,
@@ -419,7 +419,7 @@ export class LearningCollector {
         alternatives_rejected: options.alternativesRejected || [],
         context: options.context || {},
         confidence: options.confidence ?? 0.9,
-      }
+      },
     );
 
     this.queueSignal(signal);
@@ -447,21 +447,15 @@ export class LearningCollector {
       recoverySteps?: string[];
       context?: Record<string, unknown>;
       confidence?: number;
-    } = {}
+    } = {},
   ): void {
-    const signal = createErrorPatternSignal(
-      SignalSource.API,
-      action,
-      errorType,
-      errorMessage,
-      {
-        resolution: options.resolution || "",
-        stack_trace: options.stackTrace,
-        recovery_steps: options.recoverySteps || [],
-        context: options.context || {},
-        confidence: options.confidence ?? 0.8,
-      }
-    );
+    const signal = createErrorPatternSignal(SignalSource.API, action, errorType, errorMessage, {
+      resolution: options.resolution || "",
+      stack_trace: options.stackTrace,
+      recovery_steps: options.recoverySteps || [],
+      context: options.context || {},
+      confidence: options.confidence ?? 0.8,
+    });
 
     this.queueSignal(signal);
   }
@@ -488,7 +482,7 @@ export class LearningCollector {
       durationSeconds?: number;
       context?: Record<string, unknown>;
       confidence?: number;
-    } = {}
+    } = {},
   ): void {
     const signal = createSuccessPatternSignal(
       SignalSource.API,
@@ -501,7 +495,7 @@ export class LearningCollector {
         duration_seconds: options.durationSeconds || 0,
         context: options.context || {},
         confidence: options.confidence ?? 0.85,
-      }
+      },
     );
 
     this.queueSignal(signal);
@@ -530,22 +524,17 @@ export class LearningCollector {
       outcome?: Outcome;
       context?: Record<string, unknown>;
       confidence?: number;
-    } = {}
+    } = {},
   ): void {
-    const signal = createToolEfficiencySignal(
-      SignalSource.API,
-      action,
-      toolName,
-      {
-        tokens_used: options.tokensUsed || 0,
-        execution_time_ms: options.executionTimeMs || 0,
-        success_rate: options.successRate ?? 1.0,
-        alternative_tools: options.alternativeTools || [],
-        outcome: options.outcome || Outcome.SUCCESS,
-        context: options.context || {},
-        confidence: options.confidence ?? 0.9,
-      }
-    );
+    const signal = createToolEfficiencySignal(SignalSource.API, action, toolName, {
+      tokens_used: options.tokensUsed || 0,
+      execution_time_ms: options.executionTimeMs || 0,
+      success_rate: options.successRate ?? 1.0,
+      alternative_tools: options.alternativeTools || [],
+      outcome: options.outcome || Outcome.SUCCESS,
+      context: options.context || {},
+      confidence: options.confidence ?? 0.9,
+    });
 
     this.queueSignal(signal);
   }
@@ -573,7 +562,7 @@ export class LearningCollector {
       recall?: number;
       context?: Record<string, unknown>;
       confidence?: number;
-    } = {}
+    } = {},
   ): void {
     // Calculate precision if not provided
     let precision = options.precision;
@@ -595,7 +584,7 @@ export class LearningCollector {
         recall: options.recall ?? 0.0,
         context: options.context || {},
         confidence: options.confidence ?? 0.8,
-      }
+      },
     );
 
     this.queueSignal(signal);
@@ -617,25 +606,21 @@ export class LearningCollector {
       statusCode?: number;
       errorMessage?: string;
       context?: Record<string, unknown>;
-    } = {}
+    } = {},
   ): void {
     const duration = Date.now() - startTime;
 
     if (success) {
-      this.emitToolEfficiency(
-        `${method} ${endpoint}`,
-        `api:${endpoint.replace(/\//g, ":")}`,
-        {
-          executionTimeMs: duration,
-          outcome: Outcome.SUCCESS,
-          context: {
-            method,
-            endpoint,
-            statusCode: options.statusCode || 200,
-            ...options.context,
-          },
-        }
-      );
+      this.emitToolEfficiency(`${method} ${endpoint}`, `api:${endpoint.replace(/\//g, ":")}`, {
+        executionTimeMs: duration,
+        outcome: Outcome.SUCCESS,
+        context: {
+          method,
+          endpoint,
+          statusCode: options.statusCode || 200,
+          ...options.context,
+        },
+      });
     } else {
       this.emitErrorPattern(
         `${method} ${endpoint}`,
@@ -649,7 +634,7 @@ export class LearningCollector {
             durationMs: duration,
             ...options.context,
           },
-        }
+        },
       );
     }
   }
@@ -665,40 +650,31 @@ export class LearningCollector {
       taskType?: string;
       relevantIds?: string[];
       context?: Record<string, unknown>;
-    } = {}
+    } = {},
   ): void {
     const duration = Date.now() - startTime;
 
     // Emit context relevance signal
-    this.emitContextRelevance(
-      "memory_retrieve",
-      query,
-      retrievedIds,
-      {
-        relevantIds: options.relevantIds,
-        context: {
-          taskType: options.taskType,
-          durationMs: duration,
-          resultCount: retrievedIds.length,
-          ...options.context,
-        },
-      }
-    );
+    this.emitContextRelevance("memory_retrieve", query, retrievedIds, {
+      relevantIds: options.relevantIds,
+      context: {
+        taskType: options.taskType,
+        durationMs: duration,
+        resultCount: retrievedIds.length,
+        ...options.context,
+      },
+    });
 
     // Also emit tool efficiency signal
-    this.emitToolEfficiency(
-      "memory_retrieve",
-      "api:memory:retrieve",
-      {
-        executionTimeMs: duration,
-        outcome: retrievedIds.length > 0 ? Outcome.SUCCESS : Outcome.PARTIAL,
-        context: {
-          query: query.substring(0, 100),
-          resultCount: retrievedIds.length,
-          taskType: options.taskType,
-        },
-      }
-    );
+    this.emitToolEfficiency("memory_retrieve", "api:memory:retrieve", {
+      executionTimeMs: duration,
+      outcome: retrievedIds.length > 0 ? Outcome.SUCCESS : Outcome.PARTIAL,
+      context: {
+        query: query.substring(0, 100),
+        resultCount: retrievedIds.length,
+        taskType: options.taskType,
+      },
+    });
   }
 
   /**
@@ -713,7 +689,7 @@ export class LearningCollector {
       errorMessage?: string;
       durationMs?: number;
       context?: Record<string, unknown>;
-    } = {}
+    } = {},
   ): void {
     if (success) {
       this.emitSuccessPattern(
@@ -728,7 +704,7 @@ export class LearningCollector {
             provider: options.provider,
             ...options.context,
           },
-        }
+        },
       );
     } else {
       this.emitErrorPattern(
@@ -741,7 +717,7 @@ export class LearningCollector {
             provider: options.provider,
             ...options.context,
           },
-        }
+        },
       );
     }
   }
@@ -756,21 +732,16 @@ export class LearningCollector {
     options: {
       source?: string;
       context?: Record<string, unknown>;
-    } = {}
+    } = {},
   ): void {
-    this.emitUserPreference(
-      "settings_change",
-      settingKey,
-      newValue,
-      {
-        alternativesRejected: oldValue !== undefined ? [oldValue] : [],
-        context: {
-          source: options.source || "api",
-          previousValue: oldValue,
-          ...options.context,
-        },
-      }
-    );
+    this.emitUserPreference("settings_change", settingKey, newValue, {
+      alternativesRejected: oldValue !== undefined ? [oldValue] : [],
+      context: {
+        source: options.source || "api",
+        previousValue: oldValue,
+        ...options.context,
+      },
+    });
   }
 
   /**

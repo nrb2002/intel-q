@@ -29,7 +29,7 @@ pass-through.**
 
 This gate proves "something changed and the test suite is green." It does NOT
 prove PRD-semantic correctness -- it cannot tell whether the right thing was
-built, only that *a* thing was built and tests pass. Semantic judgment stays
+built, only that _a_ thing was built and tests pass. Semantic judgment stays
 with the council votes and the Devil's Advocate. The evidence gate is a cheap,
 deterministic floor under the expensive, fallible LLM votes -- not a replacement
 for them.
@@ -64,8 +64,8 @@ Confirmed by reading source, not assumed:
   `COMPLETED` marker on real approval is the `if council_evaluate` branch
   (completion-council.sh:1863). The two force-stop safety valves -- stagnation
   (1899-1903) and done-signal (1907-1911, "agent keeps saying done") -- `return 0`
-  but do **NOT** write `COMPLETED`. They are *give-up / resource-protection*
-  exits, not *approved-done* claims. (Verified: the only `COMPLETED` writes are
+  but do **NOT** write `COMPLETED`. They are _give-up / resource-protection_
+  exits, not _approved-done_ claims. (Verified: the only `COMPLETED` writes are
   completion-council.sh:1863 and run.sh:12773; neither valve writes it.)
 
 - **Second approval path (force-review).** `run.sh:12762-12784` handles a
@@ -88,7 +88,7 @@ Confirmed by reading source, not assumed:
   (run.sh:6220-6396), shape:
   `{"timestamp","runner","pass":true|false,"min_coverage","summary"}`, with the
   special **no-suite** case `{"runner":"none","pass":true,"summary":"No test
-  runner detected"}` (run.sh:6373-6379). `enforce_test_coverage` runs earlier in
+runner detected"}` (run.sh:6373-6379). `enforce_test_coverage` runs earlier in
   the same iteration (run.sh:12231, gated by `PHASE_UNIT_TESTS`, default true),
   before the council check (run.sh:12382), so this file is reasonably fresh.
   (See Section 3 deviation note for why we do NOT use verification-results.json
@@ -144,7 +144,7 @@ persists to `.loki/state/start-sha`.
 
 **Critical lifecycle rule (do NOT "set if absent" alone).** A naive "set only if
 the file is missing" makes the gate toothless on any repo Loki has run before:
-the stale baseline from the *first* run persists, so on every later run
+the stale baseline from the _first_ run persists, so on every later run
 `base..HEAD` shows the entire prior history => nonzero diff => gate passes
 trivially even if the new run shipped nothing. The baseline must be (re)captured
 on a **fresh run** and preserved only on a **genuine resume**.
@@ -163,6 +163,7 @@ re-run after completion starts a fresh invocation with `ITERATION_COUNT == 0`
 baseline is recaptured at HEAD-of-this-run.
 
 Capture details:
+
 - `git rev-parse HEAD` in `${TARGET_DIR:-.}`; on non-git or failure, write an
   empty file, which the gate treats as inconclusive => pass-through.
 - Export `_LOKI_RUN_START_SHA` for the current process so the gate reads it
@@ -215,17 +216,17 @@ Behavior:
      of real edits is legitimate work, not fabrication; committed-only would
      false-block it. Count the UNION of four sources, block only when ALL are
      empty:
-       - committed since baseline: `git diff --name-only <base> HEAD`
-         (when base is empty/invalid, fall back to `git diff --name-only HEAD`,
-         mirroring proof-generator.py's own shallow/first-commit fallback),
-       - unstaged: `git diff --name-only HEAD`,
-       - staged: `git diff --cached --name-only`,
-       - untracked new files: `git ls-files --others --exclude-standard`. A
-         greenfield first run creates brand-new files that are not yet committed,
-         staged, or visible to `git diff HEAD`; without this fourth source the
-         union would be empty and the gate would false-block legitimate new work.
-         `--exclude-standard` respects .gitignore so build artifacts and
-         node_modules do not count as evidence.
+     - committed since baseline: `git diff --name-only <base> HEAD`
+       (when base is empty/invalid, fall back to `git diff --name-only HEAD`,
+       mirroring proof-generator.py's own shallow/first-commit fallback),
+     - unstaged: `git diff --name-only HEAD`,
+     - staged: `git diff --cached --name-only`,
+     - untracked new files: `git ls-files --others --exclude-standard`. A
+       greenfield first run creates brand-new files that are not yet committed,
+       staged, or visible to `git diff HEAD`; without this fourth source the
+       union would be empty and the gate would false-block legitimate new work.
+       `--exclude-standard` respects .gitignore so build artifacts and
+       node_modules do not count as evidence.
    - The union EXCLUDES any path under `.loki/` (Loki's own runtime state). The
      gate's own inputs live there (`.loki/quality/test-results.json` is always
      present at gate time) and several `.loki/*` files are not gitignored, so
@@ -249,7 +250,7 @@ Behavior:
    - DIFF EVIDENCE FAILS (empty diff vs run-start, where git+base were
      available), OR
    - TEST EVIDENCE FAILS (a runner actually ran and was red).
-   Otherwise `return 0`.
+     Otherwise `return 0`.
 
 5. **On block:** write `$COUNCIL_STATE_DIR/evidence-block.json` (atomic
    temp+mv, mirroring gate-block.json at ~858-885) with the reason(s), then
@@ -306,18 +307,18 @@ bypass the evidence gate entirely.
 
 ## 5. What it blocks / what it must NOT falsely block (truth table)
 
-| Scenario | Diff (start..HEAD) | test-results.json | Gate | Rationale |
-|---|---|---|---|---|
-| Legit completion: real changes + green tests | nonzero | runner=X, pass=true | PASS | the happy path |
-| Greenfield first run: only untracked new files (no commit/stage yet) | nonzero (untracked) | any non-red | PASS | new files are real work; counted via `git ls-files --others --exclude-standard` |
-| Fabricated "done", nothing built (not even untracked) | empty | any | **BLOCK** | nothing shipped anywhere |
-| Real changes but tests red | nonzero | runner=X, pass=false | **BLOCK** | a runner ran and failed |
-| Docs-only change, no test suite | nonzero (docs files) | runner=none, pass=true | PASS | nonzero diff; no suite to fail |
-| Project with no test suite, real code | nonzero | runner=none, pass=true | PASS | code shipped; tests not expected |
-| No git repo | inconclusive | any non-red | PASS | cannot prove fabrication |
-| Empty/missing run-start SHA (new repo, zero commits) | inconclusive | any non-red | PASS | never had a baseline |
-| test-results.json missing/unparseable | nonzero | inconclusive | PASS | mirror "no file = no gate" |
-| `LOKI_EVIDENCE_GATE=0` | n/a | n/a | PASS (no read/write) | exactly today's behavior |
+| Scenario                                                             | Diff (start..HEAD)   | test-results.json      | Gate                 | Rationale                                                                       |
+| -------------------------------------------------------------------- | -------------------- | ---------------------- | -------------------- | ------------------------------------------------------------------------------- |
+| Legit completion: real changes + green tests                         | nonzero              | runner=X, pass=true    | PASS                 | the happy path                                                                  |
+| Greenfield first run: only untracked new files (no commit/stage yet) | nonzero (untracked)  | any non-red            | PASS                 | new files are real work; counted via `git ls-files --others --exclude-standard` |
+| Fabricated "done", nothing built (not even untracked)                | empty                | any                    | **BLOCK**            | nothing shipped anywhere                                                        |
+| Real changes but tests red                                           | nonzero              | runner=X, pass=false   | **BLOCK**            | a runner ran and failed                                                         |
+| Docs-only change, no test suite                                      | nonzero (docs files) | runner=none, pass=true | PASS                 | nonzero diff; no suite to fail                                                  |
+| Project with no test suite, real code                                | nonzero              | runner=none, pass=true | PASS                 | code shipped; tests not expected                                                |
+| No git repo                                                          | inconclusive         | any non-red            | PASS                 | cannot prove fabrication                                                        |
+| Empty/missing run-start SHA (new repo, zero commits)                 | inconclusive         | any non-red            | PASS                 | never had a baseline                                                            |
+| test-results.json missing/unparseable                                | nonzero              | inconclusive           | PASS                 | mirror "no file = no gate"                                                      |
+| `LOKI_EVIDENCE_GATE=0`                                               | n/a                  | n/a                    | PASS (no read/write) | exactly today's behavior                                                        |
 
 The only two BLOCK rows are positive fabrication evidence: empty diff, or a
 runner that actually ran and was red. Everything inconclusive passes through.
@@ -327,21 +328,26 @@ runner that actually ran and was red. Everything inconclusive passes through.
 ## 6. evidence-block.json schema (mirror gate-block.json)
 
 Written to `$COUNCIL_STATE_DIR/evidence-block.json` (`<loki_dir>/council/`),
-atomic temp+mv, so the dashboard and handoff can surface *why* a run did not
+atomic temp+mv, so the dashboard and handoff can surface _why_ a run did not
 complete:
 
 ```json
 {
-    "status": "blocked",
-    "blocked": true,
-    "blocked_at": "2026-06-07T00:00:00Z",
-    "iteration": 12,
-    "reason": "no_evidence_of_completion",
-    "checks": {
-        "diff": {"ok": false, "base_sha": "abc123", "files_changed": 0, "sources": "committed|unstaged|staged union empty"},
-        "tests": {"ok": true, "runner": "pytest", "pass": true}
+  "status": "blocked",
+  "blocked": true,
+  "blocked_at": "2026-06-07T00:00:00Z",
+  "iteration": 12,
+  "reason": "no_evidence_of_completion",
+  "checks": {
+    "diff": {
+      "ok": false,
+      "base_sha": "abc123",
+      "files_changed": 0,
+      "sources": "committed|unstaged|staged union empty"
     },
-    "failures": ["empty git diff vs run-start SHA (nothing shipped)"]
+    "tests": { "ok": true, "runner": "pytest", "pass": true }
+  },
+  "failures": ["empty git diff vs run-start SHA (nothing shipped)"]
 }
 ```
 
@@ -437,26 +443,26 @@ Under `## [7.19.1] - <date>`:
 
 ## 10. Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| False block stops a legit run | Med | High | Block only on positive fabrication evidence; all inconclusive => pass; opt-out `LOKI_EVIDENCE_GATE=0`; evidence-block.json explains why so user can act fast |
-| Run-start SHA never captured (no git / zero-commit repo) | Med | Med | Empty/missing baseline => inconclusive => pass-through (never block) |
-| Run-start SHA reset on resume/pause | Med | High (would zero the diff window) | Capture once; only set `.loki/state/start-sha` if not already present |
-| test-results.json stale (PHASE_UNIT_TESTS off, or gate skipped) | Med | Med | Stale/missing => inconclusive => pass; gate runs before council in the same iteration so normally fresh; note freshness dependency |
-| Cannot detect "tests were expected" reliably | Med | Med | Use `runner` field: `none` = no suite (pass), non-`none` = a runner ran (its `pass` bool is authoritative). Do NOT infer test expectation from checklist results.json |
-| Force-review path bypasses gate | High (without fix) | High | Insertion point B adds evidence gate to run.sh:12762-12784 alongside checklist gate |
-| Interaction with checklist gate | Low | Low | Sequenced strictly after it; independent `return 1` semantics; each writes its own block file |
-| Interaction with Devil's Advocate | Low | Low | Gate runs pre-vote; DA only runs on unanimous COMPLETE, which the gate can prevent from being reached. DA's own skeptical test/diff checks remain as a second layer |
-| Diff against unreachable base (shallow) | Low | Low | Fall back to `git diff --numstat HEAD` (mirrors proof-generator.py); if that also fails => inconclusive => pass |
-| Auto-commit makes `git diff HEAD` empty | High | High (would false-block) | Diff = UNION of `base..HEAD` + unstaged + staged; block only when all empty. Run-start baseline (not HEAD working tree) is what makes committed changes count post-auto-commit |
-| Stale baseline on repeat runs (gate no-ops on run 2+) | High (without fix) | High (defeats feature) | Recapture start-sha when `ITERATION_COUNT == 0` (fresh run); keep only on genuine resume (`ITERATION_COUNT > 0`) |
+| Risk                                                            | Likelihood         | Impact                            | Mitigation                                                                                                                                                                     |
+| --------------------------------------------------------------- | ------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| False block stops a legit run                                   | Med                | High                              | Block only on positive fabrication evidence; all inconclusive => pass; opt-out `LOKI_EVIDENCE_GATE=0`; evidence-block.json explains why so user can act fast                   |
+| Run-start SHA never captured (no git / zero-commit repo)        | Med                | Med                               | Empty/missing baseline => inconclusive => pass-through (never block)                                                                                                           |
+| Run-start SHA reset on resume/pause                             | Med                | High (would zero the diff window) | Capture once; only set `.loki/state/start-sha` if not already present                                                                                                          |
+| test-results.json stale (PHASE_UNIT_TESTS off, or gate skipped) | Med                | Med                               | Stale/missing => inconclusive => pass; gate runs before council in the same iteration so normally fresh; note freshness dependency                                             |
+| Cannot detect "tests were expected" reliably                    | Med                | Med                               | Use `runner` field: `none` = no suite (pass), non-`none` = a runner ran (its `pass` bool is authoritative). Do NOT infer test expectation from checklist results.json          |
+| Force-review path bypasses gate                                 | High (without fix) | High                              | Insertion point B adds evidence gate to run.sh:12762-12784 alongside checklist gate                                                                                            |
+| Interaction with checklist gate                                 | Low                | Low                               | Sequenced strictly after it; independent `return 1` semantics; each writes its own block file                                                                                  |
+| Interaction with Devil's Advocate                               | Low                | Low                               | Gate runs pre-vote; DA only runs on unanimous COMPLETE, which the gate can prevent from being reached. DA's own skeptical test/diff checks remain as a second layer            |
+| Diff against unreachable base (shallow)                         | Low                | Low                               | Fall back to `git diff --numstat HEAD` (mirrors proof-generator.py); if that also fails => inconclusive => pass                                                                |
+| Auto-commit makes `git diff HEAD` empty                         | High               | High (would false-block)          | Diff = UNION of `base..HEAD` + unstaged + staged; block only when all empty. Run-start baseline (not HEAD working tree) is what makes committed changes count post-auto-commit |
+| Stale baseline on repeat runs (gate no-ops on run 2+)           | High (without fix) | High (defeats feature)            | Recapture start-sha when `ITERATION_COUNT == 0` (fresh run); keep only on genuine resume (`ITERATION_COUNT > 0`)                                                               |
 
 ---
 
 ## Critical files for implementation
 
-- /Users/lokesh/git/loki-mode/autonomy/completion-council.sh  (clone council_checklist_gate -> council_evidence_gate; insertion A in council_evaluate)
-- /Users/lokesh/git/loki-mode/autonomy/run.sh  (run-start SHA capture in run_autonomous; insertion B in force-review path)
-- /Users/lokesh/git/loki-mode/tests/test-evidence-gate.sh  (new test, pattern from test-pytest-gate-timeout.sh)
-- /Users/lokesh/git/loki-mode/CHANGELOG.md  (honest entry + NOT-tested)
-- /Users/lokesh/git/loki-mode/tests/run-all-tests.sh  (register new test)
+- /Users/lokesh/git/loki-mode/autonomy/completion-council.sh (clone council_checklist_gate -> council_evidence_gate; insertion A in council_evaluate)
+- /Users/lokesh/git/loki-mode/autonomy/run.sh (run-start SHA capture in run_autonomous; insertion B in force-review path)
+- /Users/lokesh/git/loki-mode/tests/test-evidence-gate.sh (new test, pattern from test-pytest-gate-timeout.sh)
+- /Users/lokesh/git/loki-mode/CHANGELOG.md (honest entry + NOT-tested)
+- /Users/lokesh/git/loki-mode/tests/run-all-tests.sh (register new test)

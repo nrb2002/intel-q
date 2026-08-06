@@ -53,13 +53,14 @@ and completion council may see stale or missing phase data.
 Within the `dashboard/` package, three different files resolve the `.loki/`
 directory path using three different mechanisms:
 
-| File | Env Var | Default | Resolution |
-|------|---------|---------|------------|
-| `dashboard/control.py:30` | `LOKI_DIR` | `.loki` (CWD-relative) | Static at import time |
-| `dashboard/api_v2.py:68` | `LOKI_DATA_DIR` | `~/.loki` (user home) | Static at import time |
-| `dashboard/server.py:1869` | `LOKI_DIR` | `.loki` then `~/.loki` | Dynamic 4-step resolution per call |
+| File                       | Env Var         | Default                | Resolution                         |
+| -------------------------- | --------------- | ---------------------- | ---------------------------------- |
+| `dashboard/control.py:30`  | `LOKI_DIR`      | `.loki` (CWD-relative) | Static at import time              |
+| `dashboard/api_v2.py:68`   | `LOKI_DATA_DIR` | `~/.loki` (user home)  | Static at import time              |
+| `dashboard/server.py:1869` | `LOKI_DIR`      | `.loki` then `~/.loki` | Dynamic 4-step resolution per call |
 
 This means:
+
 - `control.py` reads/writes state from CWD's `.loki/`
 - `api_v2.py` reads policies from `~/.loki/`
 - `server.py` dynamically resolves based on env, API override, CWD, or home
@@ -104,11 +105,11 @@ unnecessary latency.
 
 ### ISSUE 1: Extreme file sizes impair maintainability (SEVERITY: HIGH)
 
-| File | Lines | Functions | Concern |
-|------|-------|-----------|---------|
-| `autonomy/loki` | 20,300 | 130+ `cmd_*` functions | Single-file CLI with 130 subcommands |
-| `autonomy/run.sh` | 10,869 | 150+ functions | Orchestration engine |
-| `dashboard/server.py` | 5,244 | 121+ routes | Monolithic API server |
+| File                  | Lines  | Functions              | Concern                              |
+| --------------------- | ------ | ---------------------- | ------------------------------------ |
+| `autonomy/loki`       | 20,300 | 130+ `cmd_*` functions | Single-file CLI with 130 subcommands |
+| `autonomy/run.sh`     | 10,869 | 150+ functions         | Orchestration engine                 |
+| `dashboard/server.py` | 5,244  | 121+ routes            | Monolithic API server                |
 
 The `loki` CLI has nearly doubled from the 10,820 lines documented in CLAUDE.md
 to 20,300 lines. At this size, bash's lack of namespacing means every function
@@ -116,6 +117,7 @@ and variable is global. A naming collision between `cmd_test()` helpers and
 `cmd_report()` helpers is a constant risk.
 
 **Recommendation:** Split `autonomy/loki` by command group:
+
 - `autonomy/commands/start.sh` -- start/stop/pause/resume
 - `autonomy/commands/dashboard.sh` -- dashboard/web commands
 - `autonomy/commands/github.sh` -- github/import/issue commands
@@ -167,6 +169,7 @@ app.
 ### ISSUE 4: State manager (state/manager.py) is underutilized (SEVERITY: LOW)
 
 A proper `StateManager` class exists at `state/manager.py` (1,896 lines) with:
+
 - File-based caching with watchdog
 - Thread-safe operations with file locking
 - Event bus integration
@@ -202,6 +205,7 @@ write to the same orchestrator.json if they share a `.loki/` directory.
 ## Security Architecture Review
 
 ### Strengths
+
 - **Path traversal protection** in MCP server (`validate_path()` with symlink chain checking)
 - **PRD path validation** in control.py (blocks `..`, verifies file exists within allowed dirs)
 - **Provider name validation** prevents shell injection in loader.sh
@@ -296,29 +300,31 @@ it polls `dashboard-state.json` instead.
 
 ## Recommendations Summary (Prioritized)
 
-| Priority | Issue | Effort | Impact |
-|----------|-------|--------|--------|
-| P0 | Fix non-atomic write in `set_phase()` | 15 min | Prevents state corruption |
-| P0 | Unify LOKI_DIR resolution in dashboard package | 30 min | Prevents policy lookups from wrong directory |
-| P1 | Consolidate dual event systems | 2-4 hours | Consistent event propagation |
-| P3 | Convert `validate_provider()` to Pydantic field_validator | 10 min | Defense-in-depth validation |
-| P2 | Split `autonomy/loki` into command modules | 1-2 days | Maintainability |
-| P2 | Replace inline `python3 -c` with helper script | 4 hours | Performance improvement |
-| P2 | Merge control.py routes into server.py | 2 hours | Eliminate duplicate FastAPI app |
-| P3 | Adopt StateManager in dashboard | 1 day | Consistent state access |
-| P3 | Connect event bus to dashboard WebSocket push | 4 hours | Real-time updates |
-| P3 | Standardize CORS configuration | 30 min | Security consistency |
+| Priority | Issue                                                     | Effort    | Impact                                       |
+| -------- | --------------------------------------------------------- | --------- | -------------------------------------------- |
+| P0       | Fix non-atomic write in `set_phase()`                     | 15 min    | Prevents state corruption                    |
+| P0       | Unify LOKI_DIR resolution in dashboard package            | 30 min    | Prevents policy lookups from wrong directory |
+| P1       | Consolidate dual event systems                            | 2-4 hours | Consistent event propagation                 |
+| P3       | Convert `validate_provider()` to Pydantic field_validator | 10 min    | Defense-in-depth validation                  |
+| P2       | Split `autonomy/loki` into command modules                | 1-2 days  | Maintainability                              |
+| P2       | Replace inline `python3 -c` with helper script            | 4 hours   | Performance improvement                      |
+| P2       | Merge control.py routes into server.py                    | 2 hours   | Eliminate duplicate FastAPI app              |
+| P3       | Adopt StateManager in dashboard                           | 1 day     | Consistent state access                      |
+| P3       | Connect event bus to dashboard WebSocket push             | 4 hours   | Real-time updates                            |
+| P3       | Standardize CORS configuration                            | 30 min    | Security consistency                         |
 
 ---
 
 ## Feedback Loop Verification
 
 ### Loop 1: Self-review
+
 - All findings reference specific file paths and line numbers
 - Severity ratings consider both likelihood and impact
 - Recommendations are actionable with effort estimates
 
 ### Loop 2: Code verification
+
 - BUG ARCH-001: Confirmed by reading `run.sh:3254-3261` -- no temp file + mv pattern
 - BUG ARCH-002: Confirmed by reading `control.py:30`, `api_v2.py:68`, `server.py:1869`
 - BUG ARCH-003: Confirmed by comparing `emit_event()` at line 893 vs `emit_event_pending()` at line 971
@@ -326,6 +332,7 @@ it polls `dashboard-state.json` instead.
 - Python3 -c count confirmed via grep (79 occurrences)
 
 ### Loop 3: Priority validation
+
 - P0 items are data integrity issues that can cause silent corruption
 - P1 items are defense-in-depth security and consistency
 - P2/P3 items are maintainability and performance improvements

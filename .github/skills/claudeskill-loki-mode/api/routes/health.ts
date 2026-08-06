@@ -78,7 +78,7 @@ export async function readinessCheck(_req: Request): Promise<Response> {
       {
         status: 503,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 }
@@ -95,7 +95,7 @@ export function livenessCheck(_req: Request): Response {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -143,7 +143,7 @@ export async function detailedStatus(_req: Request): Promise<Response> {
     }),
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 

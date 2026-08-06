@@ -6,22 +6,10 @@
 // Database: PostgreSQL
 // ORM: Prisma
 
-// =========================================================
-// PRISMA CLIENT
-// =========================================================
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
-
-// =========================================================
-// DATABASE
-// =========================================================
-//
-// Database connection is configured in prisma.config.ts
-//
-// =========================================================
 
 datasource db {
   provider = "postgresql"
@@ -86,7 +74,6 @@ model Branch {
   queueTickets QueueTicket[]
 
   @@index([name])
-
   @@map("branches")
 }
 
@@ -99,8 +86,8 @@ model QueueTicket {
 
   ticketNumber Int @map("ticket_number")
 
-  customerId String @db.Uuid @map("customer_id")
-  branchId   String @db.Uuid @map("branch_id")
+  customerId String @map("customer_id") @db.Uuid
+  branchId   String @map("branch_id") @db.Uuid
 
   serviceType String @map("service_type")
 
@@ -112,19 +99,9 @@ model QueueTicket {
 
   // Relationships
 
-  customer User @relation(
-    fields: [customerId],
-    references: [id],
-    onDelete: Restrict,
-    onUpdate: Cascade
-  )
+  customer User @relation(fields: [customerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-  branch Branch @relation(
-    fields: [branchId],
-    references: [id],
-    onDelete: Restrict,
-    onUpdate: Cascade
-  )
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   // Indexes
 
@@ -133,6 +110,5 @@ model QueueTicket {
   @@index([branchId])
   @@index([status])
   @@index([branchId, status])
-
   @@map("queue_tickets")
 }

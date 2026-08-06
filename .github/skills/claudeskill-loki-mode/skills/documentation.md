@@ -2,11 +2,11 @@
 
 ## Research Foundation
 
-| Source | Key Contribution | Citation |
-|--------|-----------------|----------|
-| Repowise | Codebase intelligence via MCP tools (overview, risk, context, search) | [repowise.dev](https://repowise.dev/) |
-| Diátaxis | Documentation system: tutorials, how-to, reference, explanation | [diataxis.fr](https://diataxis.fr/) |
-| Google Developer Docs | Style guide for technical documentation | [developers.google.com/style](https://developers.google.com/style) |
+| Source                | Key Contribution                                                      | Citation                                                           |
+| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Repowise              | Codebase intelligence via MCP tools (overview, risk, context, search) | [repowise.dev](https://repowise.dev/)                              |
+| Diátaxis              | Documentation system: tutorials, how-to, reference, explanation       | [diataxis.fr](https://diataxis.fr/)                                |
+| Google Developer Docs | Style guide for technical documentation                               | [developers.google.com/style](https://developers.google.com/style) |
 
 ---
 
@@ -22,16 +22,16 @@
 
 ## Documentation Types
 
-| Type | Description | Trigger |
-|------|-------------|---------|
-| README.md | Project overview, setup, usage | New project or major changes |
-| ARCHITECTURE.md | System design, data flow | Architecture phase |
-| API.md | Public API reference | API changes |
-| SETUP.md | Dev environment setup | Dependency changes |
-| COMPONENTS.md | Per-component docs | New components |
-| TESTING.md | Test strategy, coverage | Test changes |
-| DECISIONS.md | Architectural decisions | Design decisions made |
-| CLAUDE.md | AI agent context | Every iteration |
+| Type            | Description                    | Trigger                      |
+| --------------- | ------------------------------ | ---------------------------- |
+| README.md       | Project overview, setup, usage | New project or major changes |
+| ARCHITECTURE.md | System design, data flow       | Architecture phase           |
+| API.md          | Public API reference           | API changes                  |
+| SETUP.md        | Dev environment setup          | Dependency changes           |
+| COMPONENTS.md   | Per-component docs             | New components               |
+| TESTING.md      | Test strategy, coverage        | Test changes                 |
+| DECISIONS.md    | Architectural decisions        | Design decisions made        |
+| CLAUDE.md       | AI agent context               | Every iteration              |
 
 ---
 
@@ -115,9 +115,9 @@ context (what problem was being solved), decision (what was chosen), rationale
 
 ## Integration with Other Skills
 
-| Skill | Interaction |
-|-------|-------------|
-| `quality-gates.md` | Gate 7 checks documentation freshness |
-| `artifacts.md` | Documentation generation uses artifact patterns |
-| `healing.md` | Healing archaeology feeds into institutional knowledge docs |
-| `agents.md` | `documentation-writer` agent type for parallel doc generation |
+| Skill              | Interaction                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| `quality-gates.md` | Gate 7 checks documentation freshness                         |
+| `artifacts.md`     | Documentation generation uses artifact patterns               |
+| `healing.md`       | Healing archaeology feeds into institutional knowledge docs   |
+| `agents.md`        | `documentation-writer` agent type for parallel doc generation |

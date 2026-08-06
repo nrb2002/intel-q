@@ -47,8 +47,7 @@ for (const block of response.content) {
 const response = await client.messages.create({
   model: "claude-opus-4-8",
   max_tokens: 16000,
-  system:
-    "You are a helpful coding assistant. Always provide examples in Python.",
+  system: "You are a helpful coding assistant. Always provide examples in Python.",
   messages: [{ role: "user", content: "How do I read a JSON file?" }],
 });
 ```
@@ -65,9 +64,7 @@ const response = await client.messages.create(
   {
     model: MODEL_ID, // must support mid-conversation system messages
     max_tokens: 16000,
-    system: [
-      { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
-    ],
+    system: [{ type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } }],
     messages: [
       ...history,
       { role: "user", content: userMessage },
@@ -186,8 +183,8 @@ const response2 = await client.messages.create({
 
 ```typescript
 console.log(response.usage.cache_creation_input_tokens); // tokens written to cache (~1.25x cost)
-console.log(response.usage.cache_read_input_tokens);     // tokens served from cache (~0.1x cost)
-console.log(response.usage.input_tokens);                // uncached tokens (full cost)
+console.log(response.usage.cache_read_input_tokens); // tokens served from cache (~0.1x cost)
+console.log(response.usage.input_tokens); // uncached tokens (full cost)
 ```
 
 If `cache_read_input_tokens` is zero across repeated identical-prefix requests, a silent invalidator is at work — `Date.now()` or a UUID in the system prompt, non-deterministic key ordering, or a varying tool set. See `shared/prompt-caching.md` for the full audit table.
@@ -206,9 +203,7 @@ const response = await client.messages.create({
   max_tokens: 16000,
   thinking: { type: "adaptive" },
   output_config: { effort: "high" }, // low | medium | high | max
-  messages: [
-    { role: "user", content: "Solve this math problem step by step..." },
-  ],
+  messages: [{ role: "user", content: "Solve this math problem step by step..." }],
 });
 
 for (const block of response.content) {
@@ -318,14 +313,14 @@ console.log(await chat("Now add rate limiting and error handling"));
 
 The `stop_reason` field in the response indicates why the model stopped generating:
 
-| Value           | Meaning                                                         |
-| --------------- | --------------------------------------------------------------- |
-| `end_turn`      | Claude finished its response naturally                          |
-| `max_tokens`    | Hit the `max_tokens` limit — increase it or use streaming       |
-| `stop_sequence` | Hit a custom stop sequence                                      |
-| `tool_use`      | Claude wants to call a tool — execute it and continue           |
-| `pause_turn`    | Model paused and can be resumed (agentic flows)                 |
-| `refusal`       | Claude refused for safety reasons — check `stop_details`        |
+| Value           | Meaning                                                   |
+| --------------- | --------------------------------------------------------- |
+| `end_turn`      | Claude finished its response naturally                    |
+| `max_tokens`    | Hit the `max_tokens` limit — increase it or use streaming |
+| `stop_sequence` | Hit a custom stop sequence                                |
+| `tool_use`      | Claude wants to call a tool — execute it and continue     |
+| `pause_turn`    | Model paused and can be resumed (agentic flows)           |
+| `refusal`       | Claude refused for safety reasons — check `stop_details`  |
 
 ### Structured Stop Details
 

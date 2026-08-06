@@ -7,15 +7,15 @@
  * <loki-activity-stream api-url="http://localhost:57374" theme="dark"></loki-activity-stream>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, label: string, icon: string}>} */
 const SEVERITY_CONFIG = {
-  info:    { color: 'var(--loki-blue, #2F71E3)',   label: 'INFO',    icon: 'i' },
-  success: { color: 'var(--loki-green, #1FC5A8)',  label: 'OK',      icon: '+' },
-  warning: { color: 'var(--loki-yellow, #D4A03C)', label: 'WARN',    icon: '!' },
-  error:   { color: 'var(--loki-red, #C45B5B)',    label: 'ERR',     icon: 'x' },
+  info: { color: "var(--loki-blue, #2F71E3)", label: "INFO", icon: "i" },
+  success: { color: "var(--loki-green, #1FC5A8)", label: "OK", icon: "+" },
+  warning: { color: "var(--loki-yellow, #D4A03C)", label: "WARN", icon: "!" },
+  error: { color: "var(--loki-red, #C45B5B)", label: "ERR", icon: "x" },
 };
 
 const MAX_ITEMS = 100;
@@ -28,13 +28,13 @@ const MAX_ITEMS = 100;
  */
 export class LokiActivityStream extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
     super();
     this._items = [];
-    this._filter = 'all';
+    this._filter = "all";
     this._api = null;
     this._pollInterval = null;
     this._paused = false;
@@ -55,17 +55,17 @@ export class LokiActivityStream extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -82,17 +82,19 @@ export class LokiActivityStream extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/activity');
+      const data = await this._api._get("/api/v2/activity");
       const events = data.events || data.activities || [];
       if (events.length > 0) {
         const newItems = events
-          .filter(e => !this._lastTimestamp || new Date(e.timestamp) > new Date(this._lastTimestamp))
-          .map(e => ({
+          .filter(
+            (e) => !this._lastTimestamp || new Date(e.timestamp) > new Date(this._lastTimestamp),
+          )
+          .map((e) => ({
             id: e.id || crypto.randomUUID(),
             timestamp: e.timestamp || new Date().toISOString(),
-            message: e.message || e.description || '',
-            severity: e.severity || e.level || 'info',
-            source: e.source || e.component || '',
+            message: e.message || e.description || "",
+            severity: e.severity || e.level || "info",
+            source: e.source || e.component || "",
             isNew: true,
           }));
 
@@ -101,7 +103,7 @@ export class LokiActivityStream extends LokiElement {
           this._lastTimestamp = newItems[0].timestamp;
           // Clear "new" flag after animation
           setTimeout(() => {
-            this._items.forEach(i => i.isNew = false);
+            this._items.forEach((i) => (i.isNew = false));
           }, 600);
         }
       }
@@ -117,36 +119,66 @@ export class LokiActivityStream extends LokiElement {
   _getDemoItems() {
     const now = Date.now();
     return [
-      { id: '1', timestamp: new Date(now - 2000).toISOString(), message: 'Build iteration #12 started', severity: 'info', source: 'runner' },
-      { id: '2', timestamp: new Date(now - 5000).toISOString(), message: 'Code review passed (3/3 reviewers)', severity: 'success', source: 'review' },
-      { id: '3', timestamp: new Date(now - 8000).toISOString(), message: 'Context window at 78% capacity', severity: 'warning', source: 'context' },
-      { id: '4', timestamp: new Date(now - 12000).toISOString(), message: 'Test suite completed: 42/42 passed', severity: 'success', source: 'testing' },
-      { id: '5', timestamp: new Date(now - 15000).toISOString(), message: 'RARV cycle: Verify phase complete', severity: 'info', source: 'rarv' },
+      {
+        id: "1",
+        timestamp: new Date(now - 2000).toISOString(),
+        message: "Build iteration #12 started",
+        severity: "info",
+        source: "runner",
+      },
+      {
+        id: "2",
+        timestamp: new Date(now - 5000).toISOString(),
+        message: "Code review passed (3/3 reviewers)",
+        severity: "success",
+        source: "review",
+      },
+      {
+        id: "3",
+        timestamp: new Date(now - 8000).toISOString(),
+        message: "Context window at 78% capacity",
+        severity: "warning",
+        source: "context",
+      },
+      {
+        id: "4",
+        timestamp: new Date(now - 12000).toISOString(),
+        message: "Test suite completed: 42/42 passed",
+        severity: "success",
+        source: "testing",
+      },
+      {
+        id: "5",
+        timestamp: new Date(now - 15000).toISOString(),
+        message: "RARV cycle: Verify phase complete",
+        severity: "info",
+        source: "rarv",
+      },
     ];
   }
 
   _formatTime(timestamp) {
-    if (!timestamp) return '';
+    if (!timestamp) return "";
     try {
       const date = new Date(timestamp);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     } catch {
-      return '';
+      return "";
     }
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getFilteredItems() {
-    if (this._filter === 'all') return this._items;
-    return this._items.filter(i => i.severity === this._filter);
+    if (this._filter === "all") return this._items;
+    return this._items.filter((i) => i.severity === this._filter);
   }
 
   _setFilter(filter) {
@@ -158,17 +190,21 @@ export class LokiActivityStream extends LokiElement {
     const root = this.shadowRoot;
 
     // Filter buttons
-    root.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    root.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._setFilter(btn.dataset.filter);
       });
     });
 
     // Pause on hover
-    const feed = root.querySelector('.activity-feed');
+    const feed = root.querySelector(".activity-feed");
     if (feed) {
-      feed.addEventListener('mouseenter', () => { this._paused = true; });
-      feed.addEventListener('mouseleave', () => { this._paused = false; });
+      feed.addEventListener("mouseenter", () => {
+        this._paused = true;
+      });
+      feed.addEventListener("mouseleave", () => {
+        this._paused = false;
+      });
     }
   }
 
@@ -367,32 +403,36 @@ export class LokiActivityStream extends LokiElement {
     if (!s) return;
 
     const filtered = this._getFilteredItems();
-    const severities = ['all', 'info', 'success', 'warning', 'error'];
+    const severities = ["all", "info", "success", "warning", "error"];
 
-    const filterButtons = severities.map(sev => {
-      const isActive = this._filter === sev;
-      const label = sev === 'all' ? 'All' : (SEVERITY_CONFIG[sev]?.label || sev);
-      return `<button class="filter-btn ${isActive ? 'active' : ''}" data-filter="${sev}">${label}</button>`;
-    }).join('');
+    const filterButtons = severities
+      .map((sev) => {
+        const isActive = this._filter === sev;
+        const label = sev === "all" ? "All" : SEVERITY_CONFIG[sev]?.label || sev;
+        return `<button class="filter-btn ${isActive ? "active" : ""}" data-filter="${sev}">${label}</button>`;
+      })
+      .join("");
 
     let feedContent;
     if (filtered.length === 0) {
       feedContent = '<div class="empty-state">No activity to display</div>';
     } else {
-      feedContent = filtered.map(item => {
-        const cfg = SEVERITY_CONFIG[item.severity] || SEVERITY_CONFIG.info;
-        return `
-          <div class="activity-item ${item.isNew ? 'new-item' : ''}">
+      feedContent = filtered
+        .map((item) => {
+          const cfg = SEVERITY_CONFIG[item.severity] || SEVERITY_CONFIG.info;
+          return `
+          <div class="activity-item ${item.isNew ? "new-item" : ""}">
             <div class="severity-band" style="background: ${cfg.color};"></div>
             <div class="item-content">
               <div class="severity-icon" style="background: ${cfg.color};">${cfg.icon}</div>
               <span class="item-time">${this._formatTime(item.timestamp)}</span>
               <span class="item-message">${this._escapeHtml(item.message)}</span>
-              ${item.source ? `<span class="item-source">${this._escapeHtml(item.source)}</span>` : ''}
+              ${item.source ? `<span class="item-source">${this._escapeHtml(item.source)}</span>` : ""}
             </div>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
     }
 
     s.innerHTML = `
@@ -412,14 +452,14 @@ export class LokiActivityStream extends LokiElement {
 
     // Auto-scroll to top (newest items) unless paused
     if (!this._paused) {
-      const feed = s.querySelector('.activity-feed');
+      const feed = s.querySelector(".activity-feed");
       if (feed) feed.scrollTop = 0;
     }
   }
 }
 
-if (!customElements.get('loki-activity-stream')) {
-  customElements.define('loki-activity-stream', LokiActivityStream);
+if (!customElements.get("loki-activity-stream")) {
+  customElements.define("loki-activity-stream", LokiActivityStream);
 }
 
 export default LokiActivityStream;

@@ -82,12 +82,12 @@ loki quick "build a landing page with a signup form"
 
 **Other install methods (all work, all keep working):**
 
-| Method | Command | Notes |
-|--------|---------|-------|
-| **Bun (recommended)** | `bun install -g loki-mode` | Fastest. v8 will be Bun-only. |
-| **Homebrew** | `brew tap asklokesh/tap && brew install loki-mode` | Auto-installs Bun as a dep |
-| **Docker** | `docker pull asklokesh/loki-mode:7.7.31 && docker run --rm asklokesh/loki-mode:7.7.31 start prd.md` | Bun pre-installed in image |
-| **npm (compat)** | `npm install -g loki-mode` | Works without Bun (bash fallback). Migrate any time with `loki self-update --to bun`. |
+| Method                | Command                                                                                             | Notes                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Bun (recommended)** | `bun install -g loki-mode`                                                                          | Fastest. v8 will be Bun-only.                                                         |
+| **Homebrew**          | `brew tap asklokesh/tap && brew install loki-mode`                                                  | Auto-installs Bun as a dep                                                            |
+| **Docker**            | `docker pull asklokesh/loki-mode:7.7.31 && docker run --rm asklokesh/loki-mode:7.7.31 start prd.md` | Bun pre-installed in image                                                            |
+| **npm (compat)**      | `npm install -g loki-mode`                                                                          | Works without Bun (bash fallback). Migrate any time with `loki self-update --to bun`. |
 
 **Upgrading:**
 
@@ -143,12 +143,12 @@ The next major release sunsets the Bash runtime entirely. There is no firm calen
 <details>
 <summary><strong>Other install methods</strong></summary>
 
-| Method | Command |
-|--------|---------|
-| **Homebrew** | `brew tap asklokesh/tap && brew install loki-mode` |
-| **Docker** | `docker pull asklokesh/loki-mode:7.7.31` |
+| Method                 | Command                                                       |
+| ---------------------- | ------------------------------------------------------------- |
+| **Homebrew**           | `brew tap asklokesh/tap && brew install loki-mode`            |
+| **Docker**             | `docker pull asklokesh/loki-mode:7.7.31`                      |
 | **Inside Claude Code** | `claude --dangerously-skip-permissions` then type "Loki Mode" |
-| **Git clone** | `git clone https://github.com/asklokesh/loki-mode.git` |
+| **Git clone**          | `git clone https://github.com/asklokesh/loki-mode.git`        |
 
 See the full [Installation Guide](docs/INSTALLATION.md).
 
@@ -159,19 +159,19 @@ See the full [Installation Guide](docs/INSTALLATION.md).
 
 A "spec" is whatever you hand `loki start`. Loki auto-detects the format and normalises it before the RARV loop. A Markdown PRD is one form of spec; the table below lists every input the CLI accepts.
 
-| Format | Example | Notes |
-|--------|---------|-------|
-| Markdown PRD | `loki start ./prd.md` | Canonical form. Headings become section anchors. |
-| JSON spec | `loki start ./spec.json` | Free-form JSON; keys surfaced to agents. |
-| YAML spec | `loki start ./openapi.yaml` | OpenAPI / AsyncAPI / plain YAML all accepted. |
-| Plain text brief | `loki start ./brief.txt` | One-paragraph briefs work; complexity auto-detects to "simple". |
-| GitHub issue URL | `loki start https://github.com/owner/repo/issues/42` | Title + body + labels become the spec. |
-| GitHub shorthand | `loki start owner/repo#42` | Same as above, shorter. |
-| Jira ticket key | `loki start PROJ-456` | Requires `JIRA_BASE_URL` + `JIRA_TOKEN` env vars. |
-| GitLab / Azure DevOps URL | `loki start https://gitlab.com/group/proj/-/issues/7` | GitLab and Azure DevOps issue URLs both supported. |
-| Bare issue number | `loki start #123` or `loki start 123` | Resolved against the current repo's `origin` remote. |
-| OpenSpec change directory | `loki start --openspec ./openspec/change-001` | Reads OpenSpec change manifest + delta files. |
-| Auto-detect (no input) | `loki start` | Picks up `./prd.md`, `./spec.{json,yaml,yml}`, or `./SPEC.md` from cwd. |
+| Format                    | Example                                               | Notes                                                                   |
+| ------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| Markdown PRD              | `loki start ./prd.md`                                 | Canonical form. Headings become section anchors.                        |
+| JSON spec                 | `loki start ./spec.json`                              | Free-form JSON; keys surfaced to agents.                                |
+| YAML spec                 | `loki start ./openapi.yaml`                           | OpenAPI / AsyncAPI / plain YAML all accepted.                           |
+| Plain text brief          | `loki start ./brief.txt`                              | One-paragraph briefs work; complexity auto-detects to "simple".         |
+| GitHub issue URL          | `loki start https://github.com/owner/repo/issues/42`  | Title + body + labels become the spec.                                  |
+| GitHub shorthand          | `loki start owner/repo#42`                            | Same as above, shorter.                                                 |
+| Jira ticket key           | `loki start PROJ-456`                                 | Requires `JIRA_BASE_URL` + `JIRA_TOKEN` env vars.                       |
+| GitLab / Azure DevOps URL | `loki start https://gitlab.com/group/proj/-/issues/7` | GitLab and Azure DevOps issue URLs both supported.                      |
+| Bare issue number         | `loki start #123` or `loki start 123`                 | Resolved against the current repo's `origin` remote.                    |
+| OpenSpec change directory | `loki start --openspec ./openspec/change-001`         | Reads OpenSpec change manifest + delta files.                           |
+| Auto-detect (no input)    | `loki start`                                          | Picks up `./prd.md`, `./spec.{json,yaml,yml}`, or `./SPEC.md` from cwd. |
 
 All formats land in the same RARV pipeline and pass the same 11 quality gates (`skills/quality-gates.md`).
 
@@ -181,28 +181,28 @@ All formats land in the same RARV pipeline and pass the same 11 quality gates (`
 
 ## What You Can Build
 
-| Project | Build Time | Complexity |
-|---------|:----------:|:----------:|
-| Landing page with signup form | ~10 min | Simple |
-| REST API with JWT auth | ~20 min | Simple |
-| Portfolio with animations | ~15 min | Simple |
-| SaaS dashboard with analytics | ~25 min | Standard |
-| E-commerce store with Stripe | ~45 min | Standard |
-| Task manager with kanban board | ~25 min | Standard |
-| Chat app with WebSocket | ~30 min | Standard |
-| Blog platform with MDX | ~30 min | Standard |
-| Microservice architecture | ~2 hours | Complex |
-| ML pipeline with monitoring | ~3 hours | Complex |
+| Project                        | Build Time | Complexity |
+| ------------------------------ | :--------: | :--------: |
+| Landing page with signup form  |  ~10 min   |   Simple   |
+| REST API with JWT auth         |  ~20 min   |   Simple   |
+| Portfolio with animations      |  ~15 min   |   Simple   |
+| SaaS dashboard with analytics  |  ~25 min   |  Standard  |
+| E-commerce store with Stripe   |  ~45 min   |  Standard  |
+| Task manager with kanban board |  ~25 min   |  Standard  |
+| Chat app with WebSocket        |  ~30 min   |  Standard  |
+| Blog platform with MDX         |  ~30 min   |  Standard  |
+| Microservice architecture      |  ~2 hours  |  Complex   |
+| ML pipeline with monitoring    |  ~3 hours  |  Complex   |
 
 ---
 
 ## What To Expect
 
-| | Simple | Standard | Complex |
-|---|---|---|---|
-| **Examples** | Landing page, todo app, single API | CRUD + auth, REST API + React | Microservices, real-time, ML pipelines |
-| **Duration** | 5-30 min | 30-90 min | 2+ hours |
-| **Autonomy** | Completes independently | May need guidance on complex parts | Use as accelerator with human review |
+|              | Simple                             | Standard                           | Complex                                |
+| ------------ | ---------------------------------- | ---------------------------------- | -------------------------------------- |
+| **Examples** | Landing page, todo app, single API | CRUD + auth, REST API + React      | Microservices, real-time, ML pipelines |
+| **Duration** | 5-30 min                           | 30-90 min                          | 2+ hours                               |
+| **Autonomy** | Completes independently            | May need guidance on complex parts | Use as accelerator with human review   |
 
 ---
 
@@ -217,6 +217,7 @@ All formats land in the same RARV pipeline and pass the same 11 quality gates (`
 <td width="33%" valign="top">
 
 ### RARV Cycle
+
 Every iteration: **Reason** (read state) - **Act** (execute, commit) - **Reflect** (update context) - **Verify** (run tests, check spec). Failures trigger self-correction.
 
 [Core Workflow](references/core-workflow.md)
@@ -225,6 +226,7 @@ Every iteration: **Reason** (read state) - **Act** (execute, commit) - **Reflect
 <td width="33%" valign="top">
 
 ### 41 Agent Types
+
 8 swarms: engineering, operations, business, data, product, growth, review, orchestration. Auto-composed by PRD complexity.
 
 [Agent Types](references/agent-types.md)
@@ -233,6 +235,7 @@ Every iteration: **Reason** (read state) - **Act** (execute, commit) - **Reflect
 <td width="33%" valign="top">
 
 ### 11 Quality Gates
+
 Blind review, anti-sycophancy, severity blocking, mock/mutation detection, backward compatibility (gate 10, v6.67.0), documentation coverage (gate 11, v7.5.0). Code does not ship until all gates pass.
 
 [Quality Gates](skills/quality-gates.md)
@@ -243,6 +246,7 @@ Blind review, anti-sycophancy, severity blocking, mock/mutation detection, backw
 <td width="33%" valign="top">
 
 ### Memory System
+
 3-tier architecture: episodic (interaction traces), semantic (generalized patterns), procedural (learned skills). Vector search optional.
 
 [Memory Architecture](references/memory-system.md)
@@ -251,6 +255,7 @@ Blind review, anti-sycophancy, severity blocking, mock/mutation detection, backw
 <td width="33%" valign="top">
 
 ### Dashboard
+
 Real-time monitoring, agent status, task queue, WebSocket streaming. Auto-starts at `localhost:57374`.
 
 [Dashboard Guide](docs/dashboard-guide.md)
@@ -259,6 +264,7 @@ Real-time monitoring, agent status, task queue, WebSocket streaming. Auto-starts
 <td width="33%" valign="top">
 
 ### Enterprise Layer
+
 TLS, OIDC/SSO, RBAC, OTEL tracing, policy engine, audit trails. Activated via env vars.
 
 [Enterprise Guide](docs/enterprise/architecture.md)
@@ -282,6 +288,7 @@ loki web                           # launches at http://localhost:57375
 <td width="50%" valign="top">
 
 **Platform Pages**
+
 - Home -- One-line prompt to start building instantly
 - Projects -- Browse, search, filter past builds
 - Templates -- 20+ starter PRDs by category
@@ -292,6 +299,7 @@ loki web                           # launches at http://localhost:57375
 <td width="50%" valign="top">
 
 **IDE Workspace**
+
 - Monaco editor with tabs, Cmd+P quick open
 - AI chat panel for iterative development
 - Activity panel: build log, agents, quality gates
@@ -306,17 +314,17 @@ loki web                           # launches at http://localhost:57375
 
 ## Loki Mode vs. Alternatives
 
-| Feature | Loki Mode | bolt.new | Replit | Lovable |
-|---------|:---------:|:--------:|:------:|:-------:|
-| Self-hosted / your keys | Yes | No | No | No |
-| 5 AI provider failover | Yes | No | No | No |
-| 11 quality gates | Yes | No | No | No |
-| Blind code review | Yes | No | No | No |
-| Enterprise auth (SSO/RBAC) | Yes | No | Yes | No |
-| Air-gapped deployment | Yes | No | No | No |
-| Docker + CI/CD generation | Yes | No | Yes | No |
-| Open source | Yes | No | No | No |
-| Free tier | Open source | Yes | Yes | Yes |
+| Feature                    |  Loki Mode  | bolt.new | Replit | Lovable |
+| -------------------------- | :---------: | :------: | :----: | :-----: |
+| Self-hosted / your keys    |     Yes     |    No    |   No   |   No    |
+| 5 AI provider failover     |     Yes     |    No    |   No   |   No    |
+| 11 quality gates           |     Yes     |    No    |   No   |   No    |
+| Blind code review          |     Yes     |    No    |   No   |   No    |
+| Enterprise auth (SSO/RBAC) |     Yes     |    No    |  Yes   |   No    |
+| Air-gapped deployment      |     Yes     |    No    |   No   |   No    |
+| Docker + CI/CD generation  |     Yes     |    No    |  Yes   |   No    |
+| Open source                |     Yes     |    No    |   No   |   No    |
+| Free tier                  | Open source |   Yes    |  Yes   |   Yes   |
 
 Loki Mode is the only platform that is fully self-hosted, open source, and includes automated quality verification. Your code, your keys, your infrastructure.
 
@@ -326,14 +334,14 @@ Loki Mode is the only platform that is fully self-hosted, open source, and inclu
 
 Loki's autonomy and quality loop are the product; the underlying coding CLI is swappable. Loki runs on any of the providers below so you are never locked to one vendor.
 
-| Provider | Status | Autonomous Flag | Parallel Agents | Install |
-|----------|--------|:-:|:-:|---------|
-| **Claude Code** | Active (Tier 1) | `--dangerously-skip-permissions` | Yes (10+) | `npm i -g @anthropic-ai/claude-code` |
-| **Codex CLI** | Active (Tier 3) | `--full-auto` | Sequential | `npm i -g @openai/codex` |
-| **Cline CLI** | Active (Tier 2) | `--auto-approve` | Sequential | `npm i -g @anthropic-ai/cline` |
-| **Aider** | Active (Tier 3) | `--yes-always` | Sequential | `pip install aider-chat` |
-| **Google Gemini CLI** | DEPRECATED v7.5.18 | -- | -- | Upstream deprecated; runtime removed. `LOKI_PROVIDER=gemini` exits with migration message. |
-| **Anthropic Antigravity CLI** | Coming soon | -- | -- | Integration planned. |
+| Provider                      | Status             |         Autonomous Flag          | Parallel Agents | Install                                                                                    |
+| ----------------------------- | ------------------ | :------------------------------: | :-------------: | ------------------------------------------------------------------------------------------ |
+| **Claude Code**               | Active (Tier 1)    | `--dangerously-skip-permissions` |    Yes (10+)    | `npm i -g @anthropic-ai/claude-code`                                                       |
+| **Codex CLI**                 | Active (Tier 3)    |          `--full-auto`           |   Sequential    | `npm i -g @openai/codex`                                                                   |
+| **Cline CLI**                 | Active (Tier 2)    |         `--auto-approve`         |   Sequential    | `npm i -g @anthropic-ai/cline`                                                             |
+| **Aider**                     | Active (Tier 3)    |          `--yes-always`          |   Sequential    | `pip install aider-chat`                                                                   |
+| **Google Gemini CLI**         | DEPRECATED v7.5.18 |                --                |       --        | Upstream deprecated; runtime removed. `LOKI_PROVIDER=gemini` exits with migration message. |
+| **Anthropic Antigravity CLI** | Coming soon        |                --                |       --        | Integration planned.                                                                       |
 
 Claude gets full features (subagents, parallelization, MCP, Task tool). Other active providers run sequentially. Auto-failover switches providers when rate-limited. See [Provider Guide](skills/providers.md).
 
@@ -344,26 +352,26 @@ Claude gets full features (subagents, parallelization, MCP, Task tool). Other ac
 <details>
 <summary><strong>All commands</strong></summary>
 
-| Command | Description |
-|---------|-------------|
-| `loki start [PRD]` | Start with optional PRD file (also accepts an issue ref; replaces deprecated `loki run`) |
-| `loki stop` | Stop execution |
-| `loki heal <path>` | Legacy system healing (archaeology, stabilize, isolate, modernize, validate -- v6.67.0) |
-| `loki pause` / `resume` | Pause/resume after current session |
-| `loki status` | Show current status |
-| `loki dashboard` | Open web dashboard |
-| `loki web` | Launch Purple Lab web UI |
-| `loki doctor` | Check environment and dependencies |
-| `loki plan [PRD]` | Pre-execution analysis: complexity, cost, iterations |
-| `loki review [--staged\|--diff]` | AI-powered code review with severity filtering |
-| `loki test [--file\|--dir\|--changed]` | AI test generation (8 languages, 9 frameworks) |
-| `loki onboard [path]` | Project analysis and CLAUDE.md generation |
-| `loki import` | Import GitHub issues as tasks |
-| `loki ci` | CI/CD quality gate integration |
-| `loki failover` | Cross-provider auto-failover management |
-| `loki memory <cmd>` | Memory system: index, timeline, search, consolidate |
-| `loki enterprise` | Enterprise feature management |
-| `loki version` | Show version |
+| Command                                | Description                                                                              |
+| -------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `loki start [PRD]`                     | Start with optional PRD file (also accepts an issue ref; replaces deprecated `loki run`) |
+| `loki stop`                            | Stop execution                                                                           |
+| `loki heal <path>`                     | Legacy system healing (archaeology, stabilize, isolate, modernize, validate -- v6.67.0)  |
+| `loki pause` / `resume`                | Pause/resume after current session                                                       |
+| `loki status`                          | Show current status                                                                      |
+| `loki dashboard`                       | Open web dashboard                                                                       |
+| `loki web`                             | Launch Purple Lab web UI                                                                 |
+| `loki doctor`                          | Check environment and dependencies                                                       |
+| `loki plan [PRD]`                      | Pre-execution analysis: complexity, cost, iterations                                     |
+| `loki review [--staged\|--diff]`       | AI-powered code review with severity filtering                                           |
+| `loki test [--file\|--dir\|--changed]` | AI test generation (8 languages, 9 frameworks)                                           |
+| `loki onboard [path]`                  | Project analysis and CLAUDE.md generation                                                |
+| `loki import`                          | Import GitHub issues as tasks                                                            |
+| `loki ci`                              | CI/CD quality gate integration                                                           |
+| `loki failover`                        | Cross-provider auto-failover management                                                  |
+| `loki memory <cmd>`                    | Memory system: index, timeline, search, consolidate                                      |
+| `loki enterprise`                      | Enterprise feature management                                                            |
+| `loki version`                         | Show version                                                                             |
 
 </details>
 
@@ -407,9 +415,9 @@ loki enterprise status
 
 Self-reported results from the included test harness. Verification scripts included for reproduction.
 
-| Benchmark | Result | Notes |
-|-----------|--------|-------|
-| HumanEval | 162/164 (98.78%) | Self-reported; harness + results JSON in `benchmarks/results/humaneval-loki-results.json`. Max 3 retries, RARV self-verification. |
+| Benchmark | Result           | Notes                                                                                                                                                                                                 |
+| --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HumanEval | 162/164 (98.78%) | Self-reported; harness + results JSON in `benchmarks/results/humaneval-loki-results.json`. Max 3 retries, RARV self-verification.                                                                     |
 | SWE-bench | Not yet measured | Harness exists and generates patches, but the official SWE-bench evaluator has not been run, so there is no pass-rate to report. Run it yourself: `./benchmarks/run-benchmarks.sh swebench --execute` |
 
 See [benchmarks/](benchmarks/) for methodology.
@@ -421,7 +429,7 @@ See [benchmarks/](benchmarks/) for methodology.
 
 ![Loki Mode Presentation](docs/loki-mode-presentation.gif)
 
-*9 slides: Problem, Solution, 41 Agents, RARV Cycle, Benchmarks, Multi-Provider, Full Lifecycle*
+_9 slides: Problem, Solution, 41 Agents, RARV Cycle, Benchmarks, Multi-Provider, Full Lifecycle_
 
 **[Download PPTX](docs/loki-mode-presentation.pptx)**
 
@@ -431,13 +439,13 @@ See [benchmarks/](benchmarks/) for methodology.
 
 ## Limitations
 
-| Area | What Works | What Doesn't (Yet) |
-|------|-----------|---------------------|
-| **Code Gen** | Full-stack apps from PRDs | Complex domain logic may need human review |
-| **Deploy** | Generates configs, Dockerfiles, CI/CD | Does not deploy -- human runs deploy commands |
-| **Testing** | 11 automated quality gates | Test quality depends on AI assertions |
-| **Providers** | 5 providers with auto-failover | Non-Claude providers lack parallel agents |
-| **Dashboard** | Real-time single-machine monitoring | No multi-node clustering |
+| Area          | What Works                            | What Doesn't (Yet)                            |
+| ------------- | ------------------------------------- | --------------------------------------------- |
+| **Code Gen**  | Full-stack apps from PRDs             | Complex domain logic may need human review    |
+| **Deploy**    | Generates configs, Dockerfiles, CI/CD | Does not deploy -- human runs deploy commands |
+| **Testing**   | 11 automated quality gates            | Test quality depends on AI assertions         |
+| **Providers** | 5 providers with auto-failover        | Non-Claude providers lack parallel agents     |
+| **Dashboard** | Real-time single-machine monitoring   | No multi-node clustering                      |
 
 > **What "autonomous" means:** The system runs RARV cycles without prompting. It does NOT access your cloud accounts, payment systems, or external services unless you provide credentials. Human oversight is expected for deployment, API keys, and critical decisions.
 
@@ -448,16 +456,16 @@ See [benchmarks/](benchmarks/) for methodology.
 <details>
 <summary><strong>Papers and sources</strong></summary>
 
-| Source | What We Use |
-|--------|-------------|
-| [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) | Evaluator-optimizer, parallelization |
-| [Anthropic: Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback) | Self-critique against quality principles |
-| [DeepMind: Scalable Oversight via Debate](https://deepmind.google/research/publications/34920/) | Debate-based verification in council review |
-| [DeepMind: SIMA 2](https://deepmind.google/blog/sima-2-an-agent-that-plays-reasons-and-learns-with-you-in-virtual-3d-worlds/) | Self-improvement loop design |
-| [OpenAI: Agents SDK](https://openai.github.io/openai-agents-python/) | Guardrails, tripwires, tracing |
-| [NVIDIA ToolOrchestra](https://github.com/NVlabs/ToolOrchestra) | Efficiency metrics, reward signals |
-| [CONSENSAGENT (ACL 2025)](https://aclanthology.org/2025.findings-acl.1141/) | Anti-sycophancy in blind review |
-| [GoalAct](https://arxiv.org/abs/2504.16563) | Hierarchical planning for complex PRDs |
+| Source                                                                                                                        | What We Use                                 |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)                          | Evaluator-optimizer, parallelization        |
+| [Anthropic: Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)            | Self-critique against quality principles    |
+| [DeepMind: Scalable Oversight via Debate](https://deepmind.google/research/publications/34920/)                               | Debate-based verification in council review |
+| [DeepMind: SIMA 2](https://deepmind.google/blog/sima-2-an-agent-that-plays-reasons-and-learns-with-you-in-virtual-3d-worlds/) | Self-improvement loop design                |
+| [OpenAI: Agents SDK](https://openai.github.io/openai-agents-python/)                                                          | Guardrails, tripwires, tracing              |
+| [NVIDIA ToolOrchestra](https://github.com/NVlabs/ToolOrchestra)                                                               | Efficiency metrics, reward signals          |
+| [CONSENSAGENT (ACL 2025)](https://aclanthology.org/2025.findings-acl.1141/)                                                   | Anti-sycophancy in blind review             |
+| [GoalAct](https://arxiv.org/abs/2504.16563)                                                                                   | Hierarchical planning for complex PRDs      |
 
 **Practitioner insights:** Boris Cherny, Simon Willison, [HN Community](https://news.ycombinator.com/item?id=44623207)
 

@@ -10,10 +10,10 @@
  * Polling interval presets for different contexts
  */
 const POLL_INTERVALS = {
-  realtime: 1000,      // Active session monitoring
-  normal: 2000,        // Default
-  background: 5000,    // VS Code sidebar (not visible)
-  offline: 10000,      // Connectivity check only
+  realtime: 1000, // Active session monitoring
+  normal: 2000, // Default
+  background: 5000, // VS Code sidebar (not visible)
+  offline: 10000, // Connectivity check only
 };
 
 /**
@@ -29,8 +29,11 @@ const CONTEXT_DEFAULTS = {
  * Default API configuration
  */
 const DEFAULT_CONFIG = {
-  baseUrl: typeof window !== 'undefined' ? window.location.origin : 'http://localhost:57374',
-  wsUrl: typeof window !== 'undefined' ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws` : 'ws://localhost:57374/ws',
+  baseUrl: typeof window !== "undefined" ? window.location.origin : "http://localhost:57374",
+  wsUrl:
+    typeof window !== "undefined"
+      ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}/ws`
+      : "ws://localhost:57374/ws",
   pollInterval: 2000,
   timeout: 10000,
   retryAttempts: 3,
@@ -41,19 +44,19 @@ const DEFAULT_CONFIG = {
  * API Event types
  */
 export const ApiEvents = {
-  CONNECTED: 'api:connected',
-  DISCONNECTED: 'api:disconnected',
-  ERROR: 'api:error',
-  STATUS_UPDATE: 'api:status-update',
-  TASK_CREATED: 'api:task-created',
-  TASK_UPDATED: 'api:task-updated',
-  TASK_DELETED: 'api:task-deleted',
-  PROJECT_CREATED: 'api:project-created',
-  PROJECT_UPDATED: 'api:project-updated',
-  AGENT_UPDATE: 'api:agent-update',
-  LOG_MESSAGE: 'api:log-message',
-  MEMORY_UPDATE: 'api:memory-update',
-  CHECKLIST_UPDATE: 'api:checklist-update',
+  CONNECTED: "api:connected",
+  DISCONNECTED: "api:disconnected",
+  ERROR: "api:error",
+  STATUS_UPDATE: "api:status-update",
+  TASK_CREATED: "api:task-created",
+  TASK_UPDATED: "api:task-updated",
+  TASK_DELETED: "api:task-deleted",
+  PROJECT_CREATED: "api:project-created",
+  PROJECT_UPDATED: "api:project-updated",
+  AGENT_UPDATE: "api:agent-update",
+  LOG_MESSAGE: "api:log-message",
+  MEMORY_UPDATE: "api:memory-update",
+  CHECKLIST_UPDATE: "api:checklist-update",
 };
 
 /**
@@ -79,7 +82,7 @@ export class LokiApiClient extends EventTarget {
    * Clear all cached instances (useful for testing)
    */
   static clearInstances() {
-    LokiApiClient._instances.forEach(instance => instance.disconnect());
+    LokiApiClient._instances.forEach((instance) => instance.disconnect());
     LokiApiClient._instances.clear();
   }
 
@@ -115,11 +118,11 @@ export class LokiApiClient extends EventTarget {
    */
   _detectContext() {
     // Check for VS Code webview environment
-    if (typeof acquireVsCodeApi !== 'undefined') return 'vscode';
+    if (typeof acquireVsCodeApi !== "undefined") return "vscode";
     // Check for browser environment
-    if (typeof window !== 'undefined' && window.location) return 'browser';
+    if (typeof window !== "undefined" && window.location) return "browser";
     // Default to CLI context (Node.js or similar)
-    return 'cli';
+    return "cli";
   }
 
   /**
@@ -141,7 +144,7 @@ export class LokiApiClient extends EventTarget {
    */
   _setupAdaptivePolling() {
     // Only setup in browser environments with document API
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
     this._visibilityChangeHandler = () => {
       if (document.hidden) {
@@ -151,7 +154,7 @@ export class LokiApiClient extends EventTarget {
       }
     };
 
-    document.addEventListener('visibilitychange', this._visibilityChangeHandler);
+    document.addEventListener("visibilitychange", this._visibilityChangeHandler);
   }
 
   /**
@@ -188,13 +191,13 @@ export class LokiApiClient extends EventTarget {
    */
   _setupVSCodeBridge() {
     // Check if running in VS Code webview
-    if (typeof acquireVsCodeApi === 'undefined') return;
+    if (typeof acquireVsCodeApi === "undefined") return;
 
     try {
       this._vscodeApi = acquireVsCodeApi();
     } catch (e) {
       // acquireVsCodeApi can only be called once, may already be acquired
-      console.warn('VS Code API already acquired or unavailable');
+      console.warn("VS Code API already acquired or unavailable");
       return;
     }
 
@@ -204,45 +207,45 @@ export class LokiApiClient extends EventTarget {
       if (!message || !message.type) return;
 
       switch (message.type) {
-        case 'updateStatus':
+        case "updateStatus":
           this._emit(ApiEvents.STATUS_UPDATE, message.data);
           break;
-        case 'updateTasks':
+        case "updateTasks":
           this._emit(ApiEvents.TASK_UPDATED, message.data);
           break;
-        case 'taskCreated':
+        case "taskCreated":
           this._emit(ApiEvents.TASK_CREATED, message.data);
           break;
-        case 'taskDeleted':
+        case "taskDeleted":
           this._emit(ApiEvents.TASK_DELETED, message.data);
           break;
-        case 'projectCreated':
+        case "projectCreated":
           this._emit(ApiEvents.PROJECT_CREATED, message.data);
           break;
-        case 'projectUpdated':
+        case "projectUpdated":
           this._emit(ApiEvents.PROJECT_UPDATED, message.data);
           break;
-        case 'agentUpdate':
+        case "agentUpdate":
           this._emit(ApiEvents.AGENT_UPDATE, message.data);
           break;
-        case 'logMessage':
+        case "logMessage":
           this._emit(ApiEvents.LOG_MESSAGE, message.data);
           break;
-        case 'memoryUpdate':
+        case "memoryUpdate":
           this._emit(ApiEvents.MEMORY_UPDATE, message.data);
           break;
-        case 'connected':
+        case "connected":
           this._connected = true;
           this._emit(ApiEvents.CONNECTED, message.data);
           break;
-        case 'disconnected':
+        case "disconnected":
           this._connected = false;
           this._emit(ApiEvents.DISCONNECTED, message.data);
           break;
-        case 'error':
+        case "error":
           this._emit(ApiEvents.ERROR, message.data);
           break;
-        case 'setPollMode':
+        case "setPollMode":
           this.setPollMode(message.data.mode);
           break;
         default:
@@ -251,14 +254,14 @@ export class LokiApiClient extends EventTarget {
       }
     };
 
-    window.addEventListener('message', this._messageHandler);
+    window.addEventListener("message", this._messageHandler);
   }
 
   /**
    * Check if running in VS Code webview
    */
   get isVSCode() {
-    return this._context === 'vscode';
+    return this._context === "vscode";
   }
 
   /**
@@ -276,7 +279,7 @@ export class LokiApiClient extends EventTarget {
    * Request data refresh from VS Code extension
    */
   requestRefresh() {
-    this.postToVSCode('requestRefresh');
+    this.postToVSCode("requestRefresh");
   }
 
   /**
@@ -285,7 +288,7 @@ export class LokiApiClient extends EventTarget {
    * @param {object} payload - Action payload
    */
   notifyVSCode(action, payload = {}) {
-    this.postToVSCode('userAction', { action, ...payload });
+    this.postToVSCode("userAction", { action, ...payload });
   }
 
   /**
@@ -300,7 +303,7 @@ export class LokiApiClient extends EventTarget {
    */
   set baseUrl(url) {
     this.config.baseUrl = url;
-    this.config.wsUrl = url.replace(/^http/, 'ws') + '/ws';
+    this.config.wsUrl = url.replace(/^http/, "ws") + "/ws";
   }
 
   /**
@@ -349,7 +352,7 @@ export class LokiApiClient extends EventTarget {
             const message = JSON.parse(event.data);
             this._handleMessage(message);
           } catch (e) {
-            console.error('Failed to parse WebSocket message:', e);
+            console.error("Failed to parse WebSocket message:", e);
           }
         };
       } catch (error) {
@@ -382,12 +385,12 @@ export class LokiApiClient extends EventTarget {
    * Clean up global event listeners
    */
   _cleanupGlobalListeners() {
-    if (this._visibilityChangeHandler && typeof document !== 'undefined') {
-      document.removeEventListener('visibilitychange', this._visibilityChangeHandler);
+    if (this._visibilityChangeHandler && typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", this._visibilityChangeHandler);
       this._visibilityChangeHandler = null;
     }
-    if (this._messageHandler && typeof window !== 'undefined') {
-      window.removeEventListener('message', this._messageHandler);
+    if (this._messageHandler && typeof window !== "undefined") {
+      window.removeEventListener("message", this._messageHandler);
       this._messageHandler = null;
     }
   }
@@ -405,15 +408,12 @@ export class LokiApiClient extends EventTarget {
   _scheduleReconnect() {
     if (this._reconnectTimeout) return;
     if (this._reconnectAttempts >= this._maxReconnectAttempts) {
-      console.warn('WebSocket max reconnect attempts reached, giving up');
-      this._emit(ApiEvents.ERROR, { error: 'Max reconnect attempts reached' });
+      console.warn("WebSocket max reconnect attempts reached, giving up");
+      this._emit(ApiEvents.ERROR, { error: "Max reconnect attempts reached" });
       return;
     }
 
-    const delay = Math.min(
-      this.config.retryDelay * Math.pow(2, this._reconnectAttempts),
-      30000
-    );
+    const delay = Math.min(this.config.retryDelay * Math.pow(2, this._reconnectAttempts), 30000);
     this._reconnectAttempts++;
 
     this._reconnectTimeout = setTimeout(() => {
@@ -429,24 +429,24 @@ export class LokiApiClient extends EventTarget {
    */
   _handleMessage(message) {
     // Respond to server pings to keep connection alive
-    if (message.type === 'ping') {
+    if (message.type === "ping") {
       if (this._ws && this._ws.readyState === WebSocket.OPEN) {
-        this._ws.send(JSON.stringify({ type: 'pong' }));
+        this._ws.send(JSON.stringify({ type: "pong" }));
       }
       return;
     }
 
     const eventMap = {
-      'connected': ApiEvents.CONNECTED,
-      'status_update': ApiEvents.STATUS_UPDATE,
-      'task_created': ApiEvents.TASK_CREATED,
-      'task_updated': ApiEvents.TASK_UPDATED,
-      'task_deleted': ApiEvents.TASK_DELETED,
-      'task_moved': ApiEvents.TASK_UPDATED,
-      'project_created': ApiEvents.PROJECT_CREATED,
-      'project_updated': ApiEvents.PROJECT_UPDATED,
-      'agent_update': ApiEvents.AGENT_UPDATE,
-      'log': ApiEvents.LOG_MESSAGE,
+      connected: ApiEvents.CONNECTED,
+      status_update: ApiEvents.STATUS_UPDATE,
+      task_created: ApiEvents.TASK_CREATED,
+      task_updated: ApiEvents.TASK_UPDATED,
+      task_deleted: ApiEvents.TASK_DELETED,
+      task_moved: ApiEvents.TASK_UPDATED,
+      project_created: ApiEvents.PROJECT_CREATED,
+      project_updated: ApiEvents.PROJECT_UPDATED,
+      agent_update: ApiEvents.AGENT_UPDATE,
+      log: ApiEvents.LOG_MESSAGE,
     };
 
     const eventType = eventMap[message.type] || `api:${message.type}`;
@@ -474,18 +474,17 @@ export class LokiApiClient extends EventTarget {
     // endpoints like /api/wiki/ask, which shells out to claude and can take
     // minutes. The default (this.config.timeout, 10s) is right for normal JSON
     // reads but would abort those mid-flight with a misleading "Request timeout".
-    const timeoutMs = (options && typeof options.timeout === 'number')
-      ? options.timeout
-      : this.config.timeout;
+    const timeoutMs =
+      options && typeof options.timeout === "number" ? options.timeout : this.config.timeout;
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-        credentials: 'include',
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...options.headers,
         },
       });
@@ -494,7 +493,7 @@ export class LokiApiClient extends EventTarget {
 
       if (!response.ok) {
         // Safe parsing: read as text first, then try JSON
-        const rawBody = await response.text().catch(() => '');
+        const rawBody = await response.text().catch(() => "");
         let detail = response.statusText || `HTTP ${response.status}`;
         if (rawBody) {
           try {
@@ -502,7 +501,7 @@ export class LokiApiClient extends EventTarget {
             detail = parsed.detail || parsed.error || parsed.message || detail;
           } catch {
             // Response is not JSON (HTML error page, plain text, etc.)
-            detail = rawBody.length > 200 ? rawBody.slice(0, 200) + '...' : rawBody;
+            detail = rawBody.length > 200 ? rawBody.slice(0, 200) + "..." : rawBody;
           }
         }
         throw new Error(detail);
@@ -515,8 +514,8 @@ export class LokiApiClient extends EventTarget {
       return await response.json();
     } catch (error) {
       clearTimeout(timeout);
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout');
+      if (error.name === "AbortError") {
+        throw new Error("Request timeout");
       }
       throw error;
     }
@@ -547,7 +546,7 @@ export class LokiApiClient extends EventTarget {
    */
   async _post(endpoint, body, options = {}) {
     return this._request(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(body),
       ...options,
     });
@@ -558,7 +557,7 @@ export class LokiApiClient extends EventTarget {
    */
   async _put(endpoint, body) {
     return this._request(endpoint, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(body),
     });
   }
@@ -567,7 +566,7 @@ export class LokiApiClient extends EventTarget {
    * DELETE request
    */
   async _delete(endpoint) {
-    return this._request(endpoint, { method: 'DELETE' });
+    return this._request(endpoint, { method: "DELETE" });
   }
 
   /**
@@ -591,14 +590,14 @@ export class LokiApiClient extends EventTarget {
    * Get system status
    */
   async getStatus() {
-    return this._get('/api/status');
+    return this._get("/api/status");
   }
 
   /**
    * Health check
    */
   async healthCheck() {
-    return this._get('/health');
+    return this._get("/health");
   }
 
   // ============================================
@@ -609,7 +608,7 @@ export class LokiApiClient extends EventTarget {
    * List all projects
    */
   async listProjects(status = null) {
-    const query = status ? `?status=${status}` : '';
+    const query = status ? `?status=${status}` : "";
     return this._get(`/api/projects${query}`);
   }
 
@@ -624,7 +623,7 @@ export class LokiApiClient extends EventTarget {
    * Create a new project
    */
   async createProject(data) {
-    return this._post('/api/projects', data);
+    return this._post("/api/projects", data);
   }
 
   /**
@@ -650,11 +649,11 @@ export class LokiApiClient extends EventTarget {
    */
   async listTasks(filters = {}) {
     const params = new URLSearchParams();
-    if (filters.projectId) params.append('project_id', filters.projectId);
-    if (filters.status) params.append('status', filters.status);
-    if (filters.priority) params.append('priority', filters.priority);
+    if (filters.projectId) params.append("project_id", filters.projectId);
+    if (filters.status) params.append("status", filters.status);
+    if (filters.priority) params.append("priority", filters.priority);
 
-    const query = params.toString() ? `?${params}` : '';
+    const query = params.toString() ? `?${params}` : "";
     return this._get(`/api/tasks${query}`);
   }
 
@@ -669,7 +668,7 @@ export class LokiApiClient extends EventTarget {
    * Create a new task
    */
   async createTask(data) {
-    return this._post('/api/tasks', data);
+    return this._post("/api/tasks", data);
   }
 
   /**
@@ -701,21 +700,21 @@ export class LokiApiClient extends EventTarget {
    * Get memory summary
    */
   async getMemorySummary() {
-    return this._get('/api/memory/summary', true);
+    return this._get("/api/memory/summary", true);
   }
 
   /**
    * Get memory index (Layer 1)
    */
   async getMemoryIndex() {
-    return this._get('/api/memory/index', true);
+    return this._get("/api/memory/index", true);
   }
 
   /**
    * Get memory timeline (Layer 2)
    */
   async getMemoryTimeline() {
-    return this._get('/api/memory/timeline');
+    return this._get("/api/memory/timeline");
   }
 
   /**
@@ -723,7 +722,7 @@ export class LokiApiClient extends EventTarget {
    */
   async listEpisodes(params = {}) {
     const query = new URLSearchParams(params).toString();
-    return this._get(`/api/memory/episodes${query ? '?' + query : ''}`);
+    return this._get(`/api/memory/episodes${query ? "?" + query : ""}`);
   }
 
   /**
@@ -738,7 +737,7 @@ export class LokiApiClient extends EventTarget {
    */
   async listPatterns(params = {}) {
     const query = new URLSearchParams(params).toString();
-    return this._get(`/api/memory/patterns${query ? '?' + query : ''}`);
+    return this._get(`/api/memory/patterns${query ? "?" + query : ""}`);
   }
 
   /**
@@ -752,7 +751,7 @@ export class LokiApiClient extends EventTarget {
    * List skills
    */
   async listSkills() {
-    return this._get('/api/memory/skills');
+    return this._get("/api/memory/skills");
   }
 
   /**
@@ -768,7 +767,7 @@ export class LokiApiClient extends EventTarget {
   async retrieveMemories(query, taskType = null, topK = 5) {
     // Semantic vector search over the memory store can exceed 10s on large
     // stores. 30s client budget.
-    return this._post('/api/memory/retrieve', { query, taskType, topK }, { timeout: 30000 });
+    return this._post("/api/memory/retrieve", { query, taskType, topK }, { timeout: 30000 });
   }
 
   /**
@@ -777,14 +776,14 @@ export class LokiApiClient extends EventTarget {
   async consolidateMemory(sinceHours = 24) {
     // Episodic->semantic consolidation scans many episodes + vector search;
     // routinely exceeds the default 10s. 120s client budget.
-    return this._post('/api/memory/consolidate', { sinceHours }, { timeout: 120000 });
+    return this._post("/api/memory/consolidate", { sinceHours }, { timeout: 120000 });
   }
 
   /**
    * Get token economics
    */
   async getTokenEconomics() {
-    return this._get('/api/memory/economics');
+    return this._get("/api/memory/economics");
   }
 
   /**
@@ -793,7 +792,7 @@ export class LokiApiClient extends EventTarget {
    * @param {string} collection - 'episodes'|'patterns'|'skills'|'all' (default: 'all')
    * @param {number} limit - Max results (default: 20)
    */
-  async searchMemory(query, collection = 'all', limit = 20) {
+  async searchMemory(query, collection = "all", limit = 20) {
     const params = new URLSearchParams({ q: query, collection, limit: String(limit) });
     return this._get(`/api/memory/search?${params}`);
   }
@@ -802,7 +801,7 @@ export class LokiApiClient extends EventTarget {
    * Get memory system statistics (counts, size, backend info)
    */
   async getMemoryStats() {
-    return this._get('/api/memory/stats', true);
+    return this._get("/api/memory/stats", true);
   }
 
   // ============================================
@@ -820,7 +819,7 @@ export class LokiApiClient extends EventTarget {
    * Register a project
    */
   async registerProject(path, name = null, alias = null) {
-    return this._post('/api/registry/projects', { path, name, alias });
+    return this._post("/api/registry/projects", { path, name, alias });
   }
 
   /**
@@ -836,14 +835,14 @@ export class LokiApiClient extends EventTarget {
   async syncRegistry() {
     // Server caps this at 30s (asyncio.wait_for); give the client headroom
     // above that so the server's own timeout decides, not the default 10s.
-    return this._post('/api/registry/sync', {}, { timeout: 45000 });
+    return this._post("/api/registry/sync", {}, { timeout: 45000 });
   }
 
   /**
    * Get cross-project tasks
    */
   async getCrossProjectTasks(projectIds = null) {
-    const query = projectIds ? `?project_ids=${projectIds.join(',')}` : '';
+    const query = projectIds ? `?project_ids=${projectIds.join(",")}` : "";
     return this._get(`/api/registry/tasks${query}`);
   }
 
@@ -860,10 +859,10 @@ export class LokiApiClient extends EventTarget {
    */
   async getLearningMetrics(params = {}) {
     const query = new URLSearchParams();
-    if (params.timeRange) query.append('timeRange', params.timeRange);
-    if (params.signalType) query.append('signalType', params.signalType);
-    if (params.source) query.append('source', params.source);
-    const queryStr = query.toString() ? `?${query}` : '';
+    if (params.timeRange) query.append("timeRange", params.timeRange);
+    if (params.signalType) query.append("signalType", params.signalType);
+    if (params.source) query.append("source", params.source);
+    const queryStr = query.toString() ? `?${query}` : "";
     return this._get(`/api/learning/metrics${queryStr}`);
   }
 
@@ -873,10 +872,10 @@ export class LokiApiClient extends EventTarget {
    */
   async getLearningTrends(params = {}) {
     const query = new URLSearchParams();
-    if (params.timeRange) query.append('timeRange', params.timeRange);
-    if (params.signalType) query.append('signalType', params.signalType);
-    if (params.source) query.append('source', params.source);
-    const queryStr = query.toString() ? `?${query}` : '';
+    if (params.timeRange) query.append("timeRange", params.timeRange);
+    if (params.signalType) query.append("signalType", params.signalType);
+    if (params.source) query.append("source", params.source);
+    const queryStr = query.toString() ? `?${query}` : "";
     return this._get(`/api/learning/trends${queryStr}`);
   }
 
@@ -888,12 +887,12 @@ export class LokiApiClient extends EventTarget {
    */
   async getLearningSignals(params = {}) {
     const query = new URLSearchParams();
-    if (params.timeRange) query.append('timeRange', params.timeRange);
-    if (params.signalType) query.append('signalType', params.signalType);
-    if (params.source) query.append('source', params.source);
-    if (params.limit) query.append('limit', String(params.limit));
-    if (params.offset) query.append('offset', String(params.offset));
-    const queryStr = query.toString() ? `?${query}` : '';
+    if (params.timeRange) query.append("timeRange", params.timeRange);
+    if (params.signalType) query.append("signalType", params.signalType);
+    if (params.source) query.append("source", params.source);
+    if (params.limit) query.append("limit", String(params.limit));
+    if (params.offset) query.append("offset", String(params.offset));
+    const queryStr = query.toString() ? `?${query}` : "";
     return this._get(`/api/learning/signals${queryStr}`);
   }
 
@@ -901,7 +900,7 @@ export class LokiApiClient extends EventTarget {
    * Get latest aggregation result
    */
   async getLatestAggregation() {
-    return this._get('/api/learning/aggregation');
+    return this._get("/api/learning/aggregation");
   }
 
   /**
@@ -911,7 +910,7 @@ export class LokiApiClient extends EventTarget {
   async triggerAggregation(params = {}) {
     // Parses a potentially large events.jsonl and aggregates learning signals;
     // an O(n) scan that can exceed 10s. 60s client budget.
-    return this._post('/api/learning/aggregate', params, { timeout: 60000 });
+    return this._post("/api/learning/aggregate", params, { timeout: 60000 });
   }
 
   /**
@@ -954,14 +953,14 @@ export class LokiApiClient extends EventTarget {
    * Get cost visibility data (tokens, estimated USD, budget)
    */
   async getCost() {
-    return this._get('/api/cost');
+    return this._get("/api/cost");
   }
 
   /**
    * Get current model pricing (from .loki/pricing.json or static defaults)
    */
   async getPricing() {
-    return this._get('/api/pricing');
+    return this._get("/api/pricing");
   }
 
   // ============================================
@@ -972,7 +971,7 @@ export class LokiApiClient extends EventTarget {
    * Get completion council state
    */
   async getCouncilState() {
-    return this._get('/api/council/state');
+    return this._get("/api/council/state");
   }
 
   /**
@@ -987,21 +986,21 @@ export class LokiApiClient extends EventTarget {
    * Get convergence metrics
    */
   async getCouncilConvergence() {
-    return this._get('/api/council/convergence');
+    return this._get("/api/council/convergence");
   }
 
   /**
    * Get council report
    */
   async getCouncilReport() {
-    return this._get('/api/council/report');
+    return this._get("/api/council/report");
   }
 
   /**
    * Force council review
    */
   async forceCouncilReview() {
-    return this._post('/api/council/force-review', {});
+    return this._post("/api/council/force-review", {});
   }
 
   // ============================================
@@ -1012,7 +1011,7 @@ export class LokiApiClient extends EventTarget {
    * Get context window tracking data
    */
   async getContext() {
-    return this._get('/api/context');
+    return this._get("/api/context");
   }
 
   // ============================================
@@ -1026,17 +1025,17 @@ export class LokiApiClient extends EventTarget {
    */
   async getNotifications(severity, unreadOnly) {
     const params = new URLSearchParams();
-    if (severity) params.set('severity', severity);
-    if (unreadOnly) params.set('unread_only', 'true');
+    if (severity) params.set("severity", severity);
+    if (unreadOnly) params.set("unread_only", "true");
     const query = params.toString();
-    return this._get('/api/notifications' + (query ? '?' + query : ''));
+    return this._get("/api/notifications" + (query ? "?" + query : ""));
   }
 
   /**
    * Get notification trigger configuration
    */
   async getNotificationTriggers() {
-    return this._get('/api/notifications/triggers');
+    return this._get("/api/notifications/triggers");
   }
 
   /**
@@ -1044,7 +1043,7 @@ export class LokiApiClient extends EventTarget {
    * @param {Array} triggers - Array of trigger objects
    */
   async updateNotificationTriggers(triggers) {
-    return this._put('/api/notifications/triggers', { triggers });
+    return this._put("/api/notifications/triggers", { triggers });
   }
 
   /**
@@ -1052,7 +1051,7 @@ export class LokiApiClient extends EventTarget {
    * @param {string} id - Notification ID
    */
   async acknowledgeNotification(id) {
-    return this._post('/api/notifications/' + encodeURIComponent(id) + '/acknowledge', {});
+    return this._post("/api/notifications/" + encodeURIComponent(id) + "/acknowledge", {});
   }
 
   // ============================================
@@ -1063,21 +1062,21 @@ export class LokiApiClient extends EventTarget {
    * Pause the current session
    */
   async pauseSession() {
-    return this._post('/api/control/pause', {});
+    return this._post("/api/control/pause", {});
   }
 
   /**
    * Resume a paused session
    */
   async resumeSession() {
-    return this._post('/api/control/resume', {});
+    return this._post("/api/control/resume", {});
   }
 
   /**
    * Stop the current session
    */
   async stopSession() {
-    return this._post('/api/control/stop', {});
+    return this._post("/api/control/stop", {});
   }
 
   // ============================================
@@ -1100,14 +1099,14 @@ export class LokiApiClient extends EventTarget {
    * Get full PRD checklist with verification results
    */
   async getChecklist() {
-    return this._get('/api/checklist');
+    return this._get("/api/checklist");
   }
 
   /**
    * Get checklist verification summary only
    */
   async getChecklistSummary() {
-    return this._get('/api/checklist/summary');
+    return this._get("/api/checklist/summary");
   }
 
   /**
@@ -1115,7 +1114,9 @@ export class LokiApiClient extends EventTarget {
    */
   async getPrdObservations() {
     // Server returns PlainTextResponse, not JSON
-    const response = await fetch(`${this.baseUrl}/api/prd-observations`, { credentials: 'include' });
+    const response = await fetch(`${this.baseUrl}/api/prd-observations`, {
+      credentials: "include",
+    });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -1126,7 +1127,7 @@ export class LokiApiClient extends EventTarget {
    * Get all checklist waivers
    */
   async getChecklistWaivers() {
-    return this._get('/api/checklist/waivers');
+    return this._get("/api/checklist/waivers");
   }
 
   /**
@@ -1135,8 +1136,8 @@ export class LokiApiClient extends EventTarget {
    * @param {string} reason - Reason for the waiver
    * @param {string} waivedBy - Who granted the waiver (default: 'dashboard')
    */
-  async addChecklistWaiver(itemId, reason, waivedBy = 'dashboard') {
-    return this._post('/api/checklist/waivers', {
+  async addChecklistWaiver(itemId, reason, waivedBy = "dashboard") {
+    return this._post("/api/checklist/waivers", {
       item_id: itemId,
       reason: reason,
       waived_by: waivedBy,
@@ -1155,7 +1156,7 @@ export class LokiApiClient extends EventTarget {
    * Get council gate status for checklist completion
    */
   async getCouncilGate() {
-    return this._get('/api/council/gate');
+    return this._get("/api/council/gate");
   }
 
   // ==============================================
@@ -1166,7 +1167,7 @@ export class LokiApiClient extends EventTarget {
    * Get app runner current status
    */
   async getAppRunnerStatus() {
-    return this._get('/api/app-runner/status');
+    return this._get("/api/app-runner/status");
   }
 
   /**
@@ -1181,14 +1182,14 @@ export class LokiApiClient extends EventTarget {
    * Signal app runner to restart
    */
   async restartApp() {
-    return this._post('/api/control/app-restart', {});
+    return this._post("/api/control/app-restart", {});
   }
 
   /**
    * Signal app runner to stop
    */
   async stopApp() {
-    return this._post('/api/control/app-stop', {});
+    return this._post("/api/control/app-stop", {});
   }
 
   // ==============================================
@@ -1199,14 +1200,14 @@ export class LokiApiClient extends EventTarget {
    * Get latest Playwright smoke test results
    */
   async getPlaywrightResults() {
-    return this._get('/api/playwright/results');
+    return this._get("/api/playwright/results");
   }
 
   /**
    * Get path to latest Playwright screenshot
    */
   async getPlaywrightScreenshot() {
-    return this._get('/api/playwright/screenshot');
+    return this._get("/api/playwright/screenshot");
   }
 
   // ============================================
@@ -1232,7 +1233,7 @@ export class LokiApiClient extends EventTarget {
 
         // Notify VS Code of successful poll if in that context
         if (this._vscodeApi) {
-          this.postToVSCode('pollSuccess', { timestamp: Date.now() });
+          this.postToVSCode("pollSuccess", { timestamp: Date.now() });
         }
       } catch (error) {
         this._connected = false;
@@ -1240,7 +1241,7 @@ export class LokiApiClient extends EventTarget {
 
         // Notify VS Code of poll failure
         if (this._vscodeApi) {
-          this.postToVSCode('pollError', { error: error.message });
+          this.postToVSCode("pollError", { error: error.message });
         }
       }
     };

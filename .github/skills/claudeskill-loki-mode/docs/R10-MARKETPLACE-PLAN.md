@@ -41,6 +41,7 @@ network effect that keeps users in the ecosystem.
 ## What R10 adds (enhance-in-place)
 
 ### New module: `agents/hub_install.py`
+
 Single source of truth for manifest validation + install. Importable for
 tests; also a small CLI (`python3 hub_install.py <cmd> [source]`) used by
 the bash CLI via env-passed JSON. DATA-ONLY: it never eval/imports/runs
@@ -50,6 +51,7 @@ never runs build hooks, npm install, make, or scripts in the tree.
 ### Manifest format (JSON, `schema_version: 1`)
 
 Agent:
+
 ```json
 {
   "schema_version": 1,
@@ -64,6 +66,7 @@ Agent:
 ```
 
 Template:
+
 ```json
 {
   "schema_version": 1,
@@ -74,10 +77,12 @@ Template:
   "body": "# PRD: Rust CLI\n..."
 }
 ```
+
 (`body_file: "prd.md"` may be used instead of `body` for local/git sources;
 the sibling markdown file is inlined, with traversal-safe name validation.)
 
 ### Store layout (project-local, under `.loki/`)
+
 - `.loki/agents/installed.json` -- list of installed agent manifests
 - `.loki/templates/<name>.md` -- installed template body
 - `.loki/templates/installed.json` -- index of installed templates
@@ -88,6 +93,7 @@ npm/Docker upgrade and would dirty cherry-pick). A user-global `~/.loki`
 store is a natural future extension; not implemented here.
 
 ### CLI surface
+
 - `loki agent install <source>` / `loki agent installed`
 - `loki template install <source>` / `loki template list`
 - `<source>` = local path | dir containing `manifest.json` | git repo URL
@@ -95,6 +101,7 @@ store is a natural future extension; not implemented here.
   manifest URL.
 
 ### Reader integration (avoids write-only)
+
 - `cmd_agent list / info / run / start / review`: union built-in
   `types.json` with `.loki/agents/installed.json` at read time, so installed
   agents are immediately visible to the existing consumers.
@@ -105,6 +112,7 @@ store is a natural future extension; not implemented here.
 ## Security model (no arbitrary code execution)
 
 Validation rejects, BEFORE any write:
+
 - Path traversal in `type` / template `name`: `..`, `/`, `\`, absolute
   paths, null bytes; names must match `^[a-z0-9][a-z0-9-]{0,79}$`.
 - Built-in shadowing: a manifest claiming a built-in agent `type` or a
@@ -119,6 +127,7 @@ Validation rejects, BEFORE any write:
   are read. URL fetch uses urllib (no shell), with a size cap.
 
 ## Tests
+
 - `tests/test_hub_install.py` -- 34 module assertions (install agent/template
   local + body_file, install from file:// git repo, malformed rejection,
   path-traversal rejection, built-in-shadow rejection, no-code-execution
@@ -129,6 +138,7 @@ Validation rejects, BEFORE any write:
   sentinel). No network.
 
 ## Honesty / gaps
+
 - No hosted central marketplace server. Help text and this note say so.
 - Store is project-local only (user-global `~/.loki` is future).
 - No uninstall/update subcommand yet (re-install replaces in place).

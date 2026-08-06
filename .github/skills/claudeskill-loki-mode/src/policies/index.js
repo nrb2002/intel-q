@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode Policy Engine - Public API
@@ -23,10 +23,10 @@
  *   - Zero overhead: no disk reads, no watchers, no timers
  */
 
-const { PolicyEngine } = require('./engine');
-const { ApprovalGateManager } = require('./approval');
-const { CostController } = require('./cost');
-const { Decision } = require('./types');
+const { PolicyEngine } = require("./engine");
+const { ApprovalGateManager } = require("./approval");
+const { CostController } = require("./cost");
+const { Decision } = require("./types");
 
 // -------------------------------------------------------------------
 // Module-level singleton state
@@ -132,8 +132,8 @@ function requestApproval(phase, context) {
   if (!_approval) {
     return Promise.resolve({
       approved: true,
-      reason: 'No policies configured',
-      method: 'auto',
+      reason: "No policies configured",
+      method: "auto",
     });
   }
   return _approval.requestApproval(phase, context);

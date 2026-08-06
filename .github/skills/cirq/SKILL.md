@@ -15,6 +15,7 @@ Cirq is Google Quantum AI's open-source framework for designing, simulating, and
 ## When to Use This Skill
 
 Use this skill when:
+
 - Building, simulating, or optimizing NISQ circuits in Python
 - Running jobs on Google Quantum AI processors (via `cirq-google`) or partner backends (IonQ, Azure Quantum, AQT, Pasqal)
 - Modeling noise, compiling to hardware gatesets, or designing characterization experiments
@@ -31,6 +32,7 @@ uv pip install "cirq==1.6.1"
 ```
 
 For hardware integration (pin matching versions for reproducibility):
+
 ```bash
 # Google Quantum Engine (requires approved GCP project access)
 uv pip install "cirq-google==1.6.1"
@@ -106,10 +108,13 @@ for params, result in zip(sweep, results):
 ## Core Capabilities
 
 ### Circuit Building
+
 For comprehensive information about building quantum circuits, including qubits, gates, operations, custom gates, and circuit patterns, see:
+
 - **[references/building.md](references/building.md)** - Complete guide to circuit construction
 
 Common topics:
+
 - Qubit types (GridQubit, LineQubit, NamedQubit)
 - Single and two-qubit gates
 - Parameterized gates and operations
@@ -120,10 +125,13 @@ Common topics:
 - Working with qudits and observables
 
 ### Simulation
+
 For detailed information about simulating quantum circuits, including exact simulation, noisy simulation, parameter sweeps, and the Quantum Virtual Machine, see:
+
 - **[references/simulation.md](references/simulation.md)** - Complete guide to quantum simulation
 
 Common topics:
+
 - Exact simulation (state vector, density matrix)
 - Sampling and measurements
 - Parameter sweeps (single and multiple parameters)
@@ -134,10 +142,13 @@ Common topics:
 - Performance optimization
 
 ### Circuit Transformation
+
 For information about optimizing, compiling, and manipulating quantum circuits, see:
+
 - **[references/transformation.md](references/transformation.md)** - Complete guide to circuit transformations
 
 Common topics:
+
 - Transformer framework
 - Gate decomposition
 - Circuit optimization (merge gates, eject Z gates, drop negligible operations)
@@ -147,10 +158,13 @@ Common topics:
 - Transformation pipelines
 
 ### Hardware Integration
+
 For information about running circuits on real quantum hardware from various providers, see:
+
 - **[references/hardware.md](references/hardware.md)** - Complete guide to hardware integration
 
 Supported providers:
+
 - **Google Quantum AI** (`cirq-google`) — Sycamore, Weber, Willow processors via Quantum Engine (restricted access; requires approved GCP project)
 - **IonQ** (`cirq-ionq`) — trapped-ion QPUs and simulators
 - **Azure Quantum** (`azure-quantum[cirq]`) — IonQ and Honeywell/Quantinuum backends
@@ -160,10 +174,13 @@ Supported providers:
 Topics include device representation, qubit selection, authentication, job management, and circuit optimization for hardware. See [Access and authentication](https://quantumai.google/cirq/google/access) for Google Cloud setup.
 
 ### Noise Modeling
+
 For information about modeling noise, noisy simulation, characterization, and error mitigation, see:
+
 - **[references/noise.md](references/noise.md)** - Complete guide to noise modeling
 
 Common topics:
+
 - Noise channels (depolarizing, amplitude damping, phase damping)
 - Noise models (constant, gate-specific, qubit-specific, thermal)
 - Adding noise to circuits
@@ -173,10 +190,13 @@ Common topics:
 - Error mitigation techniques
 
 ### Quantum Experiments
+
 For information about designing experiments, parameter sweeps, data collection, and using the ReCirq framework, see:
+
 - **[references/experiments.md](references/experiments.md)** - Complete guide to quantum experiments
 
 Common topics:
+
 - Experiment design patterns
 - Parameter sweeps and data collection
 - ReCirq framework structure
@@ -351,20 +371,23 @@ results = noise_comparison_study(circuit, noise_levels)
 ## Common Issues
 
 **Circuit too deep for hardware:**
+
 - Use circuit optimization transformers to reduce depth
 - See `transformation.md` for optimization techniques
 
 **Memory issues with simulation:**
+
 - Switch from density matrix to state vector simulator
 - Reduce number of qubits or use stabilizer simulator for Clifford circuits
 
 **Device validation errors:**
+
 - Check qubit connectivity with device.metadata.nx_graph
 - Decompose gates to device-native gateset
 - See `hardware.md` for device-specific compilation
 
 **Noisy simulation too slow:**
+
 - Density matrix simulation is O(2^2n) - consider reducing qubits
 - Use noise models selectively on critical operations only
 - See `simulation.md` for performance optimization
-

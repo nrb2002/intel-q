@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * OpenTelemetry initialization module.
@@ -11,19 +11,19 @@
  * modules. Enterprises will bring their own OTEL collector.
  */
 
-const crypto = require('crypto');
-const path = require('path');
+const crypto = require("crypto");
+const path = require("path");
 
 // -------------------------------------------------------------------
 // Trace ID / Span ID generation (W3C Trace Context compatible)
 // -------------------------------------------------------------------
 
 function generateTraceId() {
-  return crypto.randomBytes(16).toString('hex');
+  return crypto.randomBytes(16).toString("hex");
 }
 
 function generateSpanId() {
-  return crypto.randomBytes(8).toString('hex');
+  return crypto.randomBytes(8).toString("hex");
 }
 
 // -------------------------------------------------------------------
@@ -51,10 +51,10 @@ const MAX_METRIC_CARDINALITY = 1000;
 const MAX_HISTOGRAM_SAMPLES = 10000;
 
 // Read scope version from package.json
-let _scopeVersion = '0.0.0';
+let _scopeVersion = "0.0.0";
 try {
-  const pkg = require(path.join(__dirname, '..', '..', 'package.json'));
-  _scopeVersion = pkg.version || '0.0.0';
+  const pkg = require(path.join(__dirname, "..", "..", "package.json"));
+  _scopeVersion = pkg.version || "0.0.0";
 } catch (_) {
   // Fallback if package.json is not found
 }
@@ -74,7 +74,7 @@ class Span {
     this.name = name;
     this.traceId = traceId || generateTraceId();
     this.spanId = generateSpanId();
-    this.parentSpanId = parentSpanId || '';
+    this.parentSpanId = parentSpanId || "";
     this.startTimeUnixNano = nowNanos();
     this.endTimeUnixNano = null;
     this.status = { code: SpanStatusCode.UNSET };
@@ -119,13 +119,13 @@ class Span {
     const attrs = [];
     for (const [key, val] of Object.entries(this.attributes)) {
       const attr = { key };
-      if (typeof val === 'number') {
+      if (typeof val === "number") {
         if (Number.isInteger(val)) {
           attr.value = { intValue: String(val) };
         } else {
           attr.value = { doubleValue: val };
         }
-      } else if (typeof val === 'boolean') {
+      } else if (typeof val === "boolean") {
         attr.value = { boolValue: val };
       } else {
         attr.value = { stringValue: String(val) };
@@ -159,8 +159,8 @@ class Span {
 class Counter {
   constructor(name, description, unit) {
     this.name = name;
-    this.description = description || '';
-    this.unit = unit || '';
+    this.description = description || "";
+    this.unit = unit || "";
     this._value = 0;
     this._labeledValues = {};
   }
@@ -174,7 +174,7 @@ class Counter {
           // Refuse new label sets to preserve monotonicity of existing counters.
           // Eviction would destroy accumulated counts and violate the monotonic invariant.
           process.stderr.write(
-            `[loki-otel] Counter "${this.name}" cardinality limit reached; dropping new label set: ${key}\n`
+            `[loki-otel] Counter "${this.name}" cardinality limit reached; dropping new label set: ${key}\n`,
           );
           return;
         }
@@ -237,8 +237,8 @@ class Counter {
 class Gauge {
   constructor(name, description, unit) {
     this.name = name;
-    this.description = description || '';
-    this.unit = unit || '';
+    this.description = description || "";
+    this.unit = unit || "";
     this._value = 0;
     this._labeledValues = {};
   }
@@ -246,7 +246,10 @@ class Gauge {
   set(value, labels) {
     if (labels) {
       const key = JSON.stringify(labels);
-      if (!(key in this._labeledValues) && Object.keys(this._labeledValues).length >= MAX_METRIC_CARDINALITY) {
+      if (
+        !(key in this._labeledValues) &&
+        Object.keys(this._labeledValues).length >= MAX_METRIC_CARDINALITY
+      ) {
         const firstKey = Object.keys(this._labeledValues)[0];
         delete this._labeledValues[firstKey];
       }
@@ -303,8 +306,8 @@ class Gauge {
 class Histogram {
   constructor(name, description, unit, boundaries) {
     this.name = name;
-    this.description = description || '';
-    this.unit = unit || '';
+    this.description = description || "";
+    this.unit = unit || "";
     this.boundaries = boundaries || [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10];
     this._values = [];
     this._labeledValues = {};
@@ -318,7 +321,7 @@ class Histogram {
           // Refuse new label sets rather than evicting existing series.
           // Eviction would lose all accumulated histogram data for that series.
           process.stderr.write(
-            `[loki-otel] Histogram "${this.name}" cardinality limit reached; dropping new label set: ${key}\n`
+            `[loki-otel] Histogram "${this.name}" cardinality limit reached; dropping new label set: ${key}\n`,
           );
           return;
         }
@@ -413,16 +416,16 @@ class OTLPExporter {
   constructor(endpoint) {
     // SSRF protection: only allow http: and https: schemes
     const parsedUrl = new URL(endpoint);
-    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
       throw new Error(
-        `Invalid OTEL endpoint scheme "${parsedUrl.protocol}". Only http: and https: are allowed.`
+        `Invalid OTEL endpoint scheme "${parsedUrl.protocol}". Only http: and https: are allowed.`,
       );
     }
-    this._endpoint = endpoint.replace(/\/$/, '');
+    this._endpoint = endpoint.replace(/\/$/, "");
     this._pendingSpans = [];
     this._flushTimer = null;
     this._flushIntervalMs = 5000;
-    this._serviceName = process.env.LOKI_SERVICE_NAME || 'loki-mode';
+    this._serviceName = process.env.LOKI_SERVICE_NAME || "loki-mode";
     this._errorHandler = OTLPExporter._defaultErrorHandler;
     this._startFlushTimer();
   }
@@ -469,14 +472,14 @@ class OTLPExporter {
           resource: {
             attributes: [
               {
-                key: 'service.name',
+                key: "service.name",
                 value: { stringValue: this._serviceName },
               },
             ],
           },
           scopeSpans: [
             {
-              scope: { name: 'loki-mode-otel', version: _scopeVersion },
+              scope: { name: "loki-mode-otel", version: _scopeVersion },
               spans: spans.map((s) => s.toOTLP()),
             },
           ],
@@ -484,7 +487,7 @@ class OTLPExporter {
       ],
     };
 
-    this._send('/v1/traces', payload);
+    this._send("/v1/traces", payload);
     return payload;
   }
 
@@ -511,14 +514,14 @@ class OTLPExporter {
           resource: {
             attributes: [
               {
-                key: 'service.name',
+                key: "service.name",
                 value: { stringValue: this._serviceName },
               },
             ],
           },
           scopeMetrics: [
             {
-              scope: { name: 'loki-mode-otel', version: _scopeVersion },
+              scope: { name: "loki-mode-otel", version: _scopeVersion },
               metrics,
             },
           ],
@@ -526,24 +529,24 @@ class OTLPExporter {
       ],
     };
 
-    this._send('/v1/metrics', payload);
+    this._send("/v1/metrics", payload);
     return payload;
   }
 
   _send(path, payload) {
     const url = new URL(this._endpoint + path);
-    const isHttps = url.protocol === 'https:';
-    const httpModule = isHttps ? require('https') : require('http');
+    const isHttps = url.protocol === "https:";
+    const httpModule = isHttps ? require("https") : require("http");
 
     const body = JSON.stringify(payload);
     const options = {
       hostname: url.hostname,
       port: url.port || (isHttps ? 443 : 80),
       path: url.pathname,
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(body),
       },
     };
 
@@ -552,7 +555,7 @@ class OTLPExporter {
       res.resume();
     });
 
-    req.on('error', (err) => {
+    req.on("error", (err) => {
       // Log but never throw - observability should never break the application
       try {
         this._errorHandler(err);
@@ -589,18 +592,18 @@ function initialize() {
 
   const endpoint = process.env.LOKI_OTEL_ENDPOINT;
   if (!endpoint) {
-    throw new Error('LOKI_OTEL_ENDPOINT is not set. Use index.js for conditional loading.');
+    throw new Error("LOKI_OTEL_ENDPOINT is not set. Use index.js for conditional loading.");
   }
 
   // Try real OpenTelemetry SDK first, fall back to custom OTLP exporter
   let usingRealSDK = false;
   try {
-    const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
-    const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
-    const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
-    const api = require('@opentelemetry/api');
+    const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+    const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+    const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
+    const api = require("@opentelemetry/api");
 
-    const exporter = new OTLPTraceExporter({ url: endpoint + '/v1/traces' });
+    const exporter = new OTLPTraceExporter({ url: endpoint + "/v1/traces" });
     const provider = new NodeTracerProvider();
     provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
     provider.register();
@@ -624,12 +627,7 @@ function initialize() {
       getTracer: (name) => ({
         startSpan: (spanName, options) => {
           const opts = options || {};
-          return new Span(
-            spanName,
-            opts.traceId,
-            opts.parentSpanId,
-            opts.attributes
-          );
+          return new Span(spanName, opts.traceId, opts.parentSpanId, opts.attributes);
         },
       }),
     };
@@ -649,7 +647,11 @@ function initialize() {
 
 function shutdown() {
   if (_realSDKProvider) {
-    try { _realSDKProvider.shutdown(); } catch (_e) { /* ignore */ }
+    try {
+      _realSDKProvider.shutdown();
+    } catch (_e) {
+      /* ignore */
+    }
     _realSDKProvider = null;
   }
   if (_activeExporter) {

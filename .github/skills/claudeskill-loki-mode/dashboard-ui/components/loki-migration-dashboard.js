@@ -9,12 +9,22 @@
  * <loki-migration-dashboard api-url="http://localhost:57374"></loki-migration-dashboard>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
-const PHASES = ['understand', 'guardrail', 'migrate', 'verify'];
-const PHASE_LABELS = { understand: 'Understand', guardrail: 'Guardrail', migrate: 'Migrate', verify: 'Verify' };
-const PHASE_COLORS = { understand: '#5b9bd5', guardrail: '#e8b84a', migrate: '#5bb870', verify: '#5bc8c8' };
+const PHASES = ["understand", "guardrail", "migrate", "verify"];
+const PHASE_LABELS = {
+  understand: "Understand",
+  guardrail: "Guardrail",
+  migrate: "Migrate",
+  verify: "Verify",
+};
+const PHASE_COLORS = {
+  understand: "#5b9bd5",
+  guardrail: "#e8b84a",
+  migrate: "#5bb870",
+  verify: "#5bc8c8",
+};
 
 /**
  * @class LokiMigrationDashboard
@@ -23,7 +33,7 @@ const PHASE_COLORS = { understand: '#5b9bd5', guardrail: '#e8b84a', migrate: '#5
  */
 export class LokiMigrationDashboard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -53,26 +63,28 @@ export class LokiMigrationDashboard extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._fetchMigrations();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _fetchMigrations() {
     try {
-      const result = await this._api._get('/api/migration/list');
-      this._migrations = Array.isArray(result) ? result : (result.migrations || []);
+      const result = await this._api._get("/api/migration/list");
+      this._migrations = Array.isArray(result) ? result : result.migrations || [];
       this._error = null;
-      const active = this._migrations.find(m => m.status === 'in_progress' || m.status === 'active');
+      const active = this._migrations.find(
+        (m) => m.status === "in_progress" || m.status === "active",
+      );
       if (active) {
         await this._fetchStatus(active.migration_id || active.id);
       } else {
@@ -107,15 +119,20 @@ export class LokiMigrationDashboard extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   _getPhaseIcon(phase, currentPhase, completedPhases) {
     const completed = completedPhases || [];
-    if (completed.includes(phase)) return '[x]';
-    if (phase === currentPhase) return '[>]';
-    return '[ ]';
+    if (completed.includes(phase)) return "[x]";
+    if (phase === currentPhase) return "[>]";
+    return "[ ]";
   }
 
   _getPhaseIndex(phase) {
@@ -125,11 +142,11 @@ export class LokiMigrationDashboard extends LokiElement {
 
   _renderPhaseBar(currentPhase, completedPhases) {
     const completed = completedPhases || [];
-    return PHASES.map(phase => {
+    return PHASES.map((phase) => {
       const isDone = completed.includes(phase);
       const isActive = phase === currentPhase;
       const color = PHASE_COLORS[phase];
-      const opacity = isDone ? '1' : isActive ? '0.7' : '0.2';
+      const opacity = isDone ? "1" : isActive ? "0.7" : "0.2";
       const icon = this._getPhaseIcon(phase, currentPhase, completedPhases);
       return `
         <div class="phase-segment">
@@ -140,15 +157,16 @@ export class LokiMigrationDashboard extends LokiElement {
           </div>
         </div>
       `;
-    }).join('');
+    }).join("");
   }
 
   _renderFeatureStats(features) {
-    if (!features) return '';
+    if (!features) return "";
     const passing = features.passing || 0;
     const total = features.total || 0;
     const pct = total > 0 ? Math.round((passing / total) * 100) : 0;
-    const barColor = pct >= 80 ? 'var(--loki-success)' : pct >= 50 ? 'var(--loki-warning)' : 'var(--loki-error)';
+    const barColor =
+      pct >= 80 ? "var(--loki-success)" : pct >= 50 ? "var(--loki-warning)" : "var(--loki-error)";
     return `
       <div class="stat-card">
         <div class="stat-header">Feature Tracking</div>
@@ -162,7 +180,7 @@ export class LokiMigrationDashboard extends LokiElement {
   }
 
   _renderStepProgress(steps) {
-    if (!steps) return '';
+    if (!steps) return "";
     const current = steps.current || 0;
     const total = steps.total || 0;
     const pct = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -179,7 +197,7 @@ export class LokiMigrationDashboard extends LokiElement {
   }
 
   _renderSeamSummary(seams) {
-    if (!seams) return '';
+    if (!seams) return "";
     const total = seams.total || 0;
     const high = seams.high || 0;
     const medium = seams.medium || 0;
@@ -198,9 +216,9 @@ export class LokiMigrationDashboard extends LokiElement {
   }
 
   _renderCheckpoint(checkpoint) {
-    if (!checkpoint) return '';
-    const ts = checkpoint.timestamp ? new Date(checkpoint.timestamp).toLocaleString() : '--';
-    const stepId = this._escapeHtml(checkpoint.step_id || checkpoint.stepId || '--');
+    if (!checkpoint) return "";
+    const ts = checkpoint.timestamp ? new Date(checkpoint.timestamp).toLocaleString() : "--";
+    const stepId = this._escapeHtml(checkpoint.step_id || checkpoint.stepId || "--");
     return `
       <div class="checkpoint-section">
         <div class="section-label">Last Checkpoint</div>
@@ -220,20 +238,27 @@ export class LokiMigrationDashboard extends LokiElement {
     if (this._migrations.length === 0) {
       return '<div class="empty-state">No migrations found</div>';
     }
-    const rows = this._migrations.map(m => {
-      const id = this._escapeHtml(m.migration_id || m.id || '--');
-      const source = this._escapeHtml(m.source || '--');
-      const target = this._escapeHtml(m.target || '--');
-      const status = this._escapeHtml(m.status || '--');
-      const statusCls = m.status === 'completed' ? 'status-done' : m.status === 'failed' ? 'status-failed' : 'status-pending';
-      return `
+    const rows = this._migrations
+      .map((m) => {
+        const id = this._escapeHtml(m.migration_id || m.id || "--");
+        const source = this._escapeHtml(m.source || "--");
+        const target = this._escapeHtml(m.target || "--");
+        const status = this._escapeHtml(m.status || "--");
+        const statusCls =
+          m.status === "completed"
+            ? "status-done"
+            : m.status === "failed"
+              ? "status-failed"
+              : "status-pending";
+        return `
         <tr>
           <td class="mono">${id}</td>
           <td>${source} -> ${target}</td>
           <td><span class="status-badge ${statusCls}">${status}</span></td>
         </tr>
       `;
-    }).join('');
+      })
+      .join("");
     return `
       <table class="migration-table">
         <thead>
@@ -574,10 +599,10 @@ export class LokiMigrationDashboard extends LokiElement {
     // Active migration view
     if (this._migration) {
       const m = this._migration;
-      const migId = this._escapeHtml(m.migration_id || m.id || '--');
-      const source = this._escapeHtml(m.source || '--');
-      const target = this._escapeHtml(m.target || '--');
-      const currentPhase = m.current_phase || m.phase || 'understand';
+      const migId = this._escapeHtml(m.migration_id || m.id || "--");
+      const source = this._escapeHtml(m.source || "--");
+      const target = this._escapeHtml(m.target || "--");
+      const currentPhase = m.current_phase || m.phase || "understand";
       const completedPhases = m.completed_phases || [];
 
       this.shadowRoot.innerHTML = `
@@ -639,8 +664,8 @@ export class LokiMigrationDashboard extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-migration-dashboard')) {
-  customElements.define('loki-migration-dashboard', LokiMigrationDashboard);
+if (!customElements.get("loki-migration-dashboard")) {
+  customElements.define("loki-migration-dashboard", LokiMigrationDashboard);
 }
 
 export default LokiMigrationDashboard;

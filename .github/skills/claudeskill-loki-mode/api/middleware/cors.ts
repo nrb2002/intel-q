@@ -52,20 +52,11 @@ export function getCorsHeaders(req: Request): Headers {
     headers.set("Access-Control-Allow-Origin", allowedOrigin);
   }
 
-  headers.set(
-    "Access-Control-Allow-Methods",
-    config.allowedMethods.join(", ")
-  );
+  headers.set("Access-Control-Allow-Methods", config.allowedMethods.join(", "));
 
-  headers.set(
-    "Access-Control-Allow-Headers",
-    config.allowedHeaders.join(", ")
-  );
+  headers.set("Access-Control-Allow-Headers", config.allowedHeaders.join(", "));
 
-  headers.set(
-    "Access-Control-Expose-Headers",
-    config.exposeHeaders.join(", ")
-  );
+  headers.set("Access-Control-Expose-Headers", config.exposeHeaders.join(", "));
 
   headers.set("Access-Control-Max-Age", config.maxAge.toString());
 
@@ -97,9 +88,7 @@ function isOriginAllowed(origin: string | null): string | null {
 
     // Wildcard pattern (e.g., "http://localhost:*")
     if (allowed.includes("*")) {
-      const pattern = allowed
-        .replace(/\./g, "\\.")
-        .replace(/\*/g, ".*");
+      const pattern = allowed.replace(/\./g, "\\.").replace(/\*/g, ".*");
       const regex = new RegExp(`^${pattern}$`);
       if (regex.test(origin)) {
         return origin;
@@ -114,7 +103,7 @@ function isOriginAllowed(origin: string | null): string | null {
  * CORS middleware
  */
 export function corsMiddleware(
-  handler: (req: Request) => Promise<Response> | Response
+  handler: (req: Request) => Promise<Response> | Response,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const corsHeaders = getCorsHeaders(req);

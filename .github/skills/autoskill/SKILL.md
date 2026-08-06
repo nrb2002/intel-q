@@ -22,6 +22,7 @@ Turn the user's own workflow history — captured passively by the local [screen
 ## When to Use This Skill
 
 Invoke this skill when the user asks to:
+
 - "Analyze my last 4 hours / day / week and propose new skills."
 - "Look at what I've been doing and tell me what's not covered yet."
 - "Draft a skill from my recent workflow."
@@ -92,6 +93,7 @@ lms status   # confirm server running on :1234
 ### 5. Cloud LLM backends (optional, opt-in)
 
 Only if you explicitly opt out of local:
+
 - `claude`: set `ANTHROPIC_API_KEY`, flip `backend: claude` in `config.yaml`.
 - `foundry`: set `FOUNDRY_API_KEY`, flip `backend: foundry`, set `foundry.endpoint` to your corporate gateway URL.
 
@@ -152,6 +154,7 @@ python scripts/autoskill.py run \
 Proposals land in `~/.autoskill/proposed/<timestamp>/` by default, keeping experimental output out of the skills repo. Pass `--out PATH` to override.
 
 Internally:
+
 1. **Fetch** — `fetch_window` paginates screenpipe's `/search` endpoint, normalizes events to `{ts, app, window_title, text, content_type}`.
 2. **Redact** — `redact` scrubs emails, API keys, bearer tokens, phones from OCR text and window titles as defense-in-depth over screenpipe's own PII removal.
 3. **Cluster** — `segment_sessions` splits on idle gaps (default 10 min) and drops short sessions; `cluster_sessions` groups sessions by app-signature and keeps clusters of size `min_cluster_size` (default 2).
@@ -181,11 +184,11 @@ See `config.yaml` for the full shape. Default values (local-first):
 ```yaml
 backend: local
 local:
-  endpoint: http://localhost:1234/v1   # LM Studio's Developer server
+  endpoint: http://localhost:1234/v1 # LM Studio's Developer server
   model: Gemma-4-31B-it
 
 screenpipe:
-  url: http://localhost:3030           # or https://screenpipe.local via Caddy
+  url: http://localhost:3030 # or https://screenpipe.local via Caddy
 
 cluster:
   min_session_minutes: 5
@@ -196,7 +199,7 @@ cluster:
 To opt into a cloud backend:
 
 ```yaml
-backend: claude                         # or foundry
+backend: claude # or foundry
 claude:
   model: claude-opus-4-7
 ```

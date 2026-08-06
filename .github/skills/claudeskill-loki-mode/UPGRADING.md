@@ -118,13 +118,13 @@ Phase 1 of the RARV-C closure plan added five new opt-in feature flags
 to the Bun runtime. Defaults are unchanged: the system behaves exactly
 like v7.4.x unless you set the flags explicitly.
 
-| Flag | Effect |
-|------|--------|
-| `LOKI_INJECT_FINDINGS=1` | Inject structured per-finding records (severity, file, line, reviewer) into the next iteration's prompt instead of the bare comma-separated `gate-failures.txt` token. |
-| `LOKI_OVERRIDE_COUNCIL=1` | Enable the 3-judge override council on BLOCK. Requires `LOKI_INJECT_FINDINGS=1`. Reads `.loki/state/counter-evidence-<iter>.json`; 2-of-3 approval lifts the BLOCK. |
-| `LOKI_AUTO_LEARNINGS=1` | Auto-write structured learnings to `.loki/state/relevant-learnings.json` on every code_review failure. |
-| `LOKI_HANDOFF_MD=1` | Write a structured handoff doc to `.loki/escalations/handoff-*.md` before the bare `.loki/PAUSE` signal. |
-| `LOKI_AUTO_LEARNINGS_EPISODE=1` | Also write the learning into the Python episodic memory layer via `memory.engine.save_episode`. Optional companion to `LOKI_AUTO_LEARNINGS=1`. |
+| Flag                            | Effect                                                                                                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOKI_INJECT_FINDINGS=1`        | Inject structured per-finding records (severity, file, line, reviewer) into the next iteration's prompt instead of the bare comma-separated `gate-failures.txt` token. |
+| `LOKI_OVERRIDE_COUNCIL=1`       | Enable the 3-judge override council on BLOCK. Requires `LOKI_INJECT_FINDINGS=1`. Reads `.loki/state/counter-evidence-<iter>.json`; 2-of-3 approval lifts the BLOCK.    |
+| `LOKI_AUTO_LEARNINGS=1`         | Auto-write structured learnings to `.loki/state/relevant-learnings.json` on every code_review failure.                                                                 |
+| `LOKI_HANDOFF_MD=1`             | Write a structured handoff doc to `.loki/escalations/handoff-*.md` before the bare `.loki/PAUSE` signal.                                                               |
+| `LOKI_AUTO_LEARNINGS_EPISODE=1` | Also write the learning into the Python episodic memory layer via `memory.engine.save_episode`. Optional companion to `LOKI_AUTO_LEARNINGS=1`.                         |
 
 ### Reachability
 

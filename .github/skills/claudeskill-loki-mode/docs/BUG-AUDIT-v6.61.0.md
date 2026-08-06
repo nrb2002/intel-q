@@ -1,17 +1,18 @@
 # Loki Mode Bug Audit - v6.61.0
+
 Generated: 2026-03-22 by 20 parallel bug-hunting agents (16 initial + 4 final)
 
 ## Summary
 
-| Severity | Count |
-|----------|-------|
-| Critical | 5 |
-| High | 55 |
-| Medium | 119 |
-| Low | 36 |
+| Severity  | Count   |
+| --------- | ------- |
+| Critical  | 5       |
+| High      | 55      |
+| Medium    | 119     |
+| Low       | 36      |
 | **Total** | **215** |
 
-*235 raw bugs reported across 20 agents; 13 duplicates removed (see below). Agents 17-20 added 50 raw bugs (44 net new after 6 overlaps with existing bugs).*
+_235 raw bugs reported across 20 agents; 13 duplicates removed (see below). Agents 17-20 added 50 raw bugs (44 net new after 6 overlaps with existing bugs)._
 
 ---
 
@@ -19,21 +20,21 @@ Generated: 2026-03-22 by 20 parallel bug-hunting agents (16 initial + 4 final)
 
 The following bugs were reported by multiple agents with the same root cause. The canonical ID is listed first; removed duplicates follow in parentheses.
 
-| Canonical Bug | Removed Duplicate(s) | Root Cause |
-|---------------|----------------------|------------|
-| BUG-RUN-003 | BUG-ST-003 | `ITERATION_COUNT` never persisted across restarts (`run.sh:573` / `run.sh:7771`) |
-| BUG-RUN-009 | BUG-ST-005 | Gate escalation PAUSE writes to wrong path (`run.sh:9228`) |
-| BUG-RUN-005 | BUG-ADP-004 | OpenSpec queue has no deduplication (`run.sh:8467`) |
-| BUG-CLI-001 | BUG-CMD-011 | `cmd_web_start --port` crashes with unbound variable (`loki:3149`) |
-| BUG-PL-001 + BUG-PL-002 | BUG-DS-001 | `stop_session` dead code after return and `session.reset()` never called (`server.py:1539-1542`) |
-| BUG-DASH-008 | BUG-XC-001 | `_safe_read_text` leaks file handles (`server.py:94`) |
-| BUG-ST-008 | BUG-XC-002 | Non-atomic `session.json` truncation risk (`run.sh:9609`) |
-| BUG-PL-001 + BUG-PL-002 | BUG-WS-005 | `stop_session` dead code + missing reset (`server.py:1543`) |
-| BUG-XC-009 | BUG-WS-003 | Log line trimming invalidates push indices (`server.py:1224`) |
-| BUG-PL-012 | BUG-WS-010 | `cancel_chat` unhandled `TimeoutExpired` (`server.py:2923`) |
-| BUG-CMD-002 | BUG-GH-001 | `ci --test-suggest` never exports changed files (`loki:16839`) |
-| BUG-CMD-003 | BUG-GH-002 | `ci github` format missing export (`loki:17042`) |
-| BUG-CLI-011 | BUG-PKG-009 | `config_get` exports env vars on failure (`loki:5322`) |
+| Canonical Bug           | Removed Duplicate(s) | Root Cause                                                                                       |
+| ----------------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
+| BUG-RUN-003             | BUG-ST-003           | `ITERATION_COUNT` never persisted across restarts (`run.sh:573` / `run.sh:7771`)                 |
+| BUG-RUN-009             | BUG-ST-005           | Gate escalation PAUSE writes to wrong path (`run.sh:9228`)                                       |
+| BUG-RUN-005             | BUG-ADP-004          | OpenSpec queue has no deduplication (`run.sh:8467`)                                              |
+| BUG-CLI-001             | BUG-CMD-011          | `cmd_web_start --port` crashes with unbound variable (`loki:3149`)                               |
+| BUG-PL-001 + BUG-PL-002 | BUG-DS-001           | `stop_session` dead code after return and `session.reset()` never called (`server.py:1539-1542`) |
+| BUG-DASH-008            | BUG-XC-001           | `_safe_read_text` leaks file handles (`server.py:94`)                                            |
+| BUG-ST-008              | BUG-XC-002           | Non-atomic `session.json` truncation risk (`run.sh:9609`)                                        |
+| BUG-PL-001 + BUG-PL-002 | BUG-WS-005           | `stop_session` dead code + missing reset (`server.py:1543`)                                      |
+| BUG-XC-009              | BUG-WS-003           | Log line trimming invalidates push indices (`server.py:1224`)                                    |
+| BUG-PL-012              | BUG-WS-010           | `cancel_chat` unhandled `TimeoutExpired` (`server.py:2923`)                                      |
+| BUG-CMD-002             | BUG-GH-001           | `ci --test-suggest` never exports changed files (`loki:16839`)                                   |
+| BUG-CMD-003             | BUG-GH-002           | `ci github` format missing export (`loki:17042`)                                                 |
+| BUG-CLI-011             | BUG-PKG-009          | `config_get` exports env vars on failure (`loki:5322`)                                           |
 
 ---
 
@@ -54,7 +55,7 @@ When a session is stopped, the session object's `reset()` method is never invoke
 
 ---
 
-*Note: BUG-DS-001 (`server.py:1542`, dead code after `stop_session`) was reported by Agent 12 and overlaps with BUG-PL-001 and BUG-PL-002 above. Counted once under PL.*
+_Note: BUG-DS-001 (`server.py:1542`, dead code after `stop_session`) was reported by Agent 12 and overlaps with BUG-PL-001 and BUG-PL-002 above. Counted once under PL._
 
 ---
 
@@ -65,7 +66,7 @@ When a session is stopped, the session object's `reset()` method is never invoke
 **BUG-CLI-001** | `autonomy/loki:3149` | `cmd_web_start --port` crashes with unbound variable
 When `--port` is passed to `loki web start`, the variable is referenced before assignment under `set -u`, causing an immediate crash. Users who try to run the dashboard on a custom port get an unhelpful "unbound variable" error instead of the dashboard starting.
 
-*Note: BUG-CMD-011 (`loki:3149`) is a duplicate of this bug, reported by Agent 14.*
+_Note: BUG-CMD-011 (`loki:3149`) is a duplicate of this bug, reported by Agent 14._
 
 **BUG-CLI-002** | `autonomy/loki:3153` | `cmd_web_start --prd` crashes with unbound variable
 Same class of bug as CLI-001 but for the `--prd` flag. The PRD path variable is used before being set when `--prd` is the first flag parsed. Users cannot attach a PRD to the web dashboard at launch.
@@ -87,7 +88,7 @@ Same date-path bug as RUN-001 but for rate limit detection. After midnight, the 
 **BUG-RUN-003** | `autonomy/run.sh:573` | `ITERATION_COUNT` never persisted across restarts
 The iteration counter is a shell variable that is never written to the state file by `save_state()`. When a run is interrupted and resumed, iteration counting restarts from zero. This breaks RARV tier mapping (wrong model selection), budget tracking (undercount), and completion council thresholds.
 
-*Note: BUG-ST-003 (`run.sh:7771`) is a duplicate of this bug, reported by Agent 8.*
+_Note: BUG-ST-003 (`run.sh:7771`) is a duplicate of this bug, reported by Agent 8._
 
 **BUG-RUN-010** | `autonomy/run.sh:8715` | Retry counter increments on success, not just failure
 The provider retry counter is incremented unconditionally after every invocation, including successful ones. After enough successful iterations, the counter hits the retry limit and triggers failover to a degraded provider despite no actual failures. Long-running sessions gradually degrade for no reason.
@@ -293,7 +294,7 @@ The backoff calculation uses `2^retry` via bash arithmetic. At retry count 34+, 
 **BUG-RUN-005** | `autonomy/run.sh:8467` | OpenSpec queue has no deduplication
 When the OpenSpec adapter queues tasks, it doesn't check for existing identical tasks. Running the adapter multiple times (e.g., on retry) creates duplicate queue entries. The autonomous runner then executes the same task multiple times, wasting iterations and budget.
 
-*Note: BUG-ADP-004 is a duplicate of this bug.*
+_Note: BUG-ADP-004 is a duplicate of this bug._
 
 **BUG-RUN-006** | `autonomy/run.sh:7259` | `load_handoff_context` defined twice (dead code)
 The function `load_handoff_context` is defined at two different locations in run.sh. The second definition silently overwrites the first. One implementation is dead code, but it's unclear which version was intended, creating a maintenance hazard.
@@ -307,7 +308,7 @@ The failover state is written via a heredoc that interpolates variables without 
 **BUG-RUN-009** | `autonomy/run.sh:9228` | Gate escalation PAUSE writes to wrong path
 When a quality gate escalates to PAUSE, the pause signal file is written to `$LOKI_DIR/PAUSE` instead of the expected `$PROJECT_DIR/.loki/PAUSE`. The human intervention checker looks in the project directory, never finds the signal, and the pause is ignored.
 
-*Note: BUG-ST-005 is a duplicate of this bug.*
+_Note: BUG-ST-005 is a duplicate of this bug._
 
 **BUG-RUN-011** | `autonomy/run.sh:9073` | Gemini pipe buffering causes missed rate limits
 The Gemini provider's output is piped through `tee` for logging, but pipe buffering delays output delivery. Rate limit messages from Gemini sit in the buffer while the rate limit detector reads an empty or incomplete log, failing to trigger backoff.
@@ -375,7 +376,7 @@ The pause endpoint contains a polling loop that waits for the session to acknowl
 **BUG-DASH-008** | `dashboard/server.py:94` | `_safe_read_text` leaks file handles
 The safe file reading utility opens files but doesn't close them in the error path. When files are unreadable (permissions, encoding), the file handle leaks. Under sustained dashboard operation with many file reads, this exhausts the file descriptor limit.
 
-*Note: BUG-XC-001 is a duplicate of this bug.*
+_Note: BUG-XC-001 is a duplicate of this bug._
 
 **BUG-DASH-009** | `dashboard/server.py:173` | `ProjectUpdate.status` allows arbitrary strings
 The project update model accepts any string for the status field without validation. Invalid statuses like "foobar" are stored and returned by the API, confusing clients that expect a known set of status values.
@@ -446,7 +447,7 @@ The singleton pattern uses a check-then-set without locking. Two threads calling
 **BUG-ST-008** | `autonomy/run.sh:9609` | Non-atomic `session.json` truncation risk
 The session file is written by redirecting (`>`) which truncates the file before writing. A crash between truncation and write completion produces an empty session file. The next read finds an empty file and treats it as a missing/corrupt session.
 
-*Note: BUG-XC-002 is a duplicate of this bug.*
+_Note: BUG-XC-002 is a duplicate of this bug._
 
 **BUG-ST-009** | `autonomy/run.sh:6244` | Checkpoint doesn't backup `autonomy-state.json`
 The checkpoint system backs up queue files, session state, and logs but omits the `autonomy-state.json` file. Restoring a checkpoint leaves the autonomy state from the current (broken) state, making checkpoint restoration incomplete.
@@ -835,7 +836,7 @@ The keepalive missed-pong counter resets on any incoming message, not only pong 
 **BUG-WS-012** [low] | `dashboard/server.py:190` | `time.sleep(2)` blocks thread pool worker
 A 2-second synchronous sleep in the startup path ties up a thread pool worker, reducing available concurrency during dashboard initialization.
 
-*Note: BUG-WS-003 (log trimming, dupe of XC-009), BUG-WS-005 (dead code, dupe of PL-001/PL-002), and BUG-WS-010 (TimeoutExpired, dupe of PL-012) are listed in the Duplicates Removed table.*
+_Note: BUG-WS-003 (log trimming, dupe of XC-009), BUG-WS-005 (dead code, dupe of PL-001/PL-002), and BUG-WS-010 (TimeoutExpired, dupe of PL-012) are listed in the Duplicates Removed table._
 
 ---
 
@@ -876,7 +877,7 @@ The Slack notification payload double-escapes special characters, displaying lit
 **BUG-GH-013** [low] | `.github/workflows/integrity-audit.yml:138` | YAML indentation leaks into issue markdown
 The GitHub issue body is constructed from an indented YAML block scalar, and the leading spaces are preserved in the rendered markdown, producing code-block-style formatting for regular text.
 
-*Note: BUG-GH-001 (dupe of CMD-002) and BUG-GH-002 (dupe of CMD-003) are listed in the Duplicates Removed table.*
+_Note: BUG-GH-001 (dupe of CMD-002) and BUG-GH-002 (dupe of CMD-003) are listed in the Duplicates Removed table._
 
 ---
 
@@ -920,38 +921,38 @@ Same root cause as PKG-002 but in the Docker context -- the Dockerfile does not 
 **BUG-PKG-012** [low] | `Dockerfile` | `completions/` missing from Docker images
 Shell completions are not copied into the Docker image. Users inside the container have no tab completion.
 
-*Note: BUG-PKG-009 (dupe of CLI-011) is listed in the Duplicates Removed table.*
+_Note: BUG-PKG-009 (dupe of CLI-011) is listed in the Duplicates Removed table._
 
 ---
 
 ## Appendix: Bug Distribution by Component
 
-| Component | Critical | High | Medium | Low | Total |
-|-----------|----------|------|--------|-----|-------|
-| CLI Commands (CLI) | 0 | 4 | 6 | 2 | 12 |
-| run.sh Orchestration (RUN) | 0 | 4 | 7 | 1 | 12 |
-| Provider System (PROV) | 0 | 4 | 7 | 2 | 13 |
-| Memory System (MEM) | 0 | 3 | 8 | 3 | 14 |
-| Dashboard API (DASH) | 1 | 3 | 7 | 2 | 13 |
-| Parallel Workflows (PAR) | 0 | 3 | 8 | 3 | 14 |
-| Completion Council (QG) | 0 | 5 | 6 | 1 | 12 |
-| State Management (ST) | 0 | 2 | 6 | 3 | 11 |
-| Event Bus (EVT) | 0 | 3 | 7 | 4 | 14 |
-| MCP Server (MCP) | 0 | 3 | 7 | 3 | 13 |
-| Adapters (ADP) | 0 | 3 | 7 | 2 | 12 |
-| Dev Server (DS) | 0 | 3 | 7 | 1 | 11 |
-| Purple Lab Sessions (PL) | 2 | 5 | 6 | 0 | 13 |
-| Cross-Cutting (XC) | 0 | 2 | 7 | 0 | 9 |
-| Docker/Sandbox (DK) | 0 | 3 | 6 | 2 | 11 |
-| CLI Subcommands (CMD) | 0 | 2 | 4 | 4 | 10 |
-| Templates/Init (TPL) | 0 | 2 | 7 | 3 | 12 |
-| WebSocket/Terminal (WS) | 1 | 2 | 5 | 1 | 9 |
-| GitHub/CI (GH) | 0 | 1 | 7 | 3 | 11 |
-| npm Package/Install (PKG) | 0 | 3 | 6 | 2 | 11 |
-| **Total** | **4** | **57** | **121** | **38** | **220** |
+| Component                  | Critical | High   | Medium  | Low    | Total   |
+| -------------------------- | -------- | ------ | ------- | ------ | ------- |
+| CLI Commands (CLI)         | 0        | 4      | 6       | 2      | 12      |
+| run.sh Orchestration (RUN) | 0        | 4      | 7       | 1      | 12      |
+| Provider System (PROV)     | 0        | 4      | 7       | 2      | 13      |
+| Memory System (MEM)        | 0        | 3      | 8       | 3      | 14      |
+| Dashboard API (DASH)       | 1        | 3      | 7       | 2      | 13      |
+| Parallel Workflows (PAR)   | 0        | 3      | 8       | 3      | 14      |
+| Completion Council (QG)    | 0        | 5      | 6       | 1      | 12      |
+| State Management (ST)      | 0        | 2      | 6       | 3      | 11      |
+| Event Bus (EVT)            | 0        | 3      | 7       | 4      | 14      |
+| MCP Server (MCP)           | 0        | 3      | 7       | 3      | 13      |
+| Adapters (ADP)             | 0        | 3      | 7       | 2      | 12      |
+| Dev Server (DS)            | 0        | 3      | 7       | 1      | 11      |
+| Purple Lab Sessions (PL)   | 2        | 5      | 6       | 0      | 13      |
+| Cross-Cutting (XC)         | 0        | 2      | 7       | 0      | 9       |
+| Docker/Sandbox (DK)        | 0        | 3      | 6       | 2      | 11      |
+| CLI Subcommands (CMD)      | 0        | 2      | 4       | 4      | 10      |
+| Templates/Init (TPL)       | 0        | 2      | 7       | 3      | 12      |
+| WebSocket/Terminal (WS)    | 1        | 2      | 5       | 1      | 9       |
+| GitHub/CI (GH)             | 0        | 1      | 7       | 3      | 11      |
+| npm Package/Install (PKG)  | 0        | 3      | 6       | 2      | 11      |
+| **Total**                  | **4**    | **57** | **121** | **38** | **220** |
 
-*Note: The appendix total (220) exceeds the deduplicated total (215) because some bugs are listed under their primary component AND cross-referenced from another component's agent report. The canonical count of unique bugs is 215.*
+_Note: The appendix total (220) exceeds the deduplicated total (215) because some bugs are listed under their primary component AND cross-referenced from another component's agent report. The canonical count of unique bugs is 215._
 
 ---
 
-*End of Bug Audit Report -- v6.61.0 (20 agents, 215 unique bugs)*
+_End of Bug Audit Report -- v6.61.0 (20 agents, 215 unique bugs)_

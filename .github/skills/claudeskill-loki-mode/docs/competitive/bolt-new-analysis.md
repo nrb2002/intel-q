@@ -11,6 +11,7 @@
 bolt.new is a browser-based AI web development platform built on StackBlitz's WebContainers technology. It transforms natural language prompts into full-stack web applications entirely in the browser -- no local setup required. Launched October 2024, it reached $40M ARR in 5 months with 5M+ users, making it the second-fastest-growing software product behind ChatGPT. However, it suffers from severe limitations at scale: 1.4/5 Trustpilot rating, JavaScript-only backends, catastrophic token consumption on complex projects, and production-readiness issues that require $5K-$20K of professional remediation. Its strengths (instant gratification, zero setup, live preview) are genuine but serve a fundamentally different market segment than Loki Mode.
 
 **Competitive threat level to Loki Mode: MODERATE**
+
 - bolt.new targets non-coders and rapid prototypers
 - Loki Mode targets developers building production systems from PRDs
 - Overlap exists in the "idea to working app" value proposition
@@ -20,18 +21,18 @@ bolt.new is a browser-based AI web development platform built on StackBlitz's We
 
 ## 2. Company Overview
 
-| Metric | Value |
-|---|---|
-| Parent company | StackBlitz, Inc. |
-| Founded | 2017 (StackBlitz); Oct 2024 (bolt.new pivot) |
-| Funding | $105.5M Series B (Jan 2025) |
-| Valuation | ~$700M (Jan 2025) |
-| ARR | $40M (Mar 2025); projected $80-100M by end 2025 |
-| Users | 5M+ total; ~1M DAU (Mar 2025) |
-| Team size | ~35 people (15 engineers) |
-| Revenue per engineer | ~$2.67M ARR/engineer |
-| Open source | MIT license (bolt.new repo: 16.3K stars, 14.6K forks) |
-| Self-hosted variant | bolt.diy (community fork, supports multiple LLMs) |
+| Metric               | Value                                                 |
+| -------------------- | ----------------------------------------------------- |
+| Parent company       | StackBlitz, Inc.                                      |
+| Founded              | 2017 (StackBlitz); Oct 2024 (bolt.new pivot)          |
+| Funding              | $105.5M Series B (Jan 2025)                           |
+| Valuation            | ~$700M (Jan 2025)                                     |
+| ARR                  | $40M (Mar 2025); projected $80-100M by end 2025       |
+| Users                | 5M+ total; ~1M DAU (Mar 2025)                         |
+| Team size            | ~35 people (15 engineers)                             |
+| Revenue per engineer | ~$2.67M ARR/engineer                                  |
+| Open source          | MIT license (bolt.new repo: 16.3K stars, 14.6K forks) |
+| Self-hosted variant  | bolt.diy (community fork, supports multiple LLMs)     |
 
 ---
 
@@ -39,30 +40,30 @@ bolt.new is a browser-based AI web development platform built on StackBlitz's We
 
 ### 3.1 Core Capabilities
 
-| Feature | Description | Quality |
-|---|---|---|
-| Prompt-to-app | Describe app in natural language, get working code | Strong for simple apps |
-| Browser IDE | Full file tree, code editor, terminal in browser | Functional but basic |
-| Live preview | Real-time preview panel alongside code editor | Excellent -- instant feedback |
-| One-click deploy | Deploy to Netlify, Vercel, or Bolt's own hosting | Works for simple apps |
-| Package management | Auto-installs npm packages in browser | Seamless |
-| Database integration | Built-in Bolt Cloud DB or Supabase connection | Functional but auth is problematic |
-| GitHub integration | Import from / push to GitHub repos | Auto-commits to main branch |
-| Stripe integration | "Add payments" prompt enables Stripe setup | Recently added, first-party |
-| Mobile apps | Expo integration for React Native | Scaffolding only; deployment still manual |
-| Custom domains | Available on paid plans | Standard |
-| AI image editing | Edit images with AI prompts | Pro feature |
+| Feature              | Description                                        | Quality                                   |
+| -------------------- | -------------------------------------------------- | ----------------------------------------- |
+| Prompt-to-app        | Describe app in natural language, get working code | Strong for simple apps                    |
+| Browser IDE          | Full file tree, code editor, terminal in browser   | Functional but basic                      |
+| Live preview         | Real-time preview panel alongside code editor      | Excellent -- instant feedback             |
+| One-click deploy     | Deploy to Netlify, Vercel, or Bolt's own hosting   | Works for simple apps                     |
+| Package management   | Auto-installs npm packages in browser              | Seamless                                  |
+| Database integration | Built-in Bolt Cloud DB or Supabase connection      | Functional but auth is problematic        |
+| GitHub integration   | Import from / push to GitHub repos                 | Auto-commits to main branch               |
+| Stripe integration   | "Add payments" prompt enables Stripe setup         | Recently added, first-party               |
+| Mobile apps          | Expo integration for React Native                  | Scaffolding only; deployment still manual |
+| Custom domains       | Available on paid plans                            | Standard                                  |
+| AI image editing     | Edit images with AI prompts                        | Pro feature                               |
 
 ### 3.2 Model Selection (Claude Agent)
 
 bolt.new exposes model choice within the Claude model family:
 
-| Model | Use Case | Token Efficiency |
-|---|---|---|
-| Haiku 4.5 | Fast follow-ups, polish, simple edits | Most efficient |
-| Sonnet 4.5 | Default recommended; well-rounded | Balanced |
-| Sonnet 4.6 | Multi-step reasoning, larger codebases | Moderate |
-| Opus 4.5/4.6 | Hardest problems, deepest reasoning | Most expensive |
+| Model        | Use Case                               | Token Efficiency |
+| ------------ | -------------------------------------- | ---------------- |
+| Haiku 4.5    | Fast follow-ups, polish, simple edits  | Most efficient   |
+| Sonnet 4.5   | Default recommended; well-rounded      | Balanced         |
+| Sonnet 4.6   | Multi-step reasoning, larger codebases | Moderate         |
+| Opus 4.5/4.6 | Hardest problems, deepest reasoning    | Most expensive   |
 
 Default is Sonnet 4.5. Users cannot bring non-Anthropic models (GPT, Gemini, open-source) to bolt.new -- that requires bolt.diy.
 
@@ -80,28 +81,28 @@ Default is Sonnet 4.5. Users cannot bring non-Anthropic models (GPT, Gemini, ope
 
 bolt.diy is the community-driven open-source fork that addresses several bolt.new limitations:
 
-| Dimension | bolt.new | bolt.diy |
-|---|---|---|
-| Hosting | Cloud-only | Self-hosted |
-| LLM providers | Anthropic Claude only | 20+ providers (OpenAI, Anthropic, Ollama, Gemini, DeepSeek, Groq, etc.) |
-| Cost | Subscription + tokens | Free (bring your own API keys) |
-| Customization | Fixed configurations | Custom AI models, prompts, pipelines |
-| Data privacy | Data on StackBlitz servers | All data stays local |
-| Target user | Beginners, non-developers | Experienced developers |
-| GitHub stars | 16.3K | 14.6K (nearly equal adoption) |
+| Dimension     | bolt.new                   | bolt.diy                                                                |
+| ------------- | -------------------------- | ----------------------------------------------------------------------- |
+| Hosting       | Cloud-only                 | Self-hosted                                                             |
+| LLM providers | Anthropic Claude only      | 20+ providers (OpenAI, Anthropic, Ollama, Gemini, DeepSeek, Groq, etc.) |
+| Cost          | Subscription + tokens      | Free (bring your own API keys)                                          |
+| Customization | Fixed configurations       | Custom AI models, prompts, pipelines                                    |
+| Data privacy  | Data on StackBlitz servers | All data stays local                                                    |
+| Target user   | Beginners, non-developers  | Experienced developers                                                  |
+| GitHub stars  | 16.3K                      | 14.6K (nearly equal adoption)                                           |
 
 bolt.diy is actually a closer competitor to Loki Mode than bolt.new itself, since it targets developers who want control over their AI toolchain. However, bolt.diy inherits the same WebContainer/JavaScript-only limitation.
 
 ### 3.5 Supported Technologies
 
-| Category | Supported | Not Supported |
-|---|---|---|
-| Frontend | React, Vue, Svelte, Astro, Next.js, Vite, Tailwind, ShadCN | -- |
-| Backend | Node.js only | Python, Django, Flask, Go, Rust, Java, PHP |
-| Database | Bolt Cloud DB, Supabase, PostgreSQL | MySQL, MongoDB (native) |
-| Mobile | Expo/React Native (scaffolding) | Native iOS/Android, Flutter |
-| Browsers | Chrome, Chromium-based (desktop only) | Firefox, Safari, mobile browsers |
-| Deployment | Netlify, Vercel, Bolt hosting, GitHub Pages | AWS, GCP, Azure, Docker, K8s |
+| Category   | Supported                                                  | Not Supported                              |
+| ---------- | ---------------------------------------------------------- | ------------------------------------------ |
+| Frontend   | React, Vue, Svelte, Astro, Next.js, Vite, Tailwind, ShadCN | --                                         |
+| Backend    | Node.js only                                               | Python, Django, Flask, Go, Rust, Java, PHP |
+| Database   | Bolt Cloud DB, Supabase, PostgreSQL                        | MySQL, MongoDB (native)                    |
+| Mobile     | Expo/React Native (scaffolding)                            | Native iOS/Android, Flutter                |
+| Browsers   | Chrome, Chromium-based (desktop only)                      | Firefox, Safari, mobile browsers           |
+| Deployment | Netlify, Vercel, Bolt hosting, GitHub Pages                | AWS, GCP, Azure, Docker, K8s               |
 
 ---
 
@@ -166,13 +167,13 @@ bolt.diy is actually a closer competitor to Loki Mode than bolt.new itself, sinc
 
 ### 5.1 Current Tiers (March 2026)
 
-| Tier | Monthly Cost | Tokens | Key Limits |
-|---|---|---|---|
-| Free | $0 | 300K/day, 1M/month | Bolt branding, 10MB upload, 333K web requests |
-| Pro | $25/month | 10M/month (no daily limit) | 100MB upload, 1M web requests, custom domains |
-| Pro+ (implied) | $50-$200/month | Up to 120M/month | Scaled token allotments |
-| Teams | $30/member/month | Per-member allotment | Centralized billing, admin controls, private NPM |
-| Enterprise | Custom | Custom | SSO, audit logs, SLAs, dedicated support |
+| Tier           | Monthly Cost     | Tokens                     | Key Limits                                       |
+| -------------- | ---------------- | -------------------------- | ------------------------------------------------ |
+| Free           | $0               | 300K/day, 1M/month         | Bolt branding, 10MB upload, 333K web requests    |
+| Pro            | $25/month        | 10M/month (no daily limit) | 100MB upload, 1M web requests, custom domains    |
+| Pro+ (implied) | $50-$200/month   | Up to 120M/month           | Scaled token allotments                          |
+| Teams          | $30/member/month | Per-member allotment       | Centralized billing, admin controls, private NPM |
+| Enterprise     | Custom           | Custom                     | SSO, audit logs, SLAs, dedicated support         |
 
 ### 5.2 Token Economics
 
@@ -198,26 +199,26 @@ bolt.diy is actually a closer competitor to Loki Mode than bolt.new itself, sinc
 
 ### 6.1 Technical Limitations
 
-| Limitation | Impact | Severity |
-|---|---|---|
-| JavaScript-only backends | Cannot build Python, Go, Rust, or Java backends | HIGH |
-| WebContainer constraints | Limited to what Node.js can do in a browser sandbox | HIGH |
-| No local execution | Cannot debug locally, run native tooling, or access file system | HIGH |
-| Chrome-only (desktop) | Firefox, Safari, and mobile browsers not fully supported | MEDIUM |
-| No Docker/containers | Cannot use Docker, docker-compose, or container-based workflows | HIGH |
-| No CI/CD pipelines | No built-in testing, linting, or deployment pipelines | MEDIUM |
-| No multi-repo support | Single project at a time; no monorepo or multi-service architecture | HIGH |
-| File size limits | 10MB free, 100MB pro; large assets require external hosting | MEDIUM |
+| Limitation               | Impact                                                              | Severity |
+| ------------------------ | ------------------------------------------------------------------- | -------- |
+| JavaScript-only backends | Cannot build Python, Go, Rust, or Java backends                     | HIGH     |
+| WebContainer constraints | Limited to what Node.js can do in a browser sandbox                 | HIGH     |
+| No local execution       | Cannot debug locally, run native tooling, or access file system     | HIGH     |
+| Chrome-only (desktop)    | Firefox, Safari, and mobile browsers not fully supported            | MEDIUM   |
+| No Docker/containers     | Cannot use Docker, docker-compose, or container-based workflows     | HIGH     |
+| No CI/CD pipelines       | No built-in testing, linting, or deployment pipelines               | MEDIUM   |
+| No multi-repo support    | Single project at a time; no monorepo or multi-service architecture | HIGH     |
+| File size limits         | 10MB free, 100MB pro; large assets require external hosting         | MEDIUM   |
 
 ### 6.2 Scalability Problems
 
-| Problem | Details | User Impact |
-|---|---|---|
-| Context degradation | Projects with 15-20+ components cause AI to forget patterns | Duplicate code, inconsistencies |
-| Token explosion | Token cost scales non-linearly with project size | Budget overruns, abandoned projects |
-| "Project size exceeded" | Context window limits trigger hard stops on large projects | Cannot continue development |
-| Deployment failures | Complex apps get blank screens, missing files on deploy | Broken production deployments |
-| No architecture guidance | AI makes ad-hoc decisions; no architectural consistency | Technical debt from line one |
+| Problem                  | Details                                                     | User Impact                         |
+| ------------------------ | ----------------------------------------------------------- | ----------------------------------- |
+| Context degradation      | Projects with 15-20+ components cause AI to forget patterns | Duplicate code, inconsistencies     |
+| Token explosion          | Token cost scales non-linearly with project size            | Budget overruns, abandoned projects |
+| "Project size exceeded"  | Context window limits trigger hard stops on large projects  | Cannot continue development         |
+| Deployment failures      | Complex apps get blank screens, missing files on deploy     | Broken production deployments       |
+| No architecture guidance | AI makes ad-hoc decisions; no architectural consistency     | Technical debt from line one        |
 
 ### 6.3 Testing and Quality Gap
 
@@ -292,21 +293,21 @@ Browser Tab (SharedArrayBuffer, Atomics API, IndexedDB)
 
 ### 7.2 Key Technologies
 
-| Component | Technology |
-|---|---|
-| Runtime | WebAssembly + Rust kernel running Node.js in browser |
-| Concurrency | Web Workers + SharedArrayBuffer + Atomics API |
-| File system | Rust-based POSIX-compliant FS compiled to WASM |
-| Shell | Custom TypeScript shell (JSH) emulating Unix |
-| Module system | Custom Node-compatible resolver (ESM + CJS bridge) |
-| Networking | Service Workers + MessagePort + WebSocket bridges |
-| Build tools | Vite (default for most frameworks) with HMR |
-| Package caching | CDN-cached npm packages; IndexedDB for node_modules |
-| LLM | Claude Sonnet 4.5 (primary, default); Haiku 4.5, Sonnet 4.6, Opus 4.5/4.6 selectable |
-| App framework | Remix (React-based) |
-| Language | TypeScript (89.9%), SCSS (9.5%) |
-| Deployment | Cloudflare Workers integration |
-| Runtime bundle | Under 10MB after stripping debug symbols |
+| Component       | Technology                                                                           |
+| --------------- | ------------------------------------------------------------------------------------ |
+| Runtime         | WebAssembly + Rust kernel running Node.js in browser                                 |
+| Concurrency     | Web Workers + SharedArrayBuffer + Atomics API                                        |
+| File system     | Rust-based POSIX-compliant FS compiled to WASM                                       |
+| Shell           | Custom TypeScript shell (JSH) emulating Unix                                         |
+| Module system   | Custom Node-compatible resolver (ESM + CJS bridge)                                   |
+| Networking      | Service Workers + MessagePort + WebSocket bridges                                    |
+| Build tools     | Vite (default for most frameworks) with HMR                                          |
+| Package caching | CDN-cached npm packages; IndexedDB for node_modules                                  |
+| LLM             | Claude Sonnet 4.5 (primary, default); Haiku 4.5, Sonnet 4.6, Opus 4.5/4.6 selectable |
+| App framework   | Remix (React-based)                                                                  |
+| Language        | TypeScript (89.9%), SCSS (9.5%)                                                      |
+| Deployment      | Cloudflare Workers integration                                                       |
+| Runtime bundle  | Under 10MB after stripping debug symbols                                             |
 
 ### 7.3 Architectural Strengths
 
@@ -330,23 +331,23 @@ Browser Tab (SharedArrayBuffer, Atomics API, IndexedDB)
 
 ### 8.1 Market Segment Comparison
 
-| Dimension | bolt.new | Loki Mode | Winner |
-|---|---|---|---|
-| **Target user** | Non-coders, rapid prototypers | Developers, technical founders | Different segments |
-| **Setup time** | 0 (browser-based) | ~2 min (CLI install) | bolt.new |
-| **Time to first preview** | ~30 seconds | Depends on project complexity | bolt.new |
-| **Production readiness** | 70% (needs $5-20K remediation) | Production-grade (RARV cycle, quality gates) | Loki Mode |
-| **Language support** | JavaScript/Node.js only | Any language (Python, Go, Rust, etc.) | Loki Mode |
-| **Architecture quality** | Ad-hoc, no consistency | PRD-driven, architecture-first | Loki Mode |
-| **Test generation** | None | Automated (unit, E2E, Playwright) | Loki Mode |
-| **Code review** | None | 3-reviewer parallel system | Loki Mode |
-| **Scale** | 15-20 components max | Enterprise-scale projects | Loki Mode |
-| **Cost predictability** | Poor (opaque token consumption) | Better (iteration-based, budget controls) | Loki Mode |
-| **Deployment** | One-click to Netlify/Vercel | Docker, K8s, any cloud | Loki Mode |
-| **Multi-provider** | Claude only (bolt.diy supports others) | Claude, Codex, Gemini, Cline, Aider | Loki Mode |
-| **Collaboration** | Single-user (Teams = billing only) | Git worktrees, parallel streams | Loki Mode |
-| **Memory/learning** | None (fresh context each session) | Episodic/semantic memory system | Loki Mode |
-| **Visual feedback** | Real-time in-browser preview | Dashboard + Purple Lab (in progress) | bolt.new |
+| Dimension                 | bolt.new                               | Loki Mode                                    | Winner             |
+| ------------------------- | -------------------------------------- | -------------------------------------------- | ------------------ |
+| **Target user**           | Non-coders, rapid prototypers          | Developers, technical founders               | Different segments |
+| **Setup time**            | 0 (browser-based)                      | ~2 min (CLI install)                         | bolt.new           |
+| **Time to first preview** | ~30 seconds                            | Depends on project complexity                | bolt.new           |
+| **Production readiness**  | 70% (needs $5-20K remediation)         | Production-grade (RARV cycle, quality gates) | Loki Mode          |
+| **Language support**      | JavaScript/Node.js only                | Any language (Python, Go, Rust, etc.)        | Loki Mode          |
+| **Architecture quality**  | Ad-hoc, no consistency                 | PRD-driven, architecture-first               | Loki Mode          |
+| **Test generation**       | None                                   | Automated (unit, E2E, Playwright)            | Loki Mode          |
+| **Code review**           | None                                   | 3-reviewer parallel system                   | Loki Mode          |
+| **Scale**                 | 15-20 components max                   | Enterprise-scale projects                    | Loki Mode          |
+| **Cost predictability**   | Poor (opaque token consumption)        | Better (iteration-based, budget controls)    | Loki Mode          |
+| **Deployment**            | One-click to Netlify/Vercel            | Docker, K8s, any cloud                       | Loki Mode          |
+| **Multi-provider**        | Claude only (bolt.diy supports others) | Claude, Codex, Gemini, Cline, Aider          | Loki Mode          |
+| **Collaboration**         | Single-user (Teams = billing only)     | Git worktrees, parallel streams              | Loki Mode          |
+| **Memory/learning**       | None (fresh context each session)      | Episodic/semantic memory system              | Loki Mode          |
+| **Visual feedback**       | Real-time in-browser preview           | Dashboard + Purple Lab (in progress)         | bolt.new           |
 
 ### 8.2 Where bolt.new Wins
 
@@ -380,24 +381,28 @@ Browser Tab (SharedArrayBuffer, Atomics API, IndexedDB)
 These are bolt.new advantages that Purple Lab should match or exceed:
 
 #### R1: Zero-to-Preview in Under 60 Seconds
+
 - **What bolt.new does**: User types prompt, sees live preview in ~30 seconds
 - **What Purple Lab needs**: `loki start --quick` or Purple Lab "New Project" flow that generates a scaffold and shows live preview within 60 seconds
 - **Implementation**: Pre-built project templates (SaaS, landing page, dashboard, CLI) that scaffold instantly, then iterate with AI
 - **Priority**: P0 -- this is bolt.new's strongest differentiator
 
 #### R2: Real-Time Live Preview During Generation
+
 - **What bolt.new does**: Preview panel updates in real-time as code streams from the LLM
 - **What Purple Lab needs**: WebSocket-connected iframe that hot-reloads as files are written during `loki run`
 - **Implementation**: Extend Purple Lab's existing iframe preview with HMR/file watcher integration
 - **Priority**: P0 -- instant visual feedback is the core of the "vibe coding" experience
 
 #### R3: Visual Inspector (Click-to-Edit)
+
 - **What bolt.new does**: Click on any UI element in the preview to edit its properties
 - **What Purple Lab needs**: Inspector overlay on the preview iframe that maps DOM elements to source file locations
 - **Implementation**: Inject a development overlay script into the preview iframe; on click, send file path + line number to the editor; open inline edit panel
 - **Priority**: P1 -- impressive for demos, useful for non-coders
 
 #### R4: Prompt Enhancement
+
 - **What bolt.new does**: AI refines vague prompts into detailed specifications before generation
 - **What Purple Lab needs**: Pre-generation step that expands "Build me a CRM" into a structured mini-PRD with components, features, and data models
 - **Implementation**: Use a lightweight model (Haiku) to expand prompts into structured PRD format before passing to the full generation pipeline
@@ -408,24 +413,28 @@ These are bolt.new advantages that Purple Lab should match or exceed:
 These are bolt.new weaknesses that Loki Mode already solves or can emphasize:
 
 #### R5: Advertise Production Readiness as Key Differentiator
+
 - **bolt.new's gap**: 70% done code, no tests, no review, $5-20K remediation
 - **Loki Mode's advantage**: RARV cycle, 10 quality gates, 3-reviewer system, automated testing
 - **Action**: Create comparison content showing: "bolt.new gives you a prototype. Loki Mode gives you a product."
 - **Messaging**: "From PRD to production, not PRD to prototype"
 
 #### R6: Highlight Multi-Language Support
+
 - **bolt.new's gap**: JavaScript-only backends
 - **Loki Mode's advantage**: Any language, any framework, any deployment target
 - **Action**: Showcase Python/Django, Go, Rust projects in marketing materials
 - **Messaging**: "Build in any language, not just JavaScript"
 
 #### R7: Emphasize Scale and Architecture
+
 - **bolt.new's gap**: Hits a wall at 15-20 components; no architecture
 - **Loki Mode's advantage**: Enterprise-scale projects with architecture-first approach
 - **Action**: Publish case studies of complex projects (50+ files, multiple services, databases)
 - **Messaging**: "Scales with your ambition, not against it"
 
 #### R8: Transparent Cost Model
+
 - **bolt.new's gap**: Opaque token consumption; debugging loops drain budgets
 - **Loki Mode's advantage**: Iteration-based model with budget controls and circuit breakers
 - **Action**: Dashboard showing cost-per-iteration, total project cost, and budget remaining
@@ -436,39 +445,43 @@ These are bolt.new weaknesses that Loki Mode already solves or can emphasize:
 Features that neither product has well, where Loki Mode can lead:
 
 #### R9: "Eject to Pro" Workflow
+
 - **Concept**: Start with bolt.new-style rapid prototyping, then "eject" into full Loki Mode for production hardening
 - **Implementation**: `loki eject` command that takes a quick-start project and applies quality gates, generates tests, adds CI/CD, restructures architecture
 - **Value**: Best of both worlds -- fast start, professional finish
 
 #### R10: Collaborative Multi-Agent Building
+
 - **Concept**: Multiple AI agents working on different parts of the project simultaneously
 - **Implementation**: Git worktrees + parallel agent streams (already in Loki Mode)
 - **Value**: bolt.new is single-threaded; Loki Mode can build frontend + backend + tests in parallel
 
 #### R11: Project Memory and Learning
+
 - **Concept**: AI remembers project decisions, user preferences, and past mistakes
 - **Implementation**: Already implemented (episodic/semantic memory system)
 - **Value**: bolt.new starts fresh every session; Loki Mode gets smarter over time
 
 #### R12: Architecture Visualization
+
 - **Concept**: Auto-generated architecture diagrams showing components, data flow, and dependencies
 - **Implementation**: Integrate with the existing code review knowledge graph
 - **Value**: bolt.new gives you code with no map; Loki Mode gives you code with a blueprint
 
 ### 9.4 Purple Lab Specific Recommendations
 
-| Feature | Priority | Effort | Impact | bolt.new Equivalent |
-|---|---|---|---|---|
-| Instant scaffold + preview (<60s) | P0 | Medium | Critical | Core value prop |
-| Real-time preview during `loki run` | P0 | High | Critical | Live preview panel |
-| Monaco editor (already in PRD) | P0 | Medium | High | Code editor |
-| Integrated terminal (already in PRD) | P0 | Medium | High | Terminal panel |
-| Visual Inspector overlay | P1 | High | Medium | Visual Inspector |
-| Prompt-to-PRD enhancement | P1 | Low | Medium | Prompt enhancement |
-| One-click deploy (Netlify/Vercel) | P1 | Medium | High | One-click deploy |
-| Build progress bar with ETA | P1 | Low | Medium | Not available (advantage) |
-| Cost tracker per session | P2 | Low | Medium | Token counter (but opaque) |
-| Template gallery | P2 | Medium | Medium | Starter templates |
+| Feature                              | Priority | Effort | Impact   | bolt.new Equivalent        |
+| ------------------------------------ | -------- | ------ | -------- | -------------------------- |
+| Instant scaffold + preview (<60s)    | P0       | Medium | Critical | Core value prop            |
+| Real-time preview during `loki run`  | P0       | High   | Critical | Live preview panel         |
+| Monaco editor (already in PRD)       | P0       | Medium | High     | Code editor                |
+| Integrated terminal (already in PRD) | P0       | Medium | High     | Terminal panel             |
+| Visual Inspector overlay             | P1       | High   | Medium   | Visual Inspector           |
+| Prompt-to-PRD enhancement            | P1       | Low    | Medium   | Prompt enhancement         |
+| One-click deploy (Netlify/Vercel)    | P1       | Medium | High     | One-click deploy           |
+| Build progress bar with ETA          | P1       | Low    | Medium   | Not available (advantage)  |
+| Cost tracker per session             | P2       | Low    | Medium   | Token counter (but opaque) |
+| Template gallery                     | P2       | Medium | Medium   | Starter templates          |
 
 ---
 
@@ -487,12 +500,12 @@ Loki Mode produces far better output, but the **experience gap** is what needs c
 
 ### 10.2 The Market Is Segmenting
 
-| Segment | Tool | User |
-|---|---|---|
-| Throwaway demos | bolt.new, v0 | Non-coders, marketers |
-| Design-quality prototypes | Lovable | Designers, product managers |
-| Quick prototypes with backend | Replit | Hobby developers |
-| Production applications | Cursor, Loki Mode | Professional developers |
+| Segment                       | Tool              | User                        |
+| ----------------------------- | ----------------- | --------------------------- |
+| Throwaway demos               | bolt.new, v0      | Non-coders, marketers       |
+| Design-quality prototypes     | Lovable           | Designers, product managers |
+| Quick prototypes with backend | Replit            | Hobby developers            |
+| Production applications       | Cursor, Loki Mode | Professional developers     |
 
 Loki Mode should own the "production applications" segment while making the onboarding experience competitive with the "prototype" segment. The path: make the first 5 minutes feel like bolt.new, then the next 5 hours deliver what bolt.new cannot.
 
@@ -522,14 +535,14 @@ The "vibe coding" market -- AI tools that generate code from natural language --
 
 ### 11.3 Competitive Landscape Valuation
 
-| Company | Product | Valuation / ARR | Category |
-|---|---|---|---|
-| Anysphere | Cursor | $9B valuation, $100M+ ARR | Production IDE |
-| StackBlitz | bolt.new | $700M valuation, $40M ARR | Browser prototype builder |
-| Lovable | Lovable | $100M ARR in 8 months | Design-quality prototypes |
-| Vercel | v0 | Part of Vercel ($3.5B+) | UI component generator |
-| Replit | Replit | $1.16B valuation | Browser IDE + AI |
-| Autonomi | Loki Mode | Open source, early stage | PRD-to-production system |
+| Company    | Product   | Valuation / ARR           | Category                  |
+| ---------- | --------- | ------------------------- | ------------------------- |
+| Anysphere  | Cursor    | $9B valuation, $100M+ ARR | Production IDE            |
+| StackBlitz | bolt.new  | $700M valuation, $40M ARR | Browser prototype builder |
+| Lovable    | Lovable   | $100M ARR in 8 months     | Design-quality prototypes |
+| Vercel     | v0        | Part of Vercel ($3.5B+)   | UI component generator    |
+| Replit     | Replit    | $1.16B valuation          | Browser IDE + AI          |
+| Autonomi   | Loki Mode | Open source, early stage  | PRD-to-production system  |
 
 ### 11.4 Strategic Implication for Loki Mode
 
@@ -537,14 +550,14 @@ The market is enormous and growing fast. bolt.new proved that "idea to app" is a
 
 ### 11.5 Recommended Implementation Timeline
 
-| Quarter | Deliverable | Competitive Impact |
-|---|---|---|
-| Q2 2026 | Instant scaffold + live preview in Purple Lab | Neutralizes bolt.new's #1 advantage |
-| Q2 2026 | Prompt-to-PRD enhancement (Haiku-powered) | Matches bolt.new's prompt enhancement |
-| Q3 2026 | One-click deploy (Netlify/Vercel integration) | Matches bolt.new's deployment UX |
-| Q3 2026 | Visual Inspector overlay in Purple Lab | Matches bolt.new's click-to-edit |
-| Q4 2026 | "Eject to Pro" workflow | Creates unique competitive advantage |
-| Q4 2026 | Comparison marketing campaign | Capitalizes on bolt.new dissatisfaction |
+| Quarter | Deliverable                                   | Competitive Impact                      |
+| ------- | --------------------------------------------- | --------------------------------------- |
+| Q2 2026 | Instant scaffold + live preview in Purple Lab | Neutralizes bolt.new's #1 advantage     |
+| Q2 2026 | Prompt-to-PRD enhancement (Haiku-powered)     | Matches bolt.new's prompt enhancement   |
+| Q3 2026 | One-click deploy (Netlify/Vercel integration) | Matches bolt.new's deployment UX        |
+| Q3 2026 | Visual Inspector overlay in Purple Lab        | Matches bolt.new's click-to-edit        |
+| Q4 2026 | "Eject to Pro" workflow                       | Creates unique competitive advantage    |
+| Q4 2026 | Comparison marketing campaign                 | Capitalizes on bolt.new dissatisfaction |
 
 ---
 

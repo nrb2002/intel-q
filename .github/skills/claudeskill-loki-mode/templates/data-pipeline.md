@@ -1,14 +1,17 @@
 # PRD: Data Pipeline
 
 ## Overview
+
 An ETL data pipeline that ingests data from multiple sources, transforms it through configurable processing steps, and loads results into a target data store with monitoring and error recovery.
 
 ## Target Users
+
 - Data engineers building batch or streaming pipelines
 - Analysts automating data transformation workflows
 - Teams consolidating data from multiple sources
 
 ## Core Features
+
 1. **Multi-Source Ingestion** - Read from CSV files, JSON APIs, PostgreSQL databases, and S3 buckets
 2. **Configurable Transforms** - Chain transformation steps: filter, map, aggregate, join, and deduplicate
 3. **Schema Validation** - Validate incoming data against defined schemas, quarantine invalid records
@@ -18,6 +21,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 7. **Scheduling** - Cron-based scheduling with dependency management between pipeline stages
 
 ## Technical Requirements
+
 - Python 3.10+ with type hints
 - Pydantic for schema validation
 - SQLAlchemy for database connections
@@ -27,6 +31,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 - Structured JSON logging
 
 ## Quality Gates
+
 - Unit tests for each transform function
 - Integration tests with sample datasets
 - Schema validation tested with valid and invalid records
@@ -34,6 +39,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 - Dead letter queue captures all failure categories
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -62,6 +68,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 ```
 
 ## Out of Scope
+
 - Real-time streaming (Kafka, Kinesis)
 - Distributed processing (Spark, Dask)
 - Web-based pipeline builder UI
@@ -71,6 +78,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 - Data catalog or discovery features
 
 ## Acceptance Criteria
+
 - Pipeline definition in YAML configures sources, transforms, and sinks
 - CSV, JSON, and database sources each read data correctly
 - Invalid records are routed to the dead letter queue with error details
@@ -79,6 +87,7 @@ An ETL data pipeline that ingests data from multiple sources, transforms it thro
 - Cron scheduling triggers pipeline runs at configured intervals
 
 ## Success Metrics
+
 - Pipeline processes sample dataset end-to-end without errors
 - Invalid records quarantined with descriptive error messages
 - Incremental runs process only new records

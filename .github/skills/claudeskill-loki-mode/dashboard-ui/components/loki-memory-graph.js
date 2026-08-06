@@ -8,14 +8,14 @@
  * <loki-memory-graph api-url="http://localhost:57374" theme="dark"></loki-memory-graph>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, shape: string, label: string}>} */
 const NODE_TYPES = {
-  episode: { color: 'var(--loki-blue, #2F71E3)',   shape: 'circle',  label: 'Episode' },
-  pattern: { color: 'var(--loki-green, #1FC5A8)',   shape: 'square',  label: 'Pattern' },
-  skill:   { color: 'var(--loki-purple, #553DE9)',  shape: 'diamond', label: 'Skill' },
+  episode: { color: "var(--loki-blue, #2F71E3)", shape: "circle", label: "Episode" },
+  pattern: { color: "var(--loki-green, #1FC5A8)", shape: "square", label: "Pattern" },
+  skill: { color: "var(--loki-purple, #553DE9)", shape: "diamond", label: "Skill" },
 };
 
 /**
@@ -49,7 +49,7 @@ function layoutNodes(nodes, width, height) {
  */
 export class LokiMemoryGraph extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -77,17 +77,17 @@ export class LokiMemoryGraph extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -104,7 +104,7 @@ export class LokiMemoryGraph extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/memory/graph');
+      const data = await this._api._get("/api/v2/memory/graph");
       this._nodes = data.nodes || [];
       this._edges = data.edges || [];
     } catch {
@@ -120,35 +120,83 @@ export class LokiMemoryGraph extends LokiElement {
   _getDemoData() {
     return {
       nodes: [
-        { id: 'ep1', type: 'episode', label: 'Build iteration #12', importance: 0.8, details: 'Completed scaffolding and initial implementation' },
-        { id: 'ep2', type: 'episode', label: 'Code review #5',     importance: 0.6, details: 'Quality gate passed with 3/3 approval' },
-        { id: 'ep3', type: 'episode', label: 'Test failure #3',     importance: 0.7, details: 'Integration test timeout resolved' },
-        { id: 'pt1', type: 'pattern', label: 'Error recovery',      importance: 0.9, details: 'Retry with exponential backoff pattern' },
-        { id: 'pt2', type: 'pattern', label: 'API design',          importance: 0.7, details: 'REST endpoint naming conventions' },
-        { id: 'pt3', type: 'pattern', label: 'Test structure',      importance: 0.5, details: 'Arrange-Act-Assert with setup helpers' },
-        { id: 'sk1', type: 'skill',   label: 'Playwright E2E',      importance: 0.85, details: 'Browser automation test writing' },
-        { id: 'sk2', type: 'skill',   label: 'FastAPI routing',     importance: 0.6, details: 'Python API server development' },
+        {
+          id: "ep1",
+          type: "episode",
+          label: "Build iteration #12",
+          importance: 0.8,
+          details: "Completed scaffolding and initial implementation",
+        },
+        {
+          id: "ep2",
+          type: "episode",
+          label: "Code review #5",
+          importance: 0.6,
+          details: "Quality gate passed with 3/3 approval",
+        },
+        {
+          id: "ep3",
+          type: "episode",
+          label: "Test failure #3",
+          importance: 0.7,
+          details: "Integration test timeout resolved",
+        },
+        {
+          id: "pt1",
+          type: "pattern",
+          label: "Error recovery",
+          importance: 0.9,
+          details: "Retry with exponential backoff pattern",
+        },
+        {
+          id: "pt2",
+          type: "pattern",
+          label: "API design",
+          importance: 0.7,
+          details: "REST endpoint naming conventions",
+        },
+        {
+          id: "pt3",
+          type: "pattern",
+          label: "Test structure",
+          importance: 0.5,
+          details: "Arrange-Act-Assert with setup helpers",
+        },
+        {
+          id: "sk1",
+          type: "skill",
+          label: "Playwright E2E",
+          importance: 0.85,
+          details: "Browser automation test writing",
+        },
+        {
+          id: "sk2",
+          type: "skill",
+          label: "FastAPI routing",
+          importance: 0.6,
+          details: "Python API server development",
+        },
       ],
       edges: [
-        { source: 'ep1', target: 'pt1', strength: 0.8 },
-        { source: 'ep1', target: 'sk1', strength: 0.6 },
-        { source: 'ep2', target: 'pt2', strength: 0.9 },
-        { source: 'ep3', target: 'pt1', strength: 0.7 },
-        { source: 'ep3', target: 'pt3', strength: 0.5 },
-        { source: 'pt1', target: 'sk2', strength: 0.4 },
-        { source: 'pt2', target: 'sk2', strength: 0.7 },
-        { source: 'pt3', target: 'sk1', strength: 0.6 },
+        { source: "ep1", target: "pt1", strength: 0.8 },
+        { source: "ep1", target: "sk1", strength: 0.6 },
+        { source: "ep2", target: "pt2", strength: 0.9 },
+        { source: "ep3", target: "pt1", strength: 0.7 },
+        { source: "ep3", target: "pt3", strength: 0.5 },
+        { source: "pt1", target: "sk2", strength: 0.4 },
+        { source: "pt2", target: "sk2", strength: 0.7 },
+        { source: "pt3", target: "sk1", strength: 0.6 },
       ],
     };
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _selectNode(nodeId) {
@@ -158,13 +206,13 @@ export class LokiMemoryGraph extends LokiElement {
 
   _bindEvents() {
     const root = this.shadowRoot;
-    root.querySelectorAll('.graph-node').forEach(el => {
-      el.addEventListener('click', () => {
+    root.querySelectorAll(".graph-node").forEach((el) => {
+      el.addEventListener("click", () => {
         this._selectNode(el.dataset.nodeId);
       });
     });
-    root.querySelectorAll('.close-detail').forEach(btn => {
-      btn.addEventListener('click', () => {
+    root.querySelectorAll(".close-detail").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._selectedNode = null;
         this.render();
       });
@@ -175,17 +223,17 @@ export class LokiMemoryGraph extends LokiElement {
     const cfg = NODE_TYPES[node.type] || NODE_TYPES.episode;
     const size = 10 + (node.importance || 0.5) * 16;
     const isSelected = this._selectedNode === node.id;
-    const stroke = isSelected ? 'var(--loki-accent, #553DE9)' : cfg.color;
+    const stroke = isSelected ? "var(--loki-accent, #553DE9)" : cfg.color;
     const strokeWidth = isSelected ? 3 : 1.5;
     const opacity = this._selectedNode && !isSelected ? 0.4 : 1;
 
     let shape;
     switch (cfg.shape) {
-      case 'square':
+      case "square":
         shape = `<rect x="${x - size / 2}" y="${y - size / 2}" width="${size}" height="${size}"
                   rx="3" fill="${cfg.color}" fill-opacity="0.2" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity}" />`;
         break;
-      case 'diamond': {
+      case "diamond": {
         const half = size / 2;
         shape = `<polygon points="${x},${y - half} ${x + half},${y} ${x},${y + half} ${x - half},${y}"
                   fill="${cfg.color}" fill-opacity="0.2" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity}" />`;
@@ -206,15 +254,17 @@ export class LokiMemoryGraph extends LokiElement {
   }
 
   _renderEdge(edge, positionedNodes) {
-    const sourceNode = positionedNodes.find(n => n.id === edge.source);
-    const targetNode = positionedNodes.find(n => n.id === edge.target);
-    if (!sourceNode || !targetNode) return '';
+    const sourceNode = positionedNodes.find((n) => n.id === edge.source);
+    const targetNode = positionedNodes.find((n) => n.id === edge.target);
+    if (!sourceNode || !targetNode) return "";
 
     const isDotted = (edge.strength || 1) < 0.6;
     const opacity = this._selectedNode
-      ? (edge.source === this._selectedNode || edge.target === this._selectedNode ? 0.8 : 0.15)
+      ? edge.source === this._selectedNode || edge.target === this._selectedNode
+        ? 0.8
+        : 0.15
       : 0.4;
-    const dashArray = isDotted ? 'stroke-dasharray="4 4"' : '';
+    const dashArray = isDotted ? 'stroke-dasharray="4 4"' : "";
 
     return `<line x1="${sourceNode.x}" y1="${sourceNode.y}" x2="${targetNode.x}" y2="${targetNode.y}"
       stroke="var(--loki-border-light, #C5C0B1)" stroke-width="1.5" opacity="${opacity}" ${dashArray} />`;
@@ -392,13 +442,13 @@ export class LokiMemoryGraph extends LokiElement {
     const positionedNodes = layoutNodes(this._nodes, w, h);
 
     // Render edges first (behind nodes)
-    const edgesSvg = this._edges.map(e => this._renderEdge(e, positionedNodes)).join('');
-    const nodesSvg = positionedNodes.map(n => this._renderNodeShape(n, n.x, n.y)).join('');
+    const edgesSvg = this._edges.map((e) => this._renderEdge(e, positionedNodes)).join("");
+    const nodesSvg = positionedNodes.map((n) => this._renderNodeShape(n, n.x, n.y)).join("");
 
     // Detail panel
-    let detailPanel = '';
+    let detailPanel = "";
     if (this._selectedNode) {
-      const node = this._nodes.find(n => n.id === this._selectedNode);
+      const node = this._nodes.find((n) => n.id === this._selectedNode);
       if (node) {
         const cfg = NODE_TYPES[node.type] || NODE_TYPES.episode;
         detailPanel = `
@@ -408,24 +458,28 @@ export class LokiMemoryGraph extends LokiElement {
               <span class="detail-type" style="background: ${cfg.color}; color: white;">${cfg.label}</span>
               <button class="close-detail" title="Close">&#10005;</button>
             </div>
-            <div class="detail-body">${this._escapeHtml(node.details || 'No details available')}</div>
+            <div class="detail-body">${this._escapeHtml(node.details || "No details available")}</div>
           </div>
         `;
       }
     }
 
     // Legend
-    const legendItems = Object.entries(NODE_TYPES).map(([, cfg]) => {
-      let shapeEl;
-      if (cfg.shape === 'circle') shapeEl = `<div class="legend-circle" style="border-color: ${cfg.color};"></div>`;
-      else if (cfg.shape === 'square') shapeEl = `<div class="legend-square" style="border-color: ${cfg.color};"></div>`;
-      else shapeEl = `<div class="legend-diamond" style="border-color: ${cfg.color};"></div>`;
+    const legendItems = Object.entries(NODE_TYPES)
+      .map(([, cfg]) => {
+        let shapeEl;
+        if (cfg.shape === "circle")
+          shapeEl = `<div class="legend-circle" style="border-color: ${cfg.color};"></div>`;
+        else if (cfg.shape === "square")
+          shapeEl = `<div class="legend-square" style="border-color: ${cfg.color};"></div>`;
+        else shapeEl = `<div class="legend-diamond" style="border-color: ${cfg.color};"></div>`;
 
-      return `<div class="legend-item">
+        return `<div class="legend-item">
         <div class="legend-shape">${shapeEl}</div>
         <span>${cfg.label}</span>
       </div>`;
-    }).join('');
+      })
+      .join("");
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -448,8 +502,8 @@ export class LokiMemoryGraph extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-memory-graph')) {
-  customElements.define('loki-memory-graph', LokiMemoryGraph);
+if (!customElements.get("loki-memory-graph")) {
+  customElements.define("loki-memory-graph", LokiMemoryGraph);
 }
 
 export default LokiMemoryGraph;

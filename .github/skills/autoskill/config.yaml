@@ -6,7 +6,7 @@
 # Local is the default — your screen content never leaves the machine.
 # Cloud backends (claude, foundry) are available for users who explicitly
 # opt in; see the backend sections below.
-backend: local    # local | claude | foundry
+backend: local # local | claude | foundry
 
 # Per-backend settings. Only the selected backend's block is used.
 local:
@@ -42,9 +42,9 @@ embeddings:
 
 # Clustering thresholds.
 cluster:
-  min_session_minutes: 5        # skip sessions shorter than this
-  idle_gap_minutes: 10          # new session after this much inactivity
-  min_cluster_size: 2           # need this many similar sessions before proposing
+  min_session_minutes: 5 # skip sessions shorter than this
+  idle_gap_minutes: 10 # new session after this much inactivity
+  min_cluster_size: 2 # need this many similar sessions before proposing
 
 # Content redaction regexes applied before any cluster summary leaves
 # the local detection layer. Defense-in-depth on top of screenpipe's

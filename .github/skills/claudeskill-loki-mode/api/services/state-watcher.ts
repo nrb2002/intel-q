@@ -34,8 +34,8 @@ class StateWatcher {
   private stateManager: StateManager;
 
   constructor() {
-    this.lokiDir = Deno.env.get("LOKI_DIR") ||
-      new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
+    this.lokiDir =
+      Deno.env.get("LOKI_DIR") || new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
     this.watchDir = `${this.lokiDir}/.loki`;
     this.state = {
       sessions: new Map(),
@@ -135,7 +135,7 @@ class StateWatcher {
       emitLogEvent(
         "info",
         stateData.currentSession as string,
-        `State watcher loaded session: ${stateData.currentSession}`
+        `State watcher loaded session: ${stateData.currentSession}`,
       );
     }
   }
@@ -190,10 +190,7 @@ class StateWatcher {
   /**
    * Handle a file change with debouncing
    */
-  private handleFileChange(
-    path: string,
-    kind: Deno.FsEvent["kind"]
-  ): void {
+  private handleFileChange(path: string, kind: Deno.FsEvent["kind"]): void {
     // Debounce rapid changes to the same file
     const existingTimer = this.debounceTimers.get(path);
     if (existingTimer) {
@@ -211,10 +208,7 @@ class StateWatcher {
   /**
    * Process a debounced file change
    */
-  private async processFileChange(
-    path: string,
-    kind: Deno.FsEvent["kind"]
-  ): Promise<void> {
+  private async processFileChange(path: string, kind: Deno.FsEvent["kind"]): Promise<void> {
     const relativePath = path.replace(this.watchDir + "/", "");
 
     // Skip non-relevant files
@@ -260,10 +254,7 @@ class StateWatcher {
   /**
    * Handle session state changes
    */
-  private async handleSessionChange(
-    sessionId: string,
-    kind: Deno.FsEvent["kind"]
-  ): Promise<void> {
+  private async handleSessionChange(sessionId: string, kind: Deno.FsEvent["kind"]): Promise<void> {
     if (kind === "remove") {
       const oldSession = this.state.sessions.get(sessionId);
       this.state.sessions.delete(sessionId);
@@ -393,7 +384,9 @@ class StateWatcher {
       }
 
       // Emit events for active agents
-      const activeAgents = (agentsData.active as Array<{ id: string; type: string; model?: string; task?: string }>) || [];
+      const activeAgents =
+        (agentsData.active as Array<{ id: string; type: string; model?: string; task?: string }>) ||
+        [];
       for (const agent of activeAgents) {
         eventBus.publish("agent:spawned", sessionId, {
           agentId: agent.id,
@@ -421,7 +414,7 @@ class StateWatcher {
       emitLogEvent(
         "info",
         (stateData.currentSession as string) || "global",
-        `Global state updated: ${JSON.stringify(stateData).slice(0, 100)}...`
+        `Global state updated: ${JSON.stringify(stateData).slice(0, 100)}...`,
       );
     } catch (err) {
       console.error("Error loading global state:", err);
@@ -476,15 +469,13 @@ class StateWatcher {
     for (const session of this.state.sessions.values()) {
       if (session.status === "running") {
         const tasks = this.state.tasks.get(session.id) || [];
-        queuedTasks += tasks.filter(
-          (t) => t.status === "pending" || t.status === "queued"
-        ).length;
+        queuedTasks += tasks.filter((t) => t.status === "pending" || t.status === "queued").length;
       }
     }
 
     // Get active session for heartbeat
     const activeSessions = Array.from(this.state.sessions.values()).filter(
-      (s) => s.status === "running"
+      (s) => s.status === "running",
     );
 
     for (const session of activeSessions) {
@@ -496,9 +487,23 @@ class StateWatcher {
    * Map session status to event type
    */
   private getSessionEventType(
-    status: string
-  ): "session:started" | "session:paused" | "session:resumed" | "session:stopped" | "session:completed" | "session:failed" {
-    const map: Record<string, "session:started" | "session:paused" | "session:resumed" | "session:stopped" | "session:completed" | "session:failed"> = {
+    status: string,
+  ):
+    | "session:started"
+    | "session:paused"
+    | "session:resumed"
+    | "session:stopped"
+    | "session:completed"
+    | "session:failed" {
+    const map: Record<
+      string,
+      | "session:started"
+      | "session:paused"
+      | "session:resumed"
+      | "session:stopped"
+      | "session:completed"
+      | "session:failed"
+    > = {
       starting: "session:started",
       running: "session:resumed",
       paused: "session:paused",
@@ -514,9 +519,12 @@ class StateWatcher {
    * Map task status to event type
    */
   private getTaskEventType(
-    status: string
+    status: string,
   ): "task:created" | "task:started" | "task:progress" | "task:completed" | "task:failed" {
-    const map: Record<string, "task:created" | "task:started" | "task:progress" | "task:completed" | "task:failed"> = {
+    const map: Record<
+      string,
+      "task:created" | "task:started" | "task:progress" | "task:completed" | "task:failed"
+    > = {
       pending: "task:created",
       queued: "task:created",
       running: "task:started",

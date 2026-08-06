@@ -15,12 +15,12 @@
  * <loki-council-transcripts api-url="http://localhost:57374"></loki-council-transcripts>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 export class LokiCouncilTranscripts extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -50,19 +50,18 @@ export class LokiCouncilTranscripts extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._load();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
     const apiUrl =
-      this.getAttribute('api-url') ||
-      (typeof window !== 'undefined' ? window.location.origin : '');
+      this.getAttribute("api-url") || (typeof window !== "undefined" ? window.location.origin : "");
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -70,12 +69,10 @@ export class LokiCouncilTranscripts extends LokiElement {
     this._loading = true;
     this._error = null;
     try {
-      const data = await this._api.get('/api/council/transcripts?limit=10');
-      this._transcripts = Array.isArray(data && data.transcripts)
-        ? data.transcripts
-        : [];
+      const data = await this._api.get("/api/council/transcripts?limit=10");
+      this._transcripts = Array.isArray(data && data.transcripts) ? data.transcripts : [];
     } catch (err) {
-      this._error = (err && err.message) ? err.message : String(err);
+      this._error = err && err.message ? err.message : String(err);
       this._transcripts = [];
     }
     // Live tool activity: the server exposes Claude hook events through the
@@ -85,13 +82,11 @@ export class LokiCouncilTranscripts extends LokiElement {
     // handled independently.
     try {
       const hooks = await this._api.get(
-        '/api/council/transcripts?limit=20&type_prefix=claude_hook_'
+        "/api/council/transcripts?limit=20&type_prefix=claude_hook_",
       );
       // The server returns hook events under the `hook_events` key when
       // type_prefix is set (see get_council_transcripts in server.py).
-      this._hookEvents = Array.isArray(hooks && hooks.hook_events)
-        ? hooks.hook_events
-        : [];
+      this._hookEvents = Array.isArray(hooks && hooks.hook_events) ? hooks.hook_events : [];
     } catch (err) {
       this._hookEvents = [];
     } finally {
@@ -101,17 +96,17 @@ export class LokiCouncilTranscripts extends LokiElement {
   }
 
   _escapeHtml(s) {
-    if (s === null || s === undefined) return '';
+    if (s === null || s === undefined) return "";
     return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   _formatTimestamp(iso) {
-    if (!iso) return '--';
+    if (!iso) return "--";
     try {
       const d = new Date(iso);
       if (isNaN(d.getTime())) return iso;
@@ -122,53 +117,57 @@ export class LokiCouncilTranscripts extends LokiElement {
   }
 
   _truncate(str, max) {
-    if (!str) return '';
+    if (!str) return "";
     const s = String(str);
-    return s.length > max ? s.slice(0, max) + '...' : s;
+    return s.length > max ? s.slice(0, max) + "..." : s;
   }
 
   _verdictBadgeHtml(verdict) {
-    const v = String(verdict || '').toUpperCase();
-    if (v === 'APPROVE') {
+    const v = String(verdict || "").toUpperCase();
+    if (v === "APPROVE") {
       return '<span class="ct-badge ct-badge-approve">APPROVE</span>';
     }
-    if (v === 'REJECT') {
+    if (v === "REJECT") {
       return '<span class="ct-badge ct-badge-reject">REJECT</span>';
     }
-    if (v === 'CANNOT_VALIDATE') {
+    if (v === "CANNOT_VALIDATE") {
       return '<span class="ct-badge ct-badge-cannot">CANNOT_VALIDATE</span>';
     }
-    return '<span class="ct-badge ct-badge-unknown">' + this._escapeHtml(v || 'UNKNOWN') + '</span>';
+    return (
+      '<span class="ct-badge ct-badge-unknown">' + this._escapeHtml(v || "UNKNOWN") + "</span>"
+    );
   }
 
   _outcomeBadgeHtml(outcome) {
-    const o = String(outcome || '').toUpperCase();
-    if (o === 'APPROVED') {
+    const o = String(outcome || "").toUpperCase();
+    if (o === "APPROVED") {
       return '<span class="ct-badge ct-badge-approve">APPROVED</span>';
     }
-    if (o === 'REJECTED') {
+    if (o === "REJECTED") {
       return '<span class="ct-badge ct-badge-reject">REJECTED</span>';
     }
-    if (o === 'BLOCKED_BY_GATE') {
+    if (o === "BLOCKED_BY_GATE") {
       return '<span class="ct-badge ct-badge-blocked">BLOCKED BY GATE</span>';
     }
-    return '<span class="ct-badge ct-badge-unknown">' + this._escapeHtml(o || 'UNKNOWN') + '</span>';
+    return (
+      '<span class="ct-badge ct-badge-unknown">' + this._escapeHtml(o || "UNKNOWN") + "</span>"
+    );
   }
 
   _voterRowHtml(voter, contrarian_flipped) {
     const isContrarian = voter.is_contrarian === true;
     const isFlipped = isContrarian && contrarian_flipped === true;
 
-    let rowClass = 'ct-voter-row';
-    if (isContrarian) rowClass += ' ct-voter-contrarian';
-    if (isFlipped) rowClass += ' ct-voter-flipped';
+    let rowClass = "ct-voter-row";
+    if (isContrarian) rowClass += " ct-voter-contrarian";
+    if (isFlipped) rowClass += " ct-voter-flipped";
 
-    const name = this._escapeHtml(voter.name || 'unknown');
+    const name = this._escapeHtml(voter.name || "unknown");
     const badge = this._verdictBadgeHtml(voter.verdict);
     const reasoning = this._escapeHtml(this._truncate(voter.reasoning, 300));
 
-    let overrideBadge = '';
-    let flipCaption = '';
+    let overrideBadge = "";
+    let flipCaption = "";
     if (isFlipped) {
       overrideBadge = '<span class="ct-badge ct-badge-override">OVERRIDE</span>';
       flipCaption = '<div class="ct-flip-caption">Devil\'s Advocate flipped this outcome</div>';
@@ -176,52 +175,55 @@ export class LokiCouncilTranscripts extends LokiElement {
       overrideBadge = '<span class="ct-badge ct-badge-da">DEVIL\'S ADVOCATE</span>';
     }
 
-    let challengesHtml = '';
-    if (
-      isContrarian &&
-      Array.isArray(voter.challenges) &&
-      voter.challenges.length > 0
-    ) {
+    let challengesHtml = "";
+    if (isContrarian && Array.isArray(voter.challenges) && voter.challenges.length > 0) {
       const items = voter.challenges
-        .map((c) => '<li>' + this._escapeHtml(String(c)) + '</li>')
-        .join('');
-      challengesHtml =
-        '<ul class="ct-challenges">' + items + '</ul>';
+        .map((c) => "<li>" + this._escapeHtml(String(c)) + "</li>")
+        .join("");
+      challengesHtml = '<ul class="ct-challenges">' + items + "</ul>";
     }
 
-    let issuesHtml = '';
+    let issuesHtml = "";
     if (Array.isArray(voter.issues) && voter.issues.length > 0) {
       const items = voter.issues
         .map((iss) => {
-          const sev = this._escapeHtml(iss.severity || '');
-          const desc = this._escapeHtml(iss.description || '');
+          const sev = this._escapeHtml(iss.severity || "");
+          const desc = this._escapeHtml(iss.description || "");
           return (
             '<li><span class="ct-issue-sev ct-issue-sev-' +
             sev.toLowerCase() +
-            '">' + sev + '</span> ' + desc + '</li>'
+            '">' +
+            sev +
+            "</span> " +
+            desc +
+            "</li>"
           );
         })
-        .join('');
-      issuesHtml = '<ul class="ct-issues">' + items + '</ul>';
+        .join("");
+      issuesHtml = '<ul class="ct-issues">' + items + "</ul>";
     }
 
     return (
-      '<div class="' + rowClass + '">' +
-        '<div class="ct-voter-header">' +
-          '<span class="ct-voter-name">' + name + '</span>' +
-          badge +
-          overrideBadge +
-        '</div>' +
-        (reasoning ? '<div class="ct-voter-reason">' + reasoning + '</div>' : '') +
-        challengesHtml +
-        issuesHtml +
-        flipCaption +
-      '</div>'
+      '<div class="' +
+      rowClass +
+      '">' +
+      '<div class="ct-voter-header">' +
+      '<span class="ct-voter-name">' +
+      name +
+      "</span>" +
+      badge +
+      overrideBadge +
+      "</div>" +
+      (reasoning ? '<div class="ct-voter-reason">' + reasoning + "</div>" : "") +
+      challengesHtml +
+      issuesHtml +
+      flipCaption +
+      "</div>"
     );
   }
 
   _transcriptCardHtml(t) {
-    const iterNum = this._escapeHtml(String(t.iteration || '--'));
+    const iterNum = this._escapeHtml(String(t.iteration || "--"));
     const ts = this._escapeHtml(this._formatTimestamp(t.timestamp));
     const preview = this._escapeHtml(this._truncate(t.task_or_prd, 200));
     const outcome = this._outcomeBadgeHtml(t.outcome);
@@ -230,45 +232,50 @@ export class LokiCouncilTranscripts extends LokiElement {
     const regularVoters = voters.filter((v) => !v.is_contrarian);
     const contrarianVoters = voters.filter((v) => v.is_contrarian);
 
-    const voterRows = regularVoters
-      .map((v) => this._voterRowHtml(v, false))
-      .join('');
+    const voterRows = regularVoters.map((v) => this._voterRowHtml(v, false)).join("");
 
-    let contrarianSection = '';
+    let contrarianSection = "";
     if (t.contrarian_triggered) {
       const daRows = contrarianVoters
         .map((v) => this._voterRowHtml(v, t.contrarian_flipped))
-        .join('');
+        .join("");
       contrarianSection =
         '<div class="ct-contrarian-section">' +
-          '<div class="ct-section-label">Anti-Sycophancy Check</div>' +
-          daRows +
-        '</div>';
+        '<div class="ct-section-label">Anti-Sycophancy Check</div>' +
+        daRows +
+        "</div>";
     }
 
-    const approveCount = typeof t.approve_count === 'number' ? t.approve_count : '--';
-    const rejectCount = typeof t.reject_count === 'number' ? t.reject_count : '--';
-    const threshold = typeof t.threshold === 'number' ? t.threshold : '--';
+    const approveCount = typeof t.approve_count === "number" ? t.approve_count : "--";
+    const rejectCount = typeof t.reject_count === "number" ? t.reject_count : "--";
+    const threshold = typeof t.threshold === "number" ? t.threshold : "--";
 
     return (
       '<div class="ct-card">' +
-        '<div class="ct-card-header">' +
-          '<div class="ct-card-meta">' +
-            '<span class="ct-iter-label">Iteration ' + iterNum + '</span>' +
-            '<span class="ct-ts">' + ts + '</span>' +
-          '</div>' +
-          outcome +
-        '</div>' +
-        (preview
-          ? '<div class="ct-prd-preview">' + preview + '</div>'
-          : '') +
-        '<div class="ct-tally">Approve: ' + approveCount +
-          ' &middot; Reject: ' + rejectCount +
-          ' &middot; Threshold: ' + threshold +
-        '</div>' +
-        '<div class="ct-voters">' + voterRows + '</div>' +
-        contrarianSection +
-      '</div>'
+      '<div class="ct-card-header">' +
+      '<div class="ct-card-meta">' +
+      '<span class="ct-iter-label">Iteration ' +
+      iterNum +
+      "</span>" +
+      '<span class="ct-ts">' +
+      ts +
+      "</span>" +
+      "</div>" +
+      outcome +
+      "</div>" +
+      (preview ? '<div class="ct-prd-preview">' + preview + "</div>" : "") +
+      '<div class="ct-tally">Approve: ' +
+      approveCount +
+      " &middot; Reject: " +
+      rejectCount +
+      " &middot; Threshold: " +
+      threshold +
+      "</div>" +
+      '<div class="ct-voters">' +
+      voterRows +
+      "</div>" +
+      contrarianSection +
+      "</div>"
     );
   }
 
@@ -447,36 +454,34 @@ export class LokiCouncilTranscripts extends LokiElement {
       </style>
     `;
 
-    let body = '';
+    let body = "";
     if (this._loading && this._transcripts.length === 0) {
       body = '<div class="ct-empty">Loading council transcripts...</div>';
     } else if (this._error) {
       body =
         '<div class="ct-error">Failed to load transcripts: ' +
         this._escapeHtml(this._error) +
-        '</div>';
+        "</div>";
     } else if (!this._transcripts || this._transcripts.length === 0) {
       body =
         '<div class="ct-empty">No council rounds recorded yet -- ' +
-        'transcripts appear after the first iteration vote.</div>';
+        "transcripts appear after the first iteration vote.</div>";
     } else {
-      const cards = this._transcripts
-        .map((t) => this._transcriptCardHtml(t))
-        .join('');
-      body = '<div class="ct-list">' + cards + '</div>';
+      const cards = this._transcripts.map((t) => this._transcriptCardHtml(t)).join("");
+      body = '<div class="ct-list">' + cards + "</div>";
     }
 
     root.innerHTML =
       styleBlock +
       '<div class="ct-wrapper">' +
-        '<h3 class="ct-heading">Council Transcripts</h3>' +
-        '<div class="ct-explain">' +
-          'Per-iteration voting records from .loki/council/transcripts/. ' +
-          'Polls every 30 seconds.' +
-        '</div>' +
-        body +
-        this._hookEventsHtml() +
-      '</div>';
+      '<h3 class="ct-heading">Council Transcripts</h3>' +
+      '<div class="ct-explain">' +
+      "Per-iteration voting records from .loki/council/transcripts/. " +
+      "Polls every 30 seconds." +
+      "</div>" +
+      body +
+      this._hookEventsHtml() +
+      "</div>";
   }
 
   _hookEventsHtml() {
@@ -485,42 +490,45 @@ export class LokiCouncilTranscripts extends LokiElement {
     if (events.length === 0) {
       inner =
         '<div class="ct-empty">No live tool activity yet -- Claude hook ' +
-        'events stream here while a run is active.</div>';
+        "events stream here while a run is active.</div>";
     } else {
       const rows = events
         .slice(0, 20)
         .map((e) => {
-          const type = this._escapeHtml(e.type || e.event || 'event');
+          const type = this._escapeHtml(e.type || e.event || "event");
           const ts = this._escapeHtml(this._formatTimestamp(e.timestamp || e.ts));
           const detail = this._escapeHtml(
             this._truncate(
-              e.tool || e.message || e.summary ||
-                (e.data ? JSON.stringify(e.data) : ''),
-              120
-            )
+              e.tool || e.message || e.summary || (e.data ? JSON.stringify(e.data) : ""),
+              120,
+            ),
           );
           return (
             '<div class="ct-voter-row">' +
-              '<span class="ct-iter-label">' + type + '</span> ' +
-              '<span class="ct-ts">' + ts + '</span>' +
-              (detail ? '<div class="ct-prd-preview">' + detail + '</div>' : '') +
-            '</div>'
+            '<span class="ct-iter-label">' +
+            type +
+            "</span> " +
+            '<span class="ct-ts">' +
+            ts +
+            "</span>" +
+            (detail ? '<div class="ct-prd-preview">' + detail + "</div>" : "") +
+            "</div>"
           );
         })
-        .join('');
-      inner = '<div class="ct-voters">' + rows + '</div>';
+        .join("");
+      inner = '<div class="ct-voters">' + rows + "</div>";
     }
     return (
       '<h3 class="ct-heading" style="margin-top:24px;">Live Tool Activity</h3>' +
       '<div class="ct-explain">' +
-        'Claude hook events (PreToolUse / PostToolUse / Stop) streamed from ' +
-        '.loki/events.jsonl. Lets you watch background tool calls as they run.' +
-      '</div>' +
+      "Claude hook events (PreToolUse / PostToolUse / Stop) streamed from " +
+      ".loki/events.jsonl. Lets you watch background tool calls as they run." +
+      "</div>" +
       inner
     );
   }
 }
 
-if (typeof customElements !== 'undefined' && !customElements.get('loki-council-transcripts')) {
-  customElements.define('loki-council-transcripts', LokiCouncilTranscripts);
+if (typeof customElements !== "undefined" && !customElements.get("loki-council-transcripts")) {
+  customElements.define("loki-council-transcripts", LokiCouncilTranscripts);
 }

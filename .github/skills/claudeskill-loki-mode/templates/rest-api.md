@@ -1,9 +1,11 @@
 # PRD: REST API Service (No Auth)
 
 ## Overview
+
 A production-ready RESTful API backend with CRUD operations, pagination, filtering, input validation, and auto-generated documentation. This template focuses on API design fundamentals without authentication complexity. For JWT auth, see `rest-api-auth.md`.
 
 ## Target Users
+
 - Backend developers building API-first applications
 - Teams needing a structured API for frontend or mobile clients
 - Developers learning REST API best practices
@@ -11,6 +13,7 @@ A production-ready RESTful API backend with CRUD operations, pagination, filteri
 ## Features
 
 ### MVP Features
+
 1. **Resource CRUD** - Full create, read, update, delete operations with proper HTTP methods and status codes
 2. **Pagination and Filtering** - Cursor-based pagination, field filtering, sorting, and search across resources
 3. **Input Validation** - Request body and query parameter validation with detailed error messages
@@ -20,6 +23,7 @@ A production-ready RESTful API backend with CRUD operations, pagination, filteri
 7. **CORS Configuration** - Configurable allowed origins, methods, and headers
 
 ### User Flow
+
 1. Client sends request to a resource endpoint (e.g., GET /api/posts)
 2. Server validates query params (pagination, filters, sort)
 3. Server queries database with applied filters and pagination
@@ -27,6 +31,7 @@ A production-ready RESTful API backend with CRUD operations, pagination, filteri
 5. Swagger UI available at /docs for interactive API exploration
 
 ## Tech Stack
+
 - Runtime: Node.js 20+
 - Framework: Express.js with TypeScript
 - Database: SQLite (dev) / PostgreSQL (prod) via Prisma ORM
@@ -35,6 +40,7 @@ A production-ready RESTful API backend with CRUD operations, pagination, filteri
 - Testing: Vitest + supertest
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -71,6 +77,7 @@ A production-ready RESTful API backend with CRUD operations, pagination, filteri
 ## Environment Variables
 
 ### .env.example
+
 ```bash
 # Server
 PORT=3000
@@ -106,38 +113,46 @@ CREATE INDEX idx_posts_created_at ON posts(created_at);
 ### Posts
 
 #### POST /api/posts
+
 - Body: `{ title, body, tags?, status? }`
 - Response: `201 { id, title, body, slug, status, tags, createdAt, updatedAt }`
 - Error: `400` validation
 
 #### GET /api/posts
+
 - Query: `?cursor=&limit=20&status=published&search=keyword&sort=createdAt&order=desc`
 - Response: `200 { data: [...], pagination: { nextCursor, hasMore, total } }`
 
 #### GET /api/posts/:id
+
 - Response: `200 { id, title, body, slug, status, tags, createdAt, updatedAt }`
 - Error: `404` not found
 
 #### PATCH /api/posts/:id
+
 - Body: `{ title?, body?, tags?, status? }`
 - Response: `200 { id, title, body, slug, status, tags, createdAt, updatedAt }`
 - Error: `404` not found, `400` validation
 
 #### DELETE /api/posts/:id
+
 - Response: `204` no content
 - Error: `404` not found
 
 ### Health
 
 #### GET /health
+
 - Response: `200 { status: "ok", timestamp, version }`
 
 ### Documentation
 
 #### GET /docs
+
 - Swagger UI with interactive API documentation
 
 ## Requirements
+
 - TypeScript throughout
 - All inputs validated with zod before processing
 - Consistent error format: `{ error: { code, message, details? } }`
@@ -150,12 +165,14 @@ CREATE INDEX idx_posts_created_at ON posts(created_at);
 ## Testing
 
 ### Unit Tests
+
 - Pagination cursor encoding and decoding
 - Input validation schemas
 - Slug generation from titles
 - Error formatting
 
 ### Integration Tests
+
 - Full CRUD lifecycle for posts
 - Pagination across multiple pages
 - Filtering by status and search term
@@ -163,11 +180,13 @@ CREATE INDEX idx_posts_created_at ON posts(created_at);
 - Swagger endpoint serves valid OpenAPI spec
 
 ### Test Coverage
+
 - Target: 85%+ line coverage
 - All error paths tested
 - All validation rules tested
 
 ## Out of Scope
+
 - Authentication and authorization (see `rest-api-auth.md`)
 - User accounts and sessions
 - Rate limiting (see `rest-api-auth.md`)
@@ -177,6 +196,7 @@ CREATE INDEX idx_posts_created_at ON posts(created_at);
 - Frontend or UI
 
 ## Acceptance Criteria
+
 - All CRUD endpoints return correct status codes and response shapes
 - Pagination returns correct pages with proper cursor metadata
 - Search and filtering narrow results accurately
@@ -185,6 +205,7 @@ CREATE INDEX idx_posts_created_at ON posts(created_at);
 - All tests pass with 85%+ coverage
 
 ## Success Criteria
+
 - API starts and responds to all documented endpoints
 - Swagger docs match actual API behavior
 - Seed data loads correctly for development

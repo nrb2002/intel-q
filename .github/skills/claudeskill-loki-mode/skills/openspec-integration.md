@@ -135,10 +135,10 @@ The verification map tracks each scenario with `"verified": false` initially. Af
 
 `.loki/openspec/source-map.json` maps each task ID to its origin in tasks.md.
 
-| Field | Purpose |
-|-------|---------|
-| `file` | Source file (always `tasks.md`) |
-| `line` | Line number in tasks.md (1-indexed) |
+| Field   | Purpose                                         |
+| ------- | ----------------------------------------------- |
+| `file`  | Source file (always `tasks.md`)                 |
+| `line`  | Line number in tasks.md (1-indexed)             |
 | `group` | Task group name from `## N. Group Name` heading |
 
 ```json
@@ -157,12 +157,12 @@ Use this to trace implementation decisions back to the specification.
 
 The adapter classifies complexity based on task count, spec file count, and design.md presence. Checked in order (first match wins):
 
-| Level | Condition | Agent Strategy |
-|-------|-----------|----------------|
-| enterprise | 20+ tasks OR 10+ spec files | Full agent team |
-| complex | 11-20 tasks OR 6-10 spec files | Task tool parallelization |
-| standard | 4-10 tasks OR 2-5 spec files OR design.md present | Parallel where possible |
-| simple | 1-3 tasks, 1 spec file, no design | Single agent, sequential |
+| Level      | Condition                                         | Agent Strategy            |
+| ---------- | ------------------------------------------------- | ------------------------- |
+| enterprise | 20+ tasks OR 10+ spec files                       | Full agent team           |
+| complex    | 11-20 tasks OR 6-10 spec files                    | Task tool parallelization |
+| standard   | 4-10 tasks OR 2-5 spec files OR design.md present | Parallel where possible   |
+| simple     | 1-3 tasks, 1 spec file, no design                 | Single agent, sequential  |
 
 ---
 
@@ -170,23 +170,23 @@ The adapter classifies complexity based on task count, spec file count, and desi
 
 All output files are written to `.loki/` by the adapter (`autonomy/openspec-adapter.py`):
 
-| File | Purpose |
-|------|---------|
-| `.loki/openspec-prd-normalized.md` | Synthesized PRD from proposal + specs + design |
-| `.loki/openspec-tasks.json` | Task list parsed from tasks.md |
-| `.loki/openspec/delta-context.json` | Structured deltas with stats and complexity |
-| `.loki/openspec/source-map.json` | Task ID to tasks.md line mapping |
-| `.loki/openspec/verification-map.json` | Scenario verification tracking |
+| File                                   | Purpose                                        |
+| -------------------------------------- | ---------------------------------------------- |
+| `.loki/openspec-prd-normalized.md`     | Synthesized PRD from proposal + specs + design |
+| `.loki/openspec-tasks.json`            | Task list parsed from tasks.md                 |
+| `.loki/openspec/delta-context.json`    | Structured deltas with stats and complexity    |
+| `.loki/openspec/source-map.json`       | Task ID to tasks.md line mapping               |
+| `.loki/openspec/verification-map.json` | Scenario verification tracking                 |
 
 ---
 
 ## Common Mistakes
 
-| Mistake | Correction |
-|---------|------------|
-| Creating new files for MODIFIED requirements | Search codebase first, update existing code in place |
-| Ignoring `(Previously: ...)` annotations | These tell you exactly what changed -- read them |
-| Not writing tests for GIVEN/WHEN/THEN scenarios | Every scenario must have a corresponding test |
-| Treating all deltas as ADDED | Most brownfield work is MODIFIED -- check the delta type |
-| Skipping REMOVED cleanup | Dead code and orphaned imports cause maintenance burden |
-| Implementing groups out of order | Group 1 must complete before group 2 starts |
+| Mistake                                         | Correction                                               |
+| ----------------------------------------------- | -------------------------------------------------------- |
+| Creating new files for MODIFIED requirements    | Search codebase first, update existing code in place     |
+| Ignoring `(Previously: ...)` annotations        | These tell you exactly what changed -- read them         |
+| Not writing tests for GIVEN/WHEN/THEN scenarios | Every scenario must have a corresponding test            |
+| Treating all deltas as ADDED                    | Most brownfield work is MODIFIED -- check the delta type |
+| Skipping REMOVED cleanup                        | Dead code and orphaned imports cause maintenance burden  |
+| Implementing groups out of order                | Group 1 must complete before group 2 starts              |

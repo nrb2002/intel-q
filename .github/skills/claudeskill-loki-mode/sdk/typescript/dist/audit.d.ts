@@ -9,5 +9,5 @@
  *   - queryAudit(params?): Promise<AuditEntry[]>
  *   - verifyAudit(): Promise<AuditVerifyResult>
  */
-export type { AuditEntry, AuditQueryParams, AuditVerifyResult } from './types.js';
+export type { AuditEntry, AuditQueryParams, AuditVerifyResult } from "./types.js";
 //# sourceMappingURL=audit.d.ts.map

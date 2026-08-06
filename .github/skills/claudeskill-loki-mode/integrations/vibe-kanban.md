@@ -4,13 +4,13 @@ Loki Mode can optionally integrate with [Vibe Kanban](https://github.com/BloopAI
 
 ## Why Use Vibe Kanban with Loki Mode?
 
-| Feature | Loki Mode Alone | + Vibe Kanban |
-|---------|-----------------|---------------|
-| Task visualization | File-based queues | Visual kanban board |
-| Progress monitoring | Log files | Real-time dashboard |
-| Manual intervention | Edit queue files | Drag-and-drop tasks |
-| Code review | Automated 3-reviewer | + Visual diff review |
-| Parallel agents | Background subagents | Isolated git worktrees |
+| Feature             | Loki Mode Alone      | + Vibe Kanban          |
+| ------------------- | -------------------- | ---------------------- |
+| Task visualization  | File-based queues    | Visual kanban board    |
+| Progress monitoring | Log files            | Real-time dashboard    |
+| Manual intervention | Edit queue files     | Drag-and-drop tasks    |
+| Code review         | Automated 3-reviewer | + Visual diff review   |
+| Parallel agents     | Background subagents | Isolated git worktrees |
 
 ## Quick Start Guide
 
@@ -21,6 +21,7 @@ npx vibe-kanban
 ```
 
 This will:
+
 - Start the Vibe Kanban server
 - Automatically open the UI in your browser
 - Keep the server running (leave this terminal open)
@@ -51,6 +52,7 @@ Open another terminal in the same project directory:
 ```
 
 You should see output like:
+
 ```
 [INFO] Project: your-project-name
 [INFO] Path: /Users/username/git/your-project
@@ -88,7 +90,7 @@ Or create `.loki/config/integrations.yaml`:
 ```yaml
 vibe-kanban:
   enabled: true
-  sync_interval: 30  # seconds
+  sync_interval: 30 # seconds
   export_path: ~/.vibe-kanban/loki-tasks/
 ```
 
@@ -108,21 +110,23 @@ Loki Mode (.loki/queue/)     sync-to-vibe-kanban.sh     Vibe Kanban (SQLite)
 ```
 
 **Database Location:**
+
 - macOS: `~/Library/Application Support/ai.bloop.vibe-kanban/db.sqlite`
 - Linux: `~/.local/share/ai.bloop.vibe-kanban/db.sqlite` or `~/.config/ai.bloop.vibe-kanban/db.sqlite`
 
 ### Status Mapping
 
 | Loki Status | Vibe Kanban Status |
-|-------------|-------------------|
-| pending | todo |
-| in-progress | inprogress |
-| completed | done |
-| failed | cancelled |
+| ----------- | ------------------ |
+| pending     | todo               |
+| in-progress | inprogress         |
+| completed   | done               |
+| failed      | cancelled          |
 
 ### Task Identification
 
 All synced tasks use `[Loki]` prefix in title for safe identification. On each sync:
+
 1. Delete all `[Loki]` tasks for the project
 2. Re-insert current tasks from queue files
 
@@ -202,26 +206,30 @@ done
 ## Benefits of Combined Usage
 
 ### 1. Visual Progress Tracking
+
 See all active Loki agents as tasks moving across your kanban board.
 
 ### 2. Safe Isolation
+
 Vibe Kanban runs each agent in isolated git worktrees, perfect for Loki's parallel development.
 
 ### 3. Human-in-the-Loop Option
+
 Pause autonomous execution, review changes visually, then resume.
 
 ### 4. Multi-Project Dashboard
+
 If running Loki Mode on multiple projects, see all in one Vibe Kanban instance.
 
 ## Comparison: When to Use What
 
-| Scenario | Recommendation |
-|----------|----------------|
-| Fully autonomous, no monitoring | Loki Mode + Wrapper only |
-| Need visual progress dashboard | Add Vibe Kanban |
-| Want manual task prioritization | Use Vibe Kanban to reorder |
-| Code review before merge | Use Vibe Kanban's diff viewer |
-| Multiple concurrent PRDs | Vibe Kanban for project switching |
+| Scenario                        | Recommendation                    |
+| ------------------------------- | --------------------------------- |
+| Fully autonomous, no monitoring | Loki Mode + Wrapper only          |
+| Need visual progress dashboard  | Add Vibe Kanban                   |
+| Want manual task prioritization | Use Vibe Kanban to reorder        |
+| Code review before merge        | Use Vibe Kanban's diff viewer     |
+| Multiple concurrent PRDs        | Vibe Kanban for project switching |
 
 ## Troubleshooting
 
@@ -230,6 +238,7 @@ If running Loki Mode on multiple projects, see all in one Vibe Kanban instance.
 **Cause:** No tasks in `.loki/queue/` yet.
 
 **Solutions:**
+
 1. Make sure Loki Mode is actually running and has created tasks
 2. Check if `.loki/queue/` directory exists: `ls -la .loki/queue/`
 3. Verify queue files have content: `cat .loki/queue/pending.json`
@@ -246,6 +255,7 @@ If running Loki Mode on multiple projects, see all in one Vibe Kanban instance.
 **Cause:** `.loki/STATUS.txt` is only created when using the autonomy runner.
 
 **Solutions:**
+
 - Use autonomy runner: `./autonomy/run.sh ./prd.md` instead of manual Claude Code
 - Or check task queues directly: `ls -la .loki/queue/`
 - Monitor orchestrator state: `cat .loki/state/orchestrator.json | jq`
@@ -253,6 +263,7 @@ If running Loki Mode on multiple projects, see all in one Vibe Kanban instance.
 ### Issue: "Tasks not appearing in Vibe Kanban"
 
 **Checklist:**
+
 1. Is Vibe Kanban running? Check http://127.0.0.1:53380
 2. Did you run the export script? `./scripts/export-to-vibe-kanban.sh`
 3. Check export directory has files: `ls ~/.vibe-kanban/loki-tasks/`
@@ -264,6 +275,7 @@ If running Loki Mode on multiple projects, see all in one Vibe Kanban instance.
 **Explanation:** The export script runs on-demand, not automatically.
 
 **Solutions:**
+
 1. Run `./scripts/vibe-sync-watcher.sh` for automatic sync
 2. Or manually run export script periodically: `watch -n 10 ./scripts/export-to-vibe-kanban.sh`
 3. Or refresh manually when you want to check progress

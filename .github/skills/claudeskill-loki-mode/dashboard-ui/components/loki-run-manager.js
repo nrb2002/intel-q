@@ -7,17 +7,41 @@
  * <loki-run-manager api-url="http://localhost:57374" project-id="5" theme="dark"></loki-run-manager>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, bg: string, label: string}>} */
 const RUN_STATUS_CONFIG = {
-  running:   { color: 'var(--loki-green, #22c55e)',      bg: 'var(--loki-green-muted, rgba(34, 197, 94, 0.15))',  label: 'Running' },
-  completed: { color: 'var(--loki-blue, #3b82f6)',       bg: 'var(--loki-blue-muted, rgba(59, 130, 246, 0.15))',  label: 'Completed' },
-  failed:    { color: 'var(--loki-red, #ef4444)',        bg: 'var(--loki-red-muted, rgba(239, 68, 68, 0.15))',    label: 'Failed' },
-  cancelled: { color: 'var(--loki-yellow, #eab308)',     bg: 'var(--loki-yellow-muted, rgba(234, 179, 8, 0.15))', label: 'Cancelled' },
-  pending:   { color: 'var(--loki-text-muted, #939084)', bg: 'var(--loki-bg-tertiary, #ECEAE3)',                   label: 'Pending' },
-  queued:    { color: 'var(--loki-text-muted, #939084)', bg: 'var(--loki-bg-tertiary, #ECEAE3)',                   label: 'Queued' },
+  running: {
+    color: "var(--loki-green, #22c55e)",
+    bg: "var(--loki-green-muted, rgba(34, 197, 94, 0.15))",
+    label: "Running",
+  },
+  completed: {
+    color: "var(--loki-blue, #3b82f6)",
+    bg: "var(--loki-blue-muted, rgba(59, 130, 246, 0.15))",
+    label: "Completed",
+  },
+  failed: {
+    color: "var(--loki-red, #ef4444)",
+    bg: "var(--loki-red-muted, rgba(239, 68, 68, 0.15))",
+    label: "Failed",
+  },
+  cancelled: {
+    color: "var(--loki-yellow, #eab308)",
+    bg: "var(--loki-yellow-muted, rgba(234, 179, 8, 0.15))",
+    label: "Cancelled",
+  },
+  pending: {
+    color: "var(--loki-text-muted, #939084)",
+    bg: "var(--loki-bg-tertiary, #ECEAE3)",
+    label: "Pending",
+  },
+  queued: {
+    color: "var(--loki-text-muted, #939084)",
+    bg: "var(--loki-bg-tertiary, #ECEAE3)",
+    label: "Queued",
+  },
 };
 
 /**
@@ -34,7 +58,7 @@ export function formatRunDuration(durationMs, startedAt, endedAt) {
     const end = endedAt ? new Date(endedAt).getTime() : Date.now();
     ms = end - start;
   }
-  if (ms == null || ms < 0) return '--';
+  if (ms == null || ms < 0) return "--";
   if (ms < 1000) return `${ms}ms`;
   const sec = Math.floor(ms / 1000);
   if (sec < 60) return `${sec}s`;
@@ -52,14 +76,14 @@ export function formatRunDuration(durationMs, startedAt, endedAt) {
  * @returns {string}
  */
 export function formatRunTime(timestamp) {
-  if (!timestamp) return '--';
+  if (!timestamp) return "--";
   try {
     const d = new Date(timestamp);
     return d.toLocaleString([], {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return String(timestamp);
@@ -75,7 +99,7 @@ export function formatRunTime(timestamp) {
  */
 export class LokiRunManager extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'project-id', 'theme'];
+    return ["api-url", "project-id", "theme"];
   }
 
   constructor() {
@@ -89,15 +113,15 @@ export class LokiRunManager extends LokiElement {
   }
 
   get projectId() {
-    const val = this.getAttribute('project-id');
+    const val = this.getAttribute("project-id");
     return val ? parseInt(val, 10) : null;
   }
 
   set projectId(val) {
     if (val != null) {
-      this.setAttribute('project-id', String(val));
+      this.setAttribute("project-id", String(val));
     } else {
-      this.removeAttribute('project-id');
+      this.removeAttribute("project-id");
     }
   }
 
@@ -115,20 +139,20 @@ export class LokiRunManager extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'project-id') {
+    if (name === "project-id") {
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -147,7 +171,7 @@ export class LokiRunManager extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -156,7 +180,7 @@ export class LokiRunManager extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -164,7 +188,7 @@ export class LokiRunManager extends LokiElement {
   async _loadData() {
     try {
       const projectId = this.projectId;
-      const query = projectId != null ? `?project_id=${projectId}` : '';
+      const query = projectId != null ? `?project_id=${projectId}` : "";
       const data = await this._api._get(`/api/v2/runs${query}`);
       const runs = data?.runs || data || [];
       const dataHash = JSON.stringify(runs);
@@ -204,12 +228,12 @@ export class LokiRunManager extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getStyles() {
@@ -381,30 +405,32 @@ export class LokiRunManager extends LokiElement {
     } else if (runs.length === 0) {
       content = '<div class="empty-state">No runs found.</div>';
     } else {
-      const rows = runs.map(run => {
-        const status = (run.status || 'pending').toLowerCase();
-        const cfg = RUN_STATUS_CONFIG[status] || RUN_STATUS_CONFIG.pending;
-        const isRunning = status === 'running';
-        const canReplay = status === 'completed' || status === 'failed' || status === 'cancelled';
-        const duration = formatRunDuration(run.duration_ms, run.started_at, run.ended_at);
+      const rows = runs
+        .map((run) => {
+          const status = (run.status || "pending").toLowerCase();
+          const cfg = RUN_STATUS_CONFIG[status] || RUN_STATUS_CONFIG.pending;
+          const isRunning = status === "running";
+          const canReplay = status === "completed" || status === "failed" || status === "cancelled";
+          const duration = formatRunDuration(run.duration_ms, run.started_at, run.ended_at);
 
-        return `
+          return `
           <tr>
             <td><span class="run-id">#${run.id}</span></td>
-            <td>${this._escapeHtml(run.project_name || run.project || (run.project_id ? `Project #${run.project_id}` : '--'))}</td>
+            <td>${this._escapeHtml(run.project_name || run.project || (run.project_id ? `Project #${run.project_id}` : "--"))}</td>
             <td><span class="status-badge" style="background: ${cfg.bg}; color: ${cfg.color};">${cfg.label}</span></td>
-            <td>${this._escapeHtml(run.trigger || run.trigger_type || '--')}</td>
+            <td>${this._escapeHtml(run.trigger || run.trigger_type || "--")}</td>
             <td>${formatRunTime(run.started_at)}</td>
             <td>${duration}</td>
             <td>
               <div class="actions-cell">
-                ${isRunning ? `<button class="btn btn-cancel" data-action="cancel" data-run-id="${run.id}">Cancel</button>` : ''}
-                ${canReplay ? `<button class="btn btn-replay" data-action="replay" data-run-id="${run.id}">Replay</button>` : ''}
+                ${isRunning ? `<button class="btn btn-cancel" data-action="cancel" data-run-id="${run.id}">Cancel</button>` : ""}
+                ${canReplay ? `<button class="btn btn-replay" data-action="replay" data-run-id="${run.id}">Replay</button>` : ""}
               </div>
             </td>
           </tr>
         `;
-      }).join('');
+        })
+        .join("");
 
       content = `
         <div class="run-count">${runs.length} runs</div>
@@ -435,7 +461,7 @@ export class LokiRunManager extends LokiElement {
           <button class="btn btn-refresh" id="refresh-btn">Refresh</button>
         </div>
         ${content}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -446,21 +472,21 @@ export class LokiRunManager extends LokiElement {
     const s = this.shadowRoot;
     if (!s) return;
 
-    const refreshBtn = s.getElementById('refresh-btn');
-    if (refreshBtn) refreshBtn.addEventListener('click', () => this._loadData());
+    const refreshBtn = s.getElementById("refresh-btn");
+    if (refreshBtn) refreshBtn.addEventListener("click", () => this._loadData());
 
-    s.querySelectorAll('[data-action="cancel"]').forEach(btn => {
-      btn.addEventListener('click', () => this._cancelRun(btn.dataset.runId));
+    s.querySelectorAll('[data-action="cancel"]').forEach((btn) => {
+      btn.addEventListener("click", () => this._cancelRun(btn.dataset.runId));
     });
 
-    s.querySelectorAll('[data-action="replay"]').forEach(btn => {
-      btn.addEventListener('click', () => this._replayRun(btn.dataset.runId));
+    s.querySelectorAll('[data-action="replay"]').forEach((btn) => {
+      btn.addEventListener("click", () => this._replayRun(btn.dataset.runId));
     });
   }
 }
 
-if (!customElements.get('loki-run-manager')) {
-  customElements.define('loki-run-manager', LokiRunManager);
+if (!customElements.get("loki-run-manager")) {
+  customElements.define("loki-run-manager", LokiRunManager);
 }
 
 export default LokiRunManager;

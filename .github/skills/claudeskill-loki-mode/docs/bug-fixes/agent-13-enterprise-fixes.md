@@ -22,6 +22,7 @@ The Helm chart `appVersion` is not included in the 14-location version bump
 checklist in CLAUDE.md. It has drifted since the chart was first created.
 
 **Affected Files:**
+
 - `deploy/helm/autonomi/Chart.yaml` (line 6)
 
 **Fix Applied:**
@@ -45,6 +46,7 @@ pods.
 
 The worker deployment does NOT set `automountServiceAccountToken` at the pod
 level, so it inherits the SA-level `false` setting. This means:
+
 - Controlplane pods: SA token IS mounted (explicit true)
 - Worker pods: SA token is NOT mounted (inherits SA false)
 
@@ -54,6 +56,7 @@ documented. If the controlplane needs the token, the SA-level `false` is
 misleading.
 
 **Affected Files:**
+
 - `deploy/helm/autonomi/templates/serviceaccount.yaml` (line 12)
 - `deploy/helm/autonomi/templates/deployment-controlplane.yaml` (line 29)
 
@@ -74,6 +77,7 @@ The A2A Agent Card endpoint (`GET /.well-known/agent.json`) in
 `dashboard/server.py:516` hardcodes `"sso": False` in the enterprise
 capabilities section. However, OIDC/SSO support is fully implemented in
 `dashboard/auth.py` with:
+
 - OIDC issuer discovery
 - JWKS key fetching and caching
 - JWT validation (with PyJWT when available)
@@ -82,6 +86,7 @@ capabilities section. However, OIDC/SSO support is fully implemented in
 The `sso` field should dynamically reflect whether OIDC is configured.
 
 **Affected Files:**
+
 - `dashboard/server.py` (line 516)
 
 **Fix Applied:**
@@ -108,6 +113,7 @@ but if RARV iteration actions should be audited at the worker level, the
 volume mount is needed.
 
 **Affected Files:**
+
 - `deploy/helm/autonomi/templates/deployment-worker.yaml` (missing audit volume mount)
 
 **Recommendation:**
@@ -134,6 +140,7 @@ found (exit code 127), it falls through to grep. This works accidentally but
 is fragile and misleading.
 
 **Affected Files:**
+
 - `deploy/helm/autonomi/tests/test-health.yaml` (line 22-23)
 
 **Fix Applied:**

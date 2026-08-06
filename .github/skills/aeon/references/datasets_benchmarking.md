@@ -9,6 +9,7 @@ From **aeon 1.4** onward, most classification and regression archives are hosted
 ### Task-Specific Loaders
 
 **Classification Datasets**:
+
 ```python
 from aeon.datasets import load_classification
 
@@ -24,6 +25,7 @@ X, y = load_classification("GunPoint")
 ```
 
 **Regression Datasets**:
+
 ```python
 from aeon.datasets import load_regression
 
@@ -36,6 +38,7 @@ download_all_regression()  # Downloads Monash TSER archive
 ```
 
 **Forecasting Datasets**:
+
 ```python
 from aeon.datasets import load_forecasting
 
@@ -44,6 +47,7 @@ y, X = load_forecasting("airline", return_X_y=True)
 ```
 
 **Anomaly Detection Datasets**:
+
 ```python
 from aeon.datasets import load_anomaly_detection
 
@@ -53,6 +57,7 @@ X, y = load_anomaly_detection("NAB_realKnownCause")
 ### File Format Loaders
 
 **Load from .ts files**:
+
 ```python
 from aeon.datasets import load_from_ts_file
 
@@ -60,6 +65,7 @@ X, y = load_from_ts_file("path/to/data.ts")
 ```
 
 **Load from .tsf files**:
+
 ```python
 from aeon.datasets import load_from_tsf_file
 
@@ -67,6 +73,7 @@ df, metadata = load_from_tsf_file("path/to/data.tsf")
 ```
 
 **Load from ARFF files**:
+
 ```python
 from aeon.datasets import load_from_arff_file
 
@@ -74,6 +81,7 @@ X, y = load_from_arff_file("path/to/data.arff")
 ```
 
 **Load from TSV files**:
+
 ```python
 from aeon.datasets import load_from_tsv_file
 
@@ -81,6 +89,7 @@ data = load_from_tsv_file("path/to/data.tsv")
 ```
 
 **Load TimeEval CSV**:
+
 ```python
 from aeon.datasets import load_from_timeeval_csv_file
 
@@ -90,6 +99,7 @@ X, y = load_from_timeeval_csv_file("path/to/timeeval.csv")
 ### Writing Datasets
 
 **Write to .ts format**:
+
 ```python
 from aeon.datasets import write_to_ts_file
 
@@ -97,6 +107,7 @@ write_to_ts_file(X, "output.ts", y=y, problem_name="MyDataset")
 ```
 
 **Write to ARFF format**:
+
 ```python
 from aeon.datasets import write_to_arff_file
 
@@ -108,6 +119,7 @@ write_to_arff_file(X, "output.arff", y=y)
 Aeon includes several benchmark datasets for quick testing:
 
 ### Classification
+
 - `ArrowHead` - Shape classification
 - `GunPoint` - Gesture recognition
 - `ItalyPowerDemand` - Energy demand
@@ -115,15 +127,18 @@ Aeon includes several benchmark datasets for quick testing:
 - And 100+ more from UCR/UEA archives
 
 ### Regression
+
 - `Covid3Month` - COVID forecasting
 - Various datasets from Monash TSER archive
 
 ### Segmentation
+
 - Time series segmentation datasets
 - Human activity data
 - Sensor data collections
 
 ### Special Collections
+
 - `RehabPile` - Rehabilitation data (classification & regression)
 
 ## Dataset Metadata
@@ -177,6 +192,7 @@ X_train, X_test, y_train, y_test = stratified_resample(
 Specialized metrics for time series tasks:
 
 **Anomaly Detection Metrics**:
+
 ```python
 from aeon.benchmarking.metrics.anomaly_detection import (
     range_precision,
@@ -193,6 +209,7 @@ auc = range_roc_auc_score(y_true, y_scores)
 ```
 
 **Clustering Metrics**:
+
 ```python
 from aeon.benchmarking.metrics.clustering import clustering_accuracy
 
@@ -201,6 +218,7 @@ accuracy = clustering_accuracy(y_true, y_pred)
 ```
 
 **Segmentation Metrics**:
+
 ```python
 from aeon.benchmarking.metrics.segmentation import (
     count_error,

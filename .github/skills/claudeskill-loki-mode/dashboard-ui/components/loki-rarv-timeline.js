@@ -8,18 +8,34 @@
  * <loki-rarv-timeline run-id="42" api-url="http://localhost:57374" theme="dark"></loki-rarv-timeline>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, label: string, description: string}>} */
 const PHASE_CONFIG = {
-  reason:  { color: 'var(--loki-blue, #3b82f6)',   label: 'Reason',  description: 'Analyzing requirements and planning approach' },
-  act:     { color: 'var(--loki-green, #22c55e)',   label: 'Act',     description: 'Implementing changes and executing tasks' },
-  reflect: { color: 'var(--loki-purple, #a78bfa)',  label: 'Reflect', description: 'Reviewing results and evaluating quality' },
-  verify:  { color: 'var(--loki-yellow, #eab308)',  label: 'Verify',  description: 'Running tests and validating correctness' },
+  reason: {
+    color: "var(--loki-blue, #3b82f6)",
+    label: "Reason",
+    description: "Analyzing requirements and planning approach",
+  },
+  act: {
+    color: "var(--loki-green, #22c55e)",
+    label: "Act",
+    description: "Implementing changes and executing tasks",
+  },
+  reflect: {
+    color: "var(--loki-purple, #a78bfa)",
+    label: "Reflect",
+    description: "Reviewing results and evaluating quality",
+  },
+  verify: {
+    color: "var(--loki-yellow, #eab308)",
+    label: "Verify",
+    description: "Running tests and validating correctness",
+  },
 };
 
-const PHASE_ORDER = ['reason', 'act', 'reflect', 'verify'];
+const PHASE_ORDER = ["reason", "act", "reflect", "verify"];
 
 /**
  * Format a duration in milliseconds to a human-readable string.
@@ -27,7 +43,7 @@ const PHASE_ORDER = ['reason', 'act', 'reflect', 'verify'];
  * @returns {string} Formatted duration
  */
 export function formatDuration(ms) {
-  if (ms == null || ms < 0) return '--';
+  if (ms == null || ms < 0) return "--";
   if (ms < 1000) return `${ms}ms`;
   const sec = Math.floor(ms / 1000);
   if (sec < 60) return `${sec}s`;
@@ -48,9 +64,9 @@ export function computePhaseWidths(phases) {
   if (!phases || phases.length === 0) return [];
   const totalMs = phases.reduce((sum, p) => sum + (p.duration_ms || 0), 0);
   if (totalMs === 0) {
-    return phases.map(p => ({ phase: p.phase, pct: 100 / phases.length, duration: 0 }));
+    return phases.map((p) => ({ phase: p.phase, pct: 100 / phases.length, duration: 0 }));
   }
-  return phases.map(p => ({
+  return phases.map((p) => ({
     phase: p.phase,
     pct: ((p.duration_ms || 0) / totalMs) * 100,
     duration: p.duration_ms || 0,
@@ -63,9 +79,9 @@ export function computePhaseWidths(phases) {
  * @returns {string} Formatted count
  */
 function formatTokens(n) {
-  if (n == null) return '--';
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  if (n == null) return "--";
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+  if (n >= 1000) return (n / 1000).toFixed(1) + "K";
   return String(n);
 }
 
@@ -78,7 +94,7 @@ function formatTokens(n) {
  */
 export class LokiRarvTimeline extends LokiElement {
   static get observedAttributes() {
-    return ['run-id', 'api-url', 'theme'];
+    return ["run-id", "api-url", "theme"];
   }
 
   constructor() {
@@ -93,15 +109,15 @@ export class LokiRarvTimeline extends LokiElement {
   }
 
   get runId() {
-    const val = this.getAttribute('run-id');
+    const val = this.getAttribute("run-id");
     return val ? parseInt(val, 10) : null;
   }
 
   set runId(val) {
     if (val != null) {
-      this.setAttribute('run-id', String(val));
+      this.setAttribute("run-id", String(val));
     } else {
-      this.removeAttribute('run-id');
+      this.removeAttribute("run-id");
     }
   }
 
@@ -119,20 +135,20 @@ export class LokiRarvTimeline extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'run-id') {
+    if (name === "run-id") {
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -151,7 +167,7 @@ export class LokiRarvTimeline extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -160,7 +176,7 @@ export class LokiRarvTimeline extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -181,7 +197,7 @@ export class LokiRarvTimeline extends LokiElement {
       this._error = null;
     } catch (err) {
       // 404 means run not found -- not a real error, just no data yet
-      if (err.message && (err.message.includes('404') || err.message.includes('Not Found'))) {
+      if (err.message && (err.message.includes("404") || err.message.includes("Not Found"))) {
         this._timeline = null;
         this._error = null;
       } else {
@@ -203,22 +219,22 @@ export class LokiRarvTimeline extends LokiElement {
     const root = this.shadowRoot;
 
     // Clickable phase segments
-    root.querySelectorAll('.phase-segment-interactive').forEach(seg => {
-      seg.addEventListener('click', () => {
+    root.querySelectorAll(".phase-segment-interactive").forEach((seg) => {
+      seg.addEventListener("click", () => {
         this._selectPhase(seg.dataset.phase);
       });
     });
 
     // Legend items are also clickable
-    root.querySelectorAll('.legend-item-interactive').forEach(item => {
-      item.addEventListener('click', () => {
+    root.querySelectorAll(".legend-item-interactive").forEach((item) => {
+      item.addEventListener("click", () => {
         this._selectPhase(item.dataset.phase);
       });
     });
 
     // Close detail panel
-    root.querySelectorAll('.close-detail').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    root.querySelectorAll(".close-detail").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._selectedPhase = null;
         this.render();
@@ -516,7 +532,7 @@ export class LokiRarvTimeline extends LokiElement {
   }
 
   _renderPlaceholderTimeline() {
-    const segments = PHASE_ORDER.map(phase => {
+    const segments = PHASE_ORDER.map((phase) => {
       const cfg = PHASE_CONFIG[phase];
       return `<div class="phase-segment-interactive"
                    data-phase="${phase}"
@@ -524,16 +540,16 @@ export class LokiRarvTimeline extends LokiElement {
                    title="${cfg.label}: awaiting data">
                 ${cfg.label}
               </div>`;
-    }).join('');
+    }).join("");
 
-    const legendItems = PHASE_ORDER.map(phase => {
+    const legendItems = PHASE_ORDER.map((phase) => {
       const cfg = PHASE_CONFIG[phase];
       return `<div class="legend-item-interactive" data-phase="${phase}">
                 <span class="legend-dot" style="background: ${cfg.color}; opacity: 0.4;"></span>
                 <span class="legend-label">${cfg.label}</span>
                 <span class="legend-duration">--</span>
               </div>`;
-    }).join('');
+    }).join("");
 
     return `
       <div class="empty-state" style="padding: 0; text-align: left;">
@@ -548,10 +564,10 @@ export class LokiRarvTimeline extends LokiElement {
 
   _renderPhaseDetail(phase) {
     const cfg = PHASE_CONFIG[phase];
-    if (!cfg) return '';
+    if (!cfg) return "";
 
     const phases = this._timeline?.phases || [];
-    const phaseData = phases.find(p => p.phase === phase);
+    const phaseData = phases.find((p) => p.phase === phase);
 
     return `
       <div class="phase-detail">
@@ -574,11 +590,11 @@ export class LokiRarvTimeline extends LokiElement {
           </div>
           <div class="detail-metric">
             <span class="detail-metric-label">Quality</span>
-            <span class="detail-metric-value">${phaseData?.quality_score != null ? phaseData.quality_score.toFixed(1) : '--'}</span>
+            <span class="detail-metric-value">${phaseData?.quality_score != null ? phaseData.quality_score.toFixed(1) : "--"}</span>
           </div>
           <div class="detail-metric">
             <span class="detail-metric-label">Actions</span>
-            <span class="detail-metric-value">${phaseData?.action_count != null ? phaseData.action_count : '--'}</span>
+            <span class="detail-metric-value">${phaseData?.action_count != null ? phaseData.action_count : "--"}</span>
           </div>
         </div>
       </div>
@@ -586,21 +602,23 @@ export class LokiRarvTimeline extends LokiElement {
   }
 
   _renderCycleHistory() {
-    if (this._cycleHistory.length === 0) return '';
+    if (this._cycleHistory.length === 0) return "";
 
     const cycles = this._cycleHistory.slice(-8); // Show last 8 cycles
-    const cycleHtml = cycles.map((cycle, idx) => {
-      const dots = PHASE_ORDER.map(phase => {
-        const phaseData = cycle.phases?.find(p => p.phase === phase);
-        const cfg = PHASE_CONFIG[phase];
-        const status = phaseData?.status || 'pending';
-        const opacity = status === 'complete' ? '0.8' : (status === 'active' ? '1' : '0.3');
-        return `<div class="history-dot" style="background: ${cfg.color}; opacity: ${opacity};"
+    const cycleHtml = cycles
+      .map((cycle, idx) => {
+        const dots = PHASE_ORDER.map((phase) => {
+          const phaseData = cycle.phases?.find((p) => p.phase === phase);
+          const cfg = PHASE_CONFIG[phase];
+          const status = phaseData?.status || "pending";
+          const opacity = status === "complete" ? "0.8" : status === "active" ? "1" : "0.3";
+          return `<div class="history-dot" style="background: ${cfg.color}; opacity: ${opacity};"
                   title="Cycle ${idx + 1}: ${cfg.label} - ${formatDuration(phaseData?.duration_ms)}"></div>`;
-      }).join('');
+        }).join("");
 
-      return `<div class="history-cycle">${dots}</div>`;
-    }).join('<div class="history-separator"></div>');
+        return `<div class="history-cycle">${dots}</div>`;
+      })
+      .join('<div class="history-separator"></div>');
 
     return `
       <div class="cycle-history">
@@ -611,12 +629,12 @@ export class LokiRarvTimeline extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   render() {
@@ -637,31 +655,38 @@ export class LokiRarvTimeline extends LokiElement {
     } else if (phases.length === 0) {
       content = this._renderPlaceholderTimeline();
     } else {
-      const barSegments = phaseWidths.map(pw => {
-        const cfg = PHASE_CONFIG[pw.phase] || { color: 'var(--loki-text-muted)', label: pw.phase };
-        const isCurrent = currentPhase === pw.phase;
-        const isSelected = this._selectedPhase === pw.phase;
-        return `<div class="phase-segment-interactive ${isCurrent ? 'current' : ''} ${isSelected ? 'selected' : ''}"
+      const barSegments = phaseWidths
+        .map((pw) => {
+          const cfg = PHASE_CONFIG[pw.phase] || {
+            color: "var(--loki-text-muted)",
+            label: pw.phase,
+          };
+          const isCurrent = currentPhase === pw.phase;
+          const isSelected = this._selectedPhase === pw.phase;
+          return `<div class="phase-segment-interactive ${isCurrent ? "current" : ""} ${isSelected ? "selected" : ""}"
                      data-phase="${pw.phase}"
                      style="width: ${Math.max(pw.pct, 2)}%; background: ${cfg.color};"
                      title="${cfg.label}: ${formatDuration(pw.duration)}">
-                  ${pw.pct > 12 ? cfg.label : ''}
+                  ${pw.pct > 12 ? cfg.label : ""}
                 </div>`;
-      }).join('');
+        })
+        .join("");
 
-      const legendItems = phases.map(p => {
-        const cfg = PHASE_CONFIG[p.phase] || { color: 'var(--loki-text-muted)', label: p.phase };
-        const isCurrent = currentPhase === p.phase;
-        const isSelected = this._selectedPhase === p.phase;
-        return `<div class="legend-item-interactive ${isSelected ? 'selected' : ''}" data-phase="${p.phase}">
+      const legendItems = phases
+        .map((p) => {
+          const cfg = PHASE_CONFIG[p.phase] || { color: "var(--loki-text-muted)", label: p.phase };
+          const isCurrent = currentPhase === p.phase;
+          const isSelected = this._selectedPhase === p.phase;
+          return `<div class="legend-item-interactive ${isSelected ? "selected" : ""}" data-phase="${p.phase}">
                   <span class="legend-dot" style="background: ${cfg.color}"></span>
                   <span class="legend-label">${cfg.label}</span>
                   <span class="legend-duration">${formatDuration(p.duration_ms)}</span>
-                  ${isCurrent ? '<span class="phase-current-tag">ACTIVE</span>' : ''}
+                  ${isCurrent ? '<span class="phase-current-tag">ACTIVE</span>' : ""}
                 </div>`;
-      }).join('');
+        })
+        .join("");
 
-      const detailPanel = this._selectedPhase ? this._renderPhaseDetail(this._selectedPhase) : '';
+      const detailPanel = this._selectedPhase ? this._renderPhaseDetail(this._selectedPhase) : "";
       const historyPanel = this._renderCycleHistory();
 
       content = `
@@ -677,10 +702,10 @@ export class LokiRarvTimeline extends LokiElement {
       <div class="timeline-container">
         <div class="header">
           <h3 class="title">RARV Timeline</h3>
-          ${runId != null ? `<span class="run-label">Run #${runId}</span>` : ''}
+          ${runId != null ? `<span class="run-label">Run #${runId}</span>` : ""}
         </div>
         ${content}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -688,8 +713,8 @@ export class LokiRarvTimeline extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-rarv-timeline')) {
-  customElements.define('loki-rarv-timeline', LokiRarvTimeline);
+if (!customElements.get("loki-rarv-timeline")) {
+  customElements.define("loki-rarv-timeline", LokiRarvTimeline);
 }
 
 export default LokiRarvTimeline;

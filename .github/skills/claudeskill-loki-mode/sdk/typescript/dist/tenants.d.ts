@@ -11,5 +11,5 @@
  *   - createTenant(name, description?): Promise<Tenant>
  *   - deleteTenant(tenantId): Promise<void>
  */
-export type { Tenant } from './types.js';
+export type { Tenant } from "./types.js";
 //# sourceMappingURL=tenants.d.ts.map

@@ -2,11 +2,11 @@
 
 ## Research Foundation
 
-| Source | Key Contribution | Citation |
-|--------|-----------------|----------|
-| Roman Nurik (Google Labs) | Spec-first component generation, spec as source of truth, freshness hash | [MagicModules](https://github.com/romannurik/MagicModules) |
-| Reto Meier (Google Labs) | Multi-persona debate, conflicting expert critique, consensus-with-escalation | [MoMoA](https://github.com/retomeier/momoa) |
-| Loki Mode (this adaptation) | Integration with RARV cycle, design tokens, dual-target generation | Internal |
+| Source                      | Key Contribution                                                             | Citation                                                   |
+| --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Roman Nurik (Google Labs)   | Spec-first component generation, spec as source of truth, freshness hash     | [MagicModules](https://github.com/romannurik/MagicModules) |
+| Reto Meier (Google Labs)    | Multi-persona debate, conflicting expert critique, consensus-with-escalation | [MoMoA](https://github.com/retomeier/momoa)                |
+| Loki Mode (this adaptation) | Integration with RARV cycle, design tokens, dual-target generation           | Internal                                                   |
 
 This module is an adaptation of the two Google Labs experiments listed above. It is not a port or a fork -- the spec format, debate protocol, and registry schema are re-implemented to fit Loki Mode's architecture.
 
@@ -48,16 +48,16 @@ The combination means: specs drive generation, debate drives quality, and the re
 
 ## Commands
 
-| Command | Purpose |
-|---------|---------|
-| `loki magic generate <name>` | Create a new component from a description or a screenshot |
-| `loki magic update` | Regenerate components whose specs changed since the last build |
-| `loki magic list` | Browse the component registry (filterable by tag, target, freshness) |
-| `loki magic debate <name>` | Run a multi-persona debate on an existing component |
-| `loki magic registry stats` | Registry overview (count by target, stale count, recent edits) |
-| `loki magic tokens extract` | Observe the codebase and extract design tokens into `.loki/magic/tokens.json` |
-| `loki magic snapshot <name>` | Capture a visual regression snapshot for a component |
-| `loki magic diff <name>` | Show the diff between the current implementation and what would be regenerated |
+| Command                      | Purpose                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| `loki magic generate <name>` | Create a new component from a description or a screenshot                      |
+| `loki magic update`          | Regenerate components whose specs changed since the last build                 |
+| `loki magic list`            | Browse the component registry (filterable by tag, target, freshness)           |
+| `loki magic debate <name>`   | Run a multi-persona debate on an existing component                            |
+| `loki magic registry stats`  | Registry overview (count by target, stale count, recent edits)                 |
+| `loki magic tokens extract`  | Observe the codebase and extract design tokens into `.loki/magic/tokens.json`  |
+| `loki magic snapshot <name>` | Capture a visual regression snapshot for a component                           |
+| `loki magic diff <name>`     | Show the diff between the current implementation and what would be regenerated |
 
 ---
 
@@ -117,6 +117,7 @@ All generated components use design tokens (colors, spacing, typography, motion)
 - Manual edit of `.loki/magic/tokens.json` -- takes precedence over extraction
 
 Tokens resolve in the following order:
+
 1. Explicit tokens in the component spec
 2. Project overrides in `.loki/magic/tokens.json`
 3. Extracted defaults from existing codebase
@@ -126,11 +127,11 @@ Tokens resolve in the following order:
 
 ## Generation Targets
 
-| Target | Stack | Test Framework | Used By |
-|--------|-------|---------------|---------|
-| `react` | TypeScript + React 18 + Tailwind | Vitest + Testing Library | Dashboard UI, web app |
-| `webcomponent` | LokiElement base class + Shadow DOM | Playwright | Purple Lab, embeddable widgets |
-| `both` | Parallel generation of both variants | Both | Components shared across surfaces |
+| Target         | Stack                                | Test Framework           | Used By                           |
+| -------------- | ------------------------------------ | ------------------------ | --------------------------------- |
+| `react`        | TypeScript + React 18 + Tailwind     | Vitest + Testing Library | Dashboard UI, web app             |
+| `webcomponent` | LokiElement base class + Shadow DOM  | Playwright               | Purple Lab, embeddable widgets    |
+| `both`         | Parallel generation of both variants | Both                     | Components shared across surfaces |
 
 `both` is the recommended default for any component used in more than one Loki surface. The debate runs once on the shared spec and the resulting changes are applied to both outputs.
 
@@ -138,12 +139,12 @@ Tokens resolve in the following order:
 
 ## Debate Personas
 
-| Persona | Focus | Block-severity triggers |
-|---------|-------|------------------------|
-| **Creative Developer** | UX polish, delight, modern patterns, animation | Jarring transitions, misaligned visual rhythm |
-| **Conservative Engineer** | Stability, conventions, edge cases, backwards compat | Untyped props, missing error boundaries, hidden state |
-| **A11y Advocate** | WCAG 2.1 AA, assistive tech, keyboard, focus order | Missing aria labels, color contrast <4.5, focus traps |
-| **Performance Engineer** | Bundle size, render cost, reflows, network | Unbounded lists, sync layout thrash, unnecessary re-renders |
+| Persona                   | Focus                                                | Block-severity triggers                                     |
+| ------------------------- | ---------------------------------------------------- | ----------------------------------------------------------- |
+| **Creative Developer**    | UX polish, delight, modern patterns, animation       | Jarring transitions, misaligned visual rhythm               |
+| **Conservative Engineer** | Stability, conventions, edge cases, backwards compat | Untyped props, missing error boundaries, hidden state       |
+| **A11y Advocate**         | WCAG 2.1 AA, assistive tech, keyboard, focus order   | Missing aria labels, color contrast <4.5, focus traps       |
+| **Performance Engineer**  | Bundle size, render cost, reflows, network           | Unbounded lists, sync layout thrash, unnecessary re-renders |
 
 If any persona returns `severity=block`, generation is paused and a HITL request is opened via the dashboard notification system. See `references/magic-modules-patterns.md` for the full debate protocol.
 
@@ -186,14 +187,14 @@ loki magic diff Button
 
 ## Integration with Other Skills
 
-| Skill | Interaction |
-|-------|-------------|
-| `skills/healing.md` | Healing-style hooks protect spec edits; friction-map tracks manually edited generated files |
-| `skills/documentation.md` | Component specs feed COMPONENTS.md; registry feeds ARCHITECTURE.md |
-| `skills/quality-gates.md` | Gate 11 includes component doc coverage; debate block = gate failure |
-| `skills/agents.md` | `component-designer`, `a11y-auditor` agent types map to personas |
-| `skills/testing.md` | Generated Vitest and Playwright tests execute under the normal test gates |
-| `skills/artifacts.md` | Generated components count as artifacts and flow through the artifact pipeline |
+| Skill                     | Interaction                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| `skills/healing.md`       | Healing-style hooks protect spec edits; friction-map tracks manually edited generated files |
+| `skills/documentation.md` | Component specs feed COMPONENTS.md; registry feeds ARCHITECTURE.md                          |
+| `skills/quality-gates.md` | Gate 11 includes component doc coverage; debate block = gate failure                        |
+| `skills/agents.md`        | `component-designer`, `a11y-auditor` agent types map to personas                            |
+| `skills/testing.md`       | Generated Vitest and Playwright tests execute under the normal test gates                   |
+| `skills/artifacts.md`     | Generated components count as artifacts and flow through the artifact pipeline              |
 
 ---
 

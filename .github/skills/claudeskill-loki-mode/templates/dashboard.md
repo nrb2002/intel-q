@@ -1,14 +1,17 @@
 # PRD: Analytics Dashboard
 
 ## Overview
+
 A real-time analytics dashboard that visualizes key business metrics with interactive charts, filterable data tables, and customizable dashboard layouts.
 
 ## Target Users
+
 - Product managers tracking feature adoption and user engagement
 - Business analysts monitoring KPIs and trends
 - Operations teams watching system health and performance metrics
 
 ## Core Features
+
 1. **Interactive Charts** - Line, bar, pie, and area charts with hover tooltips and click-to-drill-down
 2. **Data Tables** - Sortable, filterable, and paginated tables with column visibility controls
 3. **Date Range Picker** - Filter all dashboard data by custom date ranges with preset shortcuts
@@ -18,6 +21,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 7. **Responsive Design** - Fully functional on desktop, tablet, and mobile screen sizes
 
 ## Technical Requirements
+
 - React 18 with TypeScript
 - Recharts or Chart.js for data visualization
 - TanStack Table for data tables
@@ -27,6 +31,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 - LocalStorage for saved layouts
 
 ## Quality Gates
+
 - Unit tests for data transformation and formatting utilities
 - Component tests for chart and table rendering
 - E2E tests for date filtering and layout persistence (Playwright)
@@ -34,6 +39,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 - Accessibility: all charts have aria labels, tables are keyboard navigable
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -62,6 +68,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 ```
 
 ## Out of Scope
+
 - Real database or data warehouse connections
 - User authentication or multi-tenant dashboards
 - Server-side rendering
@@ -71,6 +78,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 - Custom chart builder UI
 
 ## Acceptance Criteria
+
 - All four chart types (line, bar, pie, area) render with correct data
 - Date range filter applies to every widget on the dashboard
 - WebSocket pushes update visible charts without page refresh
@@ -79,6 +87,7 @@ A real-time analytics dashboard that visualizes key business metrics with intera
 - PNG export captures the selected chart at screen resolution
 
 ## Success Metrics
+
 - Dashboard loads with sample data and renders all chart types
 - Date range filter updates all widgets simultaneously
 - Real-time updates reflect in charts within 2 seconds

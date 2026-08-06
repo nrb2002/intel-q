@@ -9,16 +9,16 @@
  * <loki-wiki-browser api-url="http://localhost:57374" theme="dark"></loki-wiki-browser>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Array<{id: string, label: string}>} Wiki section tabs plus the Ask tab. */
 const TABS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'architecture', label: 'Architecture' },
-  { id: 'modules', label: 'Key Modules' },
-  { id: 'data-flow', label: 'Data Flow' },
-  { id: 'ask', label: 'Ask' },
+  { id: "overview", label: "Overview" },
+  { id: "architecture", label: "Architecture" },
+  { id: "modules", label: "Key Modules" },
+  { id: "data-flow", label: "Data Flow" },
+  { id: "ask", label: "Ask" },
 ];
 
 /**
@@ -29,19 +29,19 @@ const TABS = [
  */
 export class LokiWikiBrowser extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
     super();
-    this._activeTab = 'overview';
+    this._activeTab = "overview";
     this._loading = false;
     this._error = null;
     this._api = null;
     this._meta = null; // GET /api/wiki
     this._sectionCache = {}; // id -> {title, body, citations}
     // Ask state
-    this._question = '';
+    this._question = "";
     this._answer = null;
     this._asking = false;
     this._askError = null;
@@ -54,13 +54,13 @@ export class LokiWikiBrowser extends LokiElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -69,9 +69,9 @@ export class LokiWikiBrowser extends LokiElement {
     this._error = null;
     this.render();
     try {
-      this._meta = await this._api._get('/api/wiki');
+      this._meta = await this._api._get("/api/wiki");
     } catch (e) {
-      this._error = (e && e.message) ? e.message : 'Failed to load wiki';
+      this._error = e && e.message ? e.message : "Failed to load wiki";
     } finally {
       this._loading = false;
       this.render();
@@ -80,9 +80,12 @@ export class LokiWikiBrowser extends LokiElement {
       // was not yet resolved), load that section now so it does not stay stuck
       // on "Loading...". Only for an active, uncached section tab.
       const t = this._activeTab;
-      if (this._meta && this._meta.generated &&
-          (t === 'architecture' || t === 'modules' || t === 'data-flow') &&
-          !this._sectionCache[t]) {
+      if (
+        this._meta &&
+        this._meta.generated &&
+        (t === "architecture" || t === "modules" || t === "data-flow") &&
+        !this._sectionCache[t]
+      ) {
         this._loadSection(t).then(() => this.render());
       }
     }
@@ -97,14 +100,14 @@ export class LokiWikiBrowser extends LokiElement {
       this._sectionCache[id] = data;
       return data;
     } catch (e) {
-      this._sectionCache[id] = { error: (e && e.message) || 'load failed' };
+      this._sectionCache[id] = { error: (e && e.message) || "load failed" };
       return this._sectionCache[id];
     }
   }
 
   async _selectTab(id) {
     this._activeTab = id;
-    if (id === 'architecture' || id === 'modules' || id === 'data-flow') {
+    if (id === "architecture" || id === "modules" || id === "data-flow") {
       // Only fetch a section when a wiki actually exists. On a fresh repo the
       // manifest reports generated:false and /api/wiki/{section} would 404,
       // flooding the console with 404s + AbortErrors. Render a friendly
@@ -125,7 +128,7 @@ export class LokiWikiBrowser extends LokiElement {
   }
 
   async _ask() {
-    const q = (this._question || '').trim();
+    const q = (this._question || "").trim();
     if (!q) return;
     this._asking = true;
     this._askError = null;
@@ -136,10 +139,9 @@ export class LokiWikiBrowser extends LokiElement {
       // cold repo), so it can take minutes. Use a 200s client timeout, longer
       // than the server's 180s cap, so the server -- not the client -- decides
       // when to give up. The default 10s would abort with "Request timeout".
-      this._answer = await this._api._post('/api/wiki/ask', { question: q },
-        { timeout: 200000 });
+      this._answer = await this._api._post("/api/wiki/ask", { question: q }, { timeout: 200000 });
     } catch (e) {
-      this._askError = (e && e.message) ? e.message : 'Ask failed';
+      this._askError = e && e.message ? e.message : "Ask failed";
     } finally {
       this._asking = false;
       this.render();
@@ -148,18 +150,18 @@ export class LokiWikiBrowser extends LokiElement {
 
   /** Escape untrusted text for safe insertion into HTML. */
   _esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _renderCitations(citations) {
-    if (!citations || !citations.length) return '';
-    const items = citations.map((c) =>
-      `<li><code>${this._esc(c.file)}:${this._esc(c.line)}</code></li>`
-    ).join('');
+    if (!citations || !citations.length) return "";
+    const items = citations
+      .map((c) => `<li><code>${this._esc(c.file)}:${this._esc(c.line)}</code></li>`)
+      .join("");
     return `<div class="cites"><strong>Sources:</strong><ul>${items}</ul></div>`;
   }
 
@@ -171,13 +173,16 @@ export class LokiWikiBrowser extends LokiElement {
         <p>Run <code>loki wiki generate</code> to build a cited codebase wiki.</p>
       </div>`;
     }
-    const secs = (m.sections || []).map((s) =>
-      `<li>${this._esc(s.title)} <span class="dim">(${this._esc(s.citation_count)} citations)</span></li>`
-    ).join('');
+    const secs = (m.sections || [])
+      .map(
+        (s) =>
+          `<li>${this._esc(s.title)} <span class="dim">(${this._esc(s.citation_count)} citations)</span></li>`,
+      )
+      .join("");
     return `<div class="overview">
-      <p><strong>${this._esc(m.project || 'Project')}</strong> wiki -
+      <p><strong>${this._esc(m.project || "Project")}</strong> wiki -
         ${this._esc(m.file_count || 0)} source files indexed.</p>
-      <p class="dim">Generated: ${this._esc(m.generated_at || 'unknown')}</p>
+      <p class="dim">Generated: ${this._esc(m.generated_at || "unknown")}</p>
       <ul>${secs}</ul>
     </div>`;
   }
@@ -202,16 +207,15 @@ export class LokiWikiBrowser extends LokiElement {
   }
 
   _renderAsk() {
-    let result = '';
+    let result = "";
     if (this._asking) {
       result = `<div class="empty">Searching the codebase...</div>`;
     } else if (this._askError) {
       result = `<div class="error">${this._esc(this._askError)}</div>`;
     } else if (this._answer) {
-      const note = this._answer.note
-        ? `<p class="dim">${this._esc(this._answer.note)}</p>` : '';
+      const note = this._answer.note ? `<p class="dim">${this._esc(this._answer.note)}</p>` : "";
       result = `<div class="answer">
-        <pre class="body">${this._esc(this._answer.answer || '')}</pre>
+        <pre class="body">${this._esc(this._answer.answer || "")}</pre>
         ${note}
         ${this._renderCitations(this._answer.citations)}
       </div>`;
@@ -231,21 +235,28 @@ export class LokiWikiBrowser extends LokiElement {
     if (this._loading) return `<div class="empty">Loading wiki...</div>`;
     if (this._error) return `<div class="error">${this._esc(this._error)}</div>`;
     switch (this._activeTab) {
-      case 'overview': return this._renderOverview();
-      case 'architecture': return this._renderSection('architecture');
-      case 'modules': return this._renderSection('modules');
-      case 'data-flow': return this._renderSection('data-flow');
-      case 'ask': return this._renderAsk();
-      default: return this._renderOverview();
+      case "overview":
+        return this._renderOverview();
+      case "architecture":
+        return this._renderSection("architecture");
+      case "modules":
+        return this._renderSection("modules");
+      case "data-flow":
+        return this._renderSection("data-flow");
+      case "ask":
+        return this._renderAsk();
+      default:
+        return this._renderOverview();
     }
   }
 
   render() {
     if (!this.shadowRoot) return;
-    const tabs = TABS.map((t) =>
-      `<button class="tab ${t.id === this._activeTab ? 'active' : ''}"
-        data-tab="${t.id}">${this._esc(t.label)}</button>`
-    ).join('');
+    const tabs = TABS.map(
+      (t) =>
+        `<button class="tab ${t.id === this._activeTab ? "active" : ""}"
+        data-tab="${t.id}">${this._esc(t.label)}</button>`,
+    ).join("");
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -276,23 +287,27 @@ export class LokiWikiBrowser extends LokiElement {
       <div class="content">${this._renderBody()}</div>
     `;
 
-    this.shadowRoot.querySelectorAll('.tab').forEach((btn) => {
-      btn.addEventListener('click', () => this._selectTab(btn.dataset.tab));
+    this.shadowRoot.querySelectorAll(".tab").forEach((btn) => {
+      btn.addEventListener("click", () => this._selectTab(btn.dataset.tab));
     });
-    const input = this.shadowRoot.getElementById('wiki-q');
+    const input = this.shadowRoot.getElementById("wiki-q");
     if (input) {
-      input.addEventListener('input', (e) => { this._question = e.target.value; });
-      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') this._ask(); });
+      input.addEventListener("input", (e) => {
+        this._question = e.target.value;
+      });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") this._ask();
+      });
     }
-    const askBtn = this.shadowRoot.getElementById('wiki-ask-btn');
+    const askBtn = this.shadowRoot.getElementById("wiki-ask-btn");
     if (askBtn) {
-      askBtn.addEventListener('click', () => this._ask());
+      askBtn.addEventListener("click", () => this._ask());
     }
   }
 }
 
-if (!customElements.get('loki-wiki-browser')) {
-  customElements.define('loki-wiki-browser', LokiWikiBrowser);
+if (!customElements.get("loki-wiki-browser")) {
+  customElements.define("loki-wiki-browser", LokiWikiBrowser);
 }
 
 export default LokiWikiBrowser;

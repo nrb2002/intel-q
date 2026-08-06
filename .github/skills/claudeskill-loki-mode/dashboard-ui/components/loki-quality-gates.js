@@ -7,14 +7,26 @@
  * <loki-quality-gates api-url="http://localhost:57374" theme="dark"></loki-quality-gates>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, bg: string, label: string}>} */
 const GATE_STATUS_CONFIG = {
-  pass:    { color: 'var(--loki-green, #22c55e)',  bg: 'var(--loki-green-muted, rgba(34, 197, 94, 0.15))',  label: 'PASS' },
-  fail:    { color: 'var(--loki-red, #ef4444)',    bg: 'var(--loki-red-muted, rgba(239, 68, 68, 0.15))',    label: 'FAIL' },
-  pending: { color: 'var(--loki-yellow, #eab308)', bg: 'var(--loki-yellow-muted, rgba(234, 179, 8, 0.15))', label: 'PENDING' },
+  pass: {
+    color: "var(--loki-green, #22c55e)",
+    bg: "var(--loki-green-muted, rgba(34, 197, 94, 0.15))",
+    label: "PASS",
+  },
+  fail: {
+    color: "var(--loki-red, #ef4444)",
+    bg: "var(--loki-red-muted, rgba(239, 68, 68, 0.15))",
+    label: "FAIL",
+  },
+  pending: {
+    color: "var(--loki-yellow, #eab308)",
+    bg: "var(--loki-yellow-muted, rgba(234, 179, 8, 0.15))",
+    label: "PENDING",
+  },
 };
 
 /**
@@ -23,17 +35,17 @@ const GATE_STATUS_CONFIG = {
  * @returns {string} Formatted time
  */
 export function formatGateTime(timestamp) {
-  if (!timestamp) return 'Never';
+  if (!timestamp) return "Never";
   try {
     const d = new Date(timestamp);
     return d.toLocaleString([], {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
-    return 'Unknown';
+    return "Unknown";
   }
 }
 
@@ -46,9 +58,9 @@ export function summarizeGates(gates) {
   if (!gates || gates.length === 0) return { pass: 0, fail: 0, pending: 0, total: 0 };
   const result = { pass: 0, fail: 0, pending: 0, total: gates.length };
   for (const gate of gates) {
-    const status = (gate.status || 'pending').toLowerCase();
-    if (status === 'pass') result.pass++;
-    else if (status === 'fail') result.fail++;
+    const status = (gate.status || "pending").toLowerCase();
+    if (status === "pass") result.pass++;
+    else if (status === "fail") result.fail++;
     else result.pending++;
   }
   return result;
@@ -62,7 +74,7 @@ export function summarizeGates(gates) {
  */
 export class LokiQualityGates extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -90,17 +102,17 @@ export class LokiQualityGates extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -119,7 +131,7 @@ export class LokiQualityGates extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -128,7 +140,7 @@ export class LokiQualityGates extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -136,7 +148,7 @@ export class LokiQualityGates extends LokiElement {
   async _loadData() {
     try {
       this._loading = true;
-      const data = await this._api._get('/api/council/gate');
+      const data = await this._api._get("/api/council/gate");
       const gates = data?.gates || data || [];
       // Verified-completion evidence gate (v7.19.1): surfaced alongside the
       // quality gates so a blocked completion shows WHY (empty diff / red
@@ -160,12 +172,12 @@ export class LokiQualityGates extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getStyles() {
@@ -352,44 +364,47 @@ export class LokiQualityGates extends LokiElement {
     if (this._loading && gates.length === 0) {
       content = '<div class="loading">Loading quality gates...</div>';
     } else if (gates.length === 0) {
-      content = '<div class="empty-state"><strong>No gate results yet.</strong> Quality gates run automatically between RARV iterations during an active session. Start a session with <code>loki start ./prd.md</code> to see results here. You can also run gates manually with <code>loki review</code>.</div>';
+      content =
+        '<div class="empty-state"><strong>No gate results yet.</strong> Quality gates run automatically between RARV iterations during an active session. Start a session with <code>loki start ./prd.md</code> to see results here. You can also run gates manually with <code>loki review</code>.</div>';
     } else {
-      const cards = gates.map(gate => {
-        const status = (gate.status || 'pending').toLowerCase();
-        const cfg = GATE_STATUS_CONFIG[status] || GATE_STATUS_CONFIG.pending;
-        return `
+      const cards = gates
+        .map((gate) => {
+          const status = (gate.status || "pending").toLowerCase();
+          const cfg = GATE_STATUS_CONFIG[status] || GATE_STATUS_CONFIG.pending;
+          return `
           <div class="gate-card status-${status}">
             <div class="gate-header">
-              <span class="gate-name">${this._escapeHtml(gate.name || 'Unnamed Gate')}</span>
+              <span class="gate-name">${this._escapeHtml(gate.name || "Unnamed Gate")}</span>
               <span class="gate-badge" style="background: ${cfg.bg}; color: ${cfg.color};">${cfg.label}</span>
             </div>
-            ${gate.description ? `<div class="gate-description">${this._escapeHtml(gate.description)}</div>` : ''}
+            ${gate.description ? `<div class="gate-description">${this._escapeHtml(gate.description)}</div>` : ""}
             <div class="gate-meta">Last checked: ${formatGateTime(gate.last_checked || gate.lastChecked)}</div>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
 
       content = `<div class="gates-grid">${cards}</div>`;
     }
 
     // Verified-completion evidence gate banner. Shown only when blocking, so
     // the user sees exactly why a "done" was rejected (no diff / red tests).
-    let evidenceHtml = '';
+    let evidenceHtml = "";
     const ev = this._evidence || {};
     if (ev.blocked) {
       const reasonLabels = {
-        empty_diff: 'No changes were shipped (empty diff vs run start).',
-        tests_red: 'Tests ran and were red.',
-        empty_diff_and_tests_red: 'No changes shipped and tests were red.',
-        no_evidence_of_completion: 'No evidence of completion.',
+        empty_diff: "No changes were shipped (empty diff vs run start).",
+        tests_red: "Tests ran and were red.",
+        empty_diff_and_tests_red: "No changes shipped and tests were red.",
+        no_evidence_of_completion: "No evidence of completion.",
       };
       const reasonText = ev.error
         ? this._escapeHtml(ev.error)
-        : (reasonLabels[ev.reason] || this._escapeHtml(ev.reason || 'Completion blocked.'));
+        : reasonLabels[ev.reason] || this._escapeHtml(ev.reason || "Completion blocked.");
       const failures = Array.isArray(ev.failures) ? ev.failures : [];
       const failuresHtml = failures.length
-        ? `<ul class="evidence-failures">${failures.map(f => `<li>${this._escapeHtml(f)}</li>`).join('')}</ul>`
-        : '';
+        ? `<ul class="evidence-failures">${failures.map((f) => `<li>${this._escapeHtml(f)}</li>`).join("")}</ul>`
+        : "";
       evidenceHtml = `
         <div class="evidence-banner">
           <div class="evidence-title">Verified completion blocked</div>
@@ -400,7 +415,9 @@ export class LokiQualityGates extends LokiElement {
       `;
     }
 
-    const summaryHtml = summary.total > 0 ? `
+    const summaryHtml =
+      summary.total > 0
+        ? `
       <div class="summary">
         <span class="summary-item">
           <span class="summary-dot" style="background: var(--loki-green, #22c55e)"></span>
@@ -415,7 +432,8 @@ export class LokiQualityGates extends LokiElement {
           ${summary.pending} Pending
         </span>
       </div>
-    ` : '';
+    `
+        : "";
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -426,14 +444,14 @@ export class LokiQualityGates extends LokiElement {
         </div>
         ${evidenceHtml}
         ${content}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
   }
 }
 
-if (!customElements.get('loki-quality-gates')) {
-  customElements.define('loki-quality-gates', LokiQualityGates);
+if (!customElements.get("loki-quality-gates")) {
+  customElements.define("loki-quality-gates", LokiQualityGates);
 }
 
 export default LokiQualityGates;

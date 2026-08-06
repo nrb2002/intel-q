@@ -20,6 +20,7 @@ BioServices is a Python package providing programmatic access to approximately 4
 ## When to Use This Skill
 
 This skill should be used when:
+
 - Retrieving protein sequences, annotations, or structures from UniProt, PDB, Pfam
 - Analyzing metabolic pathways and gene functions via KEGG or Reactome
 - Searching compound databases (ChEBI, ChEMBL, PubChem) for chemical information
@@ -52,6 +53,7 @@ kegg_ids = u.mapping(fr="UniProtKB_AC-ID", to="KEGG", query="P43403")
 ```
 
 **Key methods:**
+
 - `search()`: Query UniProt with flexible search terms
 - `retrieve()`: Get protein entries in various formats (FASTA, XML, tab)
 - `mapping()`: Convert identifiers between databases
@@ -90,6 +92,7 @@ sif_data = k.pathway2sif("hsa04660")
 ```
 
 **Key methods:**
+
 - `lookfor_organism()`, `lookfor_pathway()`: Search by name
 - `get_pathway_by_gene()`: Find pathways containing genes
 - `parse_kgml_pathway()`: Extract structured pathway data
@@ -118,6 +121,7 @@ chembl_id = u.get_compound_id_from_kegg("C11222")  # Returns CHEMBL278315
 ```
 
 **Common workflow:**
+
 1. Search compound by name in KEGG
 2. Extract KEGG compound ID
 3. Use UniChem for KEGG → ChEMBL mapping
@@ -177,6 +181,7 @@ chembl_from_kegg = u.get_compound_id_from_kegg("C11222")
 ```
 
 **Supported mappings (UniProt):**
+
 - UniProtKB ↔ KEGG
 - UniProtKB ↔ Ensembl
 - UniProtKB ↔ PDB
@@ -233,6 +238,7 @@ python scripts/protein_analysis_workflow.py ZAP70_HUMAN your.email@example.com
 ```
 
 This script demonstrates:
+
 1. UniProt search for protein entry
 2. FASTA sequence retrieval
 3. BLAST similarity search
@@ -248,6 +254,7 @@ python scripts/pathway_analysis.py hsa output_directory/
 ```
 
 Extracts and analyzes:
+
 - All pathway IDs for organism
 - Protein-protein interactions per pathway
 - Interaction type distributions
@@ -262,6 +269,7 @@ python scripts/compound_cross_reference.py Geldanamycin
 ```
 
 Retrieves:
+
 - KEGG compound ID
 - ChEBI identifier
 - ChEMBL identifier
@@ -280,6 +288,7 @@ python scripts/batch_id_converter.py input_ids.txt --from UniProtKB_AC-ID --to K
 ### Output Format Handling
 
 Different services return data in various formats:
+
 - **XML**: Parse using BeautifulSoup (most SOAP services)
 - **Tab-separated (TSV)**: Pandas DataFrames for tabular data
 - **Dictionary/JSON**: Direct Python manipulation
@@ -313,6 +322,7 @@ except Exception as e:
 ### Organism Codes
 
 Use standard organism abbreviations:
+
 - `hsa`: Homo sapiens (human)
 - `mmu`: Mus musculus (mouse)
 - `dme`: Drosophila melanogaster
@@ -323,6 +333,7 @@ List all organisms: `k.list("organism")` or `k.organismIds`
 ### Integration with Other Tools
 
 BioServices works well with:
+
 - **BioPython**: Sequence analysis on retrieved FASTA data
 - **Pandas**: Tabular data manipulation
 - **PyMOL**: 3D structure visualization (retrieve PDB IDs)
@@ -364,10 +375,10 @@ Dependencies are installed automatically. Upstream CI tests Python 3.9–3.12 ([
 
 Most services need no API key. Exceptions:
 
-| Service | Requirement |
-|---------|-------------|
-| NCBI BLAST | Contact email via `NCBI_EMAIL` or `email=` in `NCBIblast.run()` |
-| Some EBI services | Optional; check service docs if rate-limited |
+| Service           | Requirement                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| NCBI BLAST        | Contact email via `NCBI_EMAIL` or `email=` in `NCBIblast.run()` |
+| Some EBI services | Optional; check service docs if rate-limited                    |
 
 Set once per shell session:
 
@@ -380,7 +391,7 @@ Use a real institutional or lab address — NCBI may contact you about heavy BLA
 ## Additional Information
 
 For detailed API documentation and advanced features, refer to:
+
 - Official documentation: https://bioservices.readthedocs.io/
 - Source code: https://github.com/cokelaer/bioservices
 - Service-specific references in `references/services_reference.md`
-

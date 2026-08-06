@@ -141,6 +141,7 @@ cat .loki/state/circuit-breakers.json | jq '.["api/gemini"].success_count'
 ```
 
 **Questions to answer:**
+
 1. Which API is currently blocked (OPEN)?
 2. When does the cooldown expire?
 3. How many more successes does the HALF_OPEN circuit need to return to CLOSED? (Answer: 2 more, needs 3 total)
@@ -165,6 +166,7 @@ cat .loki/queue/dead-letter.json | jq '.metadata.last_reviewed'
 ```
 
 **Questions to answer:**
+
 1. What is the root cause of the failure?
 2. What recovery strategy is assigned?
 3. Is the `last_reviewed` timestamp more than 24 hours old? (If so, the queue should be processed before new work.)

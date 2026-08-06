@@ -7,6 +7,7 @@
 ## Why Worktree-Based Parallelism
 
 **The Problem:**
+
 - Single Claude session = sequential work
 - Feature A blocks Feature B
 - Testing waits for development to finish
@@ -14,6 +15,7 @@
 - Context bloats with unrelated work
 
 **The Solution:**
+
 - Git worktrees = isolated working directories
 - Multiple Claude sessions = true parallelism
 - Each stream has fresh context
@@ -32,13 +34,13 @@ Main Worktree (orchestrator)
 
 ## Parallel Work Streams
 
-| Stream | Purpose | Worktree | Triggers |
-|--------|---------|----------|----------|
-| **feature-N** | Implement features | `../project-feature-{name}` | PRD task breakdown |
-| **testing** | Unit, integration, E2E | `../project-testing` | After feature checkpoint |
-| **qa-validation** | UAT, accessibility | `../project-qa` | After tests pass |
-| **documentation** | Docs, changelog | `../project-docs` | After feature merge |
-| **blog** | Blog posts (if site has blog) | `../project-blog` | After significant releases |
+| Stream            | Purpose                       | Worktree                    | Triggers                   |
+| ----------------- | ----------------------------- | --------------------------- | -------------------------- |
+| **feature-N**     | Implement features            | `../project-feature-{name}` | PRD task breakdown         |
+| **testing**       | Unit, integration, E2E        | `../project-testing`        | After feature checkpoint   |
+| **qa-validation** | UAT, accessibility            | `../project-qa`             | After tests pass           |
+| **documentation** | Docs, changelog               | `../project-docs`           | After feature merge        |
+| **blog**          | Blog posts (if site has blog) | `../project-blog`           | After significant releases |
 
 ---
 
@@ -148,15 +150,15 @@ multi-agent learnings (see `references/cursor-learnings.md`).
 ```yaml
 supervisor:
   inputs:
-    - Current state            # .loki/state/ for each worktree/stream
-    - Original goal            # the PRD / spec / brief
-    - Recent progress          # checklist deltas, merged streams, test results
-    - Resource consumption     # .loki/state/resources.json (CPU, memory, status)
+    - Current state # .loki/state/ for each worktree/stream
+    - Original goal # the PRD / spec / brief
+    - Recent progress # checklist deltas, merged streams, test results
+    - Resource consumption # .loki/state/resources.json (CPU, memory, status)
   outputs:
-    - CONTINUE   # more work needed; keep streams running
-    - COMPLETE   # goal achieved; move to cleanup
-    - ESCALATE   # human intervention needed; raise a PAUSE / handoff
-    - PIVOT      # current approach is not converging; change strategy
+    - CONTINUE # more work needed; keep streams running
+    - COMPLETE # goal achieved; move to cleanup
+    - ESCALATE # human intervention needed; raise a PAUSE / handoff
+    - PIVOT # current approach is not converging; change strategy
 ```
 
 The closest implemented analog is the completion council (`council_should_stop()`
@@ -326,17 +328,18 @@ test_parallelization:
   unit_tests:
     worktree: "../project-testing"
     command: "npm test -- --parallel"
-    model: haiku  # Fast, cheap
+    model: haiku # Fast, cheap
 
   integration_tests:
     worktree: "../project-testing"
     command: "npm run test:integration"
-    model: sonnet  # More complex
+    model: sonnet # More complex
 
   e2e_tests:
     worktree: "../project-e2e"
     command: "npx playwright test"
-    model: sonnet  # Browser automation
+    model: sonnet # Browser automation
+
 
   # All can run simultaneously in different worktrees
 ```
@@ -355,8 +358,7 @@ doc_triggers:
   - Configuration options added
   - Breaking changes detected
 
-doc_workflow:
-  1. Detect trigger from git diff
+doc_workflow: 1. Detect trigger from git diff
   2. Identify affected documentation
   3. Update docs in ../project-docs worktree
   4. Create PR or commit to main
@@ -371,8 +373,7 @@ blog_triggers:
   - Security fix (after patch deployed)
   - Milestone reached (v1.0, 1000 users, etc.)
 
-blog_workflow:
-  1. Detect BLOG_POST_QUEUED signal
+blog_workflow: 1. Detect BLOG_POST_QUEUED signal
   2. Gather context from git log, CONTINUITY.md
   3. Write blog post draft
   4. Save to content/blog/ or equivalent
@@ -492,6 +493,7 @@ git worktree list
 ### The Problem with Locks
 
 Signal files (`.loki/signals/`) can create bottlenecks similar to file locking:
+
 - Agents wait for signals to clear
 - Deadlocks if agent fails while "holding" a signal
 - Throughput drops as agent count increases
@@ -566,11 +568,11 @@ optimistic_update_state() {
 
 ### When to Use
 
-| Coordination Type | Use Case | Recommendation |
-|-------------------|----------|----------------|
-| Signal files | <10 agents | OK, simple |
-| Signal files | 10-50 agents | Monitor for bottlenecks |
-| Optimistic concurrency | 50+ agents | Required for scale |
+| Coordination Type      | Use Case       | Recommendation              |
+| ---------------------- | -------------- | --------------------------- |
+| Signal files           | <10 agents     | OK, simple                  |
+| Signal files           | 10-50 agents   | Monitor for bottlenecks     |
+| Optimistic concurrency | 50+ agents     | Required for scale          |
 | Git-based coordination | Cross-worktree | Use git commits as versions |
 
 ---
@@ -602,22 +604,22 @@ conflict_strategy:
 
 ```yaml
 resource_limits:
-  max_worktrees: 5  # More = more disk space
-  max_claude_sessions: 3  # API rate limits
-  max_parallel_agents: 10  # Per session
+  max_worktrees: 5 # More = more disk space
+  max_claude_sessions: 3 # API rate limits
+  max_parallel_agents: 10 # Per session
 ```
 
 ---
 
 ## Integration with Existing Patterns
 
-| Existing Pattern | Worktree Enhancement |
-|------------------|---------------------|
-| 3 parallel reviewers | Run in testing worktree |
+| Existing Pattern      | Worktree Enhancement         |
+| --------------------- | ---------------------------- |
+| 3 parallel reviewers  | Run in testing worktree      |
 | Haiku parallelization | Within each worktree session |
-| Batch API | Batch across all worktrees |
-| Context management | Fresh context per worktree |
-| CONTINUITY.md | Per-worktree continuity |
+| Batch API             | Batch across all worktrees   |
+| Context management    | Fresh context per worktree   |
+| CONTINUITY.md         | Per-worktree continuity      |
 
 ---
 

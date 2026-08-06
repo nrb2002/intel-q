@@ -7,17 +7,17 @@
  * <loki-cost-waterfall api-url="http://localhost:57374" theme="dark"></loki-cost-waterfall>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, label: string}>} Phase color mapping */
 const PHASE_COLORS = {
-  planning:       { color: 'var(--loki-blue, #2F71E3)',   label: 'Planning' },
-  building:       { color: 'var(--loki-green, #1FC5A8)',   label: 'Building' },
-  implementation: { color: 'var(--loki-green, #1FC5A8)',   label: 'Building' },
-  testing:        { color: 'var(--loki-purple, #553DE9)',  label: 'Testing' },
-  review:         { color: 'var(--loki-yellow, #D4A03C)',  label: 'Review' },
-  overhead:       { color: 'var(--loki-text-muted, #939084)', label: 'Overhead' },
+  planning: { color: "var(--loki-blue, #2F71E3)", label: "Planning" },
+  building: { color: "var(--loki-green, #1FC5A8)", label: "Building" },
+  implementation: { color: "var(--loki-green, #1FC5A8)", label: "Building" },
+  testing: { color: "var(--loki-purple, #553DE9)", label: "Testing" },
+  review: { color: "var(--loki-yellow, #D4A03C)", label: "Review" },
+  overhead: { color: "var(--loki-text-muted, #939084)", label: "Overhead" },
 };
 
 /**
@@ -28,7 +28,7 @@ const PHASE_COLORS = {
  */
 export class LokiCostWaterfall extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -55,17 +55,17 @@ export class LokiCostWaterfall extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -82,14 +82,15 @@ export class LokiCostWaterfall extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/cost/breakdown');
+      const data = await this._api._get("/api/v2/cost/breakdown");
       this._phases = data.phases || [];
       this._budget = data.budget_usd || null;
-      this._totalCost = data.total_usd || this._phases.reduce((sum, p) => sum + (p.cost_usd || 0), 0);
+      this._totalCost =
+        data.total_usd || this._phases.reduce((sum, p) => sum + (p.cost_usd || 0), 0);
     } catch {
       if (this._phases.length === 0) {
         this._phases = this._getDemoData();
-        this._budget = 10.00;
+        this._budget = 10.0;
         this._totalCost = this._phases.reduce((sum, p) => sum + p.cost_usd, 0);
       }
     }
@@ -98,36 +99,36 @@ export class LokiCostWaterfall extends LokiElement {
 
   _getDemoData() {
     return [
-      { phase: 'planning',  cost_usd: 0.85, tokens: 12400 },
-      { phase: 'building',  cost_usd: 3.20, tokens: 68500 },
-      { phase: 'testing',   cost_usd: 1.45, tokens: 31200 },
-      { phase: 'review',    cost_usd: 0.90, tokens: 18800 },
-      { phase: 'overhead',  cost_usd: 0.35, tokens: 5600 },
+      { phase: "planning", cost_usd: 0.85, tokens: 12400 },
+      { phase: "building", cost_usd: 3.2, tokens: 68500 },
+      { phase: "testing", cost_usd: 1.45, tokens: 31200 },
+      { phase: "review", cost_usd: 0.9, tokens: 18800 },
+      { phase: "overhead", cost_usd: 0.35, tokens: 5600 },
     ];
   }
 
   _formatCost(usd) {
-    if (usd == null) return '--';
-    return '$' + usd.toFixed(2);
+    if (usd == null) return "--";
+    return "$" + usd.toFixed(2);
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _bindEvents() {
     const root = this.shadowRoot;
-    root.querySelectorAll('.waterfall-bar').forEach(bar => {
-      bar.addEventListener('mouseenter', () => {
+    root.querySelectorAll(".waterfall-bar").forEach((bar) => {
+      bar.addEventListener("mouseenter", () => {
         this._hoveredPhase = bar.dataset.phase;
         this._updateTooltip(bar);
       });
-      bar.addEventListener('mouseleave', () => {
+      bar.addEventListener("mouseleave", () => {
         this._hoveredPhase = null;
         this._hideTooltip();
       });
@@ -135,22 +136,22 @@ export class LokiCostWaterfall extends LokiElement {
   }
 
   _updateTooltip(barEl) {
-    const tooltip = this.shadowRoot.querySelector('.tooltip');
+    const tooltip = this.shadowRoot.querySelector(".tooltip");
     if (!tooltip) return;
-    const phase = this._phases.find(p => p.phase === this._hoveredPhase);
+    const phase = this._phases.find((p) => p.phase === this._hoveredPhase);
     if (!phase) return;
     const cfg = PHASE_COLORS[phase.phase] || { label: phase.phase };
     tooltip.innerHTML = `<strong>${cfg.label}</strong>: ${this._formatCost(phase.cost_usd)}`;
-    tooltip.style.display = 'block';
+    tooltip.style.display = "block";
     const rect = barEl.getBoundingClientRect();
-    const containerRect = this.shadowRoot.querySelector('.chart-area').getBoundingClientRect();
-    tooltip.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
-    tooltip.style.top = (rect.top - containerRect.top - 30) + 'px';
+    const containerRect = this.shadowRoot.querySelector(".chart-area").getBoundingClientRect();
+    tooltip.style.left = rect.left - containerRect.left + rect.width / 2 + "px";
+    tooltip.style.top = rect.top - containerRect.top - 30 + "px";
   }
 
   _hideTooltip() {
-    const tooltip = this.shadowRoot.querySelector('.tooltip');
-    if (tooltip) tooltip.style.display = 'none';
+    const tooltip = this.shadowRoot.querySelector(".tooltip");
+    if (tooltip) tooltip.style.display = "none";
   }
 
   _getStyles() {
@@ -356,7 +357,7 @@ export class LokiCostWaterfall extends LokiElement {
       return;
     }
 
-    const maxCost = Math.max(...this._phases.map(p => p.cost_usd || 0), 0.01);
+    const maxCost = Math.max(...this._phases.map((p) => p.cost_usd || 0), 0.01);
     const chartHeight = 160; // usable height in pixels
     const maxBarHeight = this._budget ? Math.max(maxCost, this._budget) : maxCost;
 
@@ -364,39 +365,46 @@ export class LokiCostWaterfall extends LokiElement {
     const budgetLineBottom = this._budget ? (this._budget / maxBarHeight) * chartHeight : null;
 
     // Build bars
-    const bars = this._phases.map(p => {
-      const cfg = PHASE_COLORS[p.phase] || { color: 'var(--loki-text-muted)', label: p.phase };
-      const height = ((p.cost_usd || 0) / maxBarHeight) * chartHeight;
-      const isHovered = this._hoveredPhase === p.phase;
+    const bars = this._phases
+      .map((p) => {
+        const cfg = PHASE_COLORS[p.phase] || { color: "var(--loki-text-muted)", label: p.phase };
+        const height = ((p.cost_usd || 0) / maxBarHeight) * chartHeight;
+        const isHovered = this._hoveredPhase === p.phase;
 
-      return `
+        return `
         <div class="bar-group">
           <span class="bar-value">${this._formatCost(p.cost_usd)}</span>
           <div class="waterfall-bar" data-phase="${this._escapeHtml(p.phase)}"
-               style="height: ${Math.max(height, 4)}px; background: ${cfg.color}; ${isHovered ? 'opacity: 0.85;' : ''}">
+               style="height: ${Math.max(height, 4)}px; background: ${cfg.color}; ${isHovered ? "opacity: 0.85;" : ""}">
           </div>
           <span class="bar-label">${cfg.label}</span>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
     // Budget line
-    const budgetHtml = budgetLineBottom != null ? `
+    const budgetHtml =
+      budgetLineBottom != null
+        ? `
       <div class="budget-line" style="bottom: ${budgetLineBottom + 40}px;">
         <span class="budget-label">Budget: ${this._formatCost(this._budget)}</span>
       </div>
-    ` : '';
+    `
+        : "";
 
     // Summary
-    const summaryItems = this._phases.map(p => {
-      const cfg = PHASE_COLORS[p.phase] || { color: 'var(--loki-text-muted)', label: p.phase };
-      const pct = this._totalCost > 0 ? ((p.cost_usd / this._totalCost) * 100).toFixed(0) : 0;
-      return `<div class="summary-item">
+    const summaryItems = this._phases
+      .map((p) => {
+        const cfg = PHASE_COLORS[p.phase] || { color: "var(--loki-text-muted)", label: p.phase };
+        const pct = this._totalCost > 0 ? ((p.cost_usd / this._totalCost) * 100).toFixed(0) : 0;
+        return `<div class="summary-item">
         <div class="summary-dot" style="background: ${cfg.color};"></div>
         <span class="summary-label">${cfg.label}</span>
         <span class="summary-value">${this._formatCost(p.cost_usd)} (${pct}%)</span>
       </div>`;
-    }).join('');
+      })
+      .join("");
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -422,8 +430,8 @@ export class LokiCostWaterfall extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-cost-waterfall')) {
-  customElements.define('loki-cost-waterfall', LokiCostWaterfall);
+if (!customElements.get("loki-cost-waterfall")) {
+  customElements.define("loki-cost-waterfall", LokiCostWaterfall);
 }
 
 export default LokiCostWaterfall;

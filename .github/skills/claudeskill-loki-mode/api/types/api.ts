@@ -19,21 +19,10 @@ export interface Session {
 }
 
 export type SessionStatus =
-  | "starting"
-  | "running"
-  | "paused"
-  | "stopping"
-  | "stopped"
-  | "failed"
-  | "completed";
+  "starting" | "running" | "paused" | "stopping" | "stopped" | "failed" | "completed";
 
 export type Phase =
-  | "bootstrap"
-  | "planning"
-  | "development"
-  | "testing"
-  | "deployment"
-  | "monitoring";
+  "bootstrap" | "planning" | "development" | "testing" | "deployment" | "monitoring";
 
 // Task types
 export interface Task {
@@ -51,13 +40,7 @@ export interface Task {
   error: string | null;
 }
 
-export type TaskStatus =
-  | "pending"
-  | "queued"
-  | "running"
-  | "completed"
-  | "failed"
-  | "skipped";
+export type TaskStatus = "pending" | "queued" | "running" | "completed" | "failed" | "skipped";
 
 // API Request/Response types
 export interface StartSessionRequest {

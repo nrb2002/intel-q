@@ -13,17 +13,17 @@ the user, while preserving the existing hard-stop at 100%.
 
 ## What already exists (reuse, do NOT duplicate)
 
-| Surface | Location | Has | Missing for R3 |
-|---|---|---|---|
-| Aggregate cost | `dashboard/server.py` `GET /api/cost` (~4391) | totals, by_phase, by_model, basic budget | per-run history, time-series, warn status |
-| Budget status | `dashboard/server.py` `GET /api/budget` (~4498) | limit, used, exceeded, remaining | warn-at-80% status field |
-| Pricing | `dashboard/server.py` `GET /api/pricing` (~4575) | model price table | -- |
-| Hard cap | `autonomy/run.sh` `check_budget_limit()` (8333) | pause + signal at >=100% | warn at 80% (no pause) |
-| Bun cap | `loki-ts/src/runner/budget.ts` `checkBudgetLimit()` | parity of hard cap | warn at 80% |
-| Cost lib | `autonomy/lib/efficiency_cost.py` `collect_efficiency` | sum cost_usd + tokens, honest None | (this is the shared lib to reuse) |
-| Per-run proof | `.loki/proofs/<run_id>/proof.json` via proof-generator.py | run_id, generated_at, cost.usd, files_changed.count, council.final_verdict, provider.model | (source for per-run history) |
-| Productivity CLI | `autonomy/loki` `cmd_metrics()` (17837) | session productivity report | dedicated cost view |
-| Estimate CLI | `autonomy/loki` `cmd_plan()` | pre-run cost ESTIMATE | actuals |
+| Surface          | Location                                                  | Has                                                                                        | Missing for R3                            |
+| ---------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| Aggregate cost   | `dashboard/server.py` `GET /api/cost` (~4391)             | totals, by_phase, by_model, basic budget                                                   | per-run history, time-series, warn status |
+| Budget status    | `dashboard/server.py` `GET /api/budget` (~4498)           | limit, used, exceeded, remaining                                                           | warn-at-80% status field                  |
+| Pricing          | `dashboard/server.py` `GET /api/pricing` (~4575)          | model price table                                                                          | --                                        |
+| Hard cap         | `autonomy/run.sh` `check_budget_limit()` (8333)           | pause + signal at >=100%                                                                   | warn at 80% (no pause)                    |
+| Bun cap          | `loki-ts/src/runner/budget.ts` `checkBudgetLimit()`       | parity of hard cap                                                                         | warn at 80%                               |
+| Cost lib         | `autonomy/lib/efficiency_cost.py` `collect_efficiency`    | sum cost_usd + tokens, honest None                                                         | (this is the shared lib to reuse)         |
+| Per-run proof    | `.loki/proofs/<run_id>/proof.json` via proof-generator.py | run_id, generated_at, cost.usd, files_changed.count, council.final_verdict, provider.model | (source for per-run history)              |
+| Productivity CLI | `autonomy/loki` `cmd_metrics()` (17837)                   | session productivity report                                                                | dedicated cost view                       |
+| Estimate CLI     | `autonomy/loki` `cmd_plan()`                              | pre-run cost ESTIMATE                                                                      | actuals                                   |
 
 ## Critical data-source fact (verified)
 
@@ -48,23 +48,40 @@ Read-only. Returns two honest series plus a budget block:
 {
   "current_run": {
     "iterations": [
-      {"iteration": 1, "timestamp": "...", "model": "sonnet",
-       "phase": "build", "input_tokens": 1500, "output_tokens": 500,
-       "cost_usd": 0.05, "cumulative_usd": 0.05}
+      {
+        "iteration": 1,
+        "timestamp": "...",
+        "model": "sonnet",
+        "phase": "build",
+        "input_tokens": 1500,
+        "output_tokens": 500,
+        "cost_usd": 0.05,
+        "cumulative_usd": 0.05
+      }
     ],
     "total_usd": 0.05,
     "cost_recorded": true
   },
   "runs": [
-    {"run_id": "...", "generated_at": "...", "model": "sonnet",
-     "cost_usd": 1.84, "files_changed": 3, "final_verdict": "APPROVE"}
+    {
+      "run_id": "...",
+      "generated_at": "...",
+      "model": "sonnet",
+      "cost_usd": 1.84,
+      "files_changed": 3,
+      "final_verdict": "APPROVE"
+    }
   ],
   "project_total_usd": 1.89,
   "runs_count": 1,
   "budget": {
-    "limit": 50.0, "used": 1.89, "remaining": 48.11,
-    "percent_used": 3.78, "status": "ok",
-    "warn_threshold_percent": 80, "exceeded": false
+    "limit": 50.0,
+    "used": 1.89,
+    "remaining": 48.11,
+    "percent_used": 3.78,
+    "status": "ok",
+    "warn_threshold_percent": 80,
+    "exceeded": false
   }
 }
 ```
@@ -111,6 +128,7 @@ parity which is the load-bearing part).
 ### 4. Budget warn-at-80% (runtime, both routes)
 
 Add a non-pausing warn when crossing 80%, keep the 100% pause:
+
 - `autonomy/run.sh` `check_budget_limit()`: when `0.80*limit <= cost < limit`,
   `log_warn` + `emit_event_json budget_warning`. Does NOT pause.
 - `loki-ts/src/runner/budget.ts` `checkBudgetLimit()`: same warn semantics via

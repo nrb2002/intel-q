@@ -61,11 +61,7 @@ export class LokiApiError extends Error {
   status: number;
   details?: Record<string, unknown>;
 
-  constructor(
-    message: string,
-    code: ErrorCode,
-    details?: Record<string, unknown>
-  ) {
+  constructor(message: string, code: ErrorCode, details?: Record<string, unknown>) {
     super(message);
     this.name = "LokiApiError";
     this.code = code;
@@ -95,7 +91,7 @@ export class LokiApiError extends Error {
  * Error middleware wrapper
  */
 export function errorMiddleware(
-  handler: (req: Request) => Promise<Response> | Response
+  handler: (req: Request) => Promise<Response> | Response,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     try {
@@ -112,36 +108,24 @@ export function errorMiddleware(
  */
 export function handleError(err: unknown, req?: Request): Response {
   // Log error for debugging
-  const requestInfo = req
-    ? `${req.method} ${new URL(req.url).pathname}`
-    : "unknown request";
+  const requestInfo = req ? `${req.method} ${new URL(req.url).pathname}` : "unknown request";
 
   console.error(`Error handling ${requestInfo}:`, err);
 
   // Emit error pattern signal for learning
-  const errorType = err instanceof LokiApiError
-    ? err.code
-    : err instanceof Error
-    ? err.name
-    : "UnknownError";
-  const errorMessage = err instanceof Error
-    ? err.message
-    : "An unexpected error occurred";
+  const errorType =
+    err instanceof LokiApiError ? err.code : err instanceof Error ? err.name : "UnknownError";
+  const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
 
-  learningCollector.emitErrorPattern(
-    requestInfo,
-    errorType,
-    errorMessage,
-    {
-      stackTrace: err instanceof Error ? err.stack : undefined,
-      context: {
-        method: req?.method,
-        path: req ? new URL(req.url).pathname : undefined,
-        errorCode: err instanceof LokiApiError ? err.code : undefined,
-        statusCode: err instanceof LokiApiError ? err.status : 500,
-      },
-    }
-  );
+  learningCollector.emitErrorPattern(requestInfo, errorType, errorMessage, {
+    stackTrace: err instanceof Error ? err.stack : undefined,
+    context: {
+      method: req?.method,
+      path: req ? new URL(req.url).pathname : undefined,
+      errorCode: err instanceof LokiApiError ? err.code : undefined,
+      statusCode: err instanceof LokiApiError ? err.status : 500,
+    },
+  });
 
   // Handle known API errors
   if (err instanceof LokiApiError) {
@@ -154,36 +138,26 @@ export function handleError(err: unknown, req?: Request): Response {
   }
 
   if (err instanceof Deno.errors.PermissionDenied) {
-    return new LokiApiError(
-      "Permission denied",
-      ErrorCodes.FORBIDDEN
-    ).toResponse();
+    return new LokiApiError("Permission denied", ErrorCodes.FORBIDDEN).toResponse();
   }
 
   // Handle JSON parsing errors
   if (err instanceof SyntaxError && err.message.includes("JSON")) {
-    return new LokiApiError(
-      "Invalid JSON in request body",
-      ErrorCodes.BAD_REQUEST
-    ).toResponse();
+    return new LokiApiError("Invalid JSON in request body", ErrorCodes.BAD_REQUEST).toResponse();
   }
 
   // Handle timeout errors
   if (err instanceof Error && err.name === "AbortError") {
-    return new LokiApiError(
-      "Request timed out",
-      ErrorCodes.TIMEOUT
-    ).toResponse();
+    return new LokiApiError("Request timed out", ErrorCodes.TIMEOUT).toResponse();
   }
 
   // Default to internal error
-  const message =
-    err instanceof Error ? err.message : "An unexpected error occurred";
+  const message = err instanceof Error ? err.message : "An unexpected error occurred";
 
   return new LokiApiError(
     message,
     ErrorCodes.INTERNAL_ERROR,
-    Deno.env.get("LOKI_DEBUG") ? { stack: (err as Error).stack } : undefined
+    Deno.env.get("LOKI_DEBUG") ? { stack: (err as Error).stack } : undefined,
   ).toResponse();
 }
 
@@ -193,13 +167,10 @@ export function handleError(err: unknown, req?: Request): Response {
 export function validateBody<T extends Record<string, unknown>>(
   body: unknown,
   required: (keyof T)[],
-  optional: (keyof T)[] = []
+  optional: (keyof T)[] = [],
 ): T {
   if (!body || typeof body !== "object") {
-    throw new LokiApiError(
-      "Request body must be a JSON object",
-      ErrorCodes.BAD_REQUEST
-    );
+    throw new LokiApiError("Request body must be a JSON object", ErrorCodes.BAD_REQUEST);
   }
 
   const obj = body as Record<string, unknown>;
@@ -210,7 +181,7 @@ export function validateBody<T extends Record<string, unknown>>(
       throw new LokiApiError(
         `Missing required field: ${String(field)}`,
         ErrorCodes.VALIDATION_ERROR,
-        { field: String(field) }
+        { field: String(field) },
       );
     }
   }
@@ -219,11 +190,7 @@ export function validateBody<T extends Record<string, unknown>>(
   const allowedFields = new Set([...required, ...optional]);
   for (const field of Object.keys(obj)) {
     if (!allowedFields.has(field)) {
-      throw new LokiApiError(
-        `Unknown field: ${field}`,
-        ErrorCodes.VALIDATION_ERROR,
-        { field }
-      );
+      throw new LokiApiError(`Unknown field: ${field}`, ErrorCodes.VALIDATION_ERROR, { field });
     }
   }
 
@@ -236,7 +203,7 @@ export function validateBody<T extends Record<string, unknown>>(
 export function errorResponse(
   message: string,
   code: ErrorCode = ErrorCodes.INTERNAL_ERROR,
-  details?: Record<string, unknown>
+  details?: Record<string, unknown>,
 ): Response {
   return new LokiApiError(message, code, details).toResponse();
 }

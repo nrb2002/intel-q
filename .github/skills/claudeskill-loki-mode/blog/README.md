@@ -29,11 +29,13 @@ blog/
 ## Sections
 
 ### 1. Home
+
 - Quick overview and features
 - Installation instructions
 - Key differentiators
 
 ### 2. Architecture
+
 - Core workflow (RARV cycle)
 - 41 agent types
 - Memory systems
@@ -42,6 +44,7 @@ blog/
 - Scale patterns
 
 ### 3. Research
+
 - OpenAI patterns
 - Lab research (DeepMind, Anthropic)
 - Production patterns
@@ -49,11 +52,13 @@ blog/
 - Acknowledgements
 
 ### 4. Comparisons
+
 - Loki Mode vs Cursor
 - Multi-agent systems comparison
 - Competitive analysis
 
 ### 5. Blog
+
 - Technical deep dives
 - Research explanations
 - Case studies
@@ -80,16 +85,17 @@ Site will be available at: `https://asklokesh.github.io/loki-mode/blog/`
 To make `https://asklokesh.github.io/loki-mode/` redirect to the blog:
 
 1. Create `index.html` in repository root:
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="refresh" content="0; url=blog/">
+  <head>
+    <meta http-equiv="refresh" content="0; url=blog/" />
     <title>Redirecting...</title>
-</head>
-<body>
+  </head>
+  <body>
     <p>Redirecting to <a href="blog/">Loki Mode</a>...</p>
-</body>
+  </body>
 </html>
 ```
 
@@ -134,13 +140,13 @@ Example:
 
 ```html
 <article class="blog-card" data-post="posts/new-post.md">
-    <div class="blog-meta">January 20, 2026</div>
-    <h3>Post Title</h3>
-    <p>Brief description...</p>
-    <div class="blog-tags">
-        <span class="tag">Tag1</span>
-        <span class="tag">Tag2</span>
-    </div>
+  <div class="blog-meta">January 20, 2026</div>
+  <h3>Post Title</h3>
+  <p>Brief description...</p>
+  <div class="blog-tags">
+    <span class="tag">Tag1</span>
+    <span class="tag">Tag2</span>
+  </div>
 </article>
 ```
 
@@ -153,8 +159,8 @@ Example:
 
 ```html
 <div class="doc-card" data-doc="../references/new-doc.md">
-    <h3>Document Title</h3>
-    <p>Brief description...</p>
+  <h3>Document Title</h3>
+  <p>Brief description...</p>
 </div>
 ```
 
@@ -186,11 +192,11 @@ Edit `css/style.css`:
 
 ```css
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    --dark-bg: #0f172a;
-    --card-bg: #1e293b;
-    /* ... */
+  --primary-color: #6366f1;
+  --secondary-color: #8b5cf6;
+  --dark-bg: #0f172a;
+  --card-bg: #1e293b;
+  /* ... */
 }
 ```
 
@@ -204,7 +210,7 @@ Modify grid layouts in `css/style.css`:
 
 ```css
 .features {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 ```
 

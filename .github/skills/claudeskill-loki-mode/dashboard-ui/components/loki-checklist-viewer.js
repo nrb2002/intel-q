@@ -8,14 +8,14 @@
  * <loki-checklist-viewer api-url="http://localhost:57374" theme="dark"></loki-checklist-viewer>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 const PRIORITY_ORDER = { critical: 0, major: 1, minor: 2 };
 const PRIORITY_COLORS = {
-  critical: 'var(--loki-status-error, #ef4444)',
-  major: 'var(--loki-status-warning, #f59e0b)',
-  minor: 'var(--loki-text-muted, #71717a)',
+  critical: "var(--loki-status-error, #ef4444)",
+  major: "var(--loki-status-warning, #f59e0b)",
+  minor: "var(--loki-text-muted, #71717a)",
 };
 
 /**
@@ -26,7 +26,7 @@ const PRIORITY_COLORS = {
  */
 export class LokiChecklistViewer extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -55,17 +55,17 @@ export class LokiChecklistViewer extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -84,7 +84,7 @@ export class LokiChecklistViewer extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -93,7 +93,7 @@ export class LokiChecklistViewer extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -109,7 +109,8 @@ export class LokiChecklistViewer extends LokiElement {
       if (dataHash === this._lastDataHash) return;
       this._lastDataHash = dataHash;
       this._checklist = data;
-      this._waivers = (waiverData && waiverData.waivers) ? waiverData.waivers.filter(w => w.active) : [];
+      this._waivers =
+        waiverData && waiverData.waivers ? waiverData.waivers.filter((w) => w.active) : [];
       this._error = null;
       this.render();
     } catch (err) {
@@ -119,15 +120,15 @@ export class LokiChecklistViewer extends LokiElement {
   }
 
   _isItemWaived(itemId) {
-    return this._waivers.some(w => w.item_id === itemId);
+    return this._waivers.some((w) => w.item_id === itemId);
   }
 
   _getWaiverForItem(itemId) {
-    return this._waivers.find(w => w.item_id === itemId) || null;
+    return this._waivers.find((w) => w.item_id === itemId) || null;
   }
 
   async _waiveItem(itemId) {
-    const reason = window.prompt('Enter reason for waiving this item:');
+    const reason = window.prompt("Enter reason for waiving this item:");
     if (!reason) return;
     try {
       await this._api.addChecklistWaiver(itemId, reason);
@@ -415,8 +416,12 @@ export class LokiChecklistViewer extends LokiElement {
     if (!this._checklist?.categories) return [];
     const failures = [];
     for (const cat of this._checklist.categories) {
-      for (const item of (cat.items || [])) {
-        if (item.status === 'failing' && item.priority === 'critical' && !this._isItemWaived(item.id)) {
+      for (const item of cat.items || []) {
+        if (
+          item.status === "failing" &&
+          item.priority === "critical" &&
+          !this._isItemWaived(item.id)
+        ) {
           failures.push(item);
         }
       }
@@ -427,7 +432,7 @@ export class LokiChecklistViewer extends LokiElement {
   _renderGateBanner() {
     const unwaivedCritical = this._getUnwaivedCriticalFailures();
     if (unwaivedCritical.length > 0) {
-      return `<div class="gate-banner gate-blocked">COUNCIL GATE: BLOCKED - ${unwaivedCritical.length} critical item${unwaivedCritical.length !== 1 ? 's' : ''} must be verified or waived before completion</div>`;
+      return `<div class="gate-banner gate-blocked">COUNCIL GATE: BLOCKED - ${unwaivedCritical.length} critical item${unwaivedCritical.length !== 1 ? "s" : ""} must be verified or waived before completion</div>`;
     }
     return '<div class="gate-banner gate-passed">COUNCIL GATE: PASSED - No blocking critical failures</div>';
   }
@@ -437,19 +442,19 @@ export class LokiChecklistViewer extends LokiElement {
     if (!s) return;
 
     const cl = this._checklist;
-    const isInit = cl && cl.status !== 'not_initialized' && cl.categories?.length > 0;
+    const isInit = cl && cl.status !== "not_initialized" && cl.categories?.length > 0;
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
       <div class="checklist-viewer">
         <div class="checklist-header">
           <h2 class="title">Spec Checklist</h2>
-          ${isInit ? this._renderBadges(cl.summary) : ''}
+          ${isInit ? this._renderBadges(cl.summary) : ""}
         </div>
-        ${isInit ? this._renderGateBanner() : ''}
-        ${isInit ? this._renderProgress(cl.summary) : ''}
+        ${isInit ? this._renderGateBanner() : ""}
+        ${isInit ? this._renderProgress(cl.summary) : ""}
         ${isInit ? this._renderCategories(cl.categories) : this._renderEmpty()}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -457,20 +462,20 @@ export class LokiChecklistViewer extends LokiElement {
   }
 
   _renderBadges(summary) {
-    if (!summary) return '';
+    if (!summary) return "";
     const waivedCount = this._waivers.length;
     return `
       <div class="summary-badges">
-        ${summary.verified ? `<span class="badge badge-verified">${summary.verified} verified</span>` : ''}
-        ${summary.failing ? `<span class="badge badge-failing">${summary.failing} failing</span>` : ''}
-        ${waivedCount ? `<span class="badge badge-waived">${waivedCount} waived</span>` : ''}
-        ${summary.pending ? `<span class="badge badge-pending">${summary.pending} pending</span>` : ''}
+        ${summary.verified ? `<span class="badge badge-verified">${summary.verified} verified</span>` : ""}
+        ${summary.failing ? `<span class="badge badge-failing">${summary.failing} failing</span>` : ""}
+        ${waivedCount ? `<span class="badge badge-waived">${waivedCount} waived</span>` : ""}
+        ${summary.pending ? `<span class="badge badge-pending">${summary.pending} pending</span>` : ""}
       </div>
     `;
   }
 
   _renderProgress(summary) {
-    if (!summary || !summary.total) return '';
+    if (!summary || !summary.total) return "";
     const pctVerified = (summary.verified / summary.total) * 100;
     const pctFailing = (summary.failing / summary.total) * 100;
     return `
@@ -489,69 +494,88 @@ export class LokiChecklistViewer extends LokiElement {
 
   _renderCategories(categories) {
     if (!categories?.length) return this._renderEmpty();
-    return categories.map(cat => {
-      const expanded = this._expandedCategories.has(cat.name);
-      const items = cat.items || [];
-      const catVerified = items.filter(i => i.status === 'verified').length;
-      const catFailing = items.filter(i => i.status === 'failing').length;
-      return `
+    return categories
+      .map((cat) => {
+        const expanded = this._expandedCategories.has(cat.name);
+        const items = cat.items || [];
+        const catVerified = items.filter((i) => i.status === "verified").length;
+        const catFailing = items.filter((i) => i.status === "failing").length;
+        return `
         <div class="category">
           <div class="category-header" data-category="${this._escapeHtml(cat.name)}">
             <div>
               <span class="category-name">${this._escapeHtml(cat.name)}</span>
-              <span class="category-stats">${catVerified}/${items.length} verified${catFailing ? `, ${catFailing} failing` : ''}</span>
+              <span class="category-stats">${catVerified}/${items.length} verified${catFailing ? `, ${catFailing} failing` : ""}</span>
             </div>
-            <span class="category-arrow ${expanded ? 'expanded' : ''}">&#9654;</span>
+            <span class="category-arrow ${expanded ? "expanded" : ""}">&#9654;</span>
           </div>
-          ${expanded ? `<div class="category-body">${this._renderItems(items)}</div>` : ''}
+          ${expanded ? `<div class="category-body">${this._renderItems(items)}</div>` : ""}
         </div>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   _renderItems(items) {
-    if (!items?.length) return '<div class="item" style="color:var(--loki-text-muted)">No items</div>';
+    if (!items?.length)
+      return '<div class="item" style="color:var(--loki-text-muted)">No items</div>';
     // Sort by priority
-    const sorted = [...items].sort((a, b) =>
-      (PRIORITY_ORDER[a.priority] ?? 2) - (PRIORITY_ORDER[b.priority] ?? 2)
+    const sorted = [...items].sort(
+      (a, b) => (PRIORITY_ORDER[a.priority] ?? 2) - (PRIORITY_ORDER[b.priority] ?? 2),
     );
-    return sorted.map(item => {
-      const statusClass = item.status === 'verified' ? 'status-verified'
-        : item.status === 'failing' ? 'status-failing' : 'status-pending';
-      // Validate priority against known enum to prevent style injection
-      const validPriority = ['critical', 'major', 'minor'].includes(item.priority) ? item.priority : 'minor';
-      const priorityColor = PRIORITY_COLORS[validPriority];
-      const checks = item.verification || [];
-      const waiver = this._getWaiverForItem(item.id);
-      const isWaived = !!waiver;
-      const showWaiverAction = item.status === 'failing' && (validPriority === 'critical' || validPriority === 'major');
-      const waivedBadge = isWaived
-        ? `<span class="item-waived-badge" title="${this._escapeHtml(waiver.reason || 'No reason provided')}">WAIVED</span>`
-        : '';
-      let waiverButton = '';
-      if (showWaiverAction) {
-        if (isWaived) {
-          waiverButton = `<button class="waiver-btn waiver-btn-unwaive" data-unwaive-id="${this._escapeHtml(item.id)}">Unwaive</button>`;
-        } else {
-          waiverButton = `<button class="waiver-btn" data-waive-id="${this._escapeHtml(item.id)}">Waive</button>`;
+    return sorted
+      .map((item) => {
+        const statusClass =
+          item.status === "verified"
+            ? "status-verified"
+            : item.status === "failing"
+              ? "status-failing"
+              : "status-pending";
+        // Validate priority against known enum to prevent style injection
+        const validPriority = ["critical", "major", "minor"].includes(item.priority)
+          ? item.priority
+          : "minor";
+        const priorityColor = PRIORITY_COLORS[validPriority];
+        const checks = item.verification || [];
+        const waiver = this._getWaiverForItem(item.id);
+        const isWaived = !!waiver;
+        const showWaiverAction =
+          item.status === "failing" && (validPriority === "critical" || validPriority === "major");
+        const waivedBadge = isWaived
+          ? `<span class="item-waived-badge" title="${this._escapeHtml(waiver.reason || "No reason provided")}">WAIVED</span>`
+          : "";
+        let waiverButton = "";
+        if (showWaiverAction) {
+          if (isWaived) {
+            waiverButton = `<button class="waiver-btn waiver-btn-unwaive" data-unwaive-id="${this._escapeHtml(item.id)}">Unwaive</button>`;
+          } else {
+            waiverButton = `<button class="waiver-btn" data-waive-id="${this._escapeHtml(item.id)}">Waive</button>`;
+          }
         }
-      }
-      return `
+        return `
         <div class="item">
           <div class="item-status ${statusClass}"></div>
-          <div class="item-title">${this._escapeHtml(item.title || item.id || '?')}</div>
+          <div class="item-title">${this._escapeHtml(item.title || item.id || "?")}</div>
           <span class="item-priority" style="color:${priorityColor};border:1px solid ${priorityColor}">${validPriority}</span>
           ${waivedBadge}
           ${waiverButton}
           <div class="verification-dots">
-            ${checks.map(c => {
-              const cls = c.passed === true ? 'v-dot-pass' : c.passed === false ? 'v-dot-fail' : 'v-dot-pending';
-              return `<div class="v-dot ${cls}" title="${this._escapeHtml(c.type || '')}"></div>`;
-            }).join('')}
+            ${checks
+              .map((c) => {
+                const cls =
+                  c.passed === true
+                    ? "v-dot-pass"
+                    : c.passed === false
+                      ? "v-dot-fail"
+                      : "v-dot-pending";
+                return `<div class="v-dot ${cls}" title="${this._escapeHtml(c.type || "")}"></div>`;
+              })
+              .join("")}
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   _renderEmpty() {
@@ -566,17 +590,17 @@ export class LokiChecklistViewer extends LokiElement {
   _attachEventListeners() {
     const s = this.shadowRoot;
     if (!s) return;
-    s.querySelectorAll('.category-header[data-category]').forEach(el => {
-      el.addEventListener('click', () => this._toggleCategory(el.dataset.category));
+    s.querySelectorAll(".category-header[data-category]").forEach((el) => {
+      el.addEventListener("click", () => this._toggleCategory(el.dataset.category));
     });
-    s.querySelectorAll('button[data-waive-id]').forEach(el => {
-      el.addEventListener('click', (e) => {
+    s.querySelectorAll("button[data-waive-id]").forEach((el) => {
+      el.addEventListener("click", (e) => {
         e.stopPropagation();
         this._waiveItem(el.dataset.waiveId);
       });
     });
-    s.querySelectorAll('button[data-unwaive-id]').forEach(el => {
-      el.addEventListener('click', (e) => {
+    s.querySelectorAll("button[data-unwaive-id]").forEach((el) => {
+      el.addEventListener("click", (e) => {
         e.stopPropagation();
         this._unwaiveItem(el.dataset.unwaiveId);
       });
@@ -584,13 +608,13 @@ export class LokiChecklistViewer extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 }
 
-customElements.define('loki-checklist-viewer', LokiChecklistViewer);
+customElements.define("loki-checklist-viewer", LokiChecklistViewer);

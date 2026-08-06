@@ -24,7 +24,11 @@ only the CLI is active). Also updated the version comment from v6.38.0 to v6.71.
 
 ```yaml
 healthcheck:
-  test: ["CMD-SHELL", "curl -sf http://localhost:57374/health >/dev/null 2>&1 || loki version >/dev/null 2>&1"]
+  test:
+    [
+      "CMD-SHELL",
+      "curl -sf http://localhost:57374/health >/dev/null 2>&1 || loki version >/dev/null 2>&1",
+    ]
   interval: 30s
   timeout: 10s
   start-period: 10s
@@ -43,6 +47,7 @@ the case and returned 0 (success), silently allowing dangerous operations like j
 from `archaeology` directly to `modernize`.
 
 **Fix:** Added phase ordering validation before the case statement. The function now:
+
 1. Validates both `from_phase` and `to_phase` are known phases
 2. Rejects backward transitions (e.g., `modernize` -> `archaeology`)
 3. Rejects phase skipping (e.g., `archaeology` -> `modernize` skipping `stabilize`/`isolate`)
@@ -75,6 +80,7 @@ but were never called during actual healing operations. The only consumer was th
 `tests/test-migration-v2.sh`.
 
 **Fix:** Added sourcing of `migration-hooks.sh` in `cmd_heal()` with:
+
 1. Source the hooks file using `BASH_SOURCE[0]` relative path resolution
 2. Call `load_migration_hook_config()` to load project-specific hook configuration
 3. Export healing environment variables (`LOKI_HEAL_MODE`, `LOKI_HEAL_PHASE`, etc.)
@@ -149,12 +155,12 @@ phase without prior healing data could improve UX.
 
 ## Files Modified
 
-| File | Changes |
-|------|---------|
-| `docker-compose.yml` | Added loki service health check, updated version comment |
-| `autonomy/hooks/migration-hooks.sh` | Added phase transition ordering validation |
-| `autonomy/loki` | Added default provider clause, sourced hooks, added phase gate check on resume |
-| `autonomy/run.sh` | Defensive mkdir in save_state(), atomic current-task.json writes |
+| File                                | Changes                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| `docker-compose.yml`                | Added loki service health check, updated version comment                       |
+| `autonomy/hooks/migration-hooks.sh` | Added phase transition ordering validation                                     |
+| `autonomy/loki`                     | Added default provider clause, sourced hooks, added phase gate check on resume |
+| `autonomy/run.sh`                   | Defensive mkdir in save_state(), atomic current-task.json writes               |
 
 ## Validation
 

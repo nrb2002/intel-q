@@ -16,12 +16,7 @@ import type {
   StartSessionResponse,
   SessionStatusResponse,
 } from "../types/api.ts";
-import {
-  LokiApiError,
-  ErrorCodes,
-  validateBody,
-  successResponse,
-} from "../middleware/error.ts";
+import { LokiApiError, ErrorCodes, validateBody, successResponse } from "../middleware/error.ts";
 
 /**
  * POST /api/sessions - Start a new session
@@ -30,40 +25,29 @@ export async function startSession(req: Request): Promise<Response> {
   const startTime = Date.now();
   const body = await req.json().catch(() => ({}));
 
-  const data = validateBody<StartSessionRequest>(body, [], [
-    "prdPath",
-    "provider",
-    "options",
-  ]);
+  const data = validateBody<StartSessionRequest>(body, [], ["prdPath", "provider", "options"]);
 
   // Validate provider
   const provider = data.provider || "claude";
   if (!["claude", "codex", "gemini"].includes(provider)) {
     throw new LokiApiError(
       `Invalid provider: ${provider}. Must be one of: claude, codex, gemini`,
-      ErrorCodes.VALIDATION_ERROR
+      ErrorCodes.VALIDATION_ERROR,
     );
   }
 
   // Emit user preference signal for provider selection
-  learningCollector.emitUserPreference(
-    "session_start",
-    "provider",
-    provider,
-    {
-      alternativesRejected: ["claude", "codex", "gemini"].filter((p) => p !== provider),
-      context: {
-        hasPrd: !!data.prdPath,
-        options: data.options,
-      },
-    }
-  );
+  learningCollector.emitUserPreference("session_start", "provider", provider, {
+    alternativesRejected: ["claude", "codex", "gemini"].filter((p) => p !== provider),
+    context: {
+      hasPrd: !!data.prdPath,
+      options: data.options,
+    },
+  });
 
   // Check for existing running session
   const sessions = await cliBridge.listSessions();
-  const running = sessions.find(
-    (s) => s.status === "running" || s.status === "starting"
-  );
+  const running = sessions.find((s) => s.status === "running" || s.status === "starting");
 
   if (running) {
     learningCollector.emitSessionOperation("start", running.id, false, {
@@ -73,16 +57,12 @@ export async function startSession(req: Request): Promise<Response> {
     throw new LokiApiError(
       `Session already running: ${running.id}`,
       ErrorCodes.SESSION_ALREADY_RUNNING,
-      { sessionId: running.id }
+      { sessionId: running.id },
     );
   }
 
   // Start new session
-  const session = await cliBridge.startSession(
-    data.prdPath,
-    provider,
-    data.options
-  );
+  const session = await cliBridge.startSession(data.prdPath, provider, data.options);
 
   // Emit success signal
   learningCollector.emitSessionOperation("start", session.id, true, {
@@ -119,17 +99,11 @@ export async function listSessions(_req: Request): Promise<Response> {
 /**
  * GET /api/sessions/:id - Get session details
  */
-export async function getSession(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function getSession(_req: Request, sessionId: string): Promise<Response> {
   const session = await cliBridge.getSession(sessionId);
 
   if (!session) {
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   const tasks = await cliBridge.getTasks(sessionId);
@@ -156,10 +130,7 @@ export async function getSession(
 /**
  * POST /api/sessions/:id/stop - Stop a session
  */
-export async function stopSession(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function stopSession(_req: Request, sessionId: string): Promise<Response> {
   const startTime = Date.now();
   const session = await cliBridge.getSession(sessionId);
 
@@ -167,10 +138,7 @@ export async function stopSession(
     learningCollector.emitSessionOperation("stop", sessionId, false, {
       errorMessage: "Session not found",
     });
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   if (session.status !== "running" && session.status !== "starting") {
@@ -178,10 +146,7 @@ export async function stopSession(
       errorMessage: `Session is not running: ${session.status}`,
       context: { currentStatus: session.status },
     });
-    throw new LokiApiError(
-      `Session is not running: ${session.status}`,
-      ErrorCodes.CONFLICT
-    );
+    throw new LokiApiError(`Session is not running: ${session.status}`, ErrorCodes.CONFLICT);
   }
 
   const stopped = await cliBridge.stopSession(sessionId);
@@ -191,10 +156,7 @@ export async function stopSession(
       errorMessage: "Failed to stop session",
       durationMs: Date.now() - startTime,
     });
-    throw new LokiApiError(
-      "Failed to stop session",
-      ErrorCodes.INTERNAL_ERROR
-    );
+    throw new LokiApiError("Failed to stop session", ErrorCodes.INTERNAL_ERROR);
   }
 
   // Emit success signal
@@ -216,67 +178,42 @@ export async function stopSession(
 /**
  * POST /api/sessions/:id/pause - Pause a session
  */
-export async function pauseSession(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function pauseSession(_req: Request, sessionId: string): Promise<Response> {
   // TODO: Implement pause functionality in CLI
-  throw new LokiApiError(
-    "Pause not yet implemented",
-    ErrorCodes.NOT_IMPLEMENTED
-  );
+  throw new LokiApiError("Pause not yet implemented", ErrorCodes.NOT_IMPLEMENTED);
 }
 
 /**
  * POST /api/sessions/:id/resume - Resume a session
  */
-export async function resumeSession(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function resumeSession(_req: Request, sessionId: string): Promise<Response> {
   // TODO: Implement resume functionality in CLI
-  throw new LokiApiError(
-    "Resume not yet implemented",
-    ErrorCodes.NOT_IMPLEMENTED
-  );
+  throw new LokiApiError("Resume not yet implemented", ErrorCodes.NOT_IMPLEMENTED);
 }
 
 /**
  * POST /api/sessions/:id/input - Inject human input
  */
-export async function injectInput(
-  req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function injectInput(req: Request, sessionId: string): Promise<Response> {
   const session = await cliBridge.getSession(sessionId);
 
   if (!session) {
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   if (session.status !== "running") {
-    throw new LokiApiError(
-      `Session is not running: ${session.status}`,
-      ErrorCodes.CONFLICT
-    );
+    throw new LokiApiError(`Session is not running: ${session.status}`, ErrorCodes.CONFLICT);
   }
 
   const body = await req.json();
-  const data = validateBody<{ input: string; context?: string }>(
-    body,
-    ["input"],
-    ["context"]
-  );
+  const data = validateBody<{ input: string; context?: string }>(body, ["input"], ["context"]);
 
   const injected = await cliBridge.injectInput(sessionId, data.input);
 
   if (!injected) {
     throw new LokiApiError(
       "Failed to inject input - session may not be accepting input",
-      ErrorCodes.CONFLICT
+      ErrorCodes.CONFLICT,
     );
   }
 
@@ -289,24 +226,15 @@ export async function injectInput(
 /**
  * DELETE /api/sessions/:id - Delete a session record
  */
-export async function deleteSession(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function deleteSession(_req: Request, sessionId: string): Promise<Response> {
   const session = await cliBridge.getSession(sessionId);
 
   if (!session) {
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   if (session.status === "running" || session.status === "starting") {
-    throw new LokiApiError(
-      "Cannot delete running session. Stop it first.",
-      ErrorCodes.CONFLICT
-    );
+    throw new LokiApiError("Cannot delete running session. Stop it first.", ErrorCodes.CONFLICT);
   }
 
   // TODO: Implement deletion in CLI bridge

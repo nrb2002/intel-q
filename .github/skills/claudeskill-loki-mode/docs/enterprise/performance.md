@@ -13,13 +13,14 @@ By default, all spans are exported. For high-throughput environments, control sa
 **Span Batching:**
 
 The OTLP exporter batches spans and flushes them:
+
 - Automatically every 5 seconds (`_flushIntervalMs = 5000`)
 - When the batch reaches 100 spans
 
 To adjust flush frequency, modify the exporter after initialization:
 
 ```javascript
-const otel = require('./src/observability/otel');
+const otel = require("./src/observability/otel");
 otel.initialize();
 const exporter = otel.getExporter();
 // Exporter uses setInterval with 5000ms default
@@ -39,12 +40,13 @@ export LOKI_SERVICE_NAME="loki-mode-prod-01"
 
 Each metric has a built-in cardinality cap to prevent memory exhaustion:
 
-| Setting | Default | Purpose |
-|---------|---------|---------|
-| `MAX_METRIC_CARDINALITY` | 1,000 | Max distinct label combinations per metric |
-| `MAX_HISTOGRAM_SAMPLES` | 10,000 | Max raw samples per histogram series |
+| Setting                  | Default | Purpose                                    |
+| ------------------------ | ------- | ------------------------------------------ |
+| `MAX_METRIC_CARDINALITY` | 1,000   | Max distinct label combinations per metric |
+| `MAX_HISTOGRAM_SAMPLES`  | 10,000  | Max raw samples per histogram series       |
 
 When limits are reached:
+
 - Counters: New label sets are dropped (preserves monotonicity of existing counters)
 - Gauges: Oldest label set is evicted (LRU)
 - Histograms: New label sets are dropped; excess samples within a series are silently discarded
@@ -70,20 +72,20 @@ Policies are loaded from disk once at initialization and cached in memory. Subse
 When `watch: true` is passed to the engine, `fs.watchFile` polls the policy file every 1 second. This uses kernel-level polling (inotify on Linux, kqueue on macOS) and is lightweight, but can be disabled if policies only change at startup:
 
 ```javascript
-const policy = require('./src/policies');
-policy.init('/path/to/project', { watch: false });  // No file watcher
+const policy = require("./src/policies");
+policy.init("/path/to/project", { watch: false }); // No file watcher
 ```
 
 ### Evaluation Overhead
 
 All policy evaluations are synchronous and allocation-light:
 
-| Enforcement Point | Typical Duration | Notes |
-|-------------------|-----------------|-------|
-| `pre_execution` | < 1ms | String comparison, regex match |
-| `pre_deployment` | < 1ms | Array inclusion check |
-| `resource` | < 1ms | Numeric comparison |
-| `data` | 1-10ms | Depends on content size |
+| Enforcement Point | Typical Duration | Notes                          |
+| ----------------- | ---------------- | ------------------------------ |
+| `pre_execution`   | < 1ms            | String comparison, regex match |
+| `pre_deployment`  | < 1ms            | Array inclusion check          |
+| `resource`        | < 1ms            | Numeric comparison             |
+| `data`            | 1-10ms           | Depends on content size        |
 
 **Data scanning optimization:** Secret and PII patterns are compiled RegExp objects, not string patterns. They are created once at module load time and reused across evaluations.
 
@@ -99,11 +101,11 @@ When no `.loki/policies.json` or `.loki/policies.yaml` file exists, all evaluati
 
 The event bus uses file-based pub/sub for cross-process communication. Performance characteristics:
 
-| Operation | Typical Latency | Notes |
-|-----------|----------------|-------|
-| Emit event | 1-5ms | Single file write with `fcntl` lock |
-| Poll pending | 5-20ms | Directory listing + JSON parse per file |
-| Archive event | 1-5ms | File rename (same filesystem) |
+| Operation     | Typical Latency | Notes                                   |
+| ------------- | --------------- | --------------------------------------- |
+| Emit event    | 1-5ms           | Single file write with `fcntl` lock     |
+| Poll pending  | 5-20ms          | Directory listing + JSON parse per file |
+| Archive event | 1-5ms           | File rename (same filesystem)           |
 
 **Tuning poll interval:**
 
@@ -116,7 +118,7 @@ bus.start_background_processing(poll_interval=1.0)  # Reduce CPU by polling less
 ```typescript
 // TypeScript
 const bus = new EventBus();
-bus.startProcessing(1000);  // 1 second interval
+bus.startProcessing(1000); // 1 second interval
 ```
 
 Default poll interval is 500ms. For lower CPU usage at the cost of event latency, increase to 1-2 seconds.
@@ -136,6 +138,7 @@ bus.clear_archive(older_than_days=7)  # Remove old archived events
 The event bus tracks the last 1,000 processed event IDs in `.loki/events/processed.json`. When the set exceeds 1,000 entries, it is pruned to the most recent 1,000.
 
 For high-throughput scenarios (more than 1,000 events between process restarts), consider:
+
 - Archiving events after processing (default behavior)
 - Cleaning up archived events on a schedule
 
@@ -164,6 +167,7 @@ export LOKI_AUDIT_MAX_FILES="10"
 With defaults, maximum disk usage for audit logs is approximately 100MB (10 files at 10MB each).
 
 **Rotation behavior:**
+
 - Date-based log files: `audit-YYYY-MM-DD.jsonl`
 - When a file exceeds `MAX_SIZE_MB`, it is renamed with a timestamp suffix and a new file is created
 - When file count exceeds `MAX_FILES`, the oldest files are deleted
@@ -175,6 +179,7 @@ On server restart, the audit system recovers the last hash from existing log fil
 ### Syslog Forwarding Overhead
 
 Syslog forwarding is fire-and-forget:
+
 - Uses Python `logging.handlers.SysLogHandler`
 - Supports UDP (default, no connection overhead) or TCP
 - Failures are silently swallowed -- never blocks the audit write path
@@ -196,11 +201,11 @@ This disables the SHA-256 hash chain computation (saves approximately 0.1ms per 
 
 The memory system tracks token usage for discovery vs. read operations. Tune the progressive disclosure layers to minimize token consumption:
 
-| Layer | Purpose | Token Cost |
-|-------|---------|------------|
-| Index | Module routing rules | Low (~200 tokens) |
-| Timeline | Recent session history | Medium (~1,000 tokens) |
-| Full Details | Complete episodic memory | High (variable) |
+| Layer        | Purpose                  | Token Cost             |
+| ------------ | ------------------------ | ---------------------- |
+| Index        | Module routing rules     | Low (~200 tokens)      |
+| Timeline     | Recent session history   | Medium (~1,000 tokens) |
+| Full Details | Complete episodic memory | High (variable)        |
 
 **Optimization:** The system loads only the index layer by default and progressively loads deeper layers on demand. Avoid loading full details unless the task requires historical context.
 
@@ -214,6 +219,7 @@ pip install sentence-transformers
 ```
 
 Vector operations are the most expensive memory operations. For large memory stores:
+
 - Limit search results with the `limit` parameter
 - Use keyword-based retrieval first, then vector search as fallback
 - Consider periodic consolidation to reduce episodic memory volume
@@ -256,12 +262,12 @@ location /static/ {
 
 When enterprise features are active, background processes consume resources:
 
-| Process | CPU Impact | Memory Impact | I/O Impact |
-|---------|-----------|---------------|------------|
-| OTEL flush timer | Minimal (5s interval) | ~1MB for span buffer | Network: batch export |
-| Policy file watcher | Minimal (1s poll) | ~100KB for cached policies | Disk: stat() call |
-| Audit syslog forwarder | Minimal (per-event) | ~10KB | Network: UDP/TCP per event |
-| Event bus poller | Low (500ms poll) | ~1MB for processed IDs | Disk: directory listing |
+| Process                | CPU Impact            | Memory Impact              | I/O Impact                 |
+| ---------------------- | --------------------- | -------------------------- | -------------------------- |
+| OTEL flush timer       | Minimal (5s interval) | ~1MB for span buffer       | Network: batch export      |
+| Policy file watcher    | Minimal (1s poll)     | ~100KB for cached policies | Disk: stat() call          |
+| Audit syslog forwarder | Minimal (per-event)   | ~10KB                      | Network: UDP/TCP per event |
+| Event bus poller       | Low (500ms poll)      | ~1MB for processed IDs     | Disk: directory listing    |
 
 **Total overhead:** With all enterprise features active, expect approximately 2-5MB additional memory and negligible CPU impact.
 

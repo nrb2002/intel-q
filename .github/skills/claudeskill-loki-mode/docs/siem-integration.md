@@ -13,6 +13,7 @@ Loki Mode supports integration with enterprise SIEM systems for:
 - Forensic analysis
 
 Supported SIEM platforms:
+
 - Splunk
 - IBM QRadar
 - Micro Focus ArcSight
@@ -35,13 +36,13 @@ loki start ./prd.md
 
 ### Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_AUDIT_SYSLOG_HOST` | - | Syslog server hostname or IP |
-| `LOKI_AUDIT_SYSLOG_PORT` | `514` | Syslog server port |
-| `LOKI_AUDIT_SYSLOG_PROTO` | `udp` | Protocol: `udp` or `tcp` |
-| `LOKI_SYSLOG_FACILITY` | `local0` | Syslog facility (local0-local7) |
-| `LOKI_SYSLOG_SEVERITY` | `info` | Minimum severity to forward |
+| Variable                  | Default  | Description                     |
+| ------------------------- | -------- | ------------------------------- |
+| `LOKI_AUDIT_SYSLOG_HOST`  | -        | Syslog server hostname or IP    |
+| `LOKI_AUDIT_SYSLOG_PORT`  | `514`    | Syslog server port              |
+| `LOKI_AUDIT_SYSLOG_PROTO` | `udp`    | Protocol: `udp` or `tcp`        |
+| `LOKI_SYSLOG_FACILITY`    | `local0` | Syslog facility (local0-local7) |
+| `LOKI_SYSLOG_SEVERITY`    | `info`   | Minimum severity to forward     |
 
 ### Configuration File
 
@@ -56,7 +57,7 @@ enterprise:
       protocol: udp
       facility: local0
       severity: info
-      format: rfc5424  # RFC 5424 or RFC 3164
+      format: rfc5424 # RFC 5424 or RFC 3164
 ```
 
 ### Testing
@@ -350,7 +351,7 @@ enterprise:
         events:
           - auth.fail
         threshold: 5
-        window: 300  # seconds
+        window: 300 # seconds
         action: alert
         severity: high
 
@@ -558,14 +559,14 @@ export LOKI_AUDIT_EXCLUDE_EVENTS=api.request,api.response
   "query": {
     "bool": {
       "must": [
-        {"match": {"event": "auth.fail"}},
-        {"range": {"timestamp": {"gte": "now-1h"}}}
+        { "match": { "event": "auth.fail" } },
+        { "range": { "timestamp": { "gte": "now-1h" } } }
       ]
     }
   },
   "aggs": {
     "by_actor": {
-      "terms": {"field": "actor.keyword"}
+      "terms": { "field": "actor.keyword" }
     }
   }
 }

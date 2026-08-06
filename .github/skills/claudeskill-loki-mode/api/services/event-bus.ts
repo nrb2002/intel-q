@@ -5,12 +5,7 @@
  * Implements pub/sub pattern with filtering support.
  */
 
-import type {
-  SSEEvent,
-  EventType,
-  EventFilter,
-  AnySSEEvent,
-} from "../types/events.ts";
+import type { SSEEvent, EventType, EventFilter, AnySSEEvent } from "../types/events.ts";
 
 type EventCallback = (event: AnySSEEvent) => void;
 
@@ -45,11 +40,7 @@ class EventBus {
   /**
    * Publish an event to all matching subscribers
    */
-  publish<T>(
-    type: EventType,
-    sessionId: string,
-    data: T
-  ): SSEEvent<T> {
+  publish<T>(type: EventType, sessionId: string, data: T): SSEEvent<T> {
     const event: SSEEvent<T> = {
       id: `evt_${++this.eventCounter}_${Date.now()}`,
       type,
@@ -82,9 +73,7 @@ class EventBus {
    * Get recent events matching a filter
    */
   getHistory(filter: EventFilter, limit = 100): AnySSEEvent[] {
-    return this.eventHistory
-      .filter((event) => this.matchesFilter(event, filter))
-      .slice(-limit);
+    return this.eventHistory.filter((event) => this.matchesFilter(event, filter)).slice(-limit);
   }
 
   /**
@@ -139,7 +128,7 @@ export const eventBus = new EventBus();
 export function emitSessionEvent(
   type: Extract<EventType, `session:${string}`>,
   sessionId: string,
-  data: { status: string; message?: string; exitCode?: number }
+  data: { status: string; message?: string; exitCode?: number },
 ) {
   return eventBus.publish(type, sessionId, data);
 }
@@ -147,7 +136,7 @@ export function emitSessionEvent(
 export function emitPhaseEvent(
   type: Extract<EventType, `phase:${string}`>,
   sessionId: string,
-  data: { phase: string; previousPhase?: string; progress?: number }
+  data: { phase: string; previousPhase?: string; progress?: number },
 ) {
   return eventBus.publish(type, sessionId, data);
 }
@@ -155,7 +144,7 @@ export function emitPhaseEvent(
 export function emitTaskEvent(
   type: Extract<EventType, `task:${string}`>,
   sessionId: string,
-  data: { taskId: string; title: string; status: string; [key: string]: unknown }
+  data: { taskId: string; title: string; status: string; [key: string]: unknown },
 ) {
   return eventBus.publish(type, sessionId, data);
 }
@@ -163,7 +152,7 @@ export function emitTaskEvent(
 export function emitAgentEvent(
   type: Extract<EventType, `agent:${string}`>,
   sessionId: string,
-  data: { agentId: string; type: string; [key: string]: unknown }
+  data: { agentId: string; type: string; [key: string]: unknown },
 ) {
   return eventBus.publish(type, sessionId, data);
 }
@@ -172,7 +161,7 @@ export function emitLogEvent(
   level: "info" | "warn" | "error" | "debug",
   sessionId: string,
   message: string,
-  source?: string
+  source?: string,
 ) {
   return eventBus.publish(`log:${level}`, sessionId, {
     level,
@@ -183,7 +172,7 @@ export function emitLogEvent(
 
 export function emitHeartbeat(
   sessionId: string,
-  data: { uptime: number; activeAgents: number; queuedTasks: number }
+  data: { uptime: number; activeAgents: number; queuedTasks: number },
 ) {
   return eventBus.publish("heartbeat", sessionId, data);
 }

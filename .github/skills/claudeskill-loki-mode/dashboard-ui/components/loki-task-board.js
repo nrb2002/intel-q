@@ -8,16 +8,16 @@
  * <loki-task-board api-url="http://localhost:57374" project-id="1" theme="dark"></loki-task-board>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
-import { getState } from '../core/loki-state.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
+import { getState } from "../core/loki-state.js";
 
 /** @type {Array<{id: string, label: string, status: string, color: string}>} */
 const COLUMNS = [
-  { id: 'pending', label: 'Pending', status: 'pending', color: 'var(--loki-text-muted)' },
-  { id: 'in_progress', label: 'In Progress', status: 'in_progress', color: 'var(--loki-blue)' },
-  { id: 'review', label: 'In Review', status: 'review', color: 'var(--loki-purple)' },
-  { id: 'done', label: 'Completed', status: 'done', color: 'var(--loki-green)' },
+  { id: "pending", label: "Pending", status: "pending", color: "var(--loki-text-muted)" },
+  { id: "in_progress", label: "In Progress", status: "in_progress", color: "var(--loki-blue)" },
+  { id: "review", label: "In Review", status: "review", color: "var(--loki-purple)" },
+  { id: "done", label: "Completed", status: "done", color: "var(--loki-green)" },
 ];
 
 /**
@@ -33,7 +33,7 @@ const COLUMNS = [
  */
 export class LokiTaskBoard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'project-id', 'theme', 'readonly'];
+    return ["api-url", "project-id", "theme", "readonly"];
   }
 
   constructor() {
@@ -46,7 +46,7 @@ export class LokiTaskBoard extends LokiElement {
     this._expandedCards = new Set();
     this._selectedTasks = new Set();
     this._bulkMode = false;
-    this._activeFilter = 'all';
+    this._activeFilter = "all";
     this._api = null;
     this._state = getState();
   }
@@ -69,20 +69,20 @@ export class LokiTaskBoard extends LokiElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
 
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadTasks();
     }
-    if (name === 'project-id') {
+    if (name === "project-id") {
       this._loadTasks();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
 
     // Remove old listeners before adding new ones to prevent leaks
@@ -104,21 +104,21 @@ export class LokiTaskBoard extends LokiElement {
     this.render();
 
     try {
-      const projectId = this.getAttribute('project-id');
+      const projectId = this.getAttribute("project-id");
       const filters = projectId ? { projectId: parseInt(projectId) } : {};
       this._tasks = await this._api.listTasks(filters);
 
       // Merge with local tasks
-      const localTasks = this._state.get('localTasks') || [];
+      const localTasks = this._state.get("localTasks") || [];
       if (localTasks.length > 0) {
-        this._tasks = [...this._tasks, ...localTasks.map(t => ({ ...t, isLocal: true }))];
+        this._tasks = [...this._tasks, ...localTasks.map((t) => ({ ...t, isLocal: true }))];
       }
 
-      this._state.update({ 'cache.tasks': this._tasks }, false);
+      this._state.update({ "cache.tasks": this._tasks }, false);
     } catch (error) {
       this._error = error.message;
       // Fall back to local tasks only
-      this._tasks = (this._state.get('localTasks') || []).map(t => ({ ...t, isLocal: true }));
+      this._tasks = (this._state.get("localTasks") || []).map((t) => ({ ...t, isLocal: true }));
     }
 
     this._loading = false;
@@ -127,53 +127,53 @@ export class LokiTaskBoard extends LokiElement {
 
   _getTasksByStatus(status) {
     const tasks = this._getFilteredTasks();
-    return tasks.filter(t => {
-      const taskStatus = t.status?.toLowerCase().replace(/-/g, '_');
+    return tasks.filter((t) => {
+      const taskStatus = t.status?.toLowerCase().replace(/-/g, "_");
       return taskStatus === status;
     });
   }
 
   _handleDragStart(e, task) {
-    if (this.hasAttribute('readonly')) return;
+    if (this.hasAttribute("readonly")) return;
 
     this._draggedTask = task;
-    e.target.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', task.id.toString());
+    e.target.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", task.id.toString());
   }
 
   _handleDragEnd(e) {
-    e.target.classList.remove('dragging');
+    e.target.classList.remove("dragging");
     this._draggedTask = null;
-    this.shadowRoot.querySelectorAll('.kanban-tasks').forEach(el => {
-      el.classList.remove('drag-over');
+    this.shadowRoot.querySelectorAll(".kanban-tasks").forEach((el) => {
+      el.classList.remove("drag-over");
     });
   }
 
   _handleDragOver(e) {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
   }
 
   _handleDragEnter(e) {
     e.preventDefault();
-    e.currentTarget.classList.add('drag-over');
+    e.currentTarget.classList.add("drag-over");
   }
 
   _handleDragLeave(e) {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      e.currentTarget.classList.remove('drag-over');
+      e.currentTarget.classList.remove("drag-over");
     }
   }
 
   async _handleDrop(e, newStatus) {
     e.preventDefault();
-    e.currentTarget.classList.remove('drag-over');
+    e.currentTarget.classList.remove("drag-over");
 
-    if (!this._draggedTask || this.hasAttribute('readonly')) return;
+    if (!this._draggedTask || this.hasAttribute("readonly")) return;
 
     const taskId = this._draggedTask.id;
-    const task = this._tasks.find(t => t.id === taskId);
+    const task = this._tasks.find((t) => t.id === taskId);
     if (!task) return;
 
     const oldStatus = task.status;
@@ -190,14 +190,16 @@ export class LokiTaskBoard extends LokiElement {
         await this._api.moveTask(taskId, newStatus, 0);
       }
 
-      this.dispatchEvent(new CustomEvent('task-moved', {
-        detail: { taskId, oldStatus, newStatus }
-      }));
+      this.dispatchEvent(
+        new CustomEvent("task-moved", {
+          detail: { taskId, oldStatus, newStatus },
+        }),
+      );
     } catch (error) {
       // Revert on error
       task.status = oldStatus;
       this.render();
-      console.error('Failed to move task:', error);
+      console.error("Failed to move task:", error);
     }
   }
 
@@ -231,7 +233,7 @@ export class LokiTaskBoard extends LokiElement {
   async _bulkMove(newStatus) {
     const taskIds = [...this._selectedTasks];
     for (const taskId of taskIds) {
-      const task = this._tasks.find(t => String(t.id) === String(taskId));
+      const task = this._tasks.find((t) => String(t.id) === String(taskId));
       if (task && task.status !== newStatus) {
         try {
           if (task.isLocal) {
@@ -241,7 +243,7 @@ export class LokiTaskBoard extends LokiElement {
           }
           task.status = newStatus;
         } catch (error) {
-          console.error('Failed to bulk move task:', taskId, error);
+          console.error("Failed to bulk move task:", taskId, error);
         }
       }
     }
@@ -257,7 +259,7 @@ export class LokiTaskBoard extends LokiElement {
       try {
         await this._api.deleteTask(taskId);
       } catch (error) {
-        console.error('Failed to delete task:', taskId, error);
+        console.error("Failed to delete task:", taskId, error);
       }
     }
     this._selectedTasks.clear();
@@ -277,23 +279,23 @@ export class LokiTaskBoard extends LokiElement {
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     switch (this._activeFilter) {
-      case 'today':
-        filtered = filtered.filter(t => {
+      case "today":
+        filtered = filtered.filter((t) => {
           const created = t.created_at ? new Date(t.created_at) : null;
           return created && created >= today;
         });
         break;
-      case 'this-week':
-        filtered = filtered.filter(t => {
+      case "this-week":
+        filtered = filtered.filter((t) => {
           const created = t.created_at ? new Date(t.created_at) : null;
           return created && created >= weekAgo;
         });
         break;
-      case 'running':
-        filtered = filtered.filter(t => t.status === 'in_progress');
+      case "running":
+        filtered = filtered.filter((t) => t.status === "in_progress");
         break;
-      case 'failed':
-        filtered = filtered.filter(t => t.status === 'failed' || t.status === 'error');
+      case "failed":
+        filtered = filtered.filter((t) => t.status === "failed" || t.status === "error");
         break;
       default:
         break;
@@ -302,14 +304,14 @@ export class LokiTaskBoard extends LokiElement {
     return filtered;
   }
 
-  _openAddTaskModal(status = 'pending') {
-    this.dispatchEvent(new CustomEvent('add-task', { detail: { status } }));
+  _openAddTaskModal(status = "pending") {
+    this.dispatchEvent(new CustomEvent("add-task", { detail: { status } }));
   }
 
   _openTaskDetail(task) {
     this._selectedTask = task;
     this.render();
-    this.dispatchEvent(new CustomEvent('task-click', { detail: { task } }));
+    this.dispatchEvent(new CustomEvent("task-click", { detail: { task } }));
   }
 
   _closeTaskDetail() {
@@ -318,11 +320,14 @@ export class LokiTaskBoard extends LokiElement {
   }
 
   _renderMarkdown(md) {
-    if (!md) return '';
+    if (!md) return "";
     // Minimal markdown: escape first, then apply simple inline + block patterns.
     let html = this._escapeHtml(String(md));
     // Code fences ```...```
-    html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre class="md-code">${code.trim()}</pre>`);
+    html = html.replace(
+      /```([\s\S]*?)```/g,
+      (_, code) => `<pre class="md-code">${code.trim()}</pre>`,
+    );
     // Inline code `...`
     html = html.replace(/`([^`\n]+)`/g, '<code class="md-inline-code">$1</code>');
     // Headings
@@ -330,23 +335,31 @@ export class LokiTaskBoard extends LokiElement {
     html = html.replace(/^##\s+(.+)$/gm, '<h3 class="md-h3">$1</h3>');
     html = html.replace(/^#\s+(.+)$/gm, '<h2 class="md-h2">$1</h2>');
     // Bold and italic
-    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+    html = html.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+    html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
     // Bullet lists (single-level)
     html = html.replace(/(?:^|\n)((?:[-*]\s+.+(?:\n|$))+)/g, (_, block) => {
-      const items = block.trim().split(/\n/).map(line => line.replace(/^[-*]\s+/, '')).map(t => `<li>${t}</li>`).join('');
+      const items = block
+        .trim()
+        .split(/\n/)
+        .map((line) => line.replace(/^[-*]\s+/, ""))
+        .map((t) => `<li>${t}</li>`)
+        .join("");
       return `\n<ul class="md-list">${items}</ul>`;
     });
     // Paragraphs (double newlines)
-    html = html.split(/\n{2,}/).map(block => {
-      if (/^<(h\d|ul|ol|pre)/.test(block.trim())) return block;
-      return `<p class="md-p">${block.replace(/\n/g, '<br>')}</p>`;
-    }).join('');
+    html = html
+      .split(/\n{2,}/)
+      .map((block) => {
+        if (/^<(h\d|ul|ol|pre)/.test(block.trim())) return block;
+        return `<p class="md-p">${block.replace(/\n/g, "<br>")}</p>`;
+      })
+      .join("");
     return html;
   }
 
   _formatTimestamp(ts) {
-    if (!ts) return '';
+    if (!ts) return "";
     try {
       const d = new Date(ts);
       if (isNaN(d.getTime())) return this._escapeHtml(String(ts));
@@ -357,176 +370,233 @@ export class LokiTaskBoard extends LokiElement {
   }
 
   _phaseClass(phase) {
-    const p = String(phase || '').toLowerCase();
-    if (['reason', 'plan', 'planning'].includes(p)) return 'phase-reason';
-    if (['act', 'execute', 'execution', 'implement'].includes(p)) return 'phase-act';
-    if (['reflect', 'review'].includes(p)) return 'phase-reflect';
-    if (['verify', 'test', 'gate'].includes(p)) return 'phase-verify';
-    return 'phase-default';
+    const p = String(phase || "").toLowerCase();
+    if (["reason", "plan", "planning"].includes(p)) return "phase-reason";
+    if (["act", "execute", "execution", "implement"].includes(p)) return "phase-act";
+    if (["reflect", "review"].includes(p)) return "phase-reflect";
+    if (["verify", "test", "gate"].includes(p)) return "phase-verify";
+    return "phase-default";
   }
 
   _logLevelClass(level) {
-    const l = String(level || 'info').toLowerCase();
-    if (l === 'error' || l === 'fatal') return 'log-error';
-    if (l === 'warn' || l === 'warning') return 'log-warn';
-    if (l === 'debug' || l === 'trace') return 'log-debug';
-    return 'log-info';
+    const l = String(level || "info").toLowerCase();
+    if (l === "error" || l === "fatal") return "log-error";
+    if (l === "warn" || l === "warning") return "log-warn";
+    if (l === "debug" || l === "trace") return "log-debug";
+    return "log-info";
   }
 
   _renderTaskDetailModal(task) {
-    if (!task) return '';
+    if (!task) return "";
 
-    const priority = (task.priority || 'medium').toLowerCase();
+    const priority = (task.priority || "medium").toLowerCase();
     const priorityLabel = priority.charAt(0).toUpperCase() + priority.slice(1);
-    const status = task.status || 'pending';
-    const statusLabel = status.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const status = task.status || "pending";
+    const statusLabel = status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     const meta = task.metadata || {};
     const criteria = task.acceptance_criteria || [];
     const contextFiles = task.context_files || [];
-    const spec = task.specification || '';
-    const description = task.description || '';
+    const spec = task.specification || "";
+    const description = task.description || "";
     const notes = Array.isArray(task.notes) ? task.notes : [];
     const logs = Array.isArray(task.logs) ? task.logs : [];
-    const fullContent = task.full_content || '';
+    const fullContent = task.full_content || "";
 
     return `
       <div class="modal-overlay" id="task-detail-overlay">
         <div class="modal-container">
           <div class="modal-header">
             <div class="modal-header-left">
-              <span class="task-id">${task.isLocal ? 'LOCAL' : '#' + this._escapeHtml(String(task.id))}</span>
+              <span class="task-id">${task.isLocal ? "LOCAL" : "#" + this._escapeHtml(String(task.id))}</span>
               <span class="task-priority ${priority}">${priorityLabel}</span>
               <span class="task-status-badge ${status}">${statusLabel}</span>
             </div>
             <button class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>
           </div>
-          <h2 class="modal-title">${this._escapeHtml(task.title || 'Untitled')}</h2>
+          <h2 class="modal-title">${this._escapeHtml(task.title || "Untitled")}</h2>
 
-          ${Object.keys(meta).length > 0 ? `
+          ${
+            Object.keys(meta).length > 0
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Metadata</h3>
               <div class="meta-grid">
-                ${Object.entries(meta).map(([k, v]) => `
+                ${Object.entries(meta)
+                  .map(
+                    ([k, v]) => `
                   <div class="meta-cell">
-                    <span class="meta-label">${this._escapeHtml(k.replace(/_/g, ' '))}</span>
+                    <span class="meta-label">${this._escapeHtml(k.replace(/_/g, " "))}</span>
                     <span class="meta-value">${this._escapeHtml(String(v))}</span>
                   </div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${description ? `
+          ${
+            description
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Description</h3>
               <div class="modal-prose md-body">${this._renderMarkdown(description)}</div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${spec ? `
+          ${
+            spec
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Specification</h3>
               <div class="modal-prose">${this._escapeHtml(spec)}</div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${criteria.length > 0 ? `
+          ${
+            criteria.length > 0
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Acceptance Criteria</h3>
               <ul class="criteria-checklist" role="list">
-                ${criteria.map(c => {
-                  const isObj = c && typeof c === 'object';
-                  const text = isObj ? (c.text || c.title || '') : c;
-                  const done = isObj ? !!c.done : false;
-                  return `<li class="criteria-item">
-                    <span class="criteria-checkbox ${done ? 'checked' : ''}" aria-hidden="true">${done ? '&#10003;' : ''}</span>
-                    <span class="criteria-text ${done ? 'done' : ''}">${this._escapeHtml(String(text))}</span>
+                ${criteria
+                  .map((c) => {
+                    const isObj = c && typeof c === "object";
+                    const text = isObj ? c.text || c.title || "" : c;
+                    const done = isObj ? !!c.done : false;
+                    return `<li class="criteria-item">
+                    <span class="criteria-checkbox ${done ? "checked" : ""}" aria-hidden="true">${done ? "&#10003;" : ""}</span>
+                    <span class="criteria-text ${done ? "done" : ""}">${this._escapeHtml(String(text))}</span>
                   </li>`;
-                }).join('')}
+                  })
+                  .join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${notes.length > 0 ? `
+          ${
+            notes.length > 0
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Notes</h3>
               <ul class="notes-timeline" role="list">
-                ${notes.map(n => {
-                  const ts = this._formatTimestamp(n && n.timestamp);
-                  const author = n && n.author ? this._escapeHtml(String(n.author)) : 'unknown';
-                  const body = n && n.body ? this._escapeHtml(String(n.body)) : '';
-                  return `<li class="note-entry">
+                ${notes
+                  .map((n) => {
+                    const ts = this._formatTimestamp(n && n.timestamp);
+                    const author = n && n.author ? this._escapeHtml(String(n.author)) : "unknown";
+                    const body = n && n.body ? this._escapeHtml(String(n.body)) : "";
+                    return `<li class="note-entry">
                     <div class="note-meta">
                       <span class="note-author">${author}</span>
-                      ${ts ? `<span class="note-time">${ts}</span>` : ''}
+                      ${ts ? `<span class="note-time">${ts}</span>` : ""}
                     </div>
                     <div class="note-body">${body}</div>
                   </li>`;
-                }).join('')}
+                  })
+                  .join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${logs.length > 0 ? `
+          ${
+            logs.length > 0
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Logs</h3>
               <div class="logs-scroll">
                 <ul class="logs-timeline" role="list">
-                  ${logs.map(l => {
-                    const ts = this._formatTimestamp(l && l.timestamp);
-                    const iter = l && (l.iteration !== undefined && l.iteration !== null) ? `i${this._escapeHtml(String(l.iteration))}` : '';
-                    const phase = l && l.phase ? String(l.phase) : '';
-                    const phaseClass = this._phaseClass(phase);
-                    const levelClass = this._logLevelClass(l && l.level);
-                    const message = l && l.message ? this._escapeHtml(String(l.message)) : '';
-                    return `<li class="log-entry ${levelClass}">
-                      ${ts ? `<span class="log-time">${ts}</span>` : ''}
-                      ${iter ? `<span class="log-iter">${iter}</span>` : ''}
-                      ${phase ? `<span class="log-phase ${phaseClass}">${this._escapeHtml(phase)}</span>` : ''}
+                  ${logs
+                    .map((l) => {
+                      const ts = this._formatTimestamp(l && l.timestamp);
+                      const iter =
+                        l && l.iteration !== undefined && l.iteration !== null
+                          ? `i${this._escapeHtml(String(l.iteration))}`
+                          : "";
+                      const phase = l && l.phase ? String(l.phase) : "";
+                      const phaseClass = this._phaseClass(phase);
+                      const levelClass = this._logLevelClass(l && l.level);
+                      const message = l && l.message ? this._escapeHtml(String(l.message)) : "";
+                      return `<li class="log-entry ${levelClass}">
+                      ${ts ? `<span class="log-time">${ts}</span>` : ""}
+                      ${iter ? `<span class="log-iter">${iter}</span>` : ""}
+                      ${phase ? `<span class="log-phase ${phaseClass}">${this._escapeHtml(phase)}</span>` : ""}
                       <span class="log-message">${message}</span>
                     </li>`;
-                  }).join('')}
+                    })
+                    .join("")}
                 </ul>
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${contextFiles.length > 0 ? `
+          ${
+            contextFiles.length > 0
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Context Files</h3>
               <ul class="context-files-list">
-                ${contextFiles.map(f => `<li class="mono">${this._escapeHtml(f)}</li>`).join('')}
+                ${contextFiles.map((f) => `<li class="mono">${this._escapeHtml(f)}</li>`).join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${fullContent && !spec ? `
+          ${
+            fullContent && !spec
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Full Content</h3>
               <pre class="modal-pre">${this._escapeHtml(fullContent)}</pre>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${task.user_story ? `
+          ${
+            task.user_story
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">User Story</h3>
               <div class="modal-prose">${this._escapeHtml(task.user_story)}</div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${task.source ? `
+          ${
+            task.source
+              ? `
             <div class="modal-section">
               <h3 class="modal-section-title">Source</h3>
               <div class="modal-prose"><code>${this._escapeHtml(task.source)}</code></div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${task.type ? `
+          ${
+            task.type
+              ? `
             <div class="modal-footer">
               <span class="task-type">${this._escapeHtml(task.type)}</span>
-              ${task.assigned_agent_id ? `<span class="meta-value">Agent #${task.assigned_agent_id}</span>` : ''}
+              ${task.assigned_agent_id ? `<span class="meta-value">Agent #${task.assigned_agent_id}</span>` : ""}
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </div>
     `;
@@ -1368,13 +1438,13 @@ export class LokiTaskBoard extends LokiElement {
 
     const columnIcon = (status) => {
       switch (status) {
-        case 'pending':
+        case "pending":
           return '<circle cx="12" cy="12" r="10"/>';
-        case 'in_progress':
+        case "in_progress":
           return '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>';
-        case 'review':
+        case "review":
           return '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-        case 'done':
+        case "done":
           return '<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>';
         default:
           return '<circle cx="12" cy="12" r="10"/>';
@@ -1387,35 +1457,43 @@ export class LokiTaskBoard extends LokiElement {
     } else if (this._error && this._tasks.length === 0) {
       content = `<div class="error">Error: ${this._escapeHtml(this._error)}</div>`;
     } else {
-      const readonly = this.hasAttribute('readonly');
+      const readonly = this.hasAttribute("readonly");
       const filters = [
-        { id: 'all', label: 'All' },
-        { id: 'today', label: 'Today' },
-        { id: 'this-week', label: 'This Week' },
-        { id: 'running', label: 'Running' },
-        { id: 'failed', label: 'Failed' },
+        { id: "all", label: "All" },
+        { id: "today", label: "Today" },
+        { id: "this-week", label: "This Week" },
+        { id: "running", label: "Running" },
+        { id: "failed", label: "Failed" },
       ];
 
       const getAgentAvatar = (task) => {
-        if (!task.assigned_agent_id && !task.agent_type) return '';
-        const agentType = (task.agent_type || '').toLowerCase();
-        let initials = 'AG';
-        let cssClass = 'default';
-        let statusClass = 'idle';
-        let tooltipText = `Agent #${task.assigned_agent_id || '?'}`;
+        if (!task.assigned_agent_id && !task.agent_type) return "";
+        const agentType = (task.agent_type || "").toLowerCase();
+        let initials = "AG";
+        let cssClass = "default";
+        let statusClass = "idle";
+        let tooltipText = `Agent #${task.assigned_agent_id || "?"}`;
 
-        if (agentType.includes('architect') || agentType === 'ar') {
-          initials = 'AR'; cssClass = 'architect'; tooltipText = 'Architect';
-        } else if (agentType.includes('develop') || agentType === 'dv') {
-          initials = 'DV'; cssClass = 'developer'; tooltipText = 'Developer';
-        } else if (agentType.includes('test') || agentType === 'ts') {
-          initials = 'TS'; cssClass = 'tester'; tooltipText = 'Tester';
-        } else if (agentType.includes('review') || agentType === 'rv') {
-          initials = 'RV'; cssClass = 'reviewer'; tooltipText = 'Reviewer';
+        if (agentType.includes("architect") || agentType === "ar") {
+          initials = "AR";
+          cssClass = "architect";
+          tooltipText = "Architect";
+        } else if (agentType.includes("develop") || agentType === "dv") {
+          initials = "DV";
+          cssClass = "developer";
+          tooltipText = "Developer";
+        } else if (agentType.includes("test") || agentType === "ts") {
+          initials = "TS";
+          cssClass = "tester";
+          tooltipText = "Tester";
+        } else if (agentType.includes("review") || agentType === "rv") {
+          initials = "RV";
+          cssClass = "reviewer";
+          tooltipText = "Reviewer";
         }
 
-        if (task.status === 'in_progress') statusClass = 'active';
-        if (task.status === 'failed' || task.status === 'error') statusClass = 'failed';
+        if (task.status === "in_progress") statusClass = "active";
+        if (task.status === "failed" || task.status === "error") statusClass = "failed";
 
         return `
           <div class="agent-avatar ${cssClass}">
@@ -1429,22 +1507,30 @@ export class LokiTaskBoard extends LokiElement {
       content = `
         <div class="filter-bar">
           <span class="filter-label">Filter:</span>
-          ${filters.map(f => `
-            <button class="filter-pill ${this._activeFilter === f.id ? 'active' : ''}" data-filter="${f.id}">${f.label}</button>
-          `).join('')}
+          ${filters
+            .map(
+              (f) => `
+            <button class="filter-pill ${this._activeFilter === f.id ? "active" : ""}" data-filter="${f.id}">${f.label}</button>
+          `,
+            )
+            .join("")}
         </div>
 
-        ${this._bulkMode && this._selectedTasks.size > 0 ? `
+        ${
+          this._bulkMode && this._selectedTasks.size > 0
+            ? `
           <div class="bulk-actions-bar">
             <span class="bulk-count">${this._selectedTasks.size}</span> selected
             <button class="bulk-btn" data-bulk-action="in_progress">Move to In Progress</button>
             <button class="bulk-btn" data-bulk-action="done">Mark Done</button>
             <button class="bulk-btn danger" data-bulk-action="delete">Delete</button>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <div class="kanban-board">
-          ${COLUMNS.map(col => {
+          ${COLUMNS.map((col) => {
             const tasks = this._getTasksByStatus(col.status);
             return `
               <div class="kanban-column" data-status="${col.status}">
@@ -1458,56 +1544,67 @@ export class LokiTaskBoard extends LokiElement {
                   <span class="kanban-column-count">${tasks.length}</span>
                 </div>
                 <div class="kanban-tasks" data-status="${col.status}">
-                  ${tasks.length === 0 ? `<div class="empty-column">No tasks</div>` : ''}
-                  ${tasks.map(task => {
-                    const taskIdStr = String(task.id || '');
-                    const isExpanded = this._expandedCards.has(taskIdStr);
-                    const isSelected = this._selectedTasks.has(taskIdStr);
-                    return `
-                    <div class="task-card ${!readonly && !task.fromServer ? 'draggable' : ''} ${task.isLocal ? 'local' : ''} ${isExpanded ? 'expanded' : ''} ${isSelected ? 'selected' : ''}"
+                  ${tasks.length === 0 ? `<div class="empty-column">No tasks</div>` : ""}
+                  ${tasks
+                    .map((task) => {
+                      const taskIdStr = String(task.id || "");
+                      const isExpanded = this._expandedCards.has(taskIdStr);
+                      const isSelected = this._selectedTasks.has(taskIdStr);
+                      return `
+                    <div class="task-card ${!readonly && !task.fromServer ? "draggable" : ""} ${task.isLocal ? "local" : ""} ${isExpanded ? "expanded" : ""} ${isSelected ? "selected" : ""}"
                          data-task-id="${this._escapeHtml(taskIdStr)}"
                          tabindex="0"
                          role="button"
-                         aria-label="Task: ${this._escapeHtml(task.title || 'Untitled')}, ${this._escapeHtml(String(task.priority || 'medium'))} priority"
-                         ${!readonly && !task.fromServer ? 'draggable="true"' : ''}>
+                         aria-label="Task: ${this._escapeHtml(task.title || "Untitled")}, ${this._escapeHtml(String(task.priority || "medium"))} priority"
+                         ${!readonly && !task.fromServer ? 'draggable="true"' : ""}>
                       <div class="task-card-header">
                         <div style="display:flex;align-items:center;gap:6px;">
-                          ${this._bulkMode ? `<div class="task-checkbox ${isSelected ? 'checked' : ''}" data-check-id="${this._escapeHtml(taskIdStr)}"></div>` : ''}
-                          <span class="task-id">${task.isLocal ? 'LOCAL' : '#' + this._escapeHtml(taskIdStr)}</span>
+                          ${this._bulkMode ? `<div class="task-checkbox ${isSelected ? "checked" : ""}" data-check-id="${this._escapeHtml(taskIdStr)}"></div>` : ""}
+                          <span class="task-id">${task.isLocal ? "LOCAL" : "#" + this._escapeHtml(taskIdStr)}</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:6px;">
                           ${getAgentAvatar(task)}
-                          <span class="task-priority ${this._escapeHtml(String(task.priority || 'medium').toLowerCase())}">${this._escapeHtml(String(task.priority || 'medium'))}</span>
+                          <span class="task-priority ${this._escapeHtml(String(task.priority || "medium").toLowerCase())}">${this._escapeHtml(String(task.priority || "medium"))}</span>
                         </div>
                       </div>
-                      <div class="task-title">${this._escapeHtml(task.title || 'Untitled')}</div>
-                      ${!isExpanded && task.description ? `<div class="task-desc">${this._escapeHtml(String(task.description ?? '').substring(0, 80))}${String(task.description ?? '').length > 80 ? '...' : ''}</div>` : ''}
+                      <div class="task-title">${this._escapeHtml(task.title || "Untitled")}</div>
+                      ${!isExpanded && task.description ? `<div class="task-desc">${this._escapeHtml(String(task.description ?? "").substring(0, 80))}${String(task.description ?? "").length > 80 ? "..." : ""}</div>` : ""}
                       <div class="task-meta">
-                        <span class="task-type">${this._escapeHtml(String(task.type || 'task'))}</span>
+                        <span class="task-type">${this._escapeHtml(String(task.type || "task"))}</span>
                         <span class="expand-toggle" data-expand-id="${this._escapeHtml(taskIdStr)}">
                           ${isExpanded ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> Less' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg> More'}
                         </span>
                       </div>
-                      ${isExpanded ? `
+                      ${
+                        isExpanded
+                          ? `
                         <div class="card-expanded-content">
-                          ${task.description ? `<div class="card-expanded-desc">${this._escapeHtml(task.description)}</div>` : ''}
+                          ${task.description ? `<div class="card-expanded-desc">${this._escapeHtml(task.description)}</div>` : ""}
                           <dl class="card-expanded-meta">
-                            ${task.assigned_agent_id ? `<dt>Agent</dt><dd>#${this._escapeHtml(String(task.assigned_agent_id))}</dd>` : ''}
-                            ${task.created_at ? `<dt>Created</dt><dd>${this._escapeHtml(new Date(task.created_at).toLocaleString())}</dd>` : ''}
-                            ${task.updated_at ? `<dt>Updated</dt><dd>${this._escapeHtml(new Date(task.updated_at).toLocaleString())}</dd>` : ''}
-                            ${task.acceptance_criteria?.length ? `<dt>Criteria</dt><dd>${task.acceptance_criteria.length} items</dd>` : ''}
+                            ${task.assigned_agent_id ? `<dt>Agent</dt><dd>#${this._escapeHtml(String(task.assigned_agent_id))}</dd>` : ""}
+                            ${task.created_at ? `<dt>Created</dt><dd>${this._escapeHtml(new Date(task.created_at).toLocaleString())}</dd>` : ""}
+                            ${task.updated_at ? `<dt>Updated</dt><dd>${this._escapeHtml(new Date(task.updated_at).toLocaleString())}</dd>` : ""}
+                            ${task.acceptance_criteria?.length ? `<dt>Criteria</dt><dd>${task.acceptance_criteria.length} items</dd>` : ""}
                           </dl>
                         </div>
-                      ` : ''}
+                      `
+                          : ""
+                      }
                     </div>
-                  `;}).join('')}
+                  `;
+                    })
+                    .join("")}
                 </div>
-                ${!readonly && col.status === 'pending' ? `
+                ${
+                  !readonly && col.status === "pending"
+                    ? `
                   <button class="add-task-btn" data-status="${col.status}" aria-label="Add new task to ${col.label}">+ Add Task</button>
-                ` : ''}
+                `
+                    : ""
+                }
               </div>
             `;
-          }).join('')}
+          }).join("")}
         </div>
       `;
     }
@@ -1523,7 +1620,7 @@ export class LokiTaskBoard extends LokiElement {
                 <polyline points="9 11 12 14 22 4"/>
                 <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
               </svg>
-              ${this._bulkMode ? 'Cancel' : 'Select'}
+              ${this._bulkMode ? "Cancel" : "Select"}
             </button>
             <button class="btn btn-secondary" id="refresh-btn" aria-label="Refresh task board">
               <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true">
@@ -1537,7 +1634,7 @@ export class LokiTaskBoard extends LokiElement {
         </div>
         ${content}
       </div>
-      ${this._selectedTask ? this._renderTaskDetailModal(this._selectedTask) : ''}
+      ${this._selectedTask ? this._renderTaskDetailModal(this._selectedTask) : ""}
     `;
 
     this._attachEventListeners();
@@ -1545,27 +1642,27 @@ export class LokiTaskBoard extends LokiElement {
 
   _attachEventListeners() {
     // Refresh button
-    const refreshBtn = this.shadowRoot.getElementById('refresh-btn');
+    const refreshBtn = this.shadowRoot.getElementById("refresh-btn");
     if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => this._loadTasks());
+      refreshBtn.addEventListener("click", () => this._loadTasks());
     }
 
     // Bulk mode toggle
-    const bulkToggle = this.shadowRoot.getElementById('bulk-toggle-btn');
+    const bulkToggle = this.shadowRoot.getElementById("bulk-toggle-btn");
     if (bulkToggle) {
-      bulkToggle.addEventListener('click', () => this._toggleBulkMode());
+      bulkToggle.addEventListener("click", () => this._toggleBulkMode());
     }
 
     // Filter pills
-    this.shadowRoot.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => this._setFilter(pill.dataset.filter));
+    this.shadowRoot.querySelectorAll(".filter-pill").forEach((pill) => {
+      pill.addEventListener("click", () => this._setFilter(pill.dataset.filter));
     });
 
     // Bulk action buttons
-    this.shadowRoot.querySelectorAll('.bulk-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".bulk-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const action = btn.dataset.bulkAction;
-        if (action === 'delete') {
+        if (action === "delete") {
           this._bulkDelete();
         } else {
           this._bulkMove(action);
@@ -1574,36 +1671,36 @@ export class LokiTaskBoard extends LokiElement {
     });
 
     // Add task buttons
-    this.shadowRoot.querySelectorAll('.add-task-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".add-task-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._openAddTaskModal(btn.dataset.status);
       });
     });
 
     // Task checkboxes (bulk mode)
-    this.shadowRoot.querySelectorAll('.task-checkbox').forEach(cb => {
-      cb.addEventListener('click', (e) => {
+    this.shadowRoot.querySelectorAll(".task-checkbox").forEach((cb) => {
+      cb.addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleTaskSelection(cb.dataset.checkId, e);
       });
     });
 
     // Expand toggles
-    this.shadowRoot.querySelectorAll('.expand-toggle').forEach(toggle => {
-      toggle.addEventListener('click', (e) => {
+    this.shadowRoot.querySelectorAll(".expand-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleCardExpand(toggle.dataset.expandId);
       });
     });
 
     // Task cards
-    this.shadowRoot.querySelectorAll('.task-card').forEach(card => {
+    this.shadowRoot.querySelectorAll(".task-card").forEach((card) => {
       const taskId = card.dataset.taskId;
-      const task = this._tasks.find(t => t.id.toString() === taskId);
+      const task = this._tasks.find((t) => t.id.toString() === taskId);
 
       if (!task) return;
 
-      card.addEventListener('click', (e) => {
+      card.addEventListener("click", (e) => {
         // In bulk mode, clicking the card toggles selection
         if (this._bulkMode) {
           this._toggleTaskSelection(taskId, e);
@@ -1613,59 +1710,59 @@ export class LokiTaskBoard extends LokiElement {
       });
 
       // Keyboard navigation support
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           if (this._bulkMode) {
             this._toggleTaskSelection(taskId, e);
           } else {
             this._openTaskDetail(task);
           }
-        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
           e.preventDefault();
-          this._navigateTaskCards(card, e.key === 'ArrowDown' ? 'next' : 'prev');
+          this._navigateTaskCards(card, e.key === "ArrowDown" ? "next" : "prev");
         }
       });
 
-      if (card.classList.contains('draggable')) {
-        card.addEventListener('dragstart', (e) => this._handleDragStart(e, task));
-        card.addEventListener('dragend', (e) => this._handleDragEnd(e));
+      if (card.classList.contains("draggable")) {
+        card.addEventListener("dragstart", (e) => this._handleDragStart(e, task));
+        card.addEventListener("dragend", (e) => this._handleDragEnd(e));
       }
     });
 
     // Drop zones
-    this.shadowRoot.querySelectorAll('.kanban-tasks').forEach(zone => {
-      zone.addEventListener('dragover', (e) => this._handleDragOver(e));
-      zone.addEventListener('dragenter', (e) => this._handleDragEnter(e));
-      zone.addEventListener('dragleave', (e) => this._handleDragLeave(e));
-      zone.addEventListener('drop', (e) => this._handleDrop(e, zone.dataset.status));
+    this.shadowRoot.querySelectorAll(".kanban-tasks").forEach((zone) => {
+      zone.addEventListener("dragover", (e) => this._handleDragOver(e));
+      zone.addEventListener("dragenter", (e) => this._handleDragEnter(e));
+      zone.addEventListener("dragleave", (e) => this._handleDragLeave(e));
+      zone.addEventListener("drop", (e) => this._handleDrop(e, zone.dataset.status));
     });
 
     // Modal close
-    const closeBtn = this.shadowRoot.getElementById('modal-close-btn');
+    const closeBtn = this.shadowRoot.getElementById("modal-close-btn");
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this._closeTaskDetail());
+      closeBtn.addEventListener("click", () => this._closeTaskDetail());
     }
-    const overlay = this.shadowRoot.getElementById('task-detail-overlay');
+    const overlay = this.shadowRoot.getElementById("task-detail-overlay");
     if (overlay) {
-      overlay.addEventListener('click', (e) => {
+      overlay.addEventListener("click", (e) => {
         if (e.target === overlay) this._closeTaskDetail();
       });
     }
   }
 
   _escapeHtml(text) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
 
   _navigateTaskCards(currentCard, direction) {
-    const cards = Array.from(this.shadowRoot.querySelectorAll('.task-card'));
+    const cards = Array.from(this.shadowRoot.querySelectorAll(".task-card"));
     const currentIndex = cards.indexOf(currentCard);
     if (currentIndex === -1) return;
 
-    const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    const targetIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
     if (targetIndex >= 0 && targetIndex < cards.length) {
       cards[targetIndex].focus();
     }
@@ -1673,8 +1770,8 @@ export class LokiTaskBoard extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-task-board')) {
-  customElements.define('loki-task-board', LokiTaskBoard);
+if (!customElements.get("loki-task-board")) {
+  customElements.define("loki-task-board", LokiTaskBoard);
 }
 
 export default LokiTaskBoard;
