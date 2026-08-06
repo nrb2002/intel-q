@@ -1,4 +1,4 @@
-// This is your Prisma schema file.
+// Prisma schema file.
 // Learn more about it at:
 // https://pris.ly/d/prisma-schema
 //
@@ -19,13 +19,7 @@ generator client {
 // DATABASE
 // =========================================================
 //
-// The database connection URL is configured in prisma.config.ts.
-//
-// Do not add:
-// url = env("DATABASE_URL")
-//
-// Prisma's newer configuration approach uses prisma.config.ts
-// for the database connection URL.
+// Database connection is configured in prisma.config.ts
 //
 // =========================================================
 
@@ -38,16 +32,16 @@ datasource db {
 // =========================================================
 
 enum UserRole {
-  CUSTOMER
-  STAFF
-  ADMIN
+  CUSTOMER @map("customer")
+  STAFF    @map("staff")
+  ADMIN    @map("admin")
 }
 
 enum QueueStatus {
-  WAITING
-  IN_SERVICE
-  COMPLETED
-  CANCELLED
+  WAITING    @map("Waiting")
+  IN_SERVICE @map("In Service")
+  COMPLETED  @map("Completed")
+  CANCELLED  @map("Cancelled")
 }
 
 // =========================================================
@@ -55,48 +49,23 @@ enum QueueStatus {
 // =========================================================
 
 model User {
-  id           String        @id @default(cuid())
-  firstName    String
-  lastName     String
-  email        String        @unique
-  password     String
-  role         UserRole      @default(CUSTOMER)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id String @id @default(uuid()) @db.Uuid
 
-  // Relationship:
-  // One User can have many Queue Tickets.
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  email    String @unique
+  password String
+
+  role UserRole @default(CUSTOMER)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // One User → Many Queue Tickets
   queueTickets QueueTicket[]
-}
 
-// =========================================================
-// QUEUE TICKET
-// =========================================================
-
-model QueueTicket {
-  id           String      @id @default(cuid())
-  ticketNumber Int
-  customerId   String
-  branchId     String
-  serviceType  String
-  status       QueueStatus @default(WAITING)
-  createdAt    DateTime    @default(now())
-  calledAt     DateTime?
-  completedAt  DateTime?
-
-  // Relationship:
-  // Many Queue Tickets belong to one User.
-  customer User @relation(fields: [customerId], references: [id])
-
-  // Relationship:
-  // Many Queue Tickets belong to one Branch.
-  branch Branch @relation(fields: [branchId], references: [id])
-
-  // Indexes for common queries.
-  @@index([customerId])
-  @@index([branchId])
-  @@index([status])
-  @@index([branchId, status])
+  @@map("users")
 }
 
 // =========================================================
@@ -104,17 +73,66 @@ model QueueTicket {
 // =========================================================
 
 model Branch {
-  id           String        @id @default(cuid())
-  name         String
-  address      String
-  city         String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id String @id @default(uuid()) @db.Uuid
 
-  // Relationship:
-  // One Branch can have many Queue Tickets.
+  name    String
+  address String
+  city    String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // One Branch → Many Queue Tickets
   queueTickets QueueTicket[]
 
-  // Index for branch name searches.
   @@index([name])
+
+  @@map("branches")
+}
+
+// =========================================================
+// QUEUE TICKET
+// =========================================================
+
+model QueueTicket {
+  id String @id @default(uuid()) @db.Uuid
+
+  ticketNumber Int @map("ticket_number")
+
+  customerId String @db.Uuid @map("customer_id")
+  branchId   String @db.Uuid @map("branch_id")
+
+  serviceType String @map("service_type")
+
+  status QueueStatus @default(WAITING)
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  calledAt    DateTime? @map("called_at")
+  completedAt DateTime? @map("completed_at")
+
+  // Relationships
+
+  customer User @relation(
+    fields: [customerId],
+    references: [id],
+    onDelete: Restrict,
+    onUpdate: Cascade
+  )
+
+  branch Branch @relation(
+    fields: [branchId],
+    references: [id],
+    onDelete: Restrict,
+    onUpdate: Cascade
+  )
+
+  // Indexes
+
+  @@index([ticketNumber])
+  @@index([customerId])
+  @@index([branchId])
+  @@index([status])
+  @@index([branchId, status])
+
+  @@map("queue_tickets")
 }
