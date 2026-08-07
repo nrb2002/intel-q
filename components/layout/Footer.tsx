@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const currentYear = new Date().getFullYear();
 
-export function Footer() {
+export default function Footer() {
   return (
     <footer className="border-t border-[#E2E8F0] bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
