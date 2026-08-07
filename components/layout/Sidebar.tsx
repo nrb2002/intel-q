@@ -1,25 +1,112 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+
+const navigation = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+  },
+  {
+    name: "Queue",
+    href: "/dashboard/queue",
+  },
+  {
+    name: "Branches",
+    href: "/dashboard/branches",
+  },
+  {
+    name: "Profile",
+    href: "/dashboard/profile",
+  },
+];
+
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
+
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-screen">
-      <nav className="flex flex-col p-4 space-y-2">
-        <Link href="/dashboard" className="hover:text-blue-600">
-          Dashboard
-        </Link>
+    <aside
+      className="
+        w-64
+        min-h-screen
+        border-r
+        border-[#E2E8F0]
+        bg-white
+        p-6
+      "
+    >
 
-        <Link href="/queue" className="hover:text-blue-600">
-          Queue
-        </Link>
+      {/* Logo */}
+      <div>
+        <h2
+          className="
+            text-xl
+            font-bold
+            text-[#2563EB]
+          "
+        >
+          Intel-Q
+        </h2>
 
-        <Link href="/branches" className="hover:text-blue-600">
-          Branches
-        </Link>
+        <p
+          className="
+            mt-1
+            text-sm
+            text-[#64748B]
+          "
+        >
+          Queue Management
+        </p>
+      </div>
 
-        <Link href="/profile" className="hover:text-blue-600">
-          Profile
-        </Link>
+
+      {/* Navigation */}
+      <nav
+        className="
+          mt-8
+          flex
+          flex-col
+          gap-2
+        "
+      >
+
+        {navigation.map((item) => {
+
+          const isActive =
+            pathname === item.href;
+
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`
+                rounded-lg
+                px-4
+                py-3
+                text-sm
+                font-medium
+                transition
+
+                ${
+                  isActive
+                    ? "bg-[#2563EB] text-white"
+                    : "text-[#1E293B] hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                }
+              `}
+            >
+              {item.name}
+            </Link>
+          );
+
+        })}
+
       </nav>
+
     </aside>
   );
 }
