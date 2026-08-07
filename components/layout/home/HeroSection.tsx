@@ -33,7 +33,7 @@ export function HeroSection() {
             id="hero-heading"
             className="text-4xl font-bold tracking-tight text-[#1E293B] sm:text-5xl lg:text-6xl"
           >
-            Intelligent Queue Management for Modern Service Organizations
+            Intelligent Queue Management System for Modern Service Organizations
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-7 text-[#64748B] sm:text-lg">
