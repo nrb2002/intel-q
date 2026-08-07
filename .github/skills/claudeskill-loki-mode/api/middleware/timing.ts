@@ -21,7 +21,7 @@ export interface TimingContext {
  * Emits ToolEfficiencySignal for each request with timing data.
  */
 export function timingMiddleware(
-  handler: (req: Request) => Promise<Response> | Response
+  handler: (req: Request) => Promise<Response> | Response,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const startTime = Date.now();
@@ -72,8 +72,7 @@ export function timingMiddleware(
       });
     } catch (error) {
       // Emit error signal
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
       learningCollector.emitApiRequest(path, method, startTime, false, {
         statusCode: 500,
@@ -115,21 +114,15 @@ export function endTiming(
     statusCode?: number;
     errorMessage?: string;
     metadata?: Record<string, unknown>;
-  } = {}
+  } = {},
 ): number {
   const duration = Date.now() - context.startTime;
 
-  learningCollector.emitApiRequest(
-    context.path,
-    context.method,
-    context.startTime,
-    success,
-    {
-      statusCode: options.statusCode,
-      errorMessage: options.errorMessage,
-      context: options.metadata,
-    }
-  );
+  learningCollector.emitApiRequest(context.path, context.method, context.startTime, success, {
+    statusCode: options.statusCode,
+    errorMessage: options.errorMessage,
+    context: options.metadata,
+  });
 
   return duration;
 }

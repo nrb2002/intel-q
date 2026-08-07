@@ -11,11 +11,11 @@ npm install loki-mode-sdk
 ## Quick Start
 
 ```typescript
-import { AutonomiClient } from 'loki-mode-sdk';
+import { AutonomiClient } from "loki-mode-sdk";
 
 const client = new AutonomiClient({
-  baseUrl: 'http://localhost:57374',
-  token: 'loki_xxx',
+  baseUrl: "http://localhost:57374",
+  token: "loki_xxx",
 });
 
 // Check dashboard health

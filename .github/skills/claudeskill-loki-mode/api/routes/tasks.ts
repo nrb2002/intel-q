@@ -6,26 +6,16 @@
 
 import { cliBridge } from "../services/cli-bridge.ts";
 import type { Task } from "../types/api.ts";
-import {
-  LokiApiError,
-  ErrorCodes,
-  successResponse,
-} from "../middleware/error.ts";
+import { LokiApiError, ErrorCodes, successResponse } from "../middleware/error.ts";
 
 /**
  * GET /api/sessions/:id/tasks - List tasks for a session
  */
-export async function listTasks(
-  _req: Request,
-  sessionId: string
-): Promise<Response> {
+export async function listTasks(_req: Request, sessionId: string): Promise<Response> {
   const session = await cliBridge.getSession(sessionId);
 
   if (!session) {
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   const tasks = await cliBridge.getTasks(sessionId);
@@ -66,28 +56,18 @@ export async function listTasks(
 /**
  * GET /api/sessions/:sessionId/tasks/:taskId - Get a specific task
  */
-export async function getTask(
-  _req: Request,
-  sessionId: string,
-  taskId: string
-): Promise<Response> {
+export async function getTask(_req: Request, sessionId: string, taskId: string): Promise<Response> {
   const session = await cliBridge.getSession(sessionId);
 
   if (!session) {
-    throw new LokiApiError(
-      `Session not found: ${sessionId}`,
-      ErrorCodes.SESSION_NOT_FOUND
-    );
+    throw new LokiApiError(`Session not found: ${sessionId}`, ErrorCodes.SESSION_NOT_FOUND);
   }
 
   const tasks = await cliBridge.getTasks(sessionId);
   const task = tasks.find((t) => t.id === taskId);
 
   if (!task) {
-    throw new LokiApiError(
-      `Task not found: ${taskId}`,
-      ErrorCodes.NOT_FOUND
-    );
+    throw new LokiApiError(`Task not found: ${taskId}`, ErrorCodes.NOT_FOUND);
   }
 
   return successResponse({ task });
@@ -118,10 +98,7 @@ export async function listAllTasks(req: Request): Promise<Response> {
   }
 
   // Sort by creation time (newest first)
-  filteredTasks.sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  filteredTasks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   const paginatedTasks = filteredTasks.slice(offset, offset + limit);
 
@@ -166,9 +143,7 @@ export async function getQueuedTasks(_req: Request): Promise<Response> {
   for (const session of sessions) {
     if (session.status === "running") {
       const tasks = await cliBridge.getTasks(session.id);
-      queuedTasks.push(
-        ...tasks.filter((t) => t.status === "pending" || t.status === "queued")
-      );
+      queuedTasks.push(...tasks.filter((t) => t.status === "pending" || t.status === "queued"));
     }
   }
 

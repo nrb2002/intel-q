@@ -40,6 +40,7 @@ curl -X DELETE http://localhost:57374/api/keys/ci-pipeline \
 **SDK Usage:**
 
 Python:
+
 ```python
 from loki_mode_sdk import AutonomiClient
 
@@ -50,12 +51,13 @@ client = AutonomiClient(
 ```
 
 TypeScript:
+
 ```typescript
-import { AutonomiClient } from 'loki-mode-sdk';
+import { AutonomiClient } from "loki-mode-sdk";
 
 const client = new AutonomiClient({
-  baseUrl: 'http://localhost:57374',
-  token: 'loki_your_token_here'
+  baseUrl: "http://localhost:57374",
+  token: "loki_your_token_here",
 });
 ```
 
@@ -80,12 +82,12 @@ The system validates OIDC tokens against the issuer's JWKS endpoint and maps cla
 
 Four built-in roles provide scoped access:
 
-| Role | Scope | Permissions |
-|------|-------|-------------|
-| `admin` | Full control | Create/delete tenants, manage API keys, configure policies, all operator/viewer/auditor permissions |
-| `operator` | Execution | Start/cancel runs, create/update projects and tasks, read all resources |
-| `viewer` | Read-only | Read projects, runs, tasks, status. No write or delete operations |
-| `auditor` | Audit access | Read audit logs, verify chain integrity, generate compliance reports. No execution permissions |
+| Role       | Scope        | Permissions                                                                                         |
+| ---------- | ------------ | --------------------------------------------------------------------------------------------------- |
+| `admin`    | Full control | Create/delete tenants, manage API keys, configure policies, all operator/viewer/auditor permissions |
+| `operator` | Execution    | Start/cancel runs, create/update projects and tasks, read all resources                             |
+| `viewer`   | Read-only    | Read projects, runs, tasks, status. No write or delete operations                                   |
+| `auditor`  | Audit access | Read audit logs, verify chain integrity, generate compliance reports. No execution permissions      |
 
 **Scope Hierarchy:**
 
@@ -129,13 +131,14 @@ When both variables are set, the dashboard server binds on HTTPS only. Self-sign
 
 The API enforces rate limits per token/IP:
 
-| Endpoint Group | Default Limit |
-|----------------|---------------|
-| Read operations | 100 req/min |
-| Write operations | 30 req/min |
-| Auth operations | 10 req/min |
+| Endpoint Group   | Default Limit |
+| ---------------- | ------------- |
+| Read operations  | 100 req/min   |
+| Write operations | 30 req/min    |
+| Auth operations  | 10 req/min    |
 
 Rate limit headers are included in every response:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -165,6 +168,7 @@ export LOKI_SLACK_SIGNING_SECRET="your-slack-signing-secret"
 ```
 
 Inbound Slack requests are verified using the `X-Slack-Signature` and `X-Slack-Request-Timestamp` headers. The system:
+
 1. Checks timestamp is within 5 minutes (replay attack prevention)
 2. Computes `HMAC-SHA256(signing_secret, "v0:" + timestamp + ":" + body)`
 3. Compares against the `X-Slack-Signature` header using constant-time comparison
@@ -180,6 +184,7 @@ Inbound Teams requests are verified using the shared secret HMAC.
 **Fail-Closed Behavior:**
 
 If a webhook signature cannot be verified:
+
 - The request is rejected with HTTP 401
 - An audit entry is recorded with `success: false`
 - The event is not processed
@@ -199,6 +204,7 @@ Audit logs use SHA-256 hash chains for tamper evidence. Each entry's hash depend
 ```
 
 Each entry:
+
 ```json
 {
   "seq": 42,
@@ -219,6 +225,7 @@ Each entry:
 ```
 
 Each entry:
+
 ```json
 {
   "timestamp": "2026-02-21T10:00:00.000Z",
@@ -234,14 +241,16 @@ Each entry:
 ### Chain Verification
 
 JavaScript:
+
 ```javascript
-const audit = require('./src/audit');
-audit.init('/path/to/project');
+const audit = require("./src/audit");
+audit.init("/path/to/project");
 const result = audit.verifyChain();
 // { valid: true, entries: 1542, brokenAt: null, error: null }
 ```
 
 Python:
+
 ```python
 from dashboard.audit import verify_log_integrity
 result = verify_log_integrity("/path/to/audit-2026-02-21.jsonl")
@@ -249,6 +258,7 @@ result = verify_log_integrity("/path/to/audit-2026-02-21.jsonl")
 ```
 
 API:
+
 ```bash
 curl http://localhost:57374/api/audit/verify \
   -H "Authorization: Bearer $TOKEN"
@@ -283,16 +293,16 @@ Date-based log files (`audit-YYYY-MM-DD.jsonl`) are automatically rotated when t
 
 All Loki Mode data is stored locally on the machine running the system:
 
-| Data Type | Location |
-|-----------|----------|
-| Project state | `.loki/` (project directory) |
-| Audit logs (agent) | `.loki/audit/` |
-| Audit logs (dashboard) | `~/.loki/dashboard/audit/` |
-| Event bus | `.loki/events/` |
-| Memory system | `.loki/memory/` |
-| Metrics | `.loki/metrics/` |
-| Policy files | `.loki/policies.yaml` or `.loki/policies.json` |
-| Configuration | `.loki/config.yaml` or `.loki/config.json` |
+| Data Type              | Location                                       |
+| ---------------------- | ---------------------------------------------- |
+| Project state          | `.loki/` (project directory)                   |
+| Audit logs (agent)     | `.loki/audit/`                                 |
+| Audit logs (dashboard) | `~/.loki/dashboard/audit/`                     |
+| Event bus              | `.loki/events/`                                |
+| Memory system          | `.loki/memory/`                                |
+| Metrics                | `.loki/metrics/`                               |
+| Policy files           | `.loki/policies.yaml` or `.loki/policies.json` |
+| Configuration          | `.loki/config.yaml` or `.loki/config.json`     |
 
 No data is transmitted to external services unless explicitly configured (OTEL endpoint, integration webhooks, syslog forwarding).
 
@@ -301,11 +311,11 @@ No data is transmitted to external services unless explicitly configured (OTEL e
 The data residency controller restricts which AI providers can be used based on region:
 
 ```javascript
-const audit = require('./src/audit');
-audit.init('/path/to/project');
+const audit = require("./src/audit");
+audit.init("/path/to/project");
 
 // Check if a provider is allowed in a region
-const allowed = audit.checkProvider('anthropic', 'us');  // true/false
+const allowed = audit.checkProvider("anthropic", "us"); // true/false
 
 // Check if air-gapped mode is enabled
 const airGapped = audit.isAirGapped();
@@ -331,12 +341,12 @@ residency:
 The policy engine evaluates rules before any agent action executes:
 
 ```javascript
-const policy = require('./src/policies');
-policy.init('/path/to/project');
+const policy = require("./src/policies");
+policy.init("/path/to/project");
 
-const result = policy.evaluate('pre_execution', {
-  file_path: '/tmp/malicious.sh',
-  project_dir: '/home/user/project',
+const result = policy.evaluate("pre_execution", {
+  file_path: "/tmp/malicious.sh",
+  project_dir: "/home/user/project",
   active_agents: 3,
 });
 
@@ -373,6 +383,7 @@ When a secret is detected, the policy engine returns `DENY` and the content is n
 ### PII Scanning
 
 Optional PII scanning detects:
+
 - Email addresses
 - Social Security Numbers
 - Phone numbers

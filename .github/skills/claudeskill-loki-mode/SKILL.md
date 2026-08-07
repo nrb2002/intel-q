@@ -78,14 +78,14 @@ VERIFY: Run tests. Check build. Validate against spec.
 
 These rules guide autonomous operation. Test results and code quality always take precedence.
 
-| Rule | Meaning |
-|------|---------|
-| **Decide and act** | Make decisions autonomously. Do not ask the user questions. |
-| **Keep momentum** | Do not pause for confirmation. Move to the next task. |
-| **Iterate continuously** | There is always another improvement. Find it. |
-| **ALWAYS verify** | Code without tests is incomplete. Run tests. **Never ignore or delete failing tests.** |
-| **ALWAYS commit** | Atomic commits after each task. Checkpoint progress. |
-| **Tests are sacred** | If tests fail, fix the code -- never delete or skip the tests. A passing test suite is a hard requirement. |
+| Rule                     | Meaning                                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Decide and act**       | Make decisions autonomously. Do not ask the user questions.                                                |
+| **Keep momentum**        | Do not pause for confirmation. Move to the next task.                                                      |
+| **Iterate continuously** | There is always another improvement. Find it.                                                              |
+| **ALWAYS verify**        | Code without tests is incomplete. Run tests. **Never ignore or delete failing tests.**                     |
+| **ALWAYS commit**        | Atomic commits after each task. Checkpoint progress.                                                       |
+| **Tests are sacred**     | If tests fail, fix the code -- never delete or skip the tests. A passing test suite is a hard requirement. |
 
 ---
 
@@ -93,13 +93,13 @@ These rules guide autonomous operation. Test results and code quality always tak
 
 **Default since v5.3.0 (reaffirmed in v7.5.13):** Haiku disabled for quality. Use `--allow-haiku` or `LOKI_ALLOW_HAIKU=true` to enable.
 
-| Task Type | Tier | Claude (default) | Claude (--allow-haiku) | Codex (GPT-5.3) |
-|-----------|------|------------------|------------------------|------------------|
-| Spec analysis, architecture, system design | **planning** | opus | opus | effort=xhigh |
-| Feature implementation, complex bugs | **development** | opus | sonnet | effort=high |
-| Code review (planned: 3 parallel reviewers) | **development** | opus | sonnet | effort=high |
-| Integration tests, E2E, deployment | **development** | opus | sonnet | effort=high |
-| Unit tests, linting, docs, simple fixes | **fast** | sonnet | haiku | effort=low |
+| Task Type                                   | Tier            | Claude (default) | Claude (--allow-haiku) | Codex (GPT-5.3) |
+| ------------------------------------------- | --------------- | ---------------- | ---------------------- | --------------- |
+| Spec analysis, architecture, system design  | **planning**    | opus             | opus                   | effort=xhigh    |
+| Feature implementation, complex bugs        | **development** | opus             | sonnet                 | effort=high     |
+| Code review (planned: 3 parallel reviewers) | **development** | opus             | sonnet                 | effort=high     |
+| Integration tests, E2E, deployment          | **development** | opus             | sonnet                 | effort=high     |
+| Unit tests, linting, docs, simple fixes     | **fast**        | sonnet           | haiku                  | effort=low      |
 
 **Parallelization rule (Claude only):** Launch up to 10 agents simultaneously for independent tasks.
 
@@ -142,23 +142,23 @@ GROWTH ──[continuous improvement loop]──> GROWTH
 
 ## Key Files
 
-| File | Read | Write |
-|------|------|-------|
-| `.loki/session.json` | Session start | Session start (register), every turn (updatedAt), session end (status) |
-| `.loki/state/orchestrator.json` | Every turn | On phase change |
-| `.loki/queue/pending.json` | Every turn | When claiming/completing tasks |
-| `.loki/queue/current-task.json` | Before each ACT | When claiming task |
-| `.loki/specs/openapi.yaml` | Before API work | After API changes |
-| `skills/00-index.md` | Session start | Never |
-| `.loki/memory/index.json` | Session start | On topic change |
-| `.loki/memory/timeline.json` | On context need | After task completion |
-| `.loki/memory/token_economics.json` | Never (metrics only) | Every turn |
-| `.loki/memory/episodic/*.json` | On task-aware retrieval | After task completion |
-| `.loki/memory/semantic/patterns.json` | Before implementation tasks | On consolidation |
-| `.loki/memory/semantic/anti-patterns.json` | Before debugging tasks | On error learning |
-| `.loki/queue/dead-letter.json` | Session start | On task failure (5+ attempts) |
-| `.loki/signals/HUMAN_REVIEW_NEEDED` | Never | When human decision required |
-| `.loki/state/checkpoints/` | After task completion | Automatic + manual via `loki checkpoint` |
+| File                                       | Read                        | Write                                                                  |
+| ------------------------------------------ | --------------------------- | ---------------------------------------------------------------------- |
+| `.loki/session.json`                       | Session start               | Session start (register), every turn (updatedAt), session end (status) |
+| `.loki/state/orchestrator.json`            | Every turn                  | On phase change                                                        |
+| `.loki/queue/pending.json`                 | Every turn                  | When claiming/completing tasks                                         |
+| `.loki/queue/current-task.json`            | Before each ACT             | When claiming task                                                     |
+| `.loki/specs/openapi.yaml`                 | Before API work             | After API changes                                                      |
+| `skills/00-index.md`                       | Session start               | Never                                                                  |
+| `.loki/memory/index.json`                  | Session start               | On topic change                                                        |
+| `.loki/memory/timeline.json`               | On context need             | After task completion                                                  |
+| `.loki/memory/token_economics.json`        | Never (metrics only)        | Every turn                                                             |
+| `.loki/memory/episodic/*.json`             | On task-aware retrieval     | After task completion                                                  |
+| `.loki/memory/semantic/patterns.json`      | Before implementation tasks | On consolidation                                                       |
+| `.loki/memory/semantic/anti-patterns.json` | Before debugging tasks      | On error learning                                                      |
+| `.loki/queue/dead-letter.json`             | Session start               | On task failure (5+ attempts)                                          |
+| `.loki/signals/HUMAN_REVIEW_NEEDED`        | Never                       | When human decision required                                           |
+| `.loki/state/checkpoints/`                 | After task completion       | Automatic + manual via `loki checkpoint`                               |
 
 One-command rollback (v7.5.2+): `loki rollback latest` or `loki rollback to <id>` restores `.loki/` state from a checkpoint. It first captures a forced pre-rollback snapshot of the current state and prints its id, so a rollback is itself undoable (`loki rollback to <that-id>`). Use `loki rollback list` to see checkpoints.
 
@@ -224,6 +224,7 @@ loki start 123 --ship                        # Issue -> PR -> auto-merge
 ```
 
 **Provider capabilities:**
+
 - **Claude**: Opus 4.6, 1M context (beta), 128K output, adaptive thinking, agent teams, full features (Task tool, parallel agents, MCP)
 - **Codex**: GPT-5.3, 400K context, 128K output, MCP support, --full-auto mode, degraded (sequential only, no Task tool)
 - **Cline**: Multi-provider CLI, degraded mode (sequential only, no Task tool)
@@ -237,13 +238,13 @@ loki start 123 --ship                        # Issue -> PR -> auto-merge
 
 When running with `autonomy/run.sh`, you can intervene:
 
-| Method | Effect |
-|--------|--------|
-| `touch .loki/PAUSE` | Pauses after current session |
+| Method                                       | Effect                                                    |
+| -------------------------------------------- | --------------------------------------------------------- |
+| `touch .loki/PAUSE`                          | Pauses after current session                              |
 | `echo "instructions" > .loki/HUMAN_INPUT.md` | Injects directive (requires `LOKI_PROMPT_INJECTION=true`) |
-| `touch .loki/STOP` | Stops immediately |
-| Ctrl+C (once) | Pauses, shows options |
-| Ctrl+C (twice) | Exits immediately |
+| `touch .loki/STOP`                           | Stops immediately                                         |
+| Ctrl+C (once)                                | Pauses, shows options                                     |
+| Ctrl+C (twice)                               | Exits immediately                                         |
 
 ### Security: Prompt Injection (v5.6.1)
 
@@ -259,11 +260,12 @@ LOKI_PROMPT_INJECTION=true loki sandbox prompt "start the app"
 
 ### Hints vs Directives
 
-| Type | File | Behavior |
-|------|------|----------|
+| Type          | File                   | Behavior                                                   |
+| ------------- | ---------------------- | ---------------------------------------------------------- |
 | **Directive** | `.loki/HUMAN_INPUT.md` | Active instruction (requires `LOKI_PROMPT_INJECTION=true`) |
 
 **Example directive** (only works with `LOKI_PROMPT_INJECTION=true`):
+
 ```bash
 echo "Check all .astro files for missing BaseLayout imports." > .loki/HUMAN_INPUT.md
 ```
@@ -274,11 +276,11 @@ echo "Check all .astro files for missing BaseLayout imports." > .loki/HUMAN_INPU
 
 Auto-detected or force with `LOKI_COMPLEXITY`:
 
-| Tier | Phases | When Used |
-|------|--------|-----------|
-| **simple** | 3 | 1-2 files, UI fixes, text changes |
-| **standard** | 6 | 3-10 files, features, bug fixes |
-| **complex** | 8 | 10+ files, microservices, external integrations |
+| Tier         | Phases | When Used                                       |
+| ------------ | ------ | ----------------------------------------------- |
+| **simple**   | 3      | 1-2 files, UI fixes, text changes               |
+| **standard** | 6      | 3-10 files, features, bug fixes                 |
+| **complex**  | 8      | 10+ files, microservices, external integrations |
 
 ---
 
@@ -291,20 +293,21 @@ learn.
 
 **All flags default false.** Default behavior is identical to v7.2.0.
 
-| Flag | Purpose | Status |
-|------|---------|--------|
-| `LOKI_MANAGED_AGENTS` | Parent gate; required for every managed path | stable |
-| `LOKI_MANAGED_MEMORY` | REASON augment + REFLECT shadow-write from `.loki/memory/` to Managed Agents store | stable (tested with fakes) |
-| `LOKI_MANAGED_MEMORY_HYDRATE` | Session-boot pull of semantic patterns + skills from store | stable (tested with fakes) |
-| `LOKI_EXPERIMENTAL_MANAGED_AGENTS` | Umbrella for multiagent session path | RESEARCH PREVIEW |
-| `LOKI_EXPERIMENTAL_MANAGED_REVIEW` | Managed code-review council via `callable_agents` | RESEARCH PREVIEW |
-| `LOKI_EXPERIMENTAL_MANAGED_COUNCIL` | Managed completion council via `callable_agents` | RESEARCH PREVIEW |
+| Flag                                | Purpose                                                                            | Status                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------- | -------------------------- |
+| `LOKI_MANAGED_AGENTS`               | Parent gate; required for every managed path                                       | stable                     |
+| `LOKI_MANAGED_MEMORY`               | REASON augment + REFLECT shadow-write from `.loki/memory/` to Managed Agents store | stable (tested with fakes) |
+| `LOKI_MANAGED_MEMORY_HYDRATE`       | Session-boot pull of semantic patterns + skills from store                         | stable (tested with fakes) |
+| `LOKI_EXPERIMENTAL_MANAGED_AGENTS`  | Umbrella for multiagent session path                                               | RESEARCH PREVIEW           |
+| `LOKI_EXPERIMENTAL_MANAGED_REVIEW`  | Managed code-review council via `callable_agents`                                  | RESEARCH PREVIEW           |
+| `LOKI_EXPERIMENTAL_MANAGED_COUNCIL` | Managed completion council via `callable_agents`                                   | RESEARCH PREVIEW           |
 
 Fail-fast: child-on + parent-off exits 2 with clear error. API
 unreachable falls back to local path with a `managed_agents_fallback`
 event to `.loki/managed/events.ndjson`. No retry storm.
 
 **Flip-on order (recommended):**
+
 1. `LOKI_MANAGED_AGENTS=true LOKI_MANAGED_MEMORY=true` (memory mirror).
 2. Add `LOKI_MANAGED_MEMORY_HYDRATE=true` after one-week soak.
 3. Keep `LOKI_EXPERIMENTAL_*` off until multiagent graduates from
@@ -324,12 +327,12 @@ See `skills/memory.md` for the full integration guide.
 
 The current track wires real evidence into RARV-C feedback. Documented here and in `loki internal --help`:
 
-| Env Var | Effect |
-|---------|--------|
-| `LOKI_INJECT_FINDINGS=true` | Injects council findings + gate failures into the next REASON prompt |
-| `LOKI_OVERRIDE_COUNCIL=true` | Promotes real provider judges over fakes when available |
-| `LOKI_AUTO_LEARNINGS=true` | Auto-extracts learnings into semantic memory after VERIFY |
-| `LOKI_HANDOFF_MD=true` | Emits a `handoff.md` continuity doc at session boundaries |
+| Env Var                      | Effect                                                               |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `LOKI_INJECT_FINDINGS=true`  | Injects council findings + gate failures into the next REASON prompt |
+| `LOKI_OVERRIDE_COUNCIL=true` | Promotes real provider judges over fakes when available              |
+| `LOKI_AUTO_LEARNINGS=true`   | Auto-extracts learnings into semantic memory after VERIFY            |
+| `LOKI_HANDOFF_MD=true`       | Emits a `handoff.md` continuity doc at session boundaries            |
 
 See `references/core-workflow.md` for the full RARV-C contract.
 
@@ -350,36 +353,36 @@ See `CHANGELOG.md` entries [7.5.7], [7.5.8], [7.5.13] for the per-fix list and r
 
 ## Implemented Features
 
-| Feature | Added | Notes |
-|---------|-------|-------|
-| Multi-provider support (4 providers) | v5.0.0 | claude, codex, cline, aider -- see `providers/` |
-| CONTINUITY.md working memory | v5.35.0 | Auto-managed by run.sh, updated each iteration |
-| Quality gates 3-reviewer system | v5.35.0 | 5 specialist reviewers in `skills/quality-gates.md`; execution in run.sh |
-| Memory System (episodic/semantic/procedural) | v5.15.0 | Full implementation in `memory/` |
-| Context Window Tracking | v5.40.0 | Dashboard gauge, per-agent breakdown at `GET /api/context` |
-| Notification Triggers | v5.40.0 | `GET/PUT /api/notifications/triggers` |
-| GitHub integration | v5.42.2 | Import, sync-back, PR creation, export. CLI: `loki github`, API: `/api/github/*` |
-| Legacy System Healing | v6.67.0 | `loki heal <path>` -- friction-as-semantics, characterization tests |
-| Unified `loki start` | v6.84.0 | Auto-detects spec (PRD, OpenAPI, etc.) vs issue input |
-| Managed Agents (memory mirror) | v7.2.0 | Opt-in via `LOKI_MANAGED_AGENTS` -- see Managed Agents section |
-| Bun runtime (Phase 1) | v7.3.0 | Read-only commands routed through `bin/loki`; `LOKI_LEGACY_BASH=1` to revert |
-| Phase 1 RARV-C closure | v7.5.x | Findings injection, real judges, auto-learnings, handoff.md |
+| Feature                                      | Added   | Notes                                                                            |
+| -------------------------------------------- | ------- | -------------------------------------------------------------------------------- |
+| Multi-provider support (4 providers)         | v5.0.0  | claude, codex, cline, aider -- see `providers/`                                  |
+| CONTINUITY.md working memory                 | v5.35.0 | Auto-managed by run.sh, updated each iteration                                   |
+| Quality gates 3-reviewer system              | v5.35.0 | 5 specialist reviewers in `skills/quality-gates.md`; execution in run.sh         |
+| Memory System (episodic/semantic/procedural) | v5.15.0 | Full implementation in `memory/`                                                 |
+| Context Window Tracking                      | v5.40.0 | Dashboard gauge, per-agent breakdown at `GET /api/context`                       |
+| Notification Triggers                        | v5.40.0 | `GET/PUT /api/notifications/triggers`                                            |
+| GitHub integration                           | v5.42.2 | Import, sync-back, PR creation, export. CLI: `loki github`, API: `/api/github/*` |
+| Legacy System Healing                        | v6.67.0 | `loki heal <path>` -- friction-as-semantics, characterization tests              |
+| Unified `loki start`                         | v6.84.0 | Auto-detects spec (PRD, OpenAPI, etc.) vs issue input                            |
+| Managed Agents (memory mirror)               | v7.2.0  | Opt-in via `LOKI_MANAGED_AGENTS` -- see Managed Agents section                   |
+| Bun runtime (Phase 1)                        | v7.3.0  | Read-only commands routed through `bin/loki`; `LOKI_LEGACY_BASH=1` to revert     |
+| Phase 1 RARV-C closure                       | v7.5.x  | Findings injection, real judges, auto-learnings, handoff.md                      |
 
 ## Planned / In-Progress Features
 
-| Feature | Target | Notes |
-|---------|--------|-------|
-| Bun runtime (Phase 2+) | TBD | Migrate write-path commands; tracked on `feat/bun-migration` |
-| Managed Agents multiagent path | TBD | `LOKI_EXPERIMENTAL_MANAGED_*` flags -- RESEARCH PREVIEW, not on live API |
-| Benchmarks (HumanEval, SWE-bench) | TBD | Runner scripts and datasets exist in `benchmarks/`; no published results |
-| `loki run` removal | next major | Currently a deprecated alias for `loki start` |
+| Feature                           | Target     | Notes                                                                    |
+| --------------------------------- | ---------- | ------------------------------------------------------------------------ |
+| Bun runtime (Phase 2+)            | TBD        | Migrate write-path commands; tracked on `feat/bun-migration`             |
+| Managed Agents multiagent path    | TBD        | `LOKI_EXPERIMENTAL_MANAGED_*` flags -- RESEARCH PREVIEW, not on live API |
+| Benchmarks (HumanEval, SWE-bench) | TBD        | Runner scripts and datasets exist in `benchmarks/`; no published results |
+| `loki run` removal                | next major | Currently a deprecated alias for `loki start`                            |
 
 ## Deprecated
 
-| Item | Deprecated In | Notes |
-|------|---------------|-------|
-| `loki run <issue>` | v6.84.0 | Alias for `loki start`. Will be removed in next major. |
-| VSCode extension (`vscode-extension/`) | v7.2.0 | No longer actively maintained; dashboard web UI is the supported front-end. |
+| Item                                   | Deprecated In | Notes                                                                       |
+| -------------------------------------- | ------------- | --------------------------------------------------------------------------- |
+| `loki run <issue>`                     | v6.84.0       | Alias for `loki start`. Will be removed in next major.                      |
+| VSCode extension (`vscode-extension/`) | v7.2.0        | No longer actively maintained; dashboard web UI is the supported front-end. |
 
 ---
 

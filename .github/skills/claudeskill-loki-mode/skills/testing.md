@@ -37,6 +37,7 @@ Task(
 ```
 
 **Best Practices:**
+
 - Use accessibility tree refs instead of coordinates
 - Test critical user flows after each feature
 - Capture screenshots for error states
@@ -66,6 +67,7 @@ property_based_testing:
 ```
 
 **When to use:**
+
 - After implementing API endpoints (validate against OpenAPI)
 - After data model changes (validate invariants)
 - Before deployment (edge case regression)
@@ -97,6 +99,7 @@ hooks_system:
 ```
 
 **Benefits:**
+
 - Catches issues 5-10x earlier than phase-end review
 - Reduces rework cycles
 - Aligns with Constitutional AI (continuous self-critique)
@@ -129,13 +132,13 @@ Task(
 
 ## Test Strategy by Phase
 
-| Phase | Test Type | Tool |
-|-------|-----------|------|
-| Development | Unit tests | Haiku (parallel) |
-| Development | Integration tests | Sonnet |
-| QA | E2E tests | Playwright MCP |
-| QA | Property-based tests | fast-check/hypothesis |
-| Pre-deployment | Full regression | All of above |
+| Phase          | Test Type            | Tool                  |
+| -------------- | -------------------- | --------------------- |
+| Development    | Unit tests           | Haiku (parallel)      |
+| Development    | Integration tests    | Sonnet                |
+| QA             | E2E tests            | Playwright MCP        |
+| QA             | Property-based tests | fast-check/hypothesis |
+| Pre-deployment | Full regression      | All of above          |
 
 ---
 

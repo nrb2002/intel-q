@@ -5,20 +5,21 @@ Loki Mode supports four AI providers for autonomous execution.
 ## Provider Comparison
 
 > **CLI Flags Verified:** The autonomous mode flags have been verified against actual CLI help output:
+>
 > - Claude: `--dangerously-skip-permissions` (verified)
 > - Codex: `--full-auto` (recommended, v0.98.0) or `exec --dangerously-bypass-approvals-and-sandbox` (legacy)
 
-| Feature | Claude Code | OpenAI Codex | Cline CLI | Aider |
-|---------|-------------|--------------|-----------|-------|
-| **Full Features** | Yes | No (Degraded) | Near-Full (Tier 2) | No (Degraded) |
-| **Task Tool (Subagents)** | Yes | No | Yes (Subagents) | No |
-| **Parallel Agents** | Yes (10+) | No | No | No |
-| **MCP Integration** | Yes | Yes (basic) | Yes | No |
-| **Context Window** | 200K | 400K | Varies by provider | Varies by provider |
-| **Max Output Tokens** | 128K | 32K | Varies by provider | Varies by provider |
-| **Model Tiers** | 3 (opus/sonnet/haiku) | 1 (effort param) | 1 (external) | 1 (external) |
-| **Multi-Provider** | Claude only | OpenAI only | 12+ providers | 18+ providers |
-| **Skill Directory** | ~/.claude/skills | None | None | None |
+| Feature                   | Claude Code           | OpenAI Codex     | Cline CLI          | Aider              |
+| ------------------------- | --------------------- | ---------------- | ------------------ | ------------------ |
+| **Full Features**         | Yes                   | No (Degraded)    | Near-Full (Tier 2) | No (Degraded)      |
+| **Task Tool (Subagents)** | Yes                   | No               | Yes (Subagents)    | No                 |
+| **Parallel Agents**       | Yes (10+)             | No               | No                 | No                 |
+| **MCP Integration**       | Yes                   | Yes (basic)      | Yes                | No                 |
+| **Context Window**        | 200K                  | 400K             | Varies by provider | Varies by provider |
+| **Max Output Tokens**     | 128K                  | 32K              | Varies by provider | Varies by provider |
+| **Model Tiers**           | 3 (opus/sonnet/haiku) | 1 (effort param) | 1 (external)       | 1 (external)       |
+| **Multi-Provider**        | Claude only           | OpenAI only      | 12+ providers      | 18+ providers      |
+| **Skill Directory**       | ~/.claude/skills      | None             | None               | None               |
 
 ## Provider Selection
 
@@ -36,6 +37,7 @@ loki start --provider cline ./prd.md
 **Best for:** All use cases. Full autonomous capability.
 
 **Capabilities:**
+
 - Task tool for spawning subagents
 - Parallel execution (10+ agents simultaneously)
 - MCP server integration
@@ -43,11 +45,13 @@ loki start --provider cline ./prd.md
 - 200K context window, 128K max output tokens
 
 **Invocation:**
+
 ```bash
 claude --dangerously-skip-permissions -p "$prompt"
 ```
 
 **Model Selection:**
+
 ```python
 Task(model="opus", ...)    # Planning tier
 Task(model="sonnet", ...)  # Development tier
@@ -61,6 +65,7 @@ Task(model="haiku", ...)   # Fast tier (parallelize)
 **Best for:** Teams standardized on OpenAI. Accepts feature tradeoffs.
 
 **Limitations:**
+
 - No Task tool (cannot spawn subagents)
 - No parallel execution (sequential only)
 - MCP support available but not yet integrated with Loki orchestration
@@ -68,6 +73,7 @@ Task(model="haiku", ...)   # Fast tier (parallelize)
 - 400K context window
 
 **Invocation:**
+
 ```bash
 # Recommended (v0.98.0+)
 codex --full-auto "$prompt"
@@ -85,11 +91,11 @@ Note: Codex does not support `--effort` as a CLI flag. Reasoning effort must be 
 CODEX_MODEL_REASONING_EFFORT=high codex exec --dangerously-bypass-approvals-and-sandbox "$prompt"
 ```
 
-| Tier | Effort | Use Case |
-|------|--------|----------|
-| planning | xhigh | Architecture, PRD analysis |
-| development | high | Feature implementation, tests |
-| fast | low | Simple fixes, docs |
+| Tier        | Effort | Use Case                      |
+| ----------- | ------ | ----------------------------- |
+| planning    | xhigh  | Architecture, PRD analysis    |
+| development | high   | Feature implementation, tests |
+| fast        | low    | Simple fixes, docs            |
 
 ---
 
@@ -98,6 +104,7 @@ CODEX_MODEL_REASONING_EFFORT=high codex exec --dangerously-bypass-approvals-and-
 **Best for:** Teams wanting Claude Code-like experience with any model provider.
 
 **Tier 2 Capabilities (near-full):**
+
 - Subagent support (Cline's native Subagents feature)
 - MCP server integration
 - Plan/Act modes (-p / -a flags)
@@ -105,11 +112,13 @@ CODEX_MODEL_REASONING_EFFORT=high codex exec --dangerously-bypass-approvals-and-
 - 12+ model providers via `cline auth`
 
 **Limitations:**
+
 - No Claude-style Task tool (uses native Subagents instead)
 - No git worktree-style parallel execution
 - Single model (configured externally)
 
 **One-Time Setup:**
+
 ```bash
 # Install Cline CLI
 npm install -g cline@latest
@@ -122,6 +131,7 @@ cline auth -p openai -k sk-your-key -m gpt-4o
 ```
 
 **Usage with Loki:**
+
 ```bash
 # Basic usage
 loki start --provider cline ./prd.md
@@ -134,6 +144,7 @@ loki run 52 --provider cline --ship -d
 ```
 
 **Invocation:**
+
 ```bash
 cline -y "$prompt"               # Autonomous mode
 cline -y -m model_name "$prompt" # With model override
@@ -146,6 +157,7 @@ cline -y -m model_name "$prompt" # With model override
 **Best for:** Local models, custom providers, and teams wanting maximum provider flexibility.
 
 **Strengths (compensate for degraded mode):**
+
 - 18+ model providers (OpenRouter, Ollama, Together AI, GROQ, DeepSeek, Azure, Bedrock, etc.)
 - `--architect` mode: planning model + editing model (SOTA quality)
 - `--auto-lint --auto-test`: built-in verification loop
@@ -153,12 +165,14 @@ cline -y -m model_name "$prompt" # With model override
 - Works with local models (Ollama, LM Studio) for free usage
 
 **Limitations:**
+
 - No subagent support
 - Sequential execution only
 - No Task tool or MCP
 - Known issues with parallel instances
 
 **One-Time Setup:**
+
 ```bash
 # Install Aider
 pip install aider-chat
@@ -180,6 +194,7 @@ export DEEPSEEK_API_KEY=your-key
 ```
 
 **Usage with Loki:**
+
 ```bash
 # Basic usage with OpenRouter
 loki start --provider aider --aider-model anthropic/claude-3.5-sonnet ./prd.md
@@ -197,15 +212,17 @@ loki start --provider aider \
 ```
 
 **Invocation:**
+
 ```bash
 aider --message "$prompt" --yes-always --no-auto-commits --model model_name
 ```
 
 **Environment Variables:**
-| Variable | Description |
-|----------|-------------|
+
+| Variable           | Description                               |
+| ------------------ | ----------------------------------------- |
 | `LOKI_AIDER_MODEL` | Model to use (default: claude-3.7-sonnet) |
-| `LOKI_AIDER_FLAGS` | Extra aider flags (e.g., --architect) |
+| `LOKI_AIDER_FLAGS` | Extra aider flags (e.g., --architect)     |
 
 ---
 
@@ -221,6 +238,7 @@ When running with Codex or Aider (Tier 3):
 5. **Git worktree parallelism disabled** - `--parallel` flag has no effect
 
 **Example output:**
+
 ```
 [INFO] Provider: OpenAI Codex CLI (codex)
 [WARN] Degraded mode: Parallel agents and Task tool not available
@@ -245,6 +263,7 @@ providers/
 ```
 
 **Key variables:**
+
 ```bash
 PROVIDER_NAME="claude"
 PROVIDER_HAS_SUBAGENTS=true
@@ -257,14 +276,14 @@ PROVIDER_DEGRADED=false
 
 ## Choosing a Provider
 
-| If you need... | Choose |
-|----------------|--------|
-| Full autonomous capability | Claude |
-| Parallel agent execution | Claude |
-| MCP server integration | Claude (full), Cline, or Codex (basic) |
-| Subagents without Claude subscription | Cline |
-| OpenAI ecosystem compatibility | Codex |
-| Maximum provider flexibility (18+) | Aider |
-| Local models (Ollama, free) | Aider or Cline |
-| Architect mode (dual model) | Aider |
-| Sequential-only is acceptable | Codex or Aider |
+| If you need...                        | Choose                                 |
+| ------------------------------------- | -------------------------------------- |
+| Full autonomous capability            | Claude                                 |
+| Parallel agent execution              | Claude                                 |
+| MCP server integration                | Claude (full), Cline, or Codex (basic) |
+| Subagents without Claude subscription | Cline                                  |
+| OpenAI ecosystem compatibility        | Codex                                  |
+| Maximum provider flexibility (18+)    | Aider                                  |
+| Local models (Ollama, free)           | Aider or Cline                         |
+| Architect mode (dual model)           | Aider                                  |
+| Sequential-only is acceptable         | Codex or Aider                         |

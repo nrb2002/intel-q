@@ -15,12 +15,14 @@ Research-backed technique from arXiv 2512.14982v1: "Prompt Repetition Improves N
 ## When to Apply
 
 ### USE Prompt Repetition For:
+
 - **Haiku agents** (non-reasoning model)
 - **Structured tasks** (unit tests, linting, formatting)
 - **Position-dependent operations** (finding items in lists, parsing structured data)
 - **Simple bug fixes** (typos, imports, syntax errors)
 
 ### DO NOT Use For:
+
 - **Opus agents** (reasoning model - neutral/slightly negative effect)
 - **Sonnet agents** (reasoning model - neutral effect)
 - **Complex reasoning tasks** (architecture decisions, planning)
@@ -73,14 +75,15 @@ Task(
 
 ### Benchmarks from Research Paper
 
-| Model | Task | Baseline | 2x Repetition | 3x Repetition |
-|-------|------|----------|---------------|---------------|
-| Google Flash-Lite 2.0 | NameIndex | 21.33% | 97.33% | 98.67% |
-| GPT-4o | NameIndex | 56.67% | 86.67% | 90.00% |
-| Claude 3 Sonnet | NameIndex | 48.00% | 82.67% | 85.33% |
-| Deepseek V3 | NameIndex | 62.67% | 88.00% | 91.33% |
+| Model                 | Task      | Baseline | 2x Repetition | 3x Repetition |
+| --------------------- | --------- | -------- | ------------- | ------------- |
+| Google Flash-Lite 2.0 | NameIndex | 21.33%   | 97.33%        | 98.67%        |
+| GPT-4o                | NameIndex | 56.67%   | 86.67%        | 90.00%        |
+| Claude 3 Sonnet       | NameIndex | 48.00%   | 82.67%        | 85.33%        |
+| Deepseek V3           | NameIndex | 62.67%   | 88.00%        | 91.33%        |
 
 **Aggregate Results:**
+
 - Wins: 47/70 tests improved
 - Losses: 0/70 tests degraded
 - Neutral: 23/70 tests unchanged
@@ -150,9 +153,10 @@ Task(
 
 ## Research Citations
 
-**Paper:** Leviathan, Y., Kalman, M., & Matias, Y. (2025). *Prompt Repetition Improves Non-Reasoning LLMs*. arXiv:2512.14982v1.
+**Paper:** Leviathan, Y., Kalman, M., & Matias, Y. (2025). _Prompt Repetition Improves Non-Reasoning LLMs_. arXiv:2512.14982v1.
 
 **Key Quotes:**
+
 - "Prompt repetition wins 47 out of 70 tests, with 0 losses"
 - "No increase in output lengths or generation times"
 - "Results neutral to slightly positive when reasoning enabled"
@@ -174,12 +178,14 @@ Task(
 ### Example: Unit Test Execution
 
 **Without Repetition:**
+
 - Accuracy: 65%
 - Input tokens: 500
 - Retries needed: 2-3
 - Total cost: 500 + (500 × 2) = 1500 tokens
 
 **With 2x Repetition:**
+
 - Accuracy: 95%
 - Input tokens: 1000 (2x)
 - Retries needed: 0-1

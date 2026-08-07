@@ -84,16 +84,16 @@ See `values.yaml` for the full list of configurable parameters.
 
 ### Key sections
 
-| Section | Description |
-|---------|-------------|
-| `controlplane` | Dashboard/API deployment (replicas, resources, probes) |
-| `worker` | RARV worker deployment (replicas, resources, autoscaling) |
-| `persistence` | PVC settings for checkpoints and audit logs |
-| `ingress` | Ingress with TLS and cert-manager support |
-| `config` | Non-secret environment variables (log level, provider, etc.) |
-| `secrets` | API keys (or reference an existing secret) |
-| `security` | Pod security context, RBAC, network policies |
-| `observability` | ServiceMonitor for Prometheus |
+| Section         | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| `controlplane`  | Dashboard/API deployment (replicas, resources, probes)       |
+| `worker`        | RARV worker deployment (replicas, resources, autoscaling)    |
+| `persistence`   | PVC settings for checkpoints and audit logs                  |
+| `ingress`       | Ingress with TLS and cert-manager support                    |
+| `config`        | Non-secret environment variables (log level, provider, etc.) |
+| `secrets`       | API keys (or reference an existing secret)                   |
+| `security`      | Pod security context, RBAC, network policies                 |
+| `observability` | ServiceMonitor for Prometheus                                |
 
 ## Production Deployment
 
@@ -106,6 +106,7 @@ helm install autonomi ./deploy/helm/autonomi \
 ```
 
 Production values include:
+
 - 2 control plane replicas
 - 3+ worker replicas with HPA (scales to 10)
 - Larger resource limits
@@ -124,6 +125,7 @@ helm install autonomi ./deploy/helm/autonomi \
 ```
 
 HA values add:
+
 - 3 control plane replicas with pod anti-affinity
 - 5+ workers with anti-affinity (scales to 20)
 - ReadWriteMany storage for shared checkpoints
@@ -135,6 +137,7 @@ helm test autonomi --namespace autonomi
 ```
 
 This runs two test pods:
+
 1. `test-connection` - verifies the `/health` endpoint responds
 2. `test-health` - verifies `/api/status` returns valid JSON
 

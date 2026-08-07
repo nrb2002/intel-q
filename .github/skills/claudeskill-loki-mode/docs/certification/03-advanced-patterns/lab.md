@@ -24,6 +24,7 @@ cat "$SKILL_DIR/skills/quality-gates.md" | head -100
 ```
 
 Key points to verify:
+
 - 5 specialists defined with trigger keywords
 - architecture-strategist is always selected
 - Selection is based on keyword matching against the diff
@@ -34,21 +35,25 @@ Create a file called `structured-prompt-example.md` demonstrating the GOAL/CONST
 
 ```markdown
 ## GOAL
+
 Implement a rate-limiting middleware for Express.js.
 Success: Middleware limits requests to 100/minute per IP, returns 429 on excess.
 
 ## CONSTRAINTS
+
 - No external rate-limiting libraries
 - Use in-memory storage (Map with TTL cleanup)
 - Must not block the event loop
 - Response time overhead < 5ms
 
 ## CONTEXT
+
 - Existing middleware pattern: src/middleware/auth.ts
 - Express app entry point: src/app.ts
 - No existing rate limiting in codebase
 
 ## OUTPUT
+
 - [ ] Middleware implementation in src/middleware/rate-limit.ts
 - [ ] Unit tests in tests/middleware/rate-limit.test.ts
 - [ ] Integration into app.ts route chain
@@ -88,11 +93,11 @@ head -60 "$SKILL_DIR/memory/engine.py"
 
 You should see weight configurations like:
 
-| Task Type | Episodic | Semantic | Skills | Anti-patterns |
-|-----------|----------|----------|--------|---------------|
-| exploration | 0.6 | 0.3 | 0.1 | 0.0 |
-| implementation | 0.15 | 0.5 | 0.35 | 0.0 |
-| debugging | 0.4 | 0.2 | 0.0 | 0.4 |
+| Task Type      | Episodic | Semantic | Skills | Anti-patterns |
+| -------------- | -------- | -------- | ------ | ------------- |
+| exploration    | 0.6      | 0.3      | 0.1    | 0.0           |
+| implementation | 0.15     | 0.5      | 0.35   | 0.0           |
+| debugging      | 0.4      | 0.2      | 0.0    | 0.4           |
 
 This demonstrates how the system prioritizes different memory types based on what the agent is currently doing.
 
@@ -119,6 +124,7 @@ cat "$SKILL_DIR/skills/testing.md"
 ```
 
 Look for the `hooks_system` section which defines triggers for:
+
 - `on_file_write` -- lint, typecheck, secrets scan
 - `on_task_complete` -- contract tests, spec validation
 - `on_phase_complete` -- memory consolidation, metrics, checkpoint

@@ -6,37 +6,41 @@ This module covers diagnosing and resolving common issues in Loki Mode: gate fai
 
 ## Common Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Agent stuck / no progress | Lost context | Read `.loki/CONTINUITY.md` at session start |
-| Task repeating | Not checking queue state | Check `.loki/queue/*.json` before claiming |
-| Code review failing | Skipped static analysis | Run static analysis BEFORE AI reviewers |
-| Tests failing after merge | Skipped quality gates | Never bypass severity-based blocking |
-| Rate limit hit | Too many parallel agents | Check circuit breakers, use exponential backoff |
-| Cannot find what to do | Not following RARV cycle | Check `orchestrator.json`, follow decision tree |
+| Issue                     | Cause                    | Solution                                        |
+| ------------------------- | ------------------------ | ----------------------------------------------- |
+| Agent stuck / no progress | Lost context             | Read `.loki/CONTINUITY.md` at session start     |
+| Task repeating            | Not checking queue state | Check `.loki/queue/*.json` before claiming      |
+| Code review failing       | Skipped static analysis  | Run static analysis BEFORE AI reviewers         |
+| Tests failing after merge | Skipped quality gates    | Never bypass severity-based blocking            |
+| Rate limit hit            | Too many parallel agents | Check circuit breakers, use exponential backoff |
+| Cannot find what to do    | Not following RARV cycle | Check `orchestrator.json`, follow decision tree |
 
 ## Quality Gate Failures
 
 When a quality gate fails, identify which gate triggered the failure:
 
 **Gates 1-6 (Review gates):**
+
 - Check the review output for severity levels
 - Critical/High/Medium = BLOCK (must fix)
 - Low/Cosmetic = TODO (informational)
 - If all 3 reviewers pass unanimously, Gate 4 runs Devil's Advocate
 
 **Gate 7 (Test coverage):**
+
 - Unit tests must have 100% pass rate and >80% coverage
 - Integration tests must have 100% pass rate
 - Fix failing tests before proceeding (never delete or skip tests)
 
 **Gate 8 (Mock detector):**
+
 - Runs `tests/detect-mock-problems.sh`
 - Flags tests that mock internal modules instead of using real code
 - Flags tautological assertions and high internal mock ratios
 - Disable with `LOKI_GATE_MOCK_DETECTOR=false` (not recommended)
 
 **Gate 9 (Test mutation detector):**
+
 - Runs `tests/detect-test-mutations.sh`
 - Detects assertion values changed alongside implementation (test fitting)
 - Detects low assertion density and missing pass/fail tracking
@@ -48,11 +52,11 @@ The circuit breaker prevents cascading failures when API providers are unavailab
 
 ### States
 
-| State | Behavior | Transitions |
-|-------|----------|-------------|
-| **CLOSED** | Normal operation, all requests pass | -> OPEN after 3 failures in 60s |
-| **OPEN** | All requests blocked | -> HALF_OPEN after 300s cooldown |
-| **HALF_OPEN** | Limited probe requests | -> CLOSED after 3 successes; -> OPEN on any failure |
+| State         | Behavior                            | Transitions                                         |
+| ------------- | ----------------------------------- | --------------------------------------------------- |
+| **CLOSED**    | Normal operation, all requests pass | -> OPEN after 3 failures in 60s                     |
+| **OPEN**      | All requests blocked                | -> HALF_OPEN after 300s cooldown                    |
+| **HALF_OPEN** | Limited probe requests              | -> CLOSED after 3 successes; -> OPEN on any failure |
 
 ### Inspecting Circuit Breaker State
 
@@ -82,6 +86,7 @@ Example output:
 ### Recovery Protocol
 
 When a circuit breaker is OPEN:
+
 1. Check the `cooldown_until` timestamp
 2. Reduce parallel agent count (e.g., from 10 to 2)
 3. Disable non-critical background operations
@@ -102,16 +107,17 @@ cat .loki/queue/dead-letter.json | jq '.tasks[0]'          # View first failed t
 
 ### Recovery Strategies
 
-| Strategy | When to Use |
-|----------|-------------|
-| `retry_with_simpler_approach` | Complex implementation failed multiple times |
-| `dependency_blocked` | Task needs output from another failed task |
-| `requires_human_review` | Security decision, unclear spec, or irreversible action |
-| `permanent_abandon` | 10+ attempts, or same error across 3 different approaches |
+| Strategy                      | When to Use                                               |
+| ----------------------------- | --------------------------------------------------------- |
+| `retry_with_simpler_approach` | Complex implementation failed multiple times              |
+| `dependency_blocked`          | Task needs output from another failed task                |
+| `requires_human_review`       | Security decision, unclear spec, or irreversible action   |
+| `permanent_abandon`           | 10+ attempts, or same error across 3 different approaches |
 
 ### Retry Conditions
 
 A dead-letter task can be retried when:
+
 - A dependency that was blocking it is now available
 - A new approach has been identified
 - A simpler scope has been defined
@@ -120,6 +126,7 @@ A dead-letter task can be retried when:
 ### Permanent Abandon Criteria
 
 Move to `.loki/queue/abandoned.json` when:
+
 - 10+ total attempts across all strategies
 - Same error with 3 different approaches
 - Dependency will never be available
@@ -160,6 +167,7 @@ Recorded when an agent's actions diverge from the task goal. The file is append-
 ```
 
 Processing rules:
+
 - 1 drift: Log warning, continue with correction
 - 2 drifts on same task: Escalate to orchestrator
 - 3+ accumulated drifts: Trigger context clear and full state reload
@@ -167,6 +175,7 @@ Processing rules:
 ### CONTEXT_CLEAR_REQUESTED
 
 Created when the context window becomes heavy. Can be triggered by:
+
 - Agent self-assessment ("context feels heavy")
 - After 25+ iterations
 - 3+ accumulated DRIFT_DETECTED events
@@ -177,6 +186,7 @@ The wrapper (`run.sh`) handles this by starting a fresh session with injected st
 ### HUMAN_REVIEW_NEEDED
 
 Created when autonomous action is inappropriate:
+
 - Confidence below 0.40 on a critical decision
 - Security-critical operations
 - Irreversible operations without rollback
@@ -188,15 +198,16 @@ The task is blocked until a human provides input.
 
 Agents can rationalize failures to avoid acknowledging mistakes. Common patterns to watch for:
 
-| Rationalization | Required Action |
-|-----------------|-----------------|
-| "I'll refactor later" | Refactor now or reduce scope |
-| "This is just an edge case" | Handle the edge case |
-| "The tests are flaky" | Fix the flaky test first |
-| "It works on my machine" | Must pass in CI |
-| "This is good enough" | Run full test suite before claiming completion |
+| Rationalization             | Required Action                                |
+| --------------------------- | ---------------------------------------------- |
+| "I'll refactor later"       | Refactor now or reduce scope                   |
+| "This is just an edge case" | Handle the edge case                           |
+| "The tests are flaky"       | Fix the flaky test first                       |
+| "It works on my machine"    | Must pass in CI                                |
+| "This is good enough"       | Run full test suite before claiming completion |
 
 **Red flag language patterns:**
+
 - Hedging: "probably", "should be fine", "most likely"
 - Minimization: "just a small change", "simple fix", "minor update"
 - Verification skipping: Moving to next task without running tests

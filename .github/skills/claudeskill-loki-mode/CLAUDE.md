@@ -88,14 +88,17 @@ benchmarks/                 # SWE-bench and HumanEval benchmarks
 ## Key Concepts
 
 ### RARV Cycle
+
 Every iteration follows: **R**eason -> **A**ct -> **R**eflect -> **V**erify
 
 ### Model Selection
+
 - **Opus**: Planning and architecture ONLY (system design, high-level decisions)
 - **Sonnet**: Development and functional testing (implementation, integration tests)
 - **Haiku**: Unit tests, monitoring, and simple tasks - use extensively for parallelization
 
 ### Multi-Provider Support (4 active providers, see `providers/*.sh`)
+
 - **Claude Code** (Tier 1): Full features (subagents, parallel, Task tool, MCP)
 - **Cline** (Tier 2): Reduced parallelism
 - **OpenAI Codex CLI** (Tier 3): Degraded mode (sequential only, no Task tool)
@@ -111,6 +114,7 @@ LOKI_PROVIDER=codex loki start ./prd.md
 ```
 
 ### Quality Gates
+
 1. Static analysis (CodeQL, ESLint)
 2. 3-reviewer parallel system (blind review)
 3. Anti-sycophancy checks (devil's advocate on unanimous approval)
@@ -119,6 +123,7 @@ LOKI_PROVIDER=codex loki start ./prd.md
 6. Backward compatibility gate (healing mode - behavioral preservation, v6.67.0)
 
 ### Legacy System Healing (introduced v6.67.0)
+
 - **Current in v7.18.0**: Still active, no breaking changes since v6.67.0. Note: in v7.4.20 the `legacy-healing-auditor` reviewer was gated on healing-mode signals to avoid firing on non-healing changes.
 - **Inspired by**: Amazon AGI Lab's "How Agentic AI Helps Heal Systems We Can't Replace"
 - **CLI**: `loki heal <path> [--phase archaeology|stabilize|isolate|modernize|validate]` (`autonomy/loki:9916`)
@@ -131,6 +136,7 @@ LOKI_PROVIDER=codex loki start ./prd.md
 - **Skill**: `skills/healing.md` | **Reference**: `references/legacy-healing-patterns.md`
 
 ### Memory System (core complete v5.15.0; managed-memory + RAG injector v7.1.0+)
+
 - **Episodic**: Specific interaction traces (`.loki/memory/episodic/`)
 - **Semantic**: Generalized patterns (`.loki/memory/semantic/`)
 - **Procedural**: Learned skills (`.loki/memory/skills/`)
@@ -144,6 +150,7 @@ LOKI_PROVIDER=codex loki start ./prd.md
 - **Implementation**: `memory/` Python package (15 modules) with RARV integration
 
 ### Metrics System (ToolOrchestra-inspired)
+
 - **Efficiency**: Task cost tracking (`.loki/metrics/efficiency/`)
 - **Rewards**: Outcome/efficiency/preference signals (`.loki/metrics/rewards/`)
 
@@ -162,50 +169,51 @@ These knobs together implement the RARV-C (closure) loop: findings -> override c
 
 ### Top-Level File Map
 
-| File | Lines | Role |
-|---|---|---|
-| `autonomy/loki` | 23,109 | CLI (102 cmd_ functions, dispatch at `loki:11828`) |
-| `autonomy/run.sh` | 12,170 | Orchestration engine (RARV loop) |
-| `autonomy/completion-council.sh` | 1,771 | Completion detection (council voting) |
-| `dashboard/server.py` | 5,952 | FastAPI (100+ endpoints, WebSocket) |
-| `memory/retrieval.py` | 1,611 | Task-aware memory retrieval |
-| `memory/storage.py` | 1,521 | File-based memory backend |
-| `memory/engine.py` | 1,401 | Memory orchestrator |
-| `memory/consolidation.py` | 999 | Episodic-to-semantic pipeline |
-| `mcp/server.py` | 2,288 | MCP server (15 tools) |
-| `providers/loader.sh` | 185 | Provider loader |
+| File                             | Lines  | Role                                               |
+| -------------------------------- | ------ | -------------------------------------------------- |
+| `autonomy/loki`                  | 23,109 | CLI (102 cmd_ functions, dispatch at `loki:11828`) |
+| `autonomy/run.sh`                | 12,170 | Orchestration engine (RARV loop)                   |
+| `autonomy/completion-council.sh` | 1,771  | Completion detection (council voting)              |
+| `dashboard/server.py`            | 5,952  | FastAPI (100+ endpoints, WebSocket)                |
+| `memory/retrieval.py`            | 1,611  | Task-aware memory retrieval                        |
+| `memory/storage.py`              | 1,521  | File-based memory backend                          |
+| `memory/engine.py`               | 1,401  | Memory orchestrator                                |
+| `memory/consolidation.py`        | 999    | Episodic-to-semantic pipeline                      |
+| `mcp/server.py`                  | 2,288  | MCP server (15 tools)                              |
+| `providers/loader.sh`            | 185    | Provider loader                                    |
 
 ### Key Function Lookup
 
 Verified against v7.5.13 source on 2026-04-29. Line numbers drift; re-verify with `grep -n` before relying on them.
 
-| Function | Location | Purpose |
-|---|---|---|
-| `cmd_start()` | `autonomy/loki:622` | Start autonomous execution |
-| `main()` (CLI) | `autonomy/loki:11828` | CLI dispatch |
-| `main()` (runner) | `autonomy/run.sh:11633` | Runner entry point |
-| `run_autonomous()` | `autonomy/run.sh:10253` | Main iteration loop |
-| `build_prompt()` | `autonomy/run.sh:8987` | Prompt construction |
-| `save_state()` | `autonomy/run.sh:8806` | Persist state |
-| `council_should_stop()` | `autonomy/completion-council.sh:1605` | Completion decision |
-| `run_code_review()` | `autonomy/run.sh:6259` | 3-reviewer code review |
-| `create_checkpoint()` | `autonomy/run.sh:6943` | Snapshot state |
-| `store_episode_trace()` | `autonomy/run.sh:8504` | Memory storage bridge |
-| `check_human_intervention()` | `autonomy/run.sh:11262` | PAUSE/STOP/INPUT signals |
-| `detect_complexity()` | `autonomy/run.sh:1338` | Auto-detect project complexity |
-| `get_rarv_tier()` | `autonomy/run.sh:1484` | Map iteration to model tier |
-| `check_budget_limit()` | `autonomy/run.sh:7897` | Budget circuit breaker |
-| `is_rate_limited()` | `autonomy/run.sh:7712` | Rate limit detection |
-| `cmd_heal()` | `autonomy/loki:9916` | Legacy system healing |
-| `hook_pre_healing_modify()` | `autonomy/hooks/migration-hooks.sh:283` | Friction safety gate |
+| Function                     | Location                                | Purpose                            |
+| ---------------------------- | --------------------------------------- | ---------------------------------- |
+| `cmd_start()`                | `autonomy/loki:622`                     | Start autonomous execution         |
+| `main()` (CLI)               | `autonomy/loki:11828`                   | CLI dispatch                       |
+| `main()` (runner)            | `autonomy/run.sh:11633`                 | Runner entry point                 |
+| `run_autonomous()`           | `autonomy/run.sh:10253`                 | Main iteration loop                |
+| `build_prompt()`             | `autonomy/run.sh:8987`                  | Prompt construction                |
+| `save_state()`               | `autonomy/run.sh:8806`                  | Persist state                      |
+| `council_should_stop()`      | `autonomy/completion-council.sh:1605`   | Completion decision                |
+| `run_code_review()`          | `autonomy/run.sh:6259`                  | 3-reviewer code review             |
+| `create_checkpoint()`        | `autonomy/run.sh:6943`                  | Snapshot state                     |
+| `store_episode_trace()`      | `autonomy/run.sh:8504`                  | Memory storage bridge              |
+| `check_human_intervention()` | `autonomy/run.sh:11262`                 | PAUSE/STOP/INPUT signals           |
+| `detect_complexity()`        | `autonomy/run.sh:1338`                  | Auto-detect project complexity     |
+| `get_rarv_tier()`            | `autonomy/run.sh:1484`                  | Map iteration to model tier        |
+| `check_budget_limit()`       | `autonomy/run.sh:7897`                  | Budget circuit breaker             |
+| `is_rate_limited()`          | `autonomy/run.sh:7712`                  | Rate limit detection               |
+| `cmd_heal()`                 | `autonomy/loki:9916`                    | Legacy system healing              |
+| `hook_pre_healing_modify()`  | `autonomy/hooks/migration-hooks.sh:283` | Friction safety gate               |
 | `hook_post_healing_modify()` | `autonomy/hooks/migration-hooks.sh:328` | Characterization test verification |
-| `hook_healing_phase_gate()` | `autonomy/hooks/migration-hooks.sh:386` | Healing phase transition gate |
+| `hook_healing_phase_gate()`  | `autonomy/hooks/migration-hooks.sh:386` | Healing phase transition gate      |
 
 ### Critical Data Flow
 
 A PRD enters via `loki start` (`autonomy/loki:622`), which execs `run.sh`. The `run_autonomous()` loop (`autonomy/run.sh:10253`) builds prompts via `build_prompt()` (`autonomy/run.sh:8987`) injecting RARV instructions, SDLC phases, memory context, queue tasks, and checklist status. The provider is invoked (Claude via `-p` flag, Codex via `exec --full-auto` with `CODEX_MODEL_REASONING_EFFORT` env var, Cline/Aider sequentially). Post-iteration, the system runs checklist verification, app runner management, playwright smoke tests, and code review. Completion is determined by a council vote (`council_should_stop` at `autonomy/completion-council.sh:1605`), completion promise text, or max iterations. All components communicate through `.loki/` filesystem state files.
 
 **Deprecated entrypoints:**
+
 - `loki run <issue-ref>` is a deprecated alias for `loki start <issue-ref>` since v6.84.0. Emits a `cli_command_deprecated` telemetry event. See `autonomy/loki:4436-4456`. Prefer `loki start`.
 
 See `.claude/projects/-Users-lokesh-git-loki-mode/memory/CODEBASE-KNOWLEDGE-GRAPH.md` for complete reference.
@@ -239,6 +247,7 @@ Before documenting ANY feature, installation method, or capability:
 4. **Mark planned features** - Use "Coming Soon" or "Planned" labels for unimplemented features
 
 **Example verification:**
+
 ```bash
 # Before documenting "npm install -g loki-mode"
 npm view loki-mode  # Does package exist on registry?
@@ -251,6 +260,7 @@ ls -la path/to/file  # Does file exist?
 ```
 
 **Feedback loop pattern:**
+
 ```
 Task tool -> subagent_type: "general-purpose" or model: "opus"
 Prompt: "Review the following claims for factual accuracy.
@@ -263,17 +273,20 @@ Prompt: "Review the following claims for factual accuracy.
 **Before reporting ANY task as done, run ALL cleanup steps below. No exceptions.**
 
 1. **Kill spawned processes** (dashboard servers, test runners, etc.):
+
    ```bash
    lsof -ti:57374 | xargs kill -9 2>/dev/null || true
    pkill -f "loki-run-" 2>/dev/null || true
    ```
 
 2. **Remove temp files**:
+
    ```bash
    rm -rf /tmp/loki-* /tmp/test-* /tmp/package /tmp/*.tgz 2>/dev/null || true
    ```
 
 3. **Verify cleanup** (MUST run, not optional):
+
    ```bash
    ps -ef | grep -E "(loki|test)" | grep -v grep || echo "Clean"
    ls /tmp/loki-* /tmp/test-* 2>&1 | grep -v "No such file" || echo "Clean"
@@ -293,19 +306,23 @@ Prompt: "Review the following claims for factual accuracy.
 6. Only after user confirms, commit and push if requested
 
 ### When Modifying SKILL.md
+
 - Keep under 500 lines (currently ~266)
 - Reference detailed docs in `references/` instead of inlining
 - Update version in header AND footer
 - Update CHANGELOG.md with new version entry
 
 ### Version Numbering
+
 Follows semantic versioning: MAJOR.MINOR.PATCH
+
 - Current: v7.23.1 (see [CHANGELOG.md](./CHANGELOG.md) for release history)
 - MAJOR bump for architecture changes (v6.0.0 = dual-mode architecture, loki run)
 - MINOR bump for new features (v5.23.0 = Dashboard File-Based API)
 - PATCH bump for fixes (v5.22.1 = session.json phantom state)
 
 ### Code Style
+
 - **CRITICAL: NEVER use emojis** - Not in code, documentation, commit messages, README, or any output
 - **No emoji exceptions** - This includes website content, markdown files, and all text
 - If you see emojis anywhere in the codebase, remove them immediately
@@ -327,6 +344,7 @@ and re-run. The Mac is the canonical pre-push gate; GitHub Actions is
 the post-push verifier, not the discovery channel.
 
 After a release ships, run the post-release distribution validation:
+
 - npm: `npm pack loki-mode@<VERSION>`, untar, run `bash package/bin/loki version`
 - Docker: `docker pull asklokesh/loki-mode:<VERSION>`, `docker run --rm <img> version`,
   `docker run --rm <img> doctor --json`, `docker run --rm <img> status --json`
@@ -334,6 +352,7 @@ After a release ships, run the post-release distribution validation:
 - Both routes (Bun + LOKI_LEGACY_BASH=1) on each channel
 
 Cleanup after every local-ci run AND post-release validation:
+
 ```bash
 lsof -ti:57374 | xargs kill -9 2>/dev/null || true
 rm -rf /tmp/loki-* /tmp/test-* /tmp/package /tmp/*.tgz 2>/dev/null || true
@@ -350,6 +369,7 @@ When releasing a new version, follow ALL steps below. Nothing should be skipped.
 Update the version string in every file listed below. Search for the old version and replace with the new one.
 
 **Core version files (MUST update):**
+
 ```
 VERSION                                  # Single line: X.Y.Z
 package.json                             # "version": "X.Y.Z"
@@ -361,12 +381,14 @@ CLAUDE.md                                # Version Numbering section (Current: v
 ```
 
 **Module version files (MUST update):**
+
 ```
 dashboard/__init__.py                    # __version__ = "X.Y.Z"
 mcp/__init__.py                          # __version__ = "X.Y.Z"
 ```
 
 **Documentation (MUST update):**
+
 ```
 CHANGELOG.md                             # Add new version entry at top
 docs/INSTALLATION.md                     # Version header (line ~5)
@@ -376,6 +398,7 @@ wiki/API-Reference.md                    # Example version in responses
 ```
 
 **Docker image tags in docs (update on MAJOR/MINOR bumps):**
+
 ```
 README.md                                # Docker example tags (lines ~81, ~380)
 docs/INSTALLATION.md                     # Docker image tags (7+ occurrences)
@@ -391,6 +414,7 @@ cd dashboard-ui && npm ci && npm run build:all && cd ..
 ```
 
 Verify the built file exists and is reasonably sized (>100KB):
+
 ```bash
 ls -la dashboard/static/index.html
 ```
@@ -452,6 +476,7 @@ git push origin main
 ```
 
 **IMPORTANT:** Do NOT manually create tags. The GitHub Actions workflow automatically:
+
 - Creates the git tag
 - Creates the GitHub Release with artifacts
 - Publishes to npm (includes `dashboard/static/index.html`)
@@ -487,16 +512,18 @@ gh release view vX.Y.Z
 
 Every release MUST include these artifacts across ALL channels:
 
-| Channel | Dashboard API (server.py) | Dashboard Frontend (static/) | Memory System | Skills/References |
-|---------|--------------------------|------------------------------|---------------|-------------------|
-| npm     | `dashboard/*.py`         | `dashboard/static/index.html`| `memory/`     | `skills/`, `references/` |
-| Docker  | `COPY dashboard/`        | Built in Dockerfile or committed | `memory/` | `skills/`, `references/` |
-| Homebrew| Full tarball             | Full tarball                 | Full tarball  | Full tarball |
-| VSCode  | DEPRECATED v7.2.0 -- no longer published | -- | -- | -- |
-| Release | Skill-only zip           | N/A                          | N/A           | `references/` |
+| Channel  | Dashboard API (server.py)                | Dashboard Frontend (static/)     | Memory System | Skills/References        |
+| -------- | ---------------------------------------- | -------------------------------- | ------------- | ------------------------ |
+| npm      | `dashboard/*.py`                         | `dashboard/static/index.html`    | `memory/`     | `skills/`, `references/` |
+| Docker   | `COPY dashboard/`                        | Built in Dockerfile or committed | `memory/`     | `skills/`, `references/` |
+| Homebrew | Full tarball                             | Full tarball                     | Full tarball  | Full tarball             |
+| VSCode   | DEPRECATED v7.2.0 -- no longer published | --                               | --            | --                       |
+| Release  | Skill-only zip                           | N/A                              | N/A           | `references/`            |
 
 ### Credentials (GitHub Secrets)
+
 All credentials are stored as GitHub repository secrets and used by the workflow:
+
 - `NPM_TOKEN`: npm publish token
 - `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN`: Docker Hub credentials
 - `HOMEBREW_TAP_TOKEN`: PAT for homebrew-tap updates
@@ -514,21 +541,25 @@ All credentials are stored as GitHub repository secrets and used by the workflow
 Built on 2025 research from three major AI labs:
 
 **OpenAI:**
+
 - Agents SDK (guardrails, tripwires, handoffs, tracing)
 - AGENTS.md / Agentic AI Foundation (AAIF) standards
 
 **Google DeepMind:**
+
 - SIMA 2 (self-improvement, hierarchical reasoning)
 - Google DeepMind Robotics (VLA models, planning)
 - Dreamer 4 (world model training)
 - Scalable Oversight via Debate
 
 **Anthropic:**
+
 - Constitutional AI (principles-based self-critique)
 - Alignment Faking Detection (sleeper agent probes)
 - Claude Code Best Practices (Explore-Plan-Code)
 
 **Academic:**
+
 - CONSENSAGENT (anti-sycophancy)
 - GoalAct (hierarchical planning)
 - A-Mem/MIRIX (memory systems)

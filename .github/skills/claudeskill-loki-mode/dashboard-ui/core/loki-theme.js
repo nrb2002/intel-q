@@ -21,16 +21,10 @@ import {
   KeyboardHandler,
   KEYBOARD_SHORTCUTS,
   ARIA_PATTERNS,
-} from './loki-unified-styles.js';
+} from "./loki-unified-styles.js";
 
 // Re-export unified styles for convenience
-export {
-  UnifiedThemeManager,
-  BASE_STYLES,
-  KeyboardHandler,
-  KEYBOARD_SHORTCUTS,
-  ARIA_PATTERNS,
-};
+export { UnifiedThemeManager, BASE_STYLES, KeyboardHandler, KEYBOARD_SHORTCUTS, ARIA_PATTERNS };
 
 /**
  * Anthropic Design Language CSS Variables
@@ -41,88 +35,88 @@ export {
 export const THEME_VARIABLES = {
   light: {
     // Background colors (Autonomi cream/editorial)
-    '--loki-bg-primary': '#FFFEFB',
-    '--loki-bg-secondary': '#F8F4F0',
-    '--loki-bg-tertiary': '#ECEAE3',
-    '--loki-bg-card': '#ffffff',
-    '--loki-bg-hover': '#F3EFE9',
+    "--loki-bg-primary": "#FFFEFB",
+    "--loki-bg-secondary": "#F8F4F0",
+    "--loki-bg-tertiary": "#ECEAE3",
+    "--loki-bg-card": "#ffffff",
+    "--loki-bg-hover": "#F3EFE9",
 
     // Accent colors (violet)
-    '--loki-accent': '#553DE9',
-    '--loki-accent-light': '#7B6BF0',
-    '--loki-accent-muted': 'rgba(85, 61, 233, 0.10)',
+    "--loki-accent": "#553DE9",
+    "--loki-accent-light": "#7B6BF0",
+    "--loki-accent-muted": "rgba(85, 61, 233, 0.10)",
 
     // Text colors
-    '--loki-text-primary': '#201515',
-    '--loki-text-secondary': '#36342E',
-    '--loki-text-muted': '#939084',
+    "--loki-text-primary": "#201515",
+    "--loki-text-secondary": "#36342E",
+    "--loki-text-muted": "#939084",
 
     // Border colors (warm)
-    '--loki-border': '#ECEAE3',
-    '--loki-border-light': '#C5C0B1',
+    "--loki-border": "#ECEAE3",
+    "--loki-border-light": "#C5C0B1",
 
     // Status colors
-    '--loki-green': '#1FC5A8',
-    '--loki-green-muted': 'rgba(31, 197, 168, 0.12)',
-    '--loki-yellow': '#D4A03C',
-    '--loki-yellow-muted': 'rgba(212, 160, 60, 0.12)',
-    '--loki-red': '#C45B5B',
-    '--loki-red-muted': 'rgba(196, 91, 91, 0.12)',
-    '--loki-blue': '#2F71E3',
-    '--loki-blue-muted': 'rgba(47, 113, 227, 0.12)',
-    '--loki-purple': '#553DE9',
-    '--loki-purple-muted': 'rgba(85, 61, 233, 0.10)',
+    "--loki-green": "#1FC5A8",
+    "--loki-green-muted": "rgba(31, 197, 168, 0.12)",
+    "--loki-yellow": "#D4A03C",
+    "--loki-yellow-muted": "rgba(212, 160, 60, 0.12)",
+    "--loki-red": "#C45B5B",
+    "--loki-red-muted": "rgba(196, 91, 91, 0.12)",
+    "--loki-blue": "#2F71E3",
+    "--loki-blue-muted": "rgba(47, 113, 227, 0.12)",
+    "--loki-purple": "#553DE9",
+    "--loki-purple-muted": "rgba(85, 61, 233, 0.10)",
 
     // Model colors
-    '--loki-opus': '#d97706',
-    '--loki-sonnet': '#553DE9',
-    '--loki-haiku': '#1FC5A8',
+    "--loki-opus": "#d97706",
+    "--loki-sonnet": "#553DE9",
+    "--loki-haiku": "#1FC5A8",
 
     // Transition
-    '--loki-transition': '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    "--loki-transition": "0.2s cubic-bezier(0.4, 0, 0.2, 1)",
   },
   dark: {
     // Background colors (Autonomi midnight/Agent View)
-    '--loki-bg-primary': '#1A0F2E',
-    '--loki-bg-secondary': '#140B24',
-    '--loki-bg-tertiary': '#251842',
-    '--loki-bg-card': '#1F1338',
-    '--loki-bg-hover': '#2A1F4A',
+    "--loki-bg-primary": "#1A0F2E",
+    "--loki-bg-secondary": "#140B24",
+    "--loki-bg-tertiary": "#251842",
+    "--loki-bg-card": "#1F1338",
+    "--loki-bg-hover": "#2A1F4A",
 
     // Accent colors (violet, brighter for dark bg)
-    '--loki-accent': '#7B6BF0',
-    '--loki-accent-light': '#9488F5',
-    '--loki-accent-muted': 'rgba(123, 107, 240, 0.18)',
+    "--loki-accent": "#7B6BF0",
+    "--loki-accent-light": "#9488F5",
+    "--loki-accent-muted": "rgba(123, 107, 240, 0.18)",
 
     // Text colors
-    '--loki-text-primary': '#F0ECF8',
-    '--loki-text-secondary': '#C0B8D0',
-    '--loki-text-muted': '#8B7FA8',
+    "--loki-text-primary": "#F0ECF8",
+    "--loki-text-secondary": "#C0B8D0",
+    "--loki-text-muted": "#8B7FA8",
 
     // Border colors
-    '--loki-border': '#2A1F3E',
-    '--loki-border-light': '#3D3060',
+    "--loki-border": "#2A1F3E",
+    "--loki-border-light": "#3D3060",
 
     // Status colors
-    '--loki-green': '#2ED8B6',
-    '--loki-green-muted': 'rgba(46, 216, 182, 0.18)',
-    '--loki-yellow': '#E8B84A',
-    '--loki-yellow-muted': 'rgba(232, 184, 74, 0.18)',
-    '--loki-red': '#E07070',
-    '--loki-red-muted': 'rgba(224, 112, 112, 0.18)',
-    '--loki-blue': '#5A9CF5',
-    '--loki-blue-muted': 'rgba(90, 156, 245, 0.18)',
-    '--loki-purple': '#9488F5',
-    '--loki-purple-muted': 'rgba(148, 136, 245, 0.18)',
+    "--loki-green": "#2ED8B6",
+    "--loki-green-muted": "rgba(46, 216, 182, 0.18)",
+    "--loki-yellow": "#E8B84A",
+    "--loki-yellow-muted": "rgba(232, 184, 74, 0.18)",
+    "--loki-red": "#E07070",
+    "--loki-red-muted": "rgba(224, 112, 112, 0.18)",
+    "--loki-blue": "#5A9CF5",
+    "--loki-blue-muted": "rgba(90, 156, 245, 0.18)",
+    "--loki-purple": "#9488F5",
+    "--loki-purple-muted": "rgba(148, 136, 245, 0.18)",
 
     // Model colors
-    '--loki-opus': '#f59e0b',
-    '--loki-sonnet': '#7B6BF0',
-    '--loki-haiku': '#2ED8B6',
+    "--loki-opus": "#f59e0b",
+    "--loki-sonnet": "#7B6BF0",
+    "--loki-haiku": "#2ED8B6",
 
     // Transition
-    '--loki-transition': '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-  }
+    "--loki-transition": "0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+  },
 };
 
 /**
@@ -236,7 +230,7 @@ export const COMMON_STYLES = `
  * This class is maintained for backwards compatibility.
  */
 export class LokiTheme {
-  static STORAGE_KEY = 'loki-theme';
+  static STORAGE_KEY = "loki-theme";
 
   /**
    * Get the current theme
@@ -290,7 +284,7 @@ export class LokiTheme {
     const vars = LokiTheme.getVariables(t);
     return Object.entries(vars)
       .map(([key, value]) => `${key}: ${value};`)
-      .join('\n');
+      .join("\n");
   }
 
   /**
@@ -342,21 +336,21 @@ export class LokiTheme {
 export class LokiElement extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: "open" });
     this._theme = LokiTheme.getTheme();
     this._themeChangeHandler = this._onThemeChange.bind(this);
     this._keyboardHandler = new KeyboardHandler();
   }
 
   connectedCallback() {
-    window.addEventListener('loki-theme-change', this._themeChangeHandler);
+    window.addEventListener("loki-theme-change", this._themeChangeHandler);
     this._applyTheme();
     this._setupKeyboardHandling();
     this.render();
   }
 
   disconnectedCallback() {
-    window.removeEventListener('loki-theme-change', this._themeChangeHandler);
+    window.removeEventListener("loki-theme-change", this._themeChangeHandler);
     this._keyboardHandler.detach(this);
   }
 
@@ -371,7 +365,7 @@ export class LokiElement extends HTMLElement {
   _applyTheme() {
     LokiTheme.applyToElement(this.shadowRoot.host, this._theme);
     // Also set data attribute for CSS-based theming
-    this.setAttribute('data-loki-theme', this._theme);
+    this.setAttribute("data-loki-theme", this._theme);
   }
 
   /**
@@ -408,40 +402,40 @@ export class LokiElement extends HTMLElement {
 
       /* Light theme (default) */
       :host {
-        ${generateThemeCSS('light')}
+        ${generateThemeCSS("light")}
       }
 
       /* Dark theme via system preference */
       @media (prefers-color-scheme: dark) {
         :host {
-          ${generateThemeCSS('dark')}
+          ${generateThemeCSS("dark")}
         }
       }
 
       /* Explicit theme attributes */
       :host([theme="dark"]),
       :host([data-loki-theme="dark"]) {
-        ${generateThemeCSS('dark')}
+        ${generateThemeCSS("dark")}
       }
 
       :host([theme="light"]),
       :host([data-loki-theme="light"]) {
-        ${generateThemeCSS('light')}
+        ${generateThemeCSS("light")}
       }
 
       :host([theme="high-contrast"]),
       :host([data-loki-theme="high-contrast"]) {
-        ${generateThemeCSS('high-contrast')}
+        ${generateThemeCSS("high-contrast")}
       }
 
       :host([theme="vscode-light"]),
       :host([data-loki-theme="vscode-light"]) {
-        ${generateThemeCSS('vscode-light')}
+        ${generateThemeCSS("vscode-light")}
       }
 
       :host([theme="vscode-dark"]),
       :host([data-loki-theme="vscode-dark"]) {
-        ${generateThemeCSS('vscode-dark')}
+        ${generateThemeCSS("vscode-dark")}
       }
 
       /* Reduced motion preference */
@@ -476,11 +470,11 @@ export class LokiElement extends HTMLElement {
   applyAriaPattern(element, patternName) {
     const pattern = this.getAriaPattern(patternName);
     for (const [key, value] of Object.entries(pattern)) {
-      if (key === 'role') {
-        element.setAttribute('role', value);
+      if (key === "role") {
+        element.setAttribute("role", value);
       } else {
         // Convert camelCase to kebab-case for aria attributes
-        const attrName = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        const attrName = key.replace(/([A-Z])/g, "-$1").toLowerCase();
         element.setAttribute(attrName, value);
       }
     }

@@ -8,7 +8,7 @@
 /**
  * State change event type
  */
-export const STATE_CHANGE_EVENT = 'loki-state-change';
+export const STATE_CHANGE_EVENT = "loki-state-change";
 
 /**
  * Default state structure
@@ -16,9 +16,9 @@ export const STATE_CHANGE_EVENT = 'loki-state-change';
 const DEFAULT_STATE = {
   // UI State
   ui: {
-    theme: 'light',
+    theme: "light",
     sidebarCollapsed: false,
-    activeSection: 'kanban',
+    activeSection: "kanban",
     terminalAutoScroll: true,
   },
 
@@ -26,7 +26,7 @@ const DEFAULT_STATE = {
   session: {
     connected: false,
     lastSync: null,
-    mode: 'offline',
+    mode: "offline",
     phase: null,
     iteration: null,
   },
@@ -55,7 +55,7 @@ const DEFAULT_STATE = {
  * LokiState - Reactive state management with localStorage persistence
  */
 export class LokiState extends EventTarget {
-  static STORAGE_KEY = 'loki-dashboard-state';
+  static STORAGE_KEY = "loki-dashboard-state";
   static _instance = null;
 
   /**
@@ -88,7 +88,7 @@ export class LokiState extends EventTarget {
         return this._mergeState(DEFAULT_STATE, parsed);
       }
     } catch (e) {
-      console.warn('Failed to load state from localStorage:', e);
+      console.warn("Failed to load state from localStorage:", e);
     }
     return { ...DEFAULT_STATE };
   }
@@ -99,7 +99,7 @@ export class LokiState extends EventTarget {
   _mergeState(defaults, saved) {
     const result = { ...defaults };
     for (const key of Object.keys(saved)) {
-      if (key in defaults && typeof defaults[key] === 'object' && !Array.isArray(defaults[key])) {
+      if (key in defaults && typeof defaults[key] === "object" && !Array.isArray(defaults[key])) {
         result[key] = this._mergeState(defaults[key], saved[key]);
       } else {
         result[key] = saved[key];
@@ -121,7 +121,7 @@ export class LokiState extends EventTarget {
       };
       localStorage.setItem(LokiState.STORAGE_KEY, JSON.stringify(toSave));
     } catch (e) {
-      console.warn('Failed to save state to localStorage:', e);
+      console.warn("Failed to save state to localStorage:", e);
     }
   }
 
@@ -133,7 +133,7 @@ export class LokiState extends EventTarget {
   get(path = null) {
     if (!path) return { ...this._state };
 
-    const parts = path.split('.');
+    const parts = path.split(".");
     let value = this._state;
     for (const part of parts) {
       if (value === undefined || value === null) return undefined;
@@ -149,7 +149,7 @@ export class LokiState extends EventTarget {
    * @param {boolean} persist - Whether to save to localStorage (default: true)
    */
   set(path, value, persist = true) {
-    const parts = path.split('.');
+    const parts = path.split(".");
     const lastKey = parts.pop();
     let target = this._state;
 
@@ -199,9 +199,11 @@ export class LokiState extends EventTarget {
    */
   _notifyChange(path, value, oldValue) {
     // Dispatch generic event
-    this.dispatchEvent(new CustomEvent(STATE_CHANGE_EVENT, {
-      detail: { path, value, oldValue }
-    }));
+    this.dispatchEvent(
+      new CustomEvent(STATE_CHANGE_EVENT, {
+        detail: { path, value, oldValue },
+      }),
+    );
 
     // Notify specific path subscribers
     const subscribers = this._subscribers.get(path) || [];
@@ -209,21 +211,21 @@ export class LokiState extends EventTarget {
       try {
         callback(value, oldValue, path);
       } catch (e) {
-        console.error('State subscriber error:', e);
+        console.error("State subscriber error:", e);
       }
     }
 
     // Notify parent path subscribers
-    const parts = path.split('.');
+    const parts = path.split(".");
     while (parts.length > 1) {
       parts.pop();
-      const parentPath = parts.join('.');
+      const parentPath = parts.join(".");
       const parentSubscribers = this._subscribers.get(parentPath) || [];
       for (const callback of parentSubscribers) {
         try {
           callback(this.get(parentPath), null, parentPath);
         } catch (e) {
-          console.error('State subscriber error:', e);
+          console.error("State subscriber error:", e);
         }
       }
     }
@@ -257,7 +259,7 @@ export class LokiState extends EventTarget {
    */
   reset(path = null) {
     if (path) {
-      const parts = path.split('.');
+      const parts = path.split(".");
       let defaultValue = DEFAULT_STATE;
       for (const part of parts) {
         defaultValue = defaultValue?.[part];
@@ -266,9 +268,11 @@ export class LokiState extends EventTarget {
     } else {
       this._state = { ...DEFAULT_STATE };
       this._saveState();
-      this.dispatchEvent(new CustomEvent(STATE_CHANGE_EVENT, {
-        detail: { path: null, value: this._state, oldValue: null }
-      }));
+      this.dispatchEvent(
+        new CustomEvent(STATE_CHANGE_EVENT, {
+          detail: { path: null, value: this._state, oldValue: null },
+        }),
+      );
     }
   }
 
@@ -280,14 +284,14 @@ export class LokiState extends EventTarget {
    * Add a local task
    */
   addLocalTask(task) {
-    const tasks = this.get('localTasks') || [];
+    const tasks = this.get("localTasks") || [];
     const newTask = {
       id: `local-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString(),
-      status: 'pending',
+      status: "pending",
       ...task,
     };
-    this.set('localTasks', [...tasks, newTask]);
+    this.set("localTasks", [...tasks, newTask]);
     return newTask;
   }
 
@@ -295,13 +299,13 @@ export class LokiState extends EventTarget {
    * Update a local task
    */
   updateLocalTask(taskId, updates) {
-    const tasks = this.get('localTasks') || [];
-    const index = tasks.findIndex(t => t.id === taskId);
+    const tasks = this.get("localTasks") || [];
+    const index = tasks.findIndex((t) => t.id === taskId);
     if (index === -1) return null;
 
     const updatedTask = { ...tasks[index], ...updates, updatedAt: new Date().toISOString() };
     tasks[index] = updatedTask;
-    this.set('localTasks', [...tasks]);
+    this.set("localTasks", [...tasks]);
     return updatedTask;
   }
 
@@ -309,16 +313,19 @@ export class LokiState extends EventTarget {
    * Delete a local task
    */
   deleteLocalTask(taskId) {
-    const tasks = this.get('localTasks') || [];
-    this.set('localTasks', tasks.filter(t => t.id !== taskId));
+    const tasks = this.get("localTasks") || [];
+    this.set(
+      "localTasks",
+      tasks.filter((t) => t.id !== taskId),
+    );
   }
 
   /**
    * Move a local task to a different status
    */
   moveLocalTask(taskId, newStatus, position = null) {
-    const tasks = this.get('localTasks') || [];
-    const task = tasks.find(t => t.id === taskId);
+    const tasks = this.get("localTasks") || [];
+    const task = tasks.find((t) => t.id === taskId);
     if (!task) return null;
 
     return this.updateLocalTask(taskId, {
@@ -332,10 +339,8 @@ export class LokiState extends EventTarget {
    */
   updateSession(updates) {
     this.update(
-      Object.fromEntries(
-        Object.entries(updates).map(([k, v]) => [`session.${k}`, v])
-      ),
-      false // Don't persist session state
+      Object.fromEntries(Object.entries(updates).map(([k, v]) => [`session.${k}`, v])),
+      false, // Don't persist session state
     );
   }
 
@@ -343,24 +348,27 @@ export class LokiState extends EventTarget {
    * Update cache with server data
    */
   updateCache(data) {
-    this.update({
-      'cache.projects': data.projects ?? this.get('cache.projects'),
-      'cache.tasks': data.tasks ?? this.get('cache.tasks'),
-      'cache.agents': data.agents ?? this.get('cache.agents'),
-      'cache.memory': data.memory ?? this.get('cache.memory'),
-      'cache.lastFetch': new Date().toISOString(),
-    }, false);
+    this.update(
+      {
+        "cache.projects": data.projects ?? this.get("cache.projects"),
+        "cache.tasks": data.tasks ?? this.get("cache.tasks"),
+        "cache.agents": data.agents ?? this.get("cache.agents"),
+        "cache.memory": data.memory ?? this.get("cache.memory"),
+        "cache.lastFetch": new Date().toISOString(),
+      },
+      false,
+    );
   }
 
   /**
    * Get merged tasks (local + server)
    */
   getMergedTasks() {
-    const serverTasks = this.get('cache.tasks') || [];
-    const localTasks = this.get('localTasks') || [];
+    const serverTasks = this.get("cache.tasks") || [];
+    const localTasks = this.get("localTasks") || [];
 
     // Mark local tasks
-    const markedLocal = localTasks.map(t => ({ ...t, isLocal: true }));
+    const markedLocal = localTasks.map((t) => ({ ...t, isLocal: true }));
 
     return [...serverTasks, ...markedLocal];
   }
@@ -369,7 +377,7 @@ export class LokiState extends EventTarget {
    * Get tasks by status
    */
   getTasksByStatus(status) {
-    return this.getMergedTasks().filter(t => t.status === status);
+    return this.getMergedTasks().filter((t) => t.status === status);
   }
 }
 

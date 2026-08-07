@@ -11,24 +11,24 @@
  *   npm run build:iife    # Build IIFE only
  */
 
-const esbuild = require('esbuild');
-const path = require('path');
-const fs = require('fs');
+const esbuild = require("esbuild");
+const path = require("path");
+const fs = require("fs");
 
 // Ensure dist directory exists
-const distDir = path.join(__dirname, 'dist');
+const distDir = path.join(__dirname, "dist");
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
 // Common build options
 const commonOptions = {
-  entryPoints: [path.join(__dirname, 'index.js')],
+  entryPoints: [path.join(__dirname, "index.js")],
   bundle: true,
   minify: true,
   sourcemap: true,
-  target: ['es2020'],
-  logLevel: 'info',
+  target: ["es2020"],
+  logLevel: "info",
 };
 
 /**
@@ -38,14 +38,14 @@ const commonOptions = {
 async function buildESM() {
   await esbuild.build({
     ...commonOptions,
-    format: 'esm',
-    outfile: path.join(distDir, 'loki-dashboard.esm.js'),
+    format: "esm",
+    outfile: path.join(distDir, "loki-dashboard.esm.js"),
     splitting: false,
     banner: {
-      js: '/* Loki Dashboard UI - ESM Bundle */\n',
+      js: "/* Loki Dashboard UI - ESM Bundle */\n",
     },
   });
-  console.log('[ESM] Built: dist/loki-dashboard.esm.js');
+  console.log("[ESM] Built: dist/loki-dashboard.esm.js");
 }
 
 /**
@@ -56,11 +56,11 @@ async function buildESM() {
 async function buildIIFE() {
   await esbuild.build({
     ...commonOptions,
-    format: 'iife',
-    globalName: 'LokiDashboard',
-    outfile: path.join(distDir, 'loki-dashboard.iife.js'),
+    format: "iife",
+    globalName: "LokiDashboard",
+    outfile: path.join(distDir, "loki-dashboard.iife.js"),
     banner: {
-      js: '/* Loki Dashboard UI - IIFE Bundle (VS Code Webview) */\n',
+      js: "/* Loki Dashboard UI - IIFE Bundle (VS Code Webview) */\n",
     },
     footer: {
       js: `
@@ -71,7 +71,7 @@ if (typeof window !== 'undefined') {
 `,
     },
   });
-  console.log('[IIFE] Built: dist/loki-dashboard.iife.js');
+  console.log("[IIFE] Built: dist/loki-dashboard.iife.js");
 }
 
 /**
@@ -85,11 +85,11 @@ async function buildAll() {
 
     const elapsed = Date.now() - startTime;
     console.log(`\nBuild complete in ${elapsed}ms`);
-    console.log('Output files:');
-    console.log('  - dist/loki-dashboard.esm.js (+ .map)');
-    console.log('  - dist/loki-dashboard.iife.js (+ .map)');
+    console.log("Output files:");
+    console.log("  - dist/loki-dashboard.esm.js (+ .map)");
+    console.log("  - dist/loki-dashboard.iife.js (+ .map)");
   } catch (error) {
-    console.error('Build failed:', error);
+    console.error("Build failed:", error);
     process.exit(1);
   }
 }
@@ -97,29 +97,29 @@ async function buildAll() {
 // CLI handling
 const args = process.argv.slice(2);
 
-if (args.includes('--esm')) {
+if (args.includes("--esm")) {
   buildESM().catch(() => process.exit(1));
-} else if (args.includes('--iife')) {
+} else if (args.includes("--iife")) {
   buildIIFE().catch(() => process.exit(1));
-} else if (args.includes('--watch')) {
+} else if (args.includes("--watch")) {
   // Watch mode for development
   Promise.all([
     esbuild.context({
       ...commonOptions,
-      format: 'esm',
-      outfile: path.join(distDir, 'loki-dashboard.esm.js'),
+      format: "esm",
+      outfile: path.join(distDir, "loki-dashboard.esm.js"),
       splitting: false,
       banner: {
-        js: '/* Loki Dashboard UI - ESM Bundle */\n',
+        js: "/* Loki Dashboard UI - ESM Bundle */\n",
       },
     }),
     esbuild.context({
       ...commonOptions,
-      format: 'iife',
-      globalName: 'LokiDashboard',
-      outfile: path.join(distDir, 'loki-dashboard.iife.js'),
+      format: "iife",
+      globalName: "LokiDashboard",
+      outfile: path.join(distDir, "loki-dashboard.iife.js"),
       banner: {
-        js: '/* Loki Dashboard UI - IIFE Bundle (VS Code Webview) */\n',
+        js: "/* Loki Dashboard UI - IIFE Bundle (VS Code Webview) */\n",
       },
       footer: {
         js: `
@@ -132,7 +132,7 @@ if (typeof window !== 'undefined') {
     }),
   ]).then(async (contexts) => {
     await Promise.all(contexts.map((ctx) => ctx.watch()));
-    console.log('Watching for changes...');
+    console.log("Watching for changes...");
   });
 } else {
   buildAll();

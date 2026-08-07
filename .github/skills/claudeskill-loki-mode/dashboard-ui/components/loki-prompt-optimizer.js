@@ -8,8 +8,8 @@
  * <loki-prompt-optimizer api-url="http://localhost:57374"></loki-prompt-optimizer>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * @class LokiPromptOptimizer
@@ -18,7 +18,7 @@ import { getApiClient } from '../core/loki-api-client.js';
  */
 export class LokiPromptOptimizer extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -46,23 +46,23 @@ export class LokiPromptOptimizer extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _loadData() {
     try {
-      this._data = await this._api._get('/api/prompt-versions');
+      this._data = await this._api._get("/api/prompt-versions");
       this._error = null;
     } catch (err) {
       this._error = err.message;
@@ -77,7 +77,7 @@ export class LokiPromptOptimizer extends LokiElement {
     this._optimizing = true;
     this.render();
     try {
-      await this._api._post('/api/prompt-optimize?dry_run=false', {});
+      await this._api._post("/api/prompt-optimize?dry_run=false", {});
       await this._loadData();
     } catch (err) {
       this._error = err.message;
@@ -98,25 +98,29 @@ export class LokiPromptOptimizer extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _formatTime(timestamp) {
-    if (!timestamp) return '--';
+    if (!timestamp) return "--";
     try {
       const date = new Date(timestamp);
       const now = new Date();
       const diff = now - date;
       const mins = Math.floor(diff / 60000);
-      if (mins < 1) return 'Just now';
+      if (mins < 1) return "Just now";
       if (mins < 60) return `${mins}m ago`;
       const hours = Math.floor(mins / 60);
       if (hours < 24) return `${hours}h ago`;
       const days = Math.floor(hours / 24);
       return `${days}d ago`;
     } catch {
-      return '--';
+      return "--";
     }
   }
 
@@ -353,28 +357,30 @@ export class LokiPromptOptimizer extends LokiElement {
     }
 
     const d = this._data || {};
-    const version = d.version != null ? d.version : '--';
+    const version = d.version != null ? d.version : "--";
     const lastOptimized = this._formatTime(d.last_optimized);
-    const failuresAnalyzed = d.failures_analyzed != null ? d.failures_analyzed : '--';
+    const failuresAnalyzed = d.failures_analyzed != null ? d.failures_analyzed : "--";
     const changes = d.changes || [];
 
-    let changesHtml = '';
+    let changesHtml = "";
     if (changes.length > 0) {
       changesHtml = `
         <div class="changes-section">
           <div class="section-label">Changes</div>
-          ${changes.map((ch, i) => {
-            const isExpanded = this._expandedChanges.has(i);
-            return `
+          ${changes
+            .map((ch, i) => {
+              const isExpanded = this._expandedChanges.has(i);
+              return `
               <div class="change-item">
                 <button class="change-header" data-index="${i}">
-                  <span class="change-arrow ${isExpanded ? 'expanded' : ''}">&#9654;</span>
-                  ${this._escapeHtml(ch.description || ch.title || 'Change')}
+                  <span class="change-arrow ${isExpanded ? "expanded" : ""}">&#9654;</span>
+                  ${this._escapeHtml(ch.description || ch.title || "Change")}
                 </button>
-                ${isExpanded ? `<div class="change-rationale">${this._escapeHtml(ch.rationale || ch.reasoning || 'No rationale provided')}</div>` : ''}
+                ${isExpanded ? `<div class="change-rationale">${this._escapeHtml(ch.rationale || ch.reasoning || "No rationale provided")}</div>` : ""}
               </div>
             `;
-          }).join('')}
+            })
+            .join("")}
         </div>
       `;
     }
@@ -385,8 +391,8 @@ export class LokiPromptOptimizer extends LokiElement {
         <div class="optimizer-header">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <span class="optimizer-title">Prompt Optimizer</span>
-          <button class="optimize-btn" id="optimize-btn" ${this._optimizing ? 'disabled' : ''}>
-            ${this._optimizing ? '<div class="spinner-sm"></div> Optimizing...' : 'Optimize Now'}
+          <button class="optimize-btn" id="optimize-btn" ${this._optimizing ? "disabled" : ""}>
+            ${this._optimizing ? '<div class="spinner-sm"></div> Optimizing...' : "Optimize Now"}
           </button>
         </div>
 
@@ -410,22 +416,22 @@ export class LokiPromptOptimizer extends LokiElement {
     `;
 
     // Attach button listener
-    const optimizeBtn = this.shadowRoot.getElementById('optimize-btn');
+    const optimizeBtn = this.shadowRoot.getElementById("optimize-btn");
     if (optimizeBtn) {
-      optimizeBtn.addEventListener('click', () => this._triggerOptimize());
+      optimizeBtn.addEventListener("click", () => this._triggerOptimize());
     }
 
     // Attach change toggle listeners
-    this.shadowRoot.querySelectorAll('.change-header').forEach(btn => {
-      btn.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".change-header").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._toggleChange(parseInt(btn.dataset.index));
       });
     });
   }
 }
 
-if (!customElements.get('loki-prompt-optimizer')) {
-  customElements.define('loki-prompt-optimizer', LokiPromptOptimizer);
+if (!customElements.get("loki-prompt-optimizer")) {
+  customElements.define("loki-prompt-optimizer", LokiPromptOptimizer);
 }
 
 export default LokiPromptOptimizer;

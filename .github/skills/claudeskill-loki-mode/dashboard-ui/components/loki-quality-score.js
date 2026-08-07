@@ -8,8 +8,8 @@
  * <loki-quality-score api-url="http://localhost:57374"></loki-quality-score>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * @class LokiQualityScore
@@ -18,7 +18,7 @@ import { getApiClient } from '../core/loki-api-client.js';
  */
 export class LokiQualityScore extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -47,30 +47,30 @@ export class LokiQualityScore extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _loadData() {
     try {
       const [scoreResult, historyResult] = await Promise.allSettled([
-        this._api._get('/api/quality-score'),
-        this._api._get('/api/quality-score/history'),
+        this._api._get("/api/quality-score"),
+        this._api._get("/api/quality-score/history"),
       ]);
 
-      if (scoreResult.status === 'fulfilled') {
+      if (scoreResult.status === "fulfilled") {
         const data = scoreResult.value;
-        if (data && data.error && data.error.includes('not installed')) {
+        if (data && data.error && data.error.includes("not installed")) {
           this._rigourAvailable = false;
           this._data = null;
         } else {
@@ -79,20 +79,22 @@ export class LokiQualityScore extends LokiElement {
         }
         this._error = null;
       } else {
-        const errMsg = scoreResult.reason?.message || '';
-        if (errMsg.includes('404')) {
+        const errMsg = scoreResult.reason?.message || "";
+        if (errMsg.includes("404")) {
           this._rigourAvailable = false;
           this._data = null;
           this._error = null;
         } else {
-          this._error = 'Failed to load quality score';
+          this._error = "Failed to load quality score";
           this._data = null;
         }
       }
 
-      if (historyResult.status === 'fulfilled') {
+      if (historyResult.status === "fulfilled") {
         const histData = historyResult.value;
-        this._history = Array.isArray(histData) ? histData.slice(-10) : (histData.scores || []).slice(-10);
+        this._history = Array.isArray(histData)
+          ? histData.slice(-10)
+          : (histData.scores || []).slice(-10);
       }
     } catch (err) {
       this._error = err.message;
@@ -110,7 +112,7 @@ export class LokiQualityScore extends LokiElement {
       // Full-codebase quality audit (AST parse, complexity, lint); scales with
       // repo size and routinely exceeds the default 10s. 300s client budget so
       // large repos do not abort with a misleading "Request timeout".
-      await this._api._post('/api/quality-scan', {}, { timeout: 300000 });
+      await this._api._post("/api/quality-scan", {}, { timeout: 300000 });
       await this._loadData();
     } catch (err) {
       this._error = err.message;
@@ -131,21 +133,25 @@ export class LokiQualityScore extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getGrade(score) {
-    if (score >= 90) return { grade: 'A', color: 'var(--loki-success)' };
-    if (score >= 80) return { grade: 'B', color: 'var(--loki-success)' };
-    if (score >= 70) return { grade: 'C', color: 'var(--loki-warning)' };
-    if (score >= 60) return { grade: 'D', color: 'var(--loki-warning)' };
-    return { grade: 'F', color: 'var(--loki-error)' };
+    if (score >= 90) return { grade: "A", color: "var(--loki-success)" };
+    if (score >= 80) return { grade: "B", color: "var(--loki-success)" };
+    if (score >= 70) return { grade: "C", color: "var(--loki-warning)" };
+    if (score >= 60) return { grade: "D", color: "var(--loki-warning)" };
+    return { grade: "F", color: "var(--loki-error)" };
   }
 
   _renderSparkline(scores) {
-    if (!scores || scores.length < 2) return '';
-    const values = scores.map(s => typeof s === 'number' ? s : (s.score || 0));
+    if (!scores || scores.length < 2) return "";
+    const values = scores.map((s) => (typeof s === "number" ? s : s.score || 0));
     const min = Math.min(...values);
     const max = Math.max(...values);
     const range = max - min || 1;
@@ -153,16 +159,18 @@ export class LokiQualityScore extends LokiElement {
     const height = 32;
     const padding = 2;
 
-    const points = values.map((v, i) => {
-      const x = padding + (i / (values.length - 1)) * (width - padding * 2);
-      const y = padding + (1 - (v - min) / range) * (height - padding * 2);
-      return `${x},${y}`;
-    }).join(' ');
+    const points = values
+      .map((v, i) => {
+        const x = padding + (i / (values.length - 1)) * (width - padding * 2);
+        const y = padding + (1 - (v - min) / range) * (height - padding * 2);
+        return `${x},${y}`;
+      })
+      .join(" ");
 
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" class="sparkline">
         <polyline points="${points}" fill="none" stroke="var(--loki-accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="${points.split(' ').pop().split(',')[0]}" cy="${points.split(' ').pop().split(',')[1]}" r="2.5" fill="var(--loki-accent)"/>
+        <circle cx="${points.split(" ").pop().split(",")[0]}" cy="${points.split(" ").pop().split(",")[1]}" r="2.5" fill="var(--loki-accent)"/>
       </svg>
     `;
   }
@@ -484,18 +492,24 @@ export class LokiQualityScore extends LokiElement {
     const categories = d.categories || {};
     const findings = d.findings || {};
 
-    const categoryNames = ['security', 'code_quality', 'compliance', 'best_practices'];
+    const categoryNames = ["security", "code_quality", "compliance", "best_practices"];
     const categoryLabels = {
-      security: 'Security',
-      code_quality: 'Code Quality',
-      compliance: 'Compliance',
-      best_practices: 'Best Practices',
+      security: "Security",
+      code_quality: "Code Quality",
+      compliance: "Compliance",
+      best_practices: "Best Practices",
     };
 
-    const categoriesHtml = categoryNames.map(name => {
-      const val = categories[name] != null ? Math.round(categories[name]) : 0;
-      const barColor = val >= 80 ? 'var(--loki-success)' : val >= 60 ? 'var(--loki-warning)' : 'var(--loki-error)';
-      return `
+    const categoriesHtml = categoryNames
+      .map((name) => {
+        const val = categories[name] != null ? Math.round(categories[name]) : 0;
+        const barColor =
+          val >= 80
+            ? "var(--loki-success)"
+            : val >= 60
+              ? "var(--loki-warning)"
+              : "var(--loki-error)";
+        return `
         <div class="category-item">
           <span class="category-name">${categoryLabels[name] || name}</span>
           <div class="progress-bar">
@@ -504,19 +518,20 @@ export class LokiQualityScore extends LokiElement {
           <span class="category-score">${val}</span>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
     const severities = [
-      { key: 'critical', cls: 'finding-critical', label: 'Critical' },
-      { key: 'major', cls: 'finding-major', label: 'Major' },
-      { key: 'minor', cls: 'finding-minor', label: 'Minor' },
-      { key: 'info', cls: 'finding-info', label: 'Info' },
+      { key: "critical", cls: "finding-critical", label: "Critical" },
+      { key: "major", cls: "finding-major", label: "Major" },
+      { key: "minor", cls: "finding-minor", label: "Minor" },
+      { key: "info", cls: "finding-info", label: "Info" },
     ];
 
     const findingsHtml = severities
-      .filter(s => (findings[s.key] || 0) > 0)
-      .map(s => `<span class="finding-badge ${s.cls}">${s.label}: ${findings[s.key]}</span>`)
-      .join('');
+      .filter((s) => (findings[s.key] || 0) > 0)
+      .map((s) => `<span class="finding-badge ${s.cls}">${s.label}: ${findings[s.key]}</span>`)
+      .join("");
 
     const sparklineHtml = this._renderSparkline(this._history);
 
@@ -526,8 +541,8 @@ export class LokiQualityScore extends LokiElement {
         <div class="quality-header">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span class="quality-title">Quality Score</span>
-          <button class="scan-btn" id="scan-btn" ${this._scanning ? 'disabled' : ''}>
-            ${this._scanning ? '<div class="spinner-sm"></div> Scanning...' : 'Run Scan'}
+          <button class="scan-btn" id="scan-btn" ${this._scanning ? "disabled" : ""}>
+            ${this._scanning ? '<div class="spinner-sm"></div> Scanning...' : "Run Scan"}
           </button>
         </div>
 
@@ -536,12 +551,16 @@ export class LokiQualityScore extends LokiElement {
             <div class="score-number">${score}</div>
             <span class="grade-badge" style="background:${gradeColor};color:#fff;">${grade}</span>
           </div>
-          ${sparklineHtml ? `
+          ${
+            sparklineHtml
+              ? `
             <div class="sparkline-container">
               <span class="sparkline-label">Trend (last ${this._history.length})</span>
               ${sparklineHtml}
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
 
         <div class="categories-section">
@@ -549,25 +568,29 @@ export class LokiQualityScore extends LokiElement {
           ${categoriesHtml}
         </div>
 
-        ${findingsHtml ? `
+        ${
+          findingsHtml
+            ? `
           <div class="findings-section">
             <div class="section-label">Findings</div>
             <div class="findings-row">${findingsHtml}</div>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
     `;
 
     // Attach scan button listener
-    const scanBtn = this.shadowRoot.getElementById('scan-btn');
+    const scanBtn = this.shadowRoot.getElementById("scan-btn");
     if (scanBtn) {
-      scanBtn.addEventListener('click', () => this._triggerScan());
+      scanBtn.addEventListener("click", () => this._triggerScan());
     }
   }
 }
 
-if (!customElements.get('loki-quality-score')) {
-  customElements.define('loki-quality-score', LokiQualityScore);
+if (!customElements.get("loki-quality-score")) {
+  customElements.define("loki-quality-score", LokiQualityScore);
 }
 
 export default LokiQualityScore;

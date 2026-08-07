@@ -8,33 +8,33 @@
  * <loki-learning-dashboard api-url="http://localhost:57374" theme="dark" time-range="7d"></loki-learning-dashboard>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Array<{id: string, label: string, hours: number}>} Available time range filter options */
 const TIME_RANGES = [
-  { id: '1h', label: '1 Hour', hours: 1 },
-  { id: '24h', label: '24 Hours', hours: 24 },
-  { id: '7d', label: '7 Days', hours: 168 },
-  { id: '30d', label: '30 Days', hours: 720 },
+  { id: "1h", label: "1 Hour", hours: 1 },
+  { id: "24h", label: "24 Hours", hours: 24 },
+  { id: "7d", label: "7 Days", hours: 168 },
+  { id: "30d", label: "30 Days", hours: 720 },
 ];
 
 const SIGNAL_TYPES = [
-  { id: 'all', label: 'All Signals' },
-  { id: 'user_preference', label: 'User Preferences' },
-  { id: 'error_pattern', label: 'Error Patterns' },
-  { id: 'success_pattern', label: 'Success Patterns' },
-  { id: 'tool_efficiency', label: 'Tool Efficiency' },
-  { id: 'context_relevance', label: 'Context Relevance' },
+  { id: "all", label: "All Signals" },
+  { id: "user_preference", label: "User Preferences" },
+  { id: "error_pattern", label: "Error Patterns" },
+  { id: "success_pattern", label: "Success Patterns" },
+  { id: "tool_efficiency", label: "Tool Efficiency" },
+  { id: "context_relevance", label: "Context Relevance" },
 ];
 
 const SIGNAL_SOURCES = [
-  { id: 'all', label: 'All Sources' },
-  { id: 'cli', label: 'CLI' },
-  { id: 'api', label: 'API' },
-  { id: 'vscode', label: 'VS Code' },
-  { id: 'mcp', label: 'MCP' },
-  { id: 'dashboard', label: 'Dashboard' },
+  { id: "all", label: "All Sources" },
+  { id: "cli", label: "CLI" },
+  { id: "api", label: "API" },
+  { id: "vscode", label: "VS Code" },
+  { id: "mcp", label: "MCP" },
+  { id: "dashboard", label: "Dashboard" },
 ];
 
 /**
@@ -50,7 +50,7 @@ const SIGNAL_SOURCES = [
  */
 export class LokiLearningDashboard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme', 'time-range', 'signal-type', 'source'];
+    return ["api-url", "theme", "time-range", "signal-type", "source"];
   }
 
   constructor() {
@@ -60,9 +60,9 @@ export class LokiLearningDashboard extends LokiElement {
     this._api = null;
 
     // Filters
-    this._timeRange = '7d';
-    this._signalType = 'all';
-    this._source = 'all';
+    this._timeRange = "7d";
+    this._signalType = "all";
+    this._source = "all";
 
     // Data
     this._metrics = null;
@@ -73,9 +73,9 @@ export class LokiLearningDashboard extends LokiElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._timeRange = this.getAttribute('time-range') || '7d';
-    this._signalType = this.getAttribute('signal-type') || 'all';
-    this._source = this.getAttribute('source') || 'all';
+    this._timeRange = this.getAttribute("time-range") || "7d";
+    this._signalType = this.getAttribute("signal-type") || "all";
+    this._source = this.getAttribute("source") || "all";
     this._setupApi();
     this._loadData();
   }
@@ -84,24 +84,24 @@ export class LokiLearningDashboard extends LokiElement {
     if (oldValue === newValue) return;
 
     switch (name) {
-      case 'api-url':
+      case "api-url":
         if (this._api) {
           this._api.baseUrl = newValue;
           this._loadData();
         }
         break;
-      case 'theme':
+      case "theme":
         this._applyTheme();
         break;
-      case 'time-range':
+      case "time-range":
         this._timeRange = newValue;
         this._loadData();
         break;
-      case 'signal-type':
+      case "signal-type":
         this._signalType = newValue;
         this._loadData();
         break;
-      case 'source':
+      case "source":
         this._source = newValue;
         this._loadData();
         break;
@@ -109,7 +109,7 @@ export class LokiLearningDashboard extends LokiElement {
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -121,8 +121,8 @@ export class LokiLearningDashboard extends LokiElement {
     try {
       const params = {
         timeRange: this._timeRange,
-        signalType: this._signalType !== 'all' ? this._signalType : undefined,
-        source: this._source !== 'all' ? this._source : undefined,
+        signalType: this._signalType !== "all" ? this._signalType : undefined,
+        source: this._source !== "all" ? this._source : undefined,
       };
 
       // Load metrics and trends in parallel
@@ -136,7 +136,7 @@ export class LokiLearningDashboard extends LokiElement {
       this._trends = trendsRes;
       this._signals = signalsRes || [];
     } catch (error) {
-      this._error = error.message || 'Failed to load learning data';
+      this._error = error.message || "Failed to load learning data";
     }
 
     this._loading = false;
@@ -145,34 +145,36 @@ export class LokiLearningDashboard extends LokiElement {
 
   _setFilter(filterType, value) {
     switch (filterType) {
-      case 'timeRange':
+      case "timeRange":
         this._timeRange = value;
-        this.setAttribute('time-range', value);
+        this.setAttribute("time-range", value);
         break;
-      case 'signalType':
+      case "signalType":
         this._signalType = value;
-        this.setAttribute('signal-type', value);
+        this.setAttribute("signal-type", value);
         break;
-      case 'source':
+      case "source":
         this._source = value;
-        this.setAttribute('source', value);
+        this.setAttribute("source", value);
         break;
     }
 
-    this.dispatchEvent(new CustomEvent('filter-change', {
-      detail: {
-        timeRange: this._timeRange,
-        signalType: this._signalType,
-        source: this._source,
-      },
-    }));
+    this.dispatchEvent(
+      new CustomEvent("filter-change", {
+        detail: {
+          timeRange: this._timeRange,
+          signalType: this._signalType,
+          source: this._source,
+        },
+      }),
+    );
 
     this._loadData();
   }
 
   _selectMetric(type, item) {
     this._selectedMetric = { type, item };
-    this.dispatchEvent(new CustomEvent('metric-select', { detail: { type, item } }));
+    this.dispatchEvent(new CustomEvent("metric-select", { detail: { type, item } }));
     this.render();
   }
 
@@ -182,24 +184,24 @@ export class LokiLearningDashboard extends LokiElement {
   }
 
   _formatNumber(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num?.toString() || '0';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+    return num?.toString() || "0";
   }
 
   _formatPercent(num) {
-    return (num * 100).toFixed(1) + '%';
+    return (num * 100).toFixed(1) + "%";
   }
 
   _formatDuration(seconds) {
-    if (seconds < 60) return seconds.toFixed(0) + 's';
-    if (seconds < 3600) return (seconds / 60).toFixed(1) + 'm';
-    return (seconds / 3600).toFixed(1) + 'h';
+    if (seconds < 60) return seconds.toFixed(0) + "s";
+    if (seconds < 3600) return (seconds / 60).toFixed(1) + "m";
+    return (seconds / 3600).toFixed(1) + "h";
   }
 
   _escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
+    if (!text) return "";
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
@@ -210,25 +212,31 @@ export class LokiLearningDashboard extends LokiElement {
         <div class="filter-group">
           <label>Time Range</label>
           <select id="time-range-select" class="filter-select">
-            ${TIME_RANGES.map(t => `
-              <option value="${t.id}" ${this._timeRange === t.id ? 'selected' : ''}>${t.label}</option>
-            `).join('')}
+            ${TIME_RANGES.map(
+              (t) => `
+              <option value="${t.id}" ${this._timeRange === t.id ? "selected" : ""}>${t.label}</option>
+            `,
+            ).join("")}
           </select>
         </div>
         <div class="filter-group">
           <label>Signal Type</label>
           <select id="signal-type-select" class="filter-select">
-            ${SIGNAL_TYPES.map(t => `
-              <option value="${t.id}" ${this._signalType === t.id ? 'selected' : ''}>${t.label}</option>
-            `).join('')}
+            ${SIGNAL_TYPES.map(
+              (t) => `
+              <option value="${t.id}" ${this._signalType === t.id ? "selected" : ""}>${t.label}</option>
+            `,
+            ).join("")}
           </select>
         </div>
         <div class="filter-group">
           <label>Source</label>
           <select id="source-select" class="filter-select">
-            ${SIGNAL_SOURCES.map(s => `
-              <option value="${s.id}" ${this._source === s.id ? 'selected' : ''}>${s.label}</option>
-            `).join('')}
+            ${SIGNAL_SOURCES.map(
+              (s) => `
+              <option value="${s.id}" ${this._source === s.id ? "selected" : ""}>${s.label}</option>
+            `,
+            ).join("")}
           </select>
         </div>
         <button class="btn btn-secondary" id="refresh-btn">
@@ -258,12 +266,16 @@ export class LokiLearningDashboard extends LokiElement {
           </div>
           <div class="summary-card-detail">Learning signals collected</div>
           <div class="signal-breakdown">
-            ${Object.entries(signalsByType || {}).map(([type, count]) => `
+            ${Object.entries(signalsByType || {})
+              .map(
+                ([type, count]) => `
               <div class="breakdown-item">
-                <span class="breakdown-label">${type.replace('_', ' ')}</span>
+                <span class="breakdown-label">${type.replace("_", " ")}</span>
                 <span class="breakdown-value">${this._formatNumber(count)}</span>
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
         </div>
 
@@ -274,12 +286,16 @@ export class LokiLearningDashboard extends LokiElement {
           </div>
           <div class="summary-card-detail">Signal sources active</div>
           <div class="signal-breakdown">
-            ${Object.entries(signalsBySource || {}).map(([source, count]) => `
+            ${Object.entries(signalsBySource || {})
+              .map(
+                ([source, count]) => `
               <div class="breakdown-item">
                 <span class="breakdown-label source-badge ${source}">${source}</span>
                 <span class="breakdown-value">${this._formatNumber(count)}</span>
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
         </div>
 
@@ -288,8 +304,8 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="summary-card-title">Patterns Found</span>
             <span class="summary-card-count">${this._formatNumber(
               (aggregation?.preferences?.length || 0) +
-              (aggregation?.error_patterns?.length || 0) +
-              (aggregation?.success_patterns?.length || 0)
+                (aggregation?.error_patterns?.length || 0) +
+                (aggregation?.success_patterns?.length || 0),
             )}</span>
           </div>
           <div class="summary-card-detail">Aggregated learnings</div>
@@ -336,11 +352,14 @@ export class LokiLearningDashboard extends LokiElement {
     const padding = 20;
 
     // Create SVG path for the trend line
-    const points = dataPoints.map((point, i) => {
-      const x = padding + (i / (dataPoints.length - 1 || 1)) * (chartWidth - padding * 2);
-      const y = chartHeight - padding - ((point.count / (maxValue || 1)) * (chartHeight - padding * 2));
-      return `${x},${y}`;
-    }).join(' ');
+    const points = dataPoints
+      .map((point, i) => {
+        const x = padding + (i / (dataPoints.length - 1 || 1)) * (chartWidth - padding * 2);
+        const y =
+          chartHeight - padding - (point.count / (maxValue || 1)) * (chartHeight - padding * 2);
+        return `${x},${y}`;
+      })
+      .join(" ");
 
     // Create area fill
     const areaPoints = `${padding},${chartHeight - padding} ${points} ${chartWidth - padding},${chartHeight - padding}`;
@@ -363,17 +382,26 @@ export class LokiLearningDashboard extends LokiElement {
           <polyline points="${points}" fill="none" stroke="var(--loki-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 
           <!-- Data points -->
-          ${dataPoints.map((point, i) => {
-            const x = padding + (i / (dataPoints.length - 1 || 1)) * (chartWidth - padding * 2);
-            const y = chartHeight - padding - ((point.count / (maxValue || 1)) * (chartHeight - padding * 2));
-            return `<circle cx="${x}" cy="${y}" r="3" fill="var(--loki-accent)" />`;
-          }).join('')}
+          ${dataPoints
+            .map((point, i) => {
+              const x = padding + (i / (dataPoints.length - 1 || 1)) * (chartWidth - padding * 2);
+              const y =
+                chartHeight -
+                padding -
+                (point.count / (maxValue || 1)) * (chartHeight - padding * 2);
+              return `<circle cx="${x}" cy="${y}" r="3" fill="var(--loki-accent)" />`;
+            })
+            .join("")}
         </svg>
         <div class="chart-labels">
-          ${dataPoints.length > 0 ? `
+          ${
+            dataPoints.length > 0
+              ? `
             <span class="chart-label-start">${dataPoints[0].label}</span>
             <span class="chart-label-end">${dataPoints[dataPoints.length - 1].label}</span>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </div>
     `;
@@ -381,10 +409,11 @@ export class LokiLearningDashboard extends LokiElement {
 
   _renderTopLists() {
     if (!this._metrics?.aggregation) {
-      return '';
+      return "";
     }
 
-    const { preferences, error_patterns, success_patterns, tool_efficiencies } = this._metrics.aggregation;
+    const { preferences, error_patterns, success_patterns, tool_efficiencies } =
+      this._metrics.aggregation;
 
     return `
       <div class="top-lists">
@@ -395,7 +424,11 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="list-count">${preferences?.length || 0}</span>
           </div>
           <div class="list-items" role="list">
-            ${(preferences || []).slice(0, 5).map(p => `
+            ${
+              (preferences || [])
+                .slice(0, 5)
+                .map(
+                  (p) => `
               <div class="list-item" data-type="preference" data-id="${p.preference_key}" tabindex="0" role="listitem">
                 <div class="item-main">
                   <span class="item-key">${this._escapeHtml(p.preference_key)}</span>
@@ -406,7 +439,10 @@ export class LokiLearningDashboard extends LokiElement {
                   <span class="item-conf">${this._formatPercent(p.confidence)}</span>
                 </div>
               </div>
-            `).join('') || '<div class="list-empty">No preferences found</div>'}
+            `,
+                )
+                .join("") || '<div class="list-empty">No preferences found</div>'
+            }
           </div>
         </div>
 
@@ -417,18 +453,25 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="list-count">${error_patterns?.length || 0}</span>
           </div>
           <div class="list-items" role="list">
-            ${(error_patterns || []).slice(0, 5).map(e => `
+            ${
+              (error_patterns || [])
+                .slice(0, 5)
+                .map(
+                  (e) => `
               <div class="list-item error-item" data-type="error_pattern" data-id="${e.error_type}" tabindex="0" role="listitem">
                 <div class="item-main">
                   <span class="item-key">${this._escapeHtml(e.error_type)}</span>
-                  <span class="resolution-rate ${e.resolution_rate > 0.5 ? 'good' : 'poor'}">${this._formatPercent(e.resolution_rate)} resolved</span>
+                  <span class="resolution-rate ${e.resolution_rate > 0.5 ? "good" : "poor"}">${this._formatPercent(e.resolution_rate)} resolved</span>
                 </div>
                 <div class="item-meta">
                   <span class="item-freq">${e.frequency}x</span>
                   <span class="item-conf">${this._formatPercent(e.confidence)}</span>
                 </div>
               </div>
-            `).join('') || '<div class="list-empty">No error patterns found</div>'}
+            `,
+                )
+                .join("") || '<div class="list-empty">No error patterns found</div>'
+            }
           </div>
         </div>
 
@@ -439,7 +482,11 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="list-count">${success_patterns?.length || 0}</span>
           </div>
           <div class="list-items" role="list">
-            ${(success_patterns || []).slice(0, 5).map(s => `
+            ${
+              (success_patterns || [])
+                .slice(0, 5)
+                .map(
+                  (s) => `
               <div class="list-item success-item" data-type="success_pattern" data-id="${s.pattern_name}" tabindex="0" role="listitem">
                 <div class="item-main">
                   <span class="item-key">${this._escapeHtml(s.pattern_name)}</span>
@@ -450,7 +497,10 @@ export class LokiLearningDashboard extends LokiElement {
                   <span class="item-conf">${this._formatPercent(s.confidence)}</span>
                 </div>
               </div>
-            `).join('') || '<div class="list-empty">No success patterns found</div>'}
+            `,
+                )
+                .join("") || '<div class="list-empty">No success patterns found</div>'
+            }
           </div>
         </div>
 
@@ -461,7 +511,11 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="list-count">${tool_efficiencies?.length || 0}</span>
           </div>
           <div class="list-items" role="list">
-            ${(tool_efficiencies || []).slice(0, 5).map((t, i) => `
+            ${
+              (tool_efficiencies || [])
+                .slice(0, 5)
+                .map(
+                  (t, i) => `
               <div class="list-item tool-item" data-type="tool_efficiency" data-id="${t.tool_name}" tabindex="0" role="listitem">
                 <div class="item-rank">#${i + 1}</div>
                 <div class="item-main">
@@ -469,11 +523,14 @@ export class LokiLearningDashboard extends LokiElement {
                   <span class="efficiency-score">${(t.efficiency_score * 100).toFixed(0)}</span>
                 </div>
                 <div class="item-meta">
-                  <span class="success-rate ${t.success_rate > 0.8 ? 'good' : ''}">${this._formatPercent(t.success_rate)}</span>
+                  <span class="success-rate ${t.success_rate > 0.8 ? "good" : ""}">${this._formatPercent(t.success_rate)}</span>
                   <span class="item-time">${Number(t.avg_execution_time_ms ?? 0).toFixed(0)}ms</span>
                 </div>
               </div>
-            `).join('') || '<div class="list-empty">No tool data found</div>'}
+            `,
+                )
+                .join("") || '<div class="list-empty">No tool data found</div>'
+            }
           </div>
         </div>
       </div>
@@ -492,16 +549,18 @@ export class LokiLearningDashboard extends LokiElement {
           <span class="signals-count">${this._signals.length}</span>
         </div>
         <div class="signals-list">
-          ${this._signals.slice(0, 10).map(s => {
-            const data = s.data || {};
-            const type = s.type || 'unknown';
-            const action = data.action || s.action || type;
-            const source = data.source || s.source || '-';
-            const outcome = data.outcome || s.outcome || '-';
-            const ts = s.timestamp ? new Date(s.timestamp).toLocaleTimeString() : '-';
-            return `
+          ${this._signals
+            .slice(0, 10)
+            .map((s) => {
+              const data = s.data || {};
+              const type = s.type || "unknown";
+              const action = data.action || s.action || type;
+              const source = data.source || s.source || "-";
+              const outcome = data.outcome || s.outcome || "-";
+              const ts = s.timestamp ? new Date(s.timestamp).toLocaleTimeString() : "-";
+              return `
             <div class="signal-item">
-              <div class="signal-type ${type}">${type.replace('_', ' ')}</div>
+              <div class="signal-type ${type}">${type.replace("_", " ")}</div>
               <div class="signal-content">
                 <span class="signal-action">${this._escapeHtml(action)}</span>
                 <span class="signal-source">${source}</span>
@@ -511,20 +570,21 @@ export class LokiLearningDashboard extends LokiElement {
                 <span class="signal-time">${ts}</span>
               </div>
             </div>`;
-          }).join('')}
+            })
+            .join("")}
         </div>
       </div>
     `;
   }
 
   _renderDetailPanel() {
-    if (!this._selectedMetric) return '';
+    if (!this._selectedMetric) return "";
 
     const { type, item } = this._selectedMetric;
-    let content = '';
+    let content = "";
 
     switch (type) {
-      case 'preference':
+      case "preference":
         content = `
           <div class="detail-row">
             <span class="detail-label">Preference Key</span>
@@ -542,18 +602,22 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="detail-label">Confidence</span>
             <span class="detail-value">${this._formatPercent(item.confidence)}</span>
           </div>
-          ${item.alternatives_rejected?.length ? `
+          ${
+            item.alternatives_rejected?.length
+              ? `
             <div class="detail-section">
               <div class="detail-label">Alternatives Rejected</div>
               <ul class="detail-list">
-                ${item.alternatives_rejected.map(a => `<li>${this._escapeHtml(a)}</li>`).join('')}
+                ${item.alternatives_rejected.map((a) => `<li>${this._escapeHtml(a)}</li>`).join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         `;
         break;
 
-      case 'error_pattern':
+      case "error_pattern":
         content = `
           <div class="detail-row">
             <span class="detail-label">Error Type</span>
@@ -563,26 +627,34 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="detail-label">Resolution Rate</span>
             <span class="detail-value">${this._formatPercent(item.resolution_rate)}</span>
           </div>
-          ${item.common_messages?.length ? `
+          ${
+            item.common_messages?.length
+              ? `
             <div class="detail-section">
               <div class="detail-label">Common Messages</div>
               <ul class="detail-list">
-                ${item.common_messages.map(m => `<li>${this._escapeHtml(m)}</li>`).join('')}
+                ${item.common_messages.map((m) => `<li>${this._escapeHtml(m)}</li>`).join("")}
               </ul>
             </div>
-          ` : ''}
-          ${item.resolutions?.length ? `
+          `
+              : ""
+          }
+          ${
+            item.resolutions?.length
+              ? `
             <div class="detail-section">
               <div class="detail-label">Known Resolutions</div>
               <ul class="detail-list success">
-                ${item.resolutions.map(r => `<li>${this._escapeHtml(r)}</li>`).join('')}
+                ${item.resolutions.map((r) => `<li>${this._escapeHtml(r)}</li>`).join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         `;
         break;
 
-      case 'success_pattern':
+      case "success_pattern":
         content = `
           <div class="detail-row">
             <span class="detail-label">Pattern Name</span>
@@ -592,18 +664,22 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="detail-label">Avg Duration</span>
             <span class="detail-value">${this._formatDuration(item.avg_duration_seconds)}</span>
           </div>
-          ${item.common_actions?.length ? `
+          ${
+            item.common_actions?.length
+              ? `
             <div class="detail-section">
               <div class="detail-label">Common Actions</div>
               <ol class="detail-list numbered">
-                ${item.common_actions.map(a => `<li>${this._escapeHtml(a)}</li>`).join('')}
+                ${item.common_actions.map((a) => `<li>${this._escapeHtml(a)}</li>`).join("")}
               </ol>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         `;
         break;
 
-      case 'tool_efficiency':
+      case "tool_efficiency":
         content = `
           <div class="detail-row">
             <span class="detail-label">Tool Name</span>
@@ -625,14 +701,18 @@ export class LokiLearningDashboard extends LokiElement {
             <span class="detail-label">Total Tokens</span>
             <span class="detail-value">${this._formatNumber(item.total_tokens_used)}</span>
           </div>
-          ${item.alternative_tools?.length ? `
+          ${
+            item.alternative_tools?.length
+              ? `
             <div class="detail-section">
               <div class="detail-label">Alternative Tools</div>
               <div class="tag-list">
-                ${item.alternative_tools.map(t => `<span class="tag">${this._escapeHtml(t)}</span>`).join('')}
+                ${item.alternative_tools.map((t) => `<span class="tag">${this._escapeHtml(t)}</span>`).join("")}
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         `;
         break;
     }
@@ -640,7 +720,7 @@ export class LokiLearningDashboard extends LokiElement {
     return `
       <div class="detail-panel">
         <div class="detail-header">
-          <h3>${type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</h3>
+          <h3>${type.replace("_", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</h3>
           <button class="close-btn" id="close-detail">&times;</button>
         </div>
         <div class="detail-body">
@@ -648,16 +728,16 @@ export class LokiLearningDashboard extends LokiElement {
           <div class="detail-row">
             <span class="detail-label">Sources</span>
             <div class="source-tags">
-              ${(item.sources || []).map(s => `<span class="source-badge ${s}">${s}</span>`).join('')}
+              ${(item.sources || []).map((s) => `<span class="source-badge ${s}">${s}</span>`).join("")}
             </div>
           </div>
           <div class="detail-row">
             <span class="detail-label">First Seen</span>
-            <span class="detail-value">${item.first_seen ? new Date(item.first_seen).toLocaleDateString() : '--'}</span>
+            <span class="detail-value">${item.first_seen ? new Date(item.first_seen).toLocaleDateString() : "--"}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Last Seen</span>
-            <span class="detail-value">${item.last_seen ? new Date(item.last_seen).toLocaleDateString() : '--'}</span>
+            <span class="detail-value">${item.last_seen ? new Date(item.last_seen).toLocaleDateString() : "--"}</span>
           </div>
         </div>
       </div>
@@ -1333,36 +1413,40 @@ export class LokiLearningDashboard extends LokiElement {
 
   _attachEventListeners() {
     // Filter selects
-    const timeRangeSelect = this.shadowRoot.getElementById('time-range-select');
+    const timeRangeSelect = this.shadowRoot.getElementById("time-range-select");
     if (timeRangeSelect) {
-      timeRangeSelect.addEventListener('change', (e) => this._setFilter('timeRange', e.target.value));
+      timeRangeSelect.addEventListener("change", (e) =>
+        this._setFilter("timeRange", e.target.value),
+      );
     }
 
-    const signalTypeSelect = this.shadowRoot.getElementById('signal-type-select');
+    const signalTypeSelect = this.shadowRoot.getElementById("signal-type-select");
     if (signalTypeSelect) {
-      signalTypeSelect.addEventListener('change', (e) => this._setFilter('signalType', e.target.value));
+      signalTypeSelect.addEventListener("change", (e) =>
+        this._setFilter("signalType", e.target.value),
+      );
     }
 
-    const sourceSelect = this.shadowRoot.getElementById('source-select');
+    const sourceSelect = this.shadowRoot.getElementById("source-select");
     if (sourceSelect) {
-      sourceSelect.addEventListener('change', (e) => this._setFilter('source', e.target.value));
+      sourceSelect.addEventListener("change", (e) => this._setFilter("source", e.target.value));
     }
 
     // Refresh button
-    const refreshBtn = this.shadowRoot.getElementById('refresh-btn');
+    const refreshBtn = this.shadowRoot.getElementById("refresh-btn");
     if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => this._loadData());
+      refreshBtn.addEventListener("click", () => this._loadData());
     }
 
     // Close detail button
-    const closeBtn = this.shadowRoot.getElementById('close-detail');
+    const closeBtn = this.shadowRoot.getElementById("close-detail");
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this._closeDetail());
+      closeBtn.addEventListener("click", () => this._closeDetail());
     }
 
     // List items
-    this.shadowRoot.querySelectorAll('.list-item').forEach(item => {
-      item.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".list-item").forEach((item) => {
+      item.addEventListener("click", () => {
         const type = item.dataset.type;
         const id = item.dataset.id;
         const itemData = this._findItemData(type, id);
@@ -1371,8 +1455,8 @@ export class LokiLearningDashboard extends LokiElement {
         }
       });
 
-      item.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+      item.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           item.click();
         }
@@ -1384,14 +1468,14 @@ export class LokiLearningDashboard extends LokiElement {
     if (!this._metrics?.aggregation) return null;
 
     switch (type) {
-      case 'preference':
-        return this._metrics.aggregation.preferences?.find(p => p.preference_key === id);
-      case 'error_pattern':
-        return this._metrics.aggregation.error_patterns?.find(e => e.error_type === id);
-      case 'success_pattern':
-        return this._metrics.aggregation.success_patterns?.find(s => s.pattern_name === id);
-      case 'tool_efficiency':
-        return this._metrics.aggregation.tool_efficiencies?.find(t => t.tool_name === id);
+      case "preference":
+        return this._metrics.aggregation.preferences?.find((p) => p.preference_key === id);
+      case "error_pattern":
+        return this._metrics.aggregation.error_patterns?.find((e) => e.error_type === id);
+      case "success_pattern":
+        return this._metrics.aggregation.success_patterns?.find((s) => s.pattern_name === id);
+      case "tool_efficiency":
+        return this._metrics.aggregation.tool_efficiencies?.find((t) => t.tool_name === id);
       default:
         return null;
     }
@@ -1399,8 +1483,8 @@ export class LokiLearningDashboard extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-learning-dashboard')) {
-  customElements.define('loki-learning-dashboard', LokiLearningDashboard);
+if (!customElements.get("loki-learning-dashboard")) {
+  customElements.define("loki-learning-dashboard", LokiLearningDashboard);
 }
 
 export default LokiLearningDashboard;

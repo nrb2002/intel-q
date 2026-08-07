@@ -224,9 +224,9 @@ interface FilteredSubscriber {
  * Conflict resolution strategies for optimistic updates
  */
 export enum ConflictStrategy {
-  LAST_WRITE_WINS = "last_write_wins",  // Default: latest write overwrites
-  MERGE = "merge",                       // Merge compatible changes
-  REJECT = "reject",                     // Reject and notify caller
+  LAST_WRITE_WINS = "last_write_wins", // Default: latest write overwrites
+  MERGE = "merge", // Merge compatible changes
+  REJECT = "reject", // Reject and notify caller
 }
 
 /**
@@ -342,7 +342,7 @@ function computeHash(data: Record<string, unknown>): string {
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
     const char = content.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash;
   }
   return hash.toString(16);
@@ -353,13 +353,21 @@ function computeHash(data: Record<string, unknown>): string {
  */
 export function getStateDiff(
   oldValue: Record<string, unknown> | null,
-  newValue: Record<string, unknown>
-): { added: Record<string, unknown>; removed: Record<string, unknown>; changed: Record<string, unknown> } {
+  newValue: Record<string, unknown>,
+): {
+  added: Record<string, unknown>;
+  removed: Record<string, unknown>;
+  changed: Record<string, unknown>;
+} {
   if (oldValue === null) {
     return { added: newValue, removed: {}, changed: {} };
   }
 
-  const diff: { added: Record<string, unknown>; removed: Record<string, unknown>; changed: Record<string, unknown> } = {
+  const diff: {
+    added: Record<string, unknown>;
+    removed: Record<string, unknown>;
+    changed: Record<string, unknown>;
+  } = {
     added: {},
     removed: {},
     changed: {},
@@ -419,13 +427,15 @@ export class StateManager extends EventEmitter {
   private versionRetention: number;
   private versionCounters: Map<string, number>;
 
-  constructor(options: {
-    lokiDir?: string;
-    enableWatch?: boolean;
-    enableEvents?: boolean;
-    enableVersioning?: boolean;
-    versionRetention?: number;
-  } = {}) {
+  constructor(
+    options: {
+      lokiDir?: string;
+      enableWatch?: boolean;
+      enableEvents?: boolean;
+      enableVersioning?: boolean;
+      versionRetention?: number;
+    } = {},
+  ) {
     super();
 
     this.lokiDir = options.lokiDir || ".loki";
@@ -469,7 +479,7 @@ export class StateManager extends EventEmitter {
     const directories = [
       this.lokiDir,
       path.join(this.lokiDir, "state"),
-      path.join(this.lokiDir, "state", "history"),  // Version history (SYN-015)
+      path.join(this.lokiDir, "state", "history"), // Version history (SYN-015)
       path.join(this.lokiDir, "queue"),
       path.join(this.lokiDir, "memory"),
       path.join(this.lokiDir, "events"),
@@ -495,8 +505,8 @@ export class StateManager extends EventEmitter {
       ignoreInitial: true,
       ignored: [
         /(^|[/\\])\../, // dot files
-        /\.lock$/,       // lock files
-        /\.tmp_/,        // temp files
+        /\.lock$/, // lock files
+        /\.tmp_/, // temp files
       ],
       depth: 3,
     });
@@ -554,7 +564,10 @@ export class StateManager extends EventEmitter {
       return JSON.parse(content);
     } catch (err) {
       // Log error for debugging (corrupted JSON, empty files, etc.)
-      console.error(`[StateManager] Error reading file ${filePath}:`, err instanceof Error ? err.message : String(err));
+      console.error(
+        `[StateManager] Error reading file ${filePath}:`,
+        err instanceof Error ? err.message : String(err),
+      );
       return null;
     }
   }
@@ -569,7 +582,10 @@ export class StateManager extends EventEmitter {
     }
 
     // Write to temp file first
-    const tempPath = path.join(dir, `.tmp_${Date.now()}_${Math.random().toString(36).slice(2)}.json`);
+    const tempPath = path.join(
+      dir,
+      `.tmp_${Date.now()}_${Math.random().toString(36).slice(2)}.json`,
+    );
 
     try {
       fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
@@ -634,7 +650,7 @@ export class StateManager extends EventEmitter {
    */
   getState(
     fileRef: string | ManagedFileType,
-    defaultValue: Record<string, unknown> | null = null
+    defaultValue: Record<string, unknown> | null = null,
   ): Record<string, unknown> | null {
     const filePath = this.resolvePath(fileRef);
 
@@ -663,7 +679,7 @@ export class StateManager extends EventEmitter {
     fileRef: string | ManagedFileType,
     data: Record<string, unknown>,
     source: string = "state-manager",
-    saveVersion: boolean = true
+    saveVersion: boolean = true,
   ): StateChange {
     const filePath = this.resolvePath(fileRef);
     const relPath = typeof fileRef === "string" ? fileRef : fileRef;
@@ -707,7 +723,7 @@ export class StateManager extends EventEmitter {
   updateState(
     fileRef: string | ManagedFileType,
     updates: Record<string, unknown>,
-    source: string = "state-manager"
+    source: string = "state-manager",
   ): StateChange {
     const current = this.getState(fileRef, {});
     const merged = { ...current, ...updates };
@@ -732,7 +748,10 @@ export class StateManager extends EventEmitter {
 
     for (let i = 0; i < maxRetries; i++) {
       try {
-        fd = fs.openSync(lockPath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_WRONLY);
+        fd = fs.openSync(
+          lockPath,
+          fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_WRONLY,
+        );
         fs.writeSync(fd, String(process.pid));
         fs.closeSync(fd);
 
@@ -783,7 +802,7 @@ export class StateManager extends EventEmitter {
    */
   deleteState(
     fileRef: string | ManagedFileType,
-    source: string = "state-manager"
+    source: string = "state-manager",
   ): StateChange | null {
     const filePath = this.resolvePath(fileRef);
     const relPath = typeof fileRef === "string" ? fileRef : fileRef;
@@ -827,7 +846,7 @@ export class StateManager extends EventEmitter {
   subscribe(
     callback: StateCallback,
     fileFilter?: (string | ManagedFileType)[],
-    changeTypes?: ("create" | "update" | "delete")[]
+    changeTypes?: ("create" | "update" | "delete")[],
   ): Disposable {
     // If any filter is specified, use filtered subscribers
     if (fileFilter || changeTypes) {
@@ -840,7 +859,7 @@ export class StateManager extends EventEmitter {
       return {
         dispose: () => {
           this.filteredSubscribers = this.filteredSubscribers.filter(
-            (sub) => sub.callback !== callback
+            (sub) => sub.callback !== callback,
           );
         },
       };
@@ -865,7 +884,7 @@ export class StateManager extends EventEmitter {
     return {
       dispose: () => {
         this.filteredSubscribers = this.filteredSubscribers.filter(
-          (sub) => sub.callback !== callback
+          (sub) => sub.callback !== callback,
         );
       },
     };
@@ -1094,7 +1113,7 @@ export class StateManager extends EventEmitter {
    */
   setOrchestratorState(
     state: Record<string, unknown>,
-    source: string = "orchestrator"
+    source: string = "orchestrator",
   ): StateChange {
     return this.setState(ManagedFile.ORCHESTRATOR, state, source);
   }
@@ -1102,10 +1121,7 @@ export class StateManager extends EventEmitter {
   /**
    * Set autonomy state
    */
-  setAutonomyState(
-    state: Record<string, unknown>,
-    source: string = "autonomy"
-  ): StateChange {
+  setAutonomyState(state: Record<string, unknown>, source: string = "autonomy"): StateChange {
     return this.setState(ManagedFile.AUTONOMY, state, source);
   }
 
@@ -1116,7 +1132,7 @@ export class StateManager extends EventEmitter {
     return this.updateState(
       ManagedFile.ORCHESTRATOR,
       { currentPhase: phase, lastUpdated: new Date().toISOString() },
-      source
+      source,
     );
   }
 
@@ -1127,7 +1143,7 @@ export class StateManager extends EventEmitter {
     return this.updateState(
       ManagedFile.AUTONOMY,
       { status, lastRun: new Date().toISOString() },
-      source
+      source,
     );
   }
 
@@ -1186,7 +1202,7 @@ export class StateManager extends EventEmitter {
       if (state && state._version_vector) {
         this.versionVectors.set(
           filePath,
-          VersionVector.fromDict(state._version_vector as Record<string, number>)
+          VersionVector.fromDict(state._version_vector as Record<string, number>),
         );
       } else {
         this.versionVectors.set(filePath, new VersionVector());
@@ -1207,7 +1223,7 @@ export class StateManager extends EventEmitter {
     fileRef: string | ManagedFileType,
     key: string,
     value: unknown,
-    source: string = "state-manager"
+    source: string = "state-manager",
   ): PendingUpdate {
     const filePath = this.resolvePath(fileRef);
 
@@ -1260,7 +1276,7 @@ export class StateManager extends EventEmitter {
   detectConflicts(
     fileRef: string | ManagedFileType,
     remoteState: Record<string, unknown>,
-    remoteSource: string
+    remoteSource: string,
   ): ConflictInfo[] {
     const filePath = this.resolvePath(fileRef);
     const conflicts: ConflictInfo[] = [];
@@ -1317,7 +1333,7 @@ export class StateManager extends EventEmitter {
   resolveConflicts(
     fileRef: string | ManagedFileType,
     conflicts: ConflictInfo[],
-    strategy?: ConflictStrategy
+    strategy?: ConflictStrategy,
   ): Record<string, unknown> {
     const resolveStrategy = strategy || this.conflictStrategy;
     const filePath = this.resolvePath(fileRef);
@@ -1333,10 +1349,7 @@ export class StateManager extends EventEmitter {
         conflict.resolvedValue = conflict.remoteValue;
       } else if (resolveStrategy === ConflictStrategy.MERGE) {
         // Attempt to merge values
-        const merged = this.mergeValues(
-          conflict.localValue,
-          conflict.remoteValue
-        );
+        const merged = this.mergeValues(conflict.localValue, conflict.remoteValue);
         resolvedState[conflict.key] = merged;
         conflict.resolution = "merged";
         conflict.resolvedValue = merged;
@@ -1429,7 +1442,7 @@ export class StateManager extends EventEmitter {
     // Clear committed updates
     this.pendingUpdates.set(
       filePath,
-      pending.filter((u) => u.status !== "committed")
+      pending.filter((u) => u.status !== "committed"),
     );
 
     return committed;
@@ -1440,7 +1453,7 @@ export class StateManager extends EventEmitter {
    */
   rollbackPendingUpdates(
     fileRef: string | ManagedFileType,
-    originalState: Record<string, unknown>
+    originalState: Record<string, unknown>,
   ): number {
     const filePath = this.resolvePath(fileRef);
     const pending = this.pendingUpdates.get(filePath) || [];
@@ -1475,7 +1488,7 @@ export class StateManager extends EventEmitter {
     fileRef: string | ManagedFileType,
     remoteState: Record<string, unknown>,
     remoteSource: string,
-    strategy?: ConflictStrategy
+    strategy?: ConflictStrategy,
   ): {
     resolvedState: Record<string, unknown>;
     conflicts: ConflictInfo[];
@@ -1525,7 +1538,7 @@ export class StateManager extends EventEmitter {
       // Initialize from existing versions on disk
       const historyDir = this.getHistoryDir(fileRef);
       if (fs.existsSync(historyDir)) {
-        const files = fs.readdirSync(historyDir).filter(f => f.endsWith(".json"));
+        const files = fs.readdirSync(historyDir).filter((f) => f.endsWith(".json"));
         if (files.length > 0) {
           let maxVersion = 0;
           for (const f of files) {
@@ -1554,7 +1567,7 @@ export class StateManager extends EventEmitter {
     fileRef: string | ManagedFileType,
     data: Record<string, unknown>,
     source: string,
-    changeType: string
+    changeType: string,
   ): number {
     const historyDir = this.getHistoryDir(fileRef);
     if (!fs.existsSync(historyDir)) {
@@ -1590,15 +1603,15 @@ export class StateManager extends EventEmitter {
       return;
     }
 
-    const files = fs.readdirSync(historyDir).filter(f => f.endsWith(".json"));
+    const files = fs.readdirSync(historyDir).filter((f) => f.endsWith(".json"));
     if (files.length <= this.versionRetention) {
       return;
     }
 
     // Sort by version number and remove oldest
     const versionFiles = files
-      .map(f => ({ file: f, version: parseInt(path.basename(f, ".json"), 10) }))
-      .filter(v => !isNaN(v.version))
+      .map((f) => ({ file: f, version: parseInt(path.basename(f, ".json"), 10) }))
+      .filter((v) => !isNaN(v.version))
       .sort((a, b) => a.version - b.version);
 
     const toRemove = versionFiles.slice(0, versionFiles.length - this.versionRetention);
@@ -1621,7 +1634,7 @@ export class StateManager extends EventEmitter {
     }
 
     const versions: VersionInfo[] = [];
-    const files = fs.readdirSync(historyDir).filter(f => f.endsWith(".json"));
+    const files = fs.readdirSync(historyDir).filter((f) => f.endsWith(".json"));
 
     for (const file of files) {
       try {
@@ -1655,7 +1668,7 @@ export class StateManager extends EventEmitter {
    */
   getStateAtVersion(
     fileRef: string | ManagedFileType,
-    version: number
+    version: number,
   ): Record<string, unknown> | null {
     const historyDir = this.getHistoryDir(fileRef);
     const versionPath = path.join(historyDir, `${version}.json`);
@@ -1678,7 +1691,7 @@ export class StateManager extends EventEmitter {
   rollback(
     fileRef: string | ManagedFileType,
     version: number,
-    source: string = "rollback"
+    source: string = "rollback",
   ): StateChange | null {
     const data = this.getStateAtVersion(fileRef, version);
     if (data === null) {
@@ -1703,7 +1716,7 @@ export class StateManager extends EventEmitter {
     if (!fs.existsSync(historyDir)) {
       return 0;
     }
-    return fs.readdirSync(historyDir).filter(f => f.endsWith(".json")).length;
+    return fs.readdirSync(historyDir).filter((f) => f.endsWith(".json")).length;
   }
 
   /**
@@ -1715,7 +1728,7 @@ export class StateManager extends EventEmitter {
       return 0;
     }
 
-    const files = fs.readdirSync(historyDir).filter(f => f.endsWith(".json"));
+    const files = fs.readdirSync(historyDir).filter((f) => f.endsWith(".json"));
     let count = 0;
     for (const file of files) {
       try {

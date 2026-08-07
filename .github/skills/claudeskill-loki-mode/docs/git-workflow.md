@@ -31,6 +31,7 @@ loki/session-<timestamp>-<pid>
 ```
 
 Examples:
+
 - `loki/session-20260215-143022-12345`
 - `loki/session-20260215-150430-67890`
 
@@ -60,13 +61,13 @@ Delete feature branch
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_BRANCH_PROTECTION` | `false` | Enable automatic feature branch workflow |
-| `LOKI_BASE_BRANCH` | `main` | Target branch for PRs (or `master` if detected) |
-| `LOKI_BRANCH_PREFIX` | `loki/session-` | Prefix for auto-created branches |
-| `LOKI_AUTO_PR` | `true` | Automatically create PR at session end |
-| `LOKI_PR_TEMPLATE` | - | Path to PR description template |
+| Variable                 | Default         | Description                                     |
+| ------------------------ | --------------- | ----------------------------------------------- |
+| `LOKI_BRANCH_PROTECTION` | `false`         | Enable automatic feature branch workflow        |
+| `LOKI_BASE_BRANCH`       | `main`          | Target branch for PRs (or `master` if detected) |
+| `LOKI_BRANCH_PREFIX`     | `loki/session-` | Prefix for auto-created branches                |
+| `LOKI_AUTO_PR`           | `true`          | Automatically create PR at session end          |
+| `LOKI_PR_TEMPLATE`       | -               | Path to PR description template                 |
 
 ### Configuration File
 
@@ -249,11 +250,13 @@ fi
 ### For Loki Mode Sessions
 
 1. **Always enable branch protection in production**:
+
 ```bash
 export LOKI_BRANCH_PROTECTION=true
 ```
 
 2. **Review changes before merging**:
+
 ```bash
 # Check PR diff
 gh pr diff 123
@@ -263,11 +266,13 @@ gh pr view 123 --web
 ```
 
 3. **Use squash merge** to keep history clean:
+
 ```bash
 gh pr merge 123 --squash
 ```
 
 4. **Delete feature branches after merge**:
+
 ```bash
 gh pr merge 123 --delete-branch
 ```
@@ -298,7 +303,7 @@ name: Loki PR Creation
 on:
   push:
     branches:
-      - 'loki/session-*'
+      - "loki/session-*"
 
 jobs:
   create-pr:

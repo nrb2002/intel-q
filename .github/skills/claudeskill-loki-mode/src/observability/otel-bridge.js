@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * OTEL Bridge - Background process that watches .loki/events/pending/ for
@@ -16,23 +16,23 @@
  *   LOKI_OTEL_ENDPOINT=http://localhost:4318 node src/observability/otel-bridge.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------
 
-const lokiDir = process.env.LOKI_DIR || '.loki';
-const pendingDir = path.join(process.cwd(), lokiDir, 'events', 'pending');
+const lokiDir = process.env.LOKI_DIR || ".loki";
+const pendingDir = path.join(process.cwd(), lokiDir, "events", "pending");
 const POLL_INTERVAL_MS = 500;
 
 // Active span registry: key -> Span
 const activeSpans = new Map();
 
 // Track processed files to avoid re-processing (timestamp watermark approach)
-var lastProcessedFile = '';
+var lastProcessedFile = "";
 
 // ---------------------------------------------------------------------------
 // Event processing
@@ -45,13 +45,16 @@ var lastProcessedFile = '';
  */
 // Known event types that the bridge handles directly
 const KNOWN_EVENT_TYPES = new Set([
-  'iteration_start', 'iteration_complete',
-  'otel_span_start', 'otel_span_end',
-  'session_start', 'session_end',
+  "iteration_start",
+  "iteration_complete",
+  "otel_span_start",
+  "otel_span_end",
+  "session_start",
+  "session_end",
 ]);
 
 function getEventType(data) {
-  const type = data.type || '';
+  const type = data.type || "";
 
   // If the type is already a known event type, use it directly
   // (events from emit_event_pending use full event type names)
@@ -61,7 +64,7 @@ function getEventType(data) {
 
   // emit.sh format: type + payload.action combined (e.g., type=session, action=start)
   if (data.payload && data.payload.action) {
-    const combined = type + '_' + data.payload.action;
+    const combined = type + "_" + data.payload.action;
     if (KNOWN_EVENT_TYPES.has(combined)) {
       return combined;
     }
@@ -85,7 +88,7 @@ function getPayload(data) {
 function processEventFile(filepath, tracer, traceId, otelRef) {
   let raw;
   try {
-    raw = fs.readFileSync(filepath, 'utf8');
+    raw = fs.readFileSync(filepath, "utf8");
   } catch (e) {
     return; // File may have been removed between readdir and readFile
   }
@@ -101,41 +104,40 @@ function processEventFile(filepath, tracer, traceId, otelRef) {
   const payload = getPayload(data);
 
   switch (eventType) {
-    case 'iteration_start': {
-      const iteration = payload.iteration || payload.action || '';
-      const spanName = 'rarv.iteration.' + iteration;
-      const span = tracer.startSpan('rarv.iteration', {
+    case "iteration_start": {
+      const iteration = payload.iteration || payload.action || "";
+      const spanName = "rarv.iteration." + iteration;
+      const span = tracer.startSpan("rarv.iteration", {
         traceId: traceId,
         attributes: {
-          'rarv.iteration': String(iteration),
-          'rarv.provider': payload.provider || '',
+          "rarv.iteration": String(iteration),
+          "rarv.provider": payload.provider || "",
         },
       });
       activeSpans.set(spanName, span);
       break;
     }
 
-    case 'iteration_complete': {
-      const iteration = payload.iteration || payload.action || '';
-      const key = 'rarv.iteration.' + iteration;
+    case "iteration_complete": {
+      const iteration = payload.iteration || payload.action || "";
+      const key = "rarv.iteration." + iteration;
       const span = activeSpans.get(key);
       if (span) {
-        const statusCode = payload.status === 'completed'
-          ? otelRef.SpanStatusCode.OK
-          : otelRef.SpanStatusCode.ERROR;
-        span.setStatus(statusCode, payload.status || '');
-        span.setAttribute('rarv.exit_code', String(payload.exit_code || payload.exitCode || '0'));
+        const statusCode =
+          payload.status === "completed" ? otelRef.SpanStatusCode.OK : otelRef.SpanStatusCode.ERROR;
+        span.setStatus(statusCode, payload.status || "");
+        span.setAttribute("rarv.exit_code", String(payload.exit_code || payload.exitCode || "0"));
         span.end();
         activeSpans.delete(key);
       }
       break;
     }
 
-    case 'otel_span_start': {
-      const spanName = payload.span_name || payload.action || 'unknown';
+    case "otel_span_start": {
+      const spanName = payload.span_name || payload.action || "unknown";
       const attrs = {};
       for (const [k, v] of Object.entries(payload)) {
-        if (k !== 'action') {
+        if (k !== "action") {
           attrs[k] = String(v);
         }
       }
@@ -147,14 +149,13 @@ function processEventFile(filepath, tracer, traceId, otelRef) {
       break;
     }
 
-    case 'otel_span_end': {
-      const spanName = payload.span_name || payload.action || 'unknown';
+    case "otel_span_end": {
+      const spanName = payload.span_name || payload.action || "unknown";
       const span = activeSpans.get(spanName);
       if (span) {
         if (payload.status) {
-          const code = payload.status === 'ok'
-            ? otelRef.SpanStatusCode.OK
-            : otelRef.SpanStatusCode.ERROR;
+          const code =
+            payload.status === "ok" ? otelRef.SpanStatusCode.OK : otelRef.SpanStatusCode.ERROR;
           span.setStatus(code, payload.status);
         }
         span.end();
@@ -163,28 +164,27 @@ function processEventFile(filepath, tracer, traceId, otelRef) {
       break;
     }
 
-    case 'session_start': {
-      const span = tracer.startSpan('loki.session', {
+    case "session_start": {
+      const span = tracer.startSpan("loki.session", {
         traceId: traceId,
         attributes: {
-          'session.provider': payload.provider || '',
-          'session.prd': payload.prd || '',
+          "session.provider": payload.provider || "",
+          "session.prd": payload.prd || "",
         },
       });
-      activeSpans.set('loki.session', span);
+      activeSpans.set("loki.session", span);
       break;
     }
 
-    case 'session_end': {
-      const span = activeSpans.get('loki.session');
+    case "session_end": {
+      const span = activeSpans.get("loki.session");
       if (span) {
-        const code = String(payload.result) === '0'
-          ? otelRef.SpanStatusCode.OK
-          : otelRef.SpanStatusCode.ERROR;
+        const code =
+          String(payload.result) === "0" ? otelRef.SpanStatusCode.OK : otelRef.SpanStatusCode.ERROR;
         span.setStatus(code);
-        span.setAttribute('session.iterations', String(payload.iterations || '0'));
+        span.setAttribute("session.iterations", String(payload.iterations || "0"));
         span.end();
-        activeSpans.delete('loki.session');
+        activeSpans.delete("loki.session");
       }
       break;
     }
@@ -202,8 +202,11 @@ function processEventFile(filepath, tracer, traceId, otelRef) {
 function scanPendingEvents(tracer, traceId, otelRef) {
   if (!fs.existsSync(pendingDir)) return;
   try {
-    var files = fs.readdirSync(pendingDir)
-      .filter(function(f) { return f.endsWith('.json'); })
+    var files = fs
+      .readdirSync(pendingDir)
+      .filter(function (f) {
+        return f.endsWith(".json");
+      })
       .sort();
     for (var i = 0; i < files.length; i++) {
       if (files[i] > lastProcessedFile) {
@@ -211,7 +214,9 @@ function scanPendingEvents(tracer, traceId, otelRef) {
         lastProcessedFile = files[i];
       }
     }
-  } catch (e) { /* ignore */ }
+  } catch (e) {
+    /* ignore */
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -221,11 +226,11 @@ function scanPendingEvents(tracer, traceId, otelRef) {
 let pollInterval = null;
 
 function start() {
-  const otelMod = require('./otel');
+  const otelMod = require("./otel");
   otelMod.initialize();
 
-  const tracer = otelMod.tracerProvider.getTracer('loki-mode');
-  const traceId = process.env.LOKI_TRACE_ID || crypto.randomBytes(16).toString('hex');
+  const tracer = otelMod.tracerProvider.getTracer("loki-mode");
+  const traceId = process.env.LOKI_TRACE_ID || crypto.randomBytes(16).toString("hex");
 
   // Bound versions that close over initialized dependencies
   const boundProcessEventFile = (filepath) => processEventFile(filepath, tracer, traceId, otelMod);
@@ -244,7 +249,7 @@ function start() {
 
     // End any active spans with a cancellation status
     for (const [, span] of activeSpans) {
-      span.setStatus(otelMod.SpanStatusCode.ERROR, 'bridge_shutdown');
+      span.setStatus(otelMod.SpanStatusCode.ERROR, "bridge_shutdown");
       span.end();
     }
     activeSpans.clear();
@@ -263,8 +268,12 @@ function start() {
     activeSpans,
     shutdown: shutdownFn,
     _getTraceId: () => traceId,
-    _getLastProcessedFile: function() { return lastProcessedFile; },
-    _resetState: function() { lastProcessedFile = ''; },
+    _getLastProcessedFile: function () {
+      return lastProcessedFile;
+    },
+    _resetState: function () {
+      lastProcessedFile = "";
+    },
   };
 }
 
@@ -276,8 +285,12 @@ module.exports = {
   start,
   processEventFile,
   activeSpans,
-  _getLastProcessedFile: function() { return lastProcessedFile; },
-  _resetState: function() { lastProcessedFile = ''; },
+  _getLastProcessedFile: function () {
+    return lastProcessedFile;
+  },
+  _resetState: function () {
+    lastProcessedFile = "";
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -292,6 +305,6 @@ if (require.main === module) {
     process.exit(0);
   }
 
-  process.on('SIGTERM', shutdown);
-  process.on('SIGINT', shutdown);
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 }

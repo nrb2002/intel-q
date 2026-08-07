@@ -198,6 +198,7 @@ except AutonomiError as e:
 ```
 
 Error hierarchy:
+
 ```
 AutonomiError (base)
   +-- AuthenticationError (401)
@@ -227,16 +228,16 @@ npm link
 ### Quick Start
 
 ```typescript
-import { AutonomiClient } from 'loki-mode-sdk';
+import { AutonomiClient } from "loki-mode-sdk";
 
 const client = new AutonomiClient({
-  baseUrl: 'http://localhost:57374',
-  token: 'loki_your_token_here',
+  baseUrl: "http://localhost:57374",
+  token: "loki_your_token_here",
 });
 
 // Check API status
 const status = await client.getStatus();
-console.log('API version:', status.version);
+console.log("API version:", status.version);
 
 // List projects
 const projects = await client.listProjects();
@@ -387,7 +388,7 @@ interface AuditVerifyResult {
 interface ClientOptions {
   baseUrl: string;
   token?: string;
-  timeout?: number;  // milliseconds, default 30000
+  timeout?: number; // milliseconds, default 30000
 }
 ```
 
@@ -400,31 +401,32 @@ import {
   AuthenticationError,
   ForbiddenError,
   NotFoundError,
-} from 'loki-mode-sdk';
+} from "loki-mode-sdk";
 
 const client = new AutonomiClient({
-  baseUrl: 'http://localhost:57374',
-  token: 'loki_xxx',
+  baseUrl: "http://localhost:57374",
+  token: "loki_xxx",
 });
 
 try {
   const project = await client.getProject(999);
 } catch (err) {
   if (err instanceof NotFoundError) {
-    console.log('Project not found:', err.message);
+    console.log("Project not found:", err.message);
   } else if (err instanceof AuthenticationError) {
-    console.log('Auth failed:', err.message);
+    console.log("Auth failed:", err.message);
   } else if (err instanceof ForbiddenError) {
-    console.log('Access denied:', err.message);
+    console.log("Access denied:", err.message);
   } else if (err instanceof AutonomiError) {
-    console.log('API error:', err.message);
-    console.log('Status code:', err.statusCode);
-    console.log('Response:', err.responseBody);
+    console.log("API error:", err.message);
+    console.log("Status code:", err.statusCode);
+    console.log("Response:", err.responseBody);
   }
 }
 ```
 
 Error hierarchy:
+
 ```
 AutonomiError (base)
   +-- AuthenticationError (401)
@@ -461,7 +463,7 @@ active_runs = client.list_runs(project_id="proj-1", status="running")
 
 ```typescript
 // TypeScript
-const activeRuns = await client.listRuns(1, 'running');
+const activeRuns = await client.listRuns(1, "running");
 ```
 
 ### Webhook Processing
@@ -504,7 +506,7 @@ new_token = result.get("token")
 
 ```typescript
 // TypeScript
-const result = await client.rotateApiKey('ci-pipeline', 24);
+const result = await client.rotateApiKey("ci-pipeline", 24);
 // Store result.token securely
 ```
 
@@ -525,7 +527,7 @@ for entry in entries:
 // TypeScript
 const result = await client.verifyAudit();
 if (!result.valid) {
-  console.log('AUDIT CHAIN COMPROMISED');
+  console.log("AUDIT CHAIN COMPROMISED");
 } else {
   console.log(`Chain valid: ${result.entries_checked} entries verified`);
 }
@@ -535,23 +537,23 @@ if (!result.valid) {
 
 ## API Reference Summary
 
-| Category | Python Method | TypeScript Method | HTTP |
-|----------|--------------|-------------------|------|
-| Status | `get_status()` | `getStatus()` | `GET /api/status` |
-| Projects | `list_projects()` | `listProjects()` | `GET /api/projects` |
-| Projects | `get_project(id)` | `getProject(id)` | `GET /api/projects/:id` |
-| Projects | `create_project(name)` | `createProject(name)` | `POST /api/projects` |
-| Tenants | `list_tenants()` | `listTenants()` | `GET /api/tenants` |
-| Tenants | `create_tenant(name)` | `createTenant(name)` | `POST /api/tenants` |
-| Tenants | -- | `deleteTenant(id)` | `DELETE /api/tenants/:id` |
-| Runs | `list_runs()` | `listRuns()` | `GET /api/runs` |
-| Runs | `get_run(id)` | `getRun(id)` | `GET /api/runs/:id` |
-| Runs | `cancel_run(id)` | `cancelRun(id)` | `POST /api/runs/:id/cancel` |
-| Runs | `replay_run(id)` | `replayRun(id)` | `POST /api/runs/:id/replay` |
-| Runs | `get_run_timeline(id)` | `getRunTimeline(id)` | `GET /api/runs/:id/timeline` |
-| Keys | `list_api_keys()` | `listApiKeys()` | `GET /api/keys` |
-| Keys | `create_api_key(name)` | `createApiKey(name)` | `POST /api/keys` |
-| Keys | `rotate_api_key(id)` | `rotateApiKey(id)` | `POST /api/keys/:id/rotate` |
-| Keys | -- | `deleteApiKey(id)` | `DELETE /api/keys/:id` |
-| Audit | `query_audit()` | `queryAudit()` | `GET /api/audit` |
-| Audit | -- | `verifyAudit()` | `GET /api/audit/verify` |
+| Category | Python Method          | TypeScript Method     | HTTP                         |
+| -------- | ---------------------- | --------------------- | ---------------------------- |
+| Status   | `get_status()`         | `getStatus()`         | `GET /api/status`            |
+| Projects | `list_projects()`      | `listProjects()`      | `GET /api/projects`          |
+| Projects | `get_project(id)`      | `getProject(id)`      | `GET /api/projects/:id`      |
+| Projects | `create_project(name)` | `createProject(name)` | `POST /api/projects`         |
+| Tenants  | `list_tenants()`       | `listTenants()`       | `GET /api/tenants`           |
+| Tenants  | `create_tenant(name)`  | `createTenant(name)`  | `POST /api/tenants`          |
+| Tenants  | --                     | `deleteTenant(id)`    | `DELETE /api/tenants/:id`    |
+| Runs     | `list_runs()`          | `listRuns()`          | `GET /api/runs`              |
+| Runs     | `get_run(id)`          | `getRun(id)`          | `GET /api/runs/:id`          |
+| Runs     | `cancel_run(id)`       | `cancelRun(id)`       | `POST /api/runs/:id/cancel`  |
+| Runs     | `replay_run(id)`       | `replayRun(id)`       | `POST /api/runs/:id/replay`  |
+| Runs     | `get_run_timeline(id)` | `getRunTimeline(id)`  | `GET /api/runs/:id/timeline` |
+| Keys     | `list_api_keys()`      | `listApiKeys()`       | `GET /api/keys`              |
+| Keys     | `create_api_key(name)` | `createApiKey(name)`  | `POST /api/keys`             |
+| Keys     | `rotate_api_key(id)`   | `rotateApiKey(id)`    | `POST /api/keys/:id/rotate`  |
+| Keys     | --                     | `deleteApiKey(id)`    | `DELETE /api/keys/:id`       |
+| Audit    | `query_audit()`        | `queryAudit()`        | `GET /api/audit`             |
+| Audit    | --                     | `verifyAudit()`       | `GET /api/audit/verify`      |

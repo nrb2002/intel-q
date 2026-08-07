@@ -35,7 +35,7 @@ export function configureAuth(newConfig: Partial<AuthConfig>): void {
  * Authentication middleware
  */
 export function authMiddleware(
-  handler: (req: Request) => Promise<Response> | Response
+  handler: (req: Request) => Promise<Response> | Response,
 ): (req: Request) => Promise<Response> {
   return async (req: Request): Promise<Response> => {
     const authResult = checkAuth(req);
@@ -51,7 +51,7 @@ export function authMiddleware(
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
     }
 

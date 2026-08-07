@@ -35,6 +35,7 @@ This document outlines the architectural improvements to create **unified synerg
 ```
 
 **Problems:**
+
 1. Each tool reads/writes .loki/ independently (no coordination)
 2. No event propagation between tools
 3. Memory system underutilized (only hooks use it)
@@ -95,8 +96,8 @@ This document outlines the architectural improvements to create **unified synerg
 ```typescript
 // events/bus.ts - Shared Event Bus
 interface LokiEvent {
-  type: 'state' | 'memory' | 'task' | 'metric' | 'error';
-  source: 'cli' | 'api' | 'vscode' | 'mcp' | 'skill' | 'hook';
+  type: "state" | "memory" | "task" | "metric" | "error";
+  source: "cli" | "api" | "vscode" | "mcp" | "skill" | "hook";
   timestamp: string;
   payload: Record<string, unknown>;
 }
@@ -106,15 +107,17 @@ interface LokiEvent {
 ```
 
 **Events to emit**:
-| Source | Event Types |
-|--------|-------------|
-| CLI | session_start, session_stop, phase_change, command_executed |
-| API | request_received, session_control, memory_queried |
-| VS Code | user_action, file_edited, task_viewed, input_injected |
-| MCP | tool_called, resource_accessed, prompt_executed |
-| SKILL | rarv_cycle, task_claimed, task_completed, drift_detected |
+
+| Source  | Event Types                                                 |
+| ------- | ----------------------------------------------------------- |
+| CLI     | session_start, session_stop, phase_change, command_executed |
+| API     | request_received, session_control, memory_queried           |
+| VS Code | user_action, file_edited, task_viewed, input_injected       |
+| MCP     | tool_called, resource_accessed, prompt_executed             |
+| SKILL   | rarv_cycle, task_claimed, task_completed, drift_detected    |
 
 **Benefits**:
+
 - VS Code sees real-time updates from CLI
 - Memory records all interactions across tools
 - Metrics capture cross-tool usage patterns
@@ -130,13 +133,13 @@ interface LokiEvent {
 
 **Memory Integration Matrix**:
 
-| Component | Currently Uses Memory | Should Use Memory |
-|-----------|----------------------|-------------------|
-| CLI | Yes (hooks only) | Full (all commands) |
-| API | Yes (endpoints exist) | Full (proactive suggestions) |
-| VS Code | No | Yes (context panel, suggestions) |
-| MCP | Yes (retrieval tool) | Full (automatic context loading) |
-| SKILL | Yes (CONTINUITY.md) | Full (semantic + episodic) |
+| Component | Currently Uses Memory | Should Use Memory                |
+| --------- | --------------------- | -------------------------------- |
+| CLI       | Yes (hooks only)      | Full (all commands)              |
+| API       | Yes (endpoints exist) | Full (proactive suggestions)     |
+| VS Code   | No                    | Yes (context panel, suggestions) |
+| MCP       | Yes (retrieval tool)  | Full (automatic context loading) |
+| SKILL     | Yes (CONTINUITY.md)   | Full (semantic + episodic)       |
 
 **Implementation**:
 
@@ -168,6 +171,7 @@ class UnifiedMemoryAccess:
 ```
 
 **VS Code Memory Panel**:
+
 - Show relevant patterns for current file
 - Display recent episodes from this project
 - Suggest skills based on current task
@@ -216,6 +220,7 @@ class StateManager {
 ```
 
 **Key State Files to Synchronize**:
+
 - `.loki/state/orchestrator.json` - Phase, metrics, agent state
 - `.loki/queue/*.json` - Task queue status
 - `.loki/CONTINUITY.md` - Working memory
@@ -283,6 +288,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
    - Real-time via SSE
 
 **Unified Dashboard Features**:
+
 - Task Kanban board
 - Memory browser (episodic, semantic, procedural)
 - Metrics visualization
@@ -298,6 +304,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 ### Phase 1: Event Bus Foundation (v5.17.0)
 
 **Tasks**:
+
 1. Create `events/` module with file-based event bus
 2. Add event emission to CLI commands
 3. Add event emission to API routes
@@ -305,6 +312,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 5. Add event emission to MCP tools
 
 **Files to Create/Modify**:
+
 - `events/bus.py` - Core event bus (Python)
 - `events/bus.ts` - TypeScript client
 - `autonomy/loki` - Add event emission
@@ -318,6 +326,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 ### Phase 2: Memory Integration (v5.18.0)
 
 **Tasks**:
+
 1. Create unified memory access layer
 2. Add memory context to VS Code sidebar
 3. Add memory retrieval to CLI start
@@ -325,6 +334,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 5. Add memory-informed suggestions to API
 
 **Files to Create/Modify**:
+
 - `memory/unified_access.py` - Unified interface
 - `vscode-extension/src/views/memoryView.ts` - Memory panel
 - `autonomy/loki` - Memory-informed startup
@@ -338,12 +348,14 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 ### Phase 3: Smart Sync (v5.19.0)
 
 **Tasks**:
+
 1. Create centralized state manager
 2. Replace direct file reads with state manager
 3. Add optimistic updates with conflict resolution
 4. Add state versioning for rollback
 
 **Files to Create/Modify**:
+
 - `state/manager.ts` - State manager
 - `state/manager.py` - Python bindings
 - All components: Use state manager
@@ -355,6 +367,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 ### Phase 4: Cross-Tool Learning (v5.20.0)
 
 **Tasks**:
+
 1. Define learning signal types
 2. Implement learning collectors in each tool
 3. Create learning aggregator
@@ -362,6 +375,7 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 5. Add learning metrics dashboard
 
 **Files to Create/Modify**:
+
 - `learning/signals.py` - Signal definitions
 - `learning/aggregator.py` - Aggregation logic
 - All components: Emit learning signals
@@ -373,12 +387,14 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 ### Phase 5: Unified Dashboard (v5.21.0)
 
 **Tasks**:
+
 1. Extract dashboard components as standalone
 2. Create VS Code webview integration
 3. Create CLI webview bridge (optional)
 4. Unify styling and behavior
 
 **Files to Create/Modify**:
+
 - `dashboard/components/` - Reusable components
 - `vscode-extension/src/views/dashboardView.ts` - Embed dashboard
 
@@ -388,15 +404,15 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 
 ## Success Metrics
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Cross-tool event latency | N/A | <100ms |
+| Metric                                  | Current   | Target     |
+| --------------------------------------- | --------- | ---------- |
+| Cross-tool event latency                | N/A       | <100ms     |
 | Memory utilization (tools using memory) | 2/5 (40%) | 5/5 (100%) |
-| State sync conflicts | Unknown | <1/day |
-| Learning signal coverage | 0% | 80%+ |
-| Dashboard feature parity | 50% | 100% |
-| User task completion time | Baseline | -30% |
-| Context switching (tool changes) | Frequent | Minimal |
+| State sync conflicts                    | Unknown   | <1/day     |
+| Learning signal coverage                | 0%        | 80%+       |
+| Dashboard feature parity                | 50%       | 100%       |
+| User task completion time               | Baseline  | -30%       |
+| Context switching (tool changes)        | Frequent  | Minimal    |
 
 ---
 
@@ -404,14 +420,14 @@ Memory Update <- Metrics: "Promote to semantic pattern"
 
 After implementing synergy:
 
-| Feature | Loki Mode | claude-flow | Auto-Claude |
-|---------|-----------|-------------|-------------|
-| Unified memory across tools | Yes | No | No |
-| Cross-tool event propagation | Yes | Partial | No |
-| Smart state synchronization | Yes | No | No |
-| Learning from all interactions | Yes | No | No |
-| Single dashboard everywhere | Yes | No | No |
-| Token economics visibility | Yes | No | No |
+| Feature                        | Loki Mode | claude-flow | Auto-Claude |
+| ------------------------------ | --------- | ----------- | ----------- |
+| Unified memory across tools    | Yes       | No          | No          |
+| Cross-tool event propagation   | Yes       | Partial     | No          |
+| Smart state synchronization    | Yes       | No          | No          |
+| Learning from all interactions | Yes       | No          | No          |
+| Single dashboard everywhere    | Yes       | No          | No          |
+| Token economics visibility     | Yes       | No          | No          |
 
 ---
 
@@ -436,12 +452,14 @@ These quick wins can be implemented without major architectural changes and prov
 **Decision**: Use file-based pub/sub (.loki/events/) with file watching.
 
 **Rationale**:
+
 - Works across Python, Node, Bash
 - Persists events for replay
 - No additional dependencies
 - Natural integration with .loki/ directory
 
 **Alternatives Considered**:
+
 - Unix sockets (complex, not cross-platform)
 - Redis (external dependency)
 - HTTP polling (high overhead)
@@ -453,12 +471,14 @@ These quick wins can be implemented without major architectural changes and prov
 **Decision**: Memory system is the canonical context store.
 
 **Rationale**:
+
 - Already has Python implementation
 - Supports progressive disclosure (tokens)
 - Natural place for learnings
 - Can serve all tools via file reads or API
 
 **Alternatives Considered**:
+
 - Distributed state (complex)
 - Per-tool context (fragmented)
 - External database (dependency)
@@ -474,6 +494,6 @@ These quick wins can be implemented without major architectural changes and prov
 
 ---
 
-*Document Version: 1.1*
-*Last Updated: 2026-02-06*
-*Authored by: Loki Mode Development Team*
+_Document Version: 1.1_
+_Last Updated: 2026-02-06_
+_Authored by: Loki Mode Development Team_

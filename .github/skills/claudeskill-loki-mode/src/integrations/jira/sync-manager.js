@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-var { convertEpicToPrd, generatePrdMetadata } = require('./epic-converter');
+var { convertEpicToPrd, generatePrdMetadata } = require("./epic-converter");
 
 var STATUS_MAP = {
-  'planning': 'In Progress',
-  'building': 'In Progress',
-  'testing': 'In Review',
-  'reviewing': 'In Review',
-  'deployed': 'Done',
-  'completed': 'Done',
-  'failed': 'Blocked',
-  'blocked': 'Blocked',
+  planning: "In Progress",
+  building: "In Progress",
+  testing: "In Review",
+  reviewing: "In Review",
+  deployed: "Done",
+  completed: "Done",
+  failed: "Blocked",
+  blocked: "Blocked",
 };
 
 /**
@@ -24,7 +24,7 @@ class JiraSyncManager {
    */
   constructor(opts) {
     if (!opts || !opts.apiClient) {
-      throw new Error('JiraSyncManager requires apiClient');
+      throw new Error("JiraSyncManager requires apiClient");
     }
     this._api = opts.apiClient;
     this._projectKey = opts.projectKey || null;
@@ -58,9 +58,9 @@ class JiraSyncManager {
     }
     // Add progress comment
     if (rarvState.details) {
-      var comment = '[Loki Mode] Phase: ' + rarvState.phase;
-      if (rarvState.progress) comment += ' (' + rarvState.progress + '%)';
-      comment += '\n' + rarvState.details;
+      var comment = "[Loki Mode] Phase: " + rarvState.phase;
+      if (rarvState.progress) comment += " (" + rarvState.progress + "%)";
+      comment += "\n" + rarvState.details;
       await this._api.addComment(epicKey, comment);
     }
   }
@@ -74,7 +74,7 @@ class JiraSyncManager {
       await this._transitionToStatus(issueKey, jiraStatus);
     }
     if (details) {
-      await this._api.addComment(issueKey, '[Loki Mode] Status: ' + status + '\n' + details);
+      await this._api.addComment(issueKey, "[Loki Mode] Status: " + status + "\n" + details);
     }
   }
 
@@ -82,12 +82,12 @@ class JiraSyncManager {
    * Post a quality report as a Jira comment.
    */
   async postQualityReport(issueKey, report) {
-    var text = '[Loki Mode] Quality Report\n';
-    if (report.type) text += 'Type: ' + report.type + '\n';
-    if (report.summary) text += report.summary + '\n';
-    if (report.passed !== undefined) text += 'Passed: ' + report.passed + '\n';
-    if (report.failed !== undefined) text += 'Failed: ' + report.failed + '\n';
-    if (report.coverage !== undefined) text += 'Coverage: ' + report.coverage + '%\n';
+    var text = "[Loki Mode] Quality Report\n";
+    if (report.type) text += "Type: " + report.type + "\n";
+    if (report.summary) text += report.summary + "\n";
+    if (report.passed !== undefined) text += "Passed: " + report.passed + "\n";
+    if (report.failed !== undefined) text += "Failed: " + report.failed + "\n";
+    if (report.coverage !== undefined) text += "Coverage: " + report.coverage + "%\n";
     await this._api.addComment(issueKey, text);
   }
 
@@ -95,7 +95,7 @@ class JiraSyncManager {
    * Add a deployment link to a Jira issue.
    */
   async addDeploymentLink(issueKey, deployUrl, env) {
-    var title = 'Deployment' + (env ? ' (' + env + ')' : '');
+    var title = "Deployment" + (env ? " (" + env + ")" : "");
     await this._api.addRemoteLink(issueKey, deployUrl, title);
   }
 
@@ -110,8 +110,8 @@ class JiraSyncManager {
     for (var i = 0; i < tasks.length; i++) {
       var fields = {
         summary: tasks[i].title,
-        description: tasks[i].description || '',
-        issuetype: { name: 'Sub-task' },
+        description: tasks[i].description || "",
+        issuetype: { name: "Sub-task" },
         parent: { key: parentKey },
       };
       if (this._projectKey) fields.project = { key: this._projectKey };

@@ -41,11 +41,11 @@ The database is accessed through **Prisma ORM**, which provides type-safe databa
 
 Intel-Q uses three primary database models:
 
-* User
-* QueueTicket
-* Branch
+- User
+- QueueTicket
+- Branch
 
-The models are related through foreign keys.
+The models are related using Prisma relations, which generate PostgreSQL foreign key constraints to maintain referential integrity.
 
 ```text
 User (1)
@@ -59,11 +59,52 @@ User (1)
                                            Branch (1)
 ```
 
-A customer can have multiple queue tickets over time.
+## Relationships
 
-A branch can manage multiple queue tickets.
+### User → QueueTicket
 
-Each queue ticket belongs to one customer and one branch.
+**Relationship:** One-to-Many
+
+A user (customer) may create multiple queue tickets over time.
+
+Each queue ticket references exactly one customer through the `customerId` foreign key.
+
+```text
+QueueTicket.customerId
+        ↓
+User.id
+```
+
+---
+
+### Branch → QueueTicket
+
+**Relationship:** One-to-Many
+
+Each branch manages many queue tickets.
+
+Every queue ticket belongs to exactly one branch through the `branchId` foreign key.
+
+```text
+QueueTicket.branchId
+        ↓
+Branch.id
+```
+
+---
+
+## Referential Integrity
+
+The database enforces referential integrity using PostgreSQL foreign keys generated from the Prisma schema.
+
+This ensures that:
+
+- A queue ticket cannot reference a user that does not exist.
+- A queue ticket cannot reference a branch that does not exist.
+- Users and branches with existing queue tickets cannot be deleted accidentally without first addressing their related queue records.
+
+These constraints help maintain consistent and reliable queue data throughout the application.
+
 
 ---
 

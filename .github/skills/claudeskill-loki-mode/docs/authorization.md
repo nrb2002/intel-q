@@ -15,6 +15,7 @@ Full access to all operations and configuration.
 **Scopes:** `*` (all)
 
 **Permissions:**
+
 - Start/stop/pause/resume sessions
 - Create/update/delete tasks
 - Modify configuration
@@ -24,6 +25,7 @@ Full access to all operations and configuration.
 - Access all API endpoints
 
 **Use Cases:**
+
 - System administrators
 - DevOps engineers
 - Project owners
@@ -35,6 +37,7 @@ Day-to-day operations without configuration changes.
 **Scopes:** `control`, `read`, `write`
 
 **Permissions:**
+
 - Start/stop/pause/resume sessions
 - Create/update tasks
 - View dashboard and logs
@@ -42,11 +45,13 @@ Day-to-day operations without configuration changes.
 - Access metrics endpoint
 
 **Cannot:**
+
 - Modify system configuration
 - Manage tokens or users
 - View audit logs (except their own actions)
 
 **Use Cases:**
+
 - Developers
 - CI/CD pipelines
 - Automated workflows
@@ -58,6 +63,7 @@ Read-only access to dashboard and logs.
 **Scopes:** `read`
 
 **Permissions:**
+
 - View dashboard status
 - View task queue
 - View logs and events
@@ -65,12 +71,14 @@ Read-only access to dashboard and logs.
 - View agent activity
 
 **Cannot:**
+
 - Start/stop sessions
 - Create/modify tasks
 - Access audit logs
 - Modify any state
 
 **Use Cases:**
+
 - Stakeholders
 - Project managers
 - External observers
@@ -82,6 +90,7 @@ Security and compliance monitoring.
 **Scopes:** `read`, `audit`
 
 **Permissions:**
+
 - View dashboard status
 - View task queue and logs
 - Access audit logs
@@ -89,11 +98,13 @@ Security and compliance monitoring.
 - Export compliance reports
 
 **Cannot:**
+
 - Start/stop sessions
 - Create/modify tasks
 - Modify configuration
 
 **Use Cases:**
+
 - Security teams
 - Compliance officers
 - Internal auditors
@@ -124,8 +135,8 @@ loki enterprise token generate admin-1 --role admin --expires 365
 enterprise:
   rbac:
     enabled: true
-    default_role: viewer  # Default for OIDC users without role mapping
-    enforce_mfa: false    # Require MFA for admin role (future)
+    default_role: viewer # Default for OIDC users without role mapping
+    enforce_mfa: false # Require MFA for admin role (future)
   roles:
     admin:
       scopes: ["*"]
@@ -152,7 +163,7 @@ enterprise:
         viewers@example.com: viewer
       # Map Azure AD groups to roles
       azure:
-        12345678-abcd-1234-abcd-123456789abc: admin  # Group Object ID
+        12345678-abcd-1234-abcd-123456789abc: admin # Group Object ID
         87654321-dcba-4321-dcba-987654321cba: operator
 ```
 
@@ -172,26 +183,27 @@ enterprise:
 ```
 
 Scopes are additive:
+
 - `control` automatically includes `write` and `read`
 - `write` automatically includes `read`
 - `audit` requires separate grant (not included in `*`)
 
 ### Endpoint Permissions
 
-| Endpoint | Required Scope | Roles with Access |
-|----------|----------------|-------------------|
-| `GET /api/status` | `read` | All roles |
-| `GET /api/tasks` | `read` | All roles |
-| `GET /api/logs` | `read` | All roles |
-| `GET /metrics` | `read` | All roles |
-| `POST /api/tasks` | `write` | Operator, Admin |
-| `PATCH /api/tasks/:id` | `write` | Operator, Admin |
-| `POST /api/control/start` | `control` | Operator, Admin |
-| `POST /api/control/stop` | `control` | Operator, Admin |
-| `GET /api/audit` | `audit` | Auditor, Admin |
-| `POST /api/enterprise/tokens` | `*` | Admin only |
-| `DELETE /api/enterprise/tokens/:id` | `*` | Admin only |
-| `POST /api/config` | `*` | Admin only |
+| Endpoint                            | Required Scope | Roles with Access |
+| ----------------------------------- | -------------- | ----------------- |
+| `GET /api/status`                   | `read`         | All roles         |
+| `GET /api/tasks`                    | `read`         | All roles         |
+| `GET /api/logs`                     | `read`         | All roles         |
+| `GET /metrics`                      | `read`         | All roles         |
+| `POST /api/tasks`                   | `write`        | Operator, Admin   |
+| `PATCH /api/tasks/:id`              | `write`        | Operator, Admin   |
+| `POST /api/control/start`           | `control`      | Operator, Admin   |
+| `POST /api/control/stop`            | `control`      | Operator, Admin   |
+| `GET /api/audit`                    | `audit`        | Auditor, Admin    |
+| `POST /api/enterprise/tokens`       | `*`            | Admin only        |
+| `DELETE /api/enterprise/tokens/:id` | `*`            | Admin only        |
+| `POST /api/config`                  | `*`            | Admin only        |
 
 ## Custom Roles
 
@@ -280,12 +292,12 @@ enterprise:
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_RBAC_ENABLED` | `false` | Enable RBAC system |
-| `LOKI_RBAC_DEFAULT_ROLE` | `viewer` | Default role for OIDC users |
-| `LOKI_RBAC_STRICT_MODE` | `false` | Deny access when role is undefined (vs default to viewer) |
-| `LOKI_RBAC_AUDIT_CHECKS` | `true` | Log all permission checks to audit log |
+| Variable                 | Default  | Description                                               |
+| ------------------------ | -------- | --------------------------------------------------------- |
+| `LOKI_RBAC_ENABLED`      | `false`  | Enable RBAC system                                        |
+| `LOKI_RBAC_DEFAULT_ROLE` | `viewer` | Default role for OIDC users                               |
+| `LOKI_RBAC_STRICT_MODE`  | `false`  | Deny access when role is undefined (vs default to viewer) |
+| `LOKI_RBAC_AUDIT_CHECKS` | `true`   | Log all permission checks to audit log                    |
 
 ## Examples
 
@@ -423,12 +435,14 @@ curl -H "Authorization: Bearer $TOKEN" \
 ### Upgrading from Token-Only to RBAC
 
 1. Enable RBAC in audit mode first:
+
 ```bash
 export LOKI_RBAC_ENABLED=true
 export LOKI_RBAC_STRICT_MODE=false  # Allow during migration
 ```
 
 2. Assign roles to existing tokens:
+
 ```bash
 for token in $(loki enterprise token list --format json | jq -r '.[].id'); do
   loki enterprise token update $token --role operator
@@ -436,11 +450,13 @@ done
 ```
 
 3. Test permissions:
+
 ```bash
 loki enterprise rbac check
 ```
 
 4. Enable strict mode:
+
 ```bash
 export LOKI_RBAC_STRICT_MODE=true
 ```

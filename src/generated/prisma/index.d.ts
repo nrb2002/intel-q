@@ -34,22 +34,22 @@ export type QueueTicket = $Result.DefaultSelection<Prisma.$QueueTicketPayload>
  */
 export namespace $Enums {
   export const UserRole: {
-  customer: 'customer',
-  staff: 'staff',
-  admin: 'admin'
+  CUSTOMER: 'CUSTOMER',
+  STAFF: 'STAFF',
+  ADMIN: 'ADMIN'
 };
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-export const TicketStatus: {
-  waiting: 'waiting',
-  called: 'called',
-  completed: 'completed',
-  cancelled: 'cancelled'
+export const QueueStatus: {
+  WAITING: 'WAITING',
+  IN_SERVICE: 'IN_SERVICE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
 };
 
-export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+export type QueueStatus = (typeof QueueStatus)[keyof typeof QueueStatus]
 
 }
 
@@ -57,9 +57,9 @@ export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
 
-export type TicketStatus = $Enums.TicketStatus
+export type QueueStatus = $Enums.QueueStatus
 
-export const TicketStatus: typeof $Enums.TicketStatus
+export const QueueStatus: typeof $Enums.QueueStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -261,7 +261,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.9.0
+   * Prisma Client JS version: 7.9.1
    * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
@@ -1108,11 +1108,11 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    tickets: number
+    queueTickets: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tickets?: boolean | UserCountOutputTypeCountTicketsArgs
+    queueTickets?: boolean | UserCountOutputTypeCountQueueTicketsArgs
   }
 
   // Custom InputTypes
@@ -1129,7 +1129,7 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountQueueTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QueueTicketWhereInput
   }
 
@@ -1139,11 +1139,11 @@ export namespace Prisma {
    */
 
   export type BranchCountOutputType = {
-    tickets: number
+    queueTickets: number
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tickets?: boolean | BranchCountOutputTypeCountTicketsArgs
+    queueTickets?: boolean | BranchCountOutputTypeCountQueueTicketsArgs
   }
 
   // Custom InputTypes
@@ -1160,7 +1160,7 @@ export namespace Prisma {
   /**
    * BranchCountOutputType without action
    */
-  export type BranchCountOutputTypeCountTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type BranchCountOutputTypeCountQueueTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QueueTicketWhereInput
   }
 
@@ -1357,7 +1357,7 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tickets?: boolean | User$ticketsArgs<ExtArgs>
+    queueTickets?: boolean | User$queueTicketsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1396,7 +1396,7 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "password" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tickets?: boolean | User$ticketsArgs<ExtArgs>
+    queueTickets?: boolean | User$queueTicketsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1405,7 +1405,7 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      tickets: Prisma.$QueueTicketPayload<ExtArgs>[]
+      queueTickets: Prisma.$QueueTicketPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1810,7 +1810,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tickets<T extends User$ticketsArgs<ExtArgs> = {}>(args?: Subset<T, User$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QueueTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    queueTickets<T extends User$queueTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$queueTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QueueTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2241,9 +2241,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.tickets
+   * User.queueTickets
    */
-  export type User$ticketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$queueTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the QueueTicket
      */
@@ -2455,7 +2455,7 @@ export namespace Prisma {
     city?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    tickets?: boolean | Branch$ticketsArgs<ExtArgs>
+    queueTickets?: boolean | Branch$queueTicketsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
 
@@ -2488,7 +2488,7 @@ export namespace Prisma {
 
   export type BranchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "city" | "createdAt" | "updatedAt", ExtArgs["result"]["branch"]>
   export type BranchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    tickets?: boolean | Branch$ticketsArgs<ExtArgs>
+    queueTickets?: boolean | Branch$queueTicketsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2497,7 +2497,7 @@ export namespace Prisma {
   export type $BranchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Branch"
     objects: {
-      tickets: Prisma.$QueueTicketPayload<ExtArgs>[]
+      queueTickets: Prisma.$QueueTicketPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2900,7 +2900,7 @@ export namespace Prisma {
    */
   export interface Prisma__BranchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    tickets<T extends Branch$ticketsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QueueTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    queueTickets<T extends Branch$queueTicketsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$queueTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QueueTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3329,9 +3329,9 @@ export namespace Prisma {
   }
 
   /**
-   * Branch.tickets
+   * Branch.queueTickets
    */
-  export type Branch$ticketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Branch$queueTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the QueueTicket
      */
@@ -3377,32 +3377,42 @@ export namespace Prisma {
 
   export type AggregateQueueTicket = {
     _count: QueueTicketCountAggregateOutputType | null
+    _avg: QueueTicketAvgAggregateOutputType | null
+    _sum: QueueTicketSumAggregateOutputType | null
     _min: QueueTicketMinAggregateOutputType | null
     _max: QueueTicketMaxAggregateOutputType | null
   }
 
+  export type QueueTicketAvgAggregateOutputType = {
+    ticketNumber: number | null
+  }
+
+  export type QueueTicketSumAggregateOutputType = {
+    ticketNumber: number | null
+  }
+
   export type QueueTicketMinAggregateOutputType = {
     id: string | null
-    ticketNumber: string | null
+    ticketNumber: number | null
     customerId: string | null
     branchId: string | null
     serviceType: string | null
-    status: $Enums.TicketStatus | null
+    status: $Enums.QueueStatus | null
+    createdAt: Date | null
     calledAt: Date | null
     completedAt: Date | null
-    createdAt: Date | null
   }
 
   export type QueueTicketMaxAggregateOutputType = {
     id: string | null
-    ticketNumber: string | null
+    ticketNumber: number | null
     customerId: string | null
     branchId: string | null
     serviceType: string | null
-    status: $Enums.TicketStatus | null
+    status: $Enums.QueueStatus | null
+    createdAt: Date | null
     calledAt: Date | null
     completedAt: Date | null
-    createdAt: Date | null
   }
 
   export type QueueTicketCountAggregateOutputType = {
@@ -3412,12 +3422,20 @@ export namespace Prisma {
     branchId: number
     serviceType: number
     status: number
+    createdAt: number
     calledAt: number
     completedAt: number
-    createdAt: number
     _all: number
   }
 
+
+  export type QueueTicketAvgAggregateInputType = {
+    ticketNumber?: true
+  }
+
+  export type QueueTicketSumAggregateInputType = {
+    ticketNumber?: true
+  }
 
   export type QueueTicketMinAggregateInputType = {
     id?: true
@@ -3426,9 +3444,9 @@ export namespace Prisma {
     branchId?: true
     serviceType?: true
     status?: true
+    createdAt?: true
     calledAt?: true
     completedAt?: true
-    createdAt?: true
   }
 
   export type QueueTicketMaxAggregateInputType = {
@@ -3438,9 +3456,9 @@ export namespace Prisma {
     branchId?: true
     serviceType?: true
     status?: true
+    createdAt?: true
     calledAt?: true
     completedAt?: true
-    createdAt?: true
   }
 
   export type QueueTicketCountAggregateInputType = {
@@ -3450,9 +3468,9 @@ export namespace Prisma {
     branchId?: true
     serviceType?: true
     status?: true
+    createdAt?: true
     calledAt?: true
     completedAt?: true
-    createdAt?: true
     _all?: true
   }
 
@@ -3494,6 +3512,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: QueueTicketAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QueueTicketSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: QueueTicketMinAggregateInputType
@@ -3524,21 +3554,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: QueueTicketCountAggregateInputType | true
+    _avg?: QueueTicketAvgAggregateInputType
+    _sum?: QueueTicketSumAggregateInputType
     _min?: QueueTicketMinAggregateInputType
     _max?: QueueTicketMaxAggregateInputType
   }
 
   export type QueueTicketGroupByOutputType = {
     id: string
-    ticketNumber: string
+    ticketNumber: number
     customerId: string
     branchId: string
     serviceType: string
-    status: $Enums.TicketStatus
+    status: $Enums.QueueStatus
+    createdAt: Date
     calledAt: Date | null
     completedAt: Date | null
-    createdAt: Date
     _count: QueueTicketCountAggregateOutputType | null
+    _avg: QueueTicketAvgAggregateOutputType | null
+    _sum: QueueTicketSumAggregateOutputType | null
     _min: QueueTicketMinAggregateOutputType | null
     _max: QueueTicketMaxAggregateOutputType | null
   }
@@ -3564,9 +3598,9 @@ export namespace Prisma {
     branchId?: boolean
     serviceType?: boolean
     status?: boolean
+    createdAt?: boolean
     calledAt?: boolean
     completedAt?: boolean
-    createdAt?: boolean
     customer?: boolean | UserDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["queueTicket"]>
@@ -3578,9 +3612,9 @@ export namespace Prisma {
     branchId?: boolean
     serviceType?: boolean
     status?: boolean
+    createdAt?: boolean
     calledAt?: boolean
     completedAt?: boolean
-    createdAt?: boolean
     customer?: boolean | UserDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["queueTicket"]>
@@ -3592,9 +3626,9 @@ export namespace Prisma {
     branchId?: boolean
     serviceType?: boolean
     status?: boolean
+    createdAt?: boolean
     calledAt?: boolean
     completedAt?: boolean
-    createdAt?: boolean
     customer?: boolean | UserDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["queueTicket"]>
@@ -3606,12 +3640,12 @@ export namespace Prisma {
     branchId?: boolean
     serviceType?: boolean
     status?: boolean
+    createdAt?: boolean
     calledAt?: boolean
     completedAt?: boolean
-    createdAt?: boolean
   }
 
-  export type QueueTicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "customerId" | "branchId" | "serviceType" | "status" | "calledAt" | "completedAt" | "createdAt", ExtArgs["result"]["queueTicket"]>
+  export type QueueTicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ticketNumber" | "customerId" | "branchId" | "serviceType" | "status" | "createdAt" | "calledAt" | "completedAt", ExtArgs["result"]["queueTicket"]>
   export type QueueTicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     customer?: boolean | UserDefaultArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
@@ -3633,14 +3667,14 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      ticketNumber: string
+      ticketNumber: number
       customerId: string
       branchId: string
       serviceType: string
-      status: $Enums.TicketStatus
+      status: $Enums.QueueStatus
+      createdAt: Date
       calledAt: Date | null
       completedAt: Date | null
-      createdAt: Date
     }, ExtArgs["result"]["queueTicket"]>
     composites: {}
   }
@@ -4067,14 +4101,14 @@ export namespace Prisma {
    */
   interface QueueTicketFieldRefs {
     readonly id: FieldRef<"QueueTicket", 'String'>
-    readonly ticketNumber: FieldRef<"QueueTicket", 'String'>
+    readonly ticketNumber: FieldRef<"QueueTicket", 'Int'>
     readonly customerId: FieldRef<"QueueTicket", 'String'>
     readonly branchId: FieldRef<"QueueTicket", 'String'>
     readonly serviceType: FieldRef<"QueueTicket", 'String'>
-    readonly status: FieldRef<"QueueTicket", 'TicketStatus'>
+    readonly status: FieldRef<"QueueTicket", 'QueueStatus'>
+    readonly createdAt: FieldRef<"QueueTicket", 'DateTime'>
     readonly calledAt: FieldRef<"QueueTicket", 'DateTime'>
     readonly completedAt: FieldRef<"QueueTicket", 'DateTime'>
-    readonly createdAt: FieldRef<"QueueTicket", 'DateTime'>
   }
     
 
@@ -4541,9 +4575,9 @@ export namespace Prisma {
     branchId: 'branchId',
     serviceType: 'serviceType',
     status: 'status',
+    createdAt: 'createdAt',
     calledAt: 'calledAt',
-    completedAt: 'completedAt',
-    createdAt: 'createdAt'
+    completedAt: 'completedAt'
   };
 
   export type QueueTicketScalarFieldEnum = (typeof QueueTicketScalarFieldEnum)[keyof typeof QueueTicketScalarFieldEnum]
@@ -4621,20 +4655,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'TicketStatus'
-   */
-  export type EnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'TicketStatus[]'
-   */
-  export type ListEnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -4646,6 +4666,34 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'QueueStatus'
+   */
+  export type EnumQueueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueueStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueueStatus[]'
+   */
+  export type ListEnumQueueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueueStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -4655,7 +4703,7 @@ export namespace Prisma {
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    id?: StringFilter<"User"> | string
+    id?: UuidFilter<"User"> | string
     firstName?: StringFilter<"User"> | string
     lastName?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
@@ -4663,7 +4711,7 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    tickets?: QueueTicketListRelationFilter
+    queueTickets?: QueueTicketListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -4675,7 +4723,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    tickets?: QueueTicketOrderByRelationAggregateInput
+    queueTickets?: QueueTicketOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -4690,7 +4738,7 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    tickets?: QueueTicketListRelationFilter
+    queueTickets?: QueueTicketListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -4711,7 +4759,7 @@ export namespace Prisma {
     AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"User"> | string
+    id?: UuidWithAggregatesFilter<"User"> | string
     firstName?: StringWithAggregatesFilter<"User"> | string
     lastName?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
@@ -4725,13 +4773,13 @@ export namespace Prisma {
     AND?: BranchWhereInput | BranchWhereInput[]
     OR?: BranchWhereInput[]
     NOT?: BranchWhereInput | BranchWhereInput[]
-    id?: StringFilter<"Branch"> | string
+    id?: UuidFilter<"Branch"> | string
     name?: StringFilter<"Branch"> | string
     address?: StringFilter<"Branch"> | string
     city?: StringFilter<"Branch"> | string
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
-    tickets?: QueueTicketListRelationFilter
+    queueTickets?: QueueTicketListRelationFilter
   }
 
   export type BranchOrderByWithRelationInput = {
@@ -4741,21 +4789,21 @@ export namespace Prisma {
     city?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    tickets?: QueueTicketOrderByRelationAggregateInput
+    queueTickets?: QueueTicketOrderByRelationAggregateInput
   }
 
   export type BranchWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    name?: string
     AND?: BranchWhereInput | BranchWhereInput[]
     OR?: BranchWhereInput[]
     NOT?: BranchWhereInput | BranchWhereInput[]
+    name?: StringFilter<"Branch"> | string
     address?: StringFilter<"Branch"> | string
     city?: StringFilter<"Branch"> | string
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
-    tickets?: QueueTicketListRelationFilter
-  }, "id" | "name">
+    queueTickets?: QueueTicketListRelationFilter
+  }, "id">
 
   export type BranchOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4773,7 +4821,7 @@ export namespace Prisma {
     AND?: BranchScalarWhereWithAggregatesInput | BranchScalarWhereWithAggregatesInput[]
     OR?: BranchScalarWhereWithAggregatesInput[]
     NOT?: BranchScalarWhereWithAggregatesInput | BranchScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Branch"> | string
+    id?: UuidWithAggregatesFilter<"Branch"> | string
     name?: StringWithAggregatesFilter<"Branch"> | string
     address?: StringWithAggregatesFilter<"Branch"> | string
     city?: StringWithAggregatesFilter<"Branch"> | string
@@ -4785,15 +4833,15 @@ export namespace Prisma {
     AND?: QueueTicketWhereInput | QueueTicketWhereInput[]
     OR?: QueueTicketWhereInput[]
     NOT?: QueueTicketWhereInput | QueueTicketWhereInput[]
-    id?: StringFilter<"QueueTicket"> | string
-    ticketNumber?: StringFilter<"QueueTicket"> | string
-    customerId?: StringFilter<"QueueTicket"> | string
-    branchId?: StringFilter<"QueueTicket"> | string
+    id?: UuidFilter<"QueueTicket"> | string
+    ticketNumber?: IntFilter<"QueueTicket"> | number
+    customerId?: UuidFilter<"QueueTicket"> | string
+    branchId?: UuidFilter<"QueueTicket"> | string
     serviceType?: StringFilter<"QueueTicket"> | string
-    status?: EnumTicketStatusFilter<"QueueTicket"> | $Enums.TicketStatus
+    status?: EnumQueueStatusFilter<"QueueTicket"> | $Enums.QueueStatus
+    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
     calledAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
-    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
     customer?: XOR<UserScalarRelationFilter, UserWhereInput>
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
   }
@@ -4805,29 +4853,29 @@ export namespace Prisma {
     branchId?: SortOrder
     serviceType?: SortOrder
     status?: SortOrder
+    createdAt?: SortOrder
     calledAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
     customer?: UserOrderByWithRelationInput
     branch?: BranchOrderByWithRelationInput
   }
 
   export type QueueTicketWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    ticketNumber?: string
     AND?: QueueTicketWhereInput | QueueTicketWhereInput[]
     OR?: QueueTicketWhereInput[]
     NOT?: QueueTicketWhereInput | QueueTicketWhereInput[]
-    customerId?: StringFilter<"QueueTicket"> | string
-    branchId?: StringFilter<"QueueTicket"> | string
+    ticketNumber?: IntFilter<"QueueTicket"> | number
+    customerId?: UuidFilter<"QueueTicket"> | string
+    branchId?: UuidFilter<"QueueTicket"> | string
     serviceType?: StringFilter<"QueueTicket"> | string
-    status?: EnumTicketStatusFilter<"QueueTicket"> | $Enums.TicketStatus
+    status?: EnumQueueStatusFilter<"QueueTicket"> | $Enums.QueueStatus
+    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
     calledAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
-    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
     customer?: XOR<UserScalarRelationFilter, UserWhereInput>
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
-  }, "id" | "ticketNumber">
+  }, "id">
 
   export type QueueTicketOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4836,27 +4884,29 @@ export namespace Prisma {
     branchId?: SortOrder
     serviceType?: SortOrder
     status?: SortOrder
+    createdAt?: SortOrder
     calledAt?: SortOrderInput | SortOrder
     completedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
     _count?: QueueTicketCountOrderByAggregateInput
+    _avg?: QueueTicketAvgOrderByAggregateInput
     _max?: QueueTicketMaxOrderByAggregateInput
     _min?: QueueTicketMinOrderByAggregateInput
+    _sum?: QueueTicketSumOrderByAggregateInput
   }
 
   export type QueueTicketScalarWhereWithAggregatesInput = {
     AND?: QueueTicketScalarWhereWithAggregatesInput | QueueTicketScalarWhereWithAggregatesInput[]
     OR?: QueueTicketScalarWhereWithAggregatesInput[]
     NOT?: QueueTicketScalarWhereWithAggregatesInput | QueueTicketScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"QueueTicket"> | string
-    ticketNumber?: StringWithAggregatesFilter<"QueueTicket"> | string
-    customerId?: StringWithAggregatesFilter<"QueueTicket"> | string
-    branchId?: StringWithAggregatesFilter<"QueueTicket"> | string
+    id?: UuidWithAggregatesFilter<"QueueTicket"> | string
+    ticketNumber?: IntWithAggregatesFilter<"QueueTicket"> | number
+    customerId?: UuidWithAggregatesFilter<"QueueTicket"> | string
+    branchId?: UuidWithAggregatesFilter<"QueueTicket"> | string
     serviceType?: StringWithAggregatesFilter<"QueueTicket"> | string
-    status?: EnumTicketStatusWithAggregatesFilter<"QueueTicket"> | $Enums.TicketStatus
+    status?: EnumQueueStatusWithAggregatesFilter<"QueueTicket"> | $Enums.QueueStatus
+    createdAt?: DateTimeWithAggregatesFilter<"QueueTicket"> | Date | string
     calledAt?: DateTimeNullableWithAggregatesFilter<"QueueTicket"> | Date | string | null
     completedAt?: DateTimeNullableWithAggregatesFilter<"QueueTicket"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"QueueTicket"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -4868,7 +4918,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    tickets?: QueueTicketCreateNestedManyWithoutCustomerInput
+    queueTickets?: QueueTicketCreateNestedManyWithoutCustomerInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -4880,7 +4930,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    tickets?: QueueTicketUncheckedCreateNestedManyWithoutCustomerInput
+    queueTickets?: QueueTicketUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type UserUpdateInput = {
@@ -4892,7 +4942,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tickets?: QueueTicketUpdateManyWithoutCustomerNestedInput
+    queueTickets?: QueueTicketUpdateManyWithoutCustomerNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -4904,7 +4954,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tickets?: QueueTicketUncheckedUpdateManyWithoutCustomerNestedInput
+    queueTickets?: QueueTicketUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -4947,7 +4997,7 @@ export namespace Prisma {
     city: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    tickets?: QueueTicketCreateNestedManyWithoutBranchInput
+    queueTickets?: QueueTicketCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateInput = {
@@ -4957,7 +5007,7 @@ export namespace Prisma {
     city: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    tickets?: QueueTicketUncheckedCreateNestedManyWithoutBranchInput
+    queueTickets?: QueueTicketUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUpdateInput = {
@@ -4967,7 +5017,7 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tickets?: QueueTicketUpdateManyWithoutBranchNestedInput
+    queueTickets?: QueueTicketUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateInput = {
@@ -4977,7 +5027,7 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tickets?: QueueTicketUncheckedUpdateManyWithoutBranchNestedInput
+    queueTickets?: QueueTicketUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateManyInput = {
@@ -5009,84 +5059,96 @@ export namespace Prisma {
 
   export type QueueTicketCreateInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
-    customer: UserCreateNestedOneWithoutTicketsInput
-    branch: BranchCreateNestedOneWithoutTicketsInput
+    customer: UserCreateNestedOneWithoutQueueTicketsInput
+    branch: BranchCreateNestedOneWithoutQueueTicketsInput
   }
 
   export type QueueTicketUncheckedCreateInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     customerId: string
     branchId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    customer?: UserUpdateOneRequiredWithoutTicketsNestedInput
-    branch?: BranchUpdateOneRequiredWithoutTicketsNestedInput
+    customer?: UserUpdateOneRequiredWithoutQueueTicketsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutQueueTicketsNestedInput
   }
 
   export type QueueTicketUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QueueTicketCreateManyInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     customerId: string
     branchId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QueueTicketUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UuidFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidFilter<$PrismaModel> | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -5165,6 +5227,21 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type UuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -5234,11 +5311,22 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumTicketStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTicketStatusFilter<$PrismaModel> | $Enums.TicketStatus
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EnumQueueStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.QueueStatus | EnumQueueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumQueueStatusFilter<$PrismaModel> | $Enums.QueueStatus
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -5274,9 +5362,13 @@ export namespace Prisma {
     branchId?: SortOrder
     serviceType?: SortOrder
     status?: SortOrder
+    createdAt?: SortOrder
     calledAt?: SortOrder
     completedAt?: SortOrder
-    createdAt?: SortOrder
+  }
+
+  export type QueueTicketAvgOrderByAggregateInput = {
+    ticketNumber?: SortOrder
   }
 
   export type QueueTicketMaxOrderByAggregateInput = {
@@ -5286,9 +5378,9 @@ export namespace Prisma {
     branchId?: SortOrder
     serviceType?: SortOrder
     status?: SortOrder
+    createdAt?: SortOrder
     calledAt?: SortOrder
     completedAt?: SortOrder
-    createdAt?: SortOrder
   }
 
   export type QueueTicketMinOrderByAggregateInput = {
@@ -5298,19 +5390,39 @@ export namespace Prisma {
     branchId?: SortOrder
     serviceType?: SortOrder
     status?: SortOrder
+    createdAt?: SortOrder
     calledAt?: SortOrder
     completedAt?: SortOrder
-    createdAt?: SortOrder
   }
 
-  export type EnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.TicketStatus
+  export type QueueTicketSumOrderByAggregateInput = {
+    ticketNumber?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTicketStatusFilter<$PrismaModel>
-    _max?: NestedEnumTicketStatusFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumQueueStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.QueueStatus | EnumQueueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumQueueStatusWithAggregatesFilter<$PrismaModel> | $Enums.QueueStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumQueueStatusFilter<$PrismaModel>
+    _max?: NestedEnumQueueStatusFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -5423,40 +5535,59 @@ export namespace Prisma {
     deleteMany?: QueueTicketScalarWhereInput | QueueTicketScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutTicketsInput = {
-    create?: XOR<UserCreateWithoutTicketsInput, UserUncheckedCreateWithoutTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTicketsInput
+  export type UserCreateNestedOneWithoutQueueTicketsInput = {
+    create?: XOR<UserCreateWithoutQueueTicketsInput, UserUncheckedCreateWithoutQueueTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQueueTicketsInput
     connect?: UserWhereUniqueInput
   }
 
-  export type BranchCreateNestedOneWithoutTicketsInput = {
-    create?: XOR<BranchCreateWithoutTicketsInput, BranchUncheckedCreateWithoutTicketsInput>
-    connectOrCreate?: BranchCreateOrConnectWithoutTicketsInput
+  export type BranchCreateNestedOneWithoutQueueTicketsInput = {
+    create?: XOR<BranchCreateWithoutQueueTicketsInput, BranchUncheckedCreateWithoutQueueTicketsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutQueueTicketsInput
     connect?: BranchWhereUniqueInput
   }
 
-  export type EnumTicketStatusFieldUpdateOperationsInput = {
-    set?: $Enums.TicketStatus
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumQueueStatusFieldUpdateOperationsInput = {
+    set?: $Enums.QueueStatus
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
   }
 
-  export type UserUpdateOneRequiredWithoutTicketsNestedInput = {
-    create?: XOR<UserCreateWithoutTicketsInput, UserUncheckedCreateWithoutTicketsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTicketsInput
-    upsert?: UserUpsertWithoutTicketsInput
+  export type UserUpdateOneRequiredWithoutQueueTicketsNestedInput = {
+    create?: XOR<UserCreateWithoutQueueTicketsInput, UserUncheckedCreateWithoutQueueTicketsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQueueTicketsInput
+    upsert?: UserUpsertWithoutQueueTicketsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTicketsInput, UserUpdateWithoutTicketsInput>, UserUncheckedUpdateWithoutTicketsInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutQueueTicketsInput, UserUpdateWithoutQueueTicketsInput>, UserUncheckedUpdateWithoutQueueTicketsInput>
   }
 
-  export type BranchUpdateOneRequiredWithoutTicketsNestedInput = {
-    create?: XOR<BranchCreateWithoutTicketsInput, BranchUncheckedCreateWithoutTicketsInput>
-    connectOrCreate?: BranchCreateOrConnectWithoutTicketsInput
-    upsert?: BranchUpsertWithoutTicketsInput
+  export type BranchUpdateOneRequiredWithoutQueueTicketsNestedInput = {
+    create?: XOR<BranchCreateWithoutQueueTicketsInput, BranchUncheckedCreateWithoutQueueTicketsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutQueueTicketsInput
+    upsert?: BranchUpsertWithoutQueueTicketsInput
     connect?: BranchWhereUniqueInput
-    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutTicketsInput, BranchUpdateWithoutTicketsInput>, BranchUncheckedUpdateWithoutTicketsInput>
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutQueueTicketsInput, BranchUpdateWithoutQueueTicketsInput>, BranchUncheckedUpdateWithoutQueueTicketsInput>
+  }
+
+  export type NestedUuidFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidFilter<$PrismaModel> | string
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5491,6 +5622,31 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -5506,17 +5662,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -5543,11 +5688,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumTicketStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTicketStatusFilter<$PrismaModel> | $Enums.TicketStatus
+  export type NestedEnumQueueStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.QueueStatus | EnumQueueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumQueueStatusFilter<$PrismaModel> | $Enums.QueueStatus
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -5561,14 +5706,41 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.TicketStatus
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTicketStatusFilter<$PrismaModel>
-    _max?: NestedEnumTicketStatusFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumQueueStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.QueueStatus | EnumQueueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.QueueStatus[] | ListEnumQueueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumQueueStatusWithAggregatesFilter<$PrismaModel> | $Enums.QueueStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumQueueStatusFilter<$PrismaModel>
+    _max?: NestedEnumQueueStatusFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -5598,24 +5770,24 @@ export namespace Prisma {
 
   export type QueueTicketCreateWithoutCustomerInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
-    branch: BranchCreateNestedOneWithoutTicketsInput
+    branch: BranchCreateNestedOneWithoutQueueTicketsInput
   }
 
   export type QueueTicketUncheckedCreateWithoutCustomerInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     branchId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketCreateOrConnectWithoutCustomerInput = {
@@ -5648,37 +5820,37 @@ export namespace Prisma {
     AND?: QueueTicketScalarWhereInput | QueueTicketScalarWhereInput[]
     OR?: QueueTicketScalarWhereInput[]
     NOT?: QueueTicketScalarWhereInput | QueueTicketScalarWhereInput[]
-    id?: StringFilter<"QueueTicket"> | string
-    ticketNumber?: StringFilter<"QueueTicket"> | string
-    customerId?: StringFilter<"QueueTicket"> | string
-    branchId?: StringFilter<"QueueTicket"> | string
+    id?: UuidFilter<"QueueTicket"> | string
+    ticketNumber?: IntFilter<"QueueTicket"> | number
+    customerId?: UuidFilter<"QueueTicket"> | string
+    branchId?: UuidFilter<"QueueTicket"> | string
     serviceType?: StringFilter<"QueueTicket"> | string
-    status?: EnumTicketStatusFilter<"QueueTicket"> | $Enums.TicketStatus
+    status?: EnumQueueStatusFilter<"QueueTicket"> | $Enums.QueueStatus
+    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
     calledAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
     completedAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
-    createdAt?: DateTimeFilter<"QueueTicket"> | Date | string
   }
 
   export type QueueTicketCreateWithoutBranchInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
-    customer: UserCreateNestedOneWithoutTicketsInput
+    customer: UserCreateNestedOneWithoutQueueTicketsInput
   }
 
   export type QueueTicketUncheckedCreateWithoutBranchInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     customerId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketCreateOrConnectWithoutBranchInput = {
@@ -5707,7 +5879,7 @@ export namespace Prisma {
     data: XOR<QueueTicketUpdateManyMutationInput, QueueTicketUncheckedUpdateManyWithoutBranchInput>
   }
 
-  export type UserCreateWithoutTicketsInput = {
+  export type UserCreateWithoutQueueTicketsInput = {
     id?: string
     firstName: string
     lastName: string
@@ -5718,7 +5890,7 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type UserUncheckedCreateWithoutTicketsInput = {
+  export type UserUncheckedCreateWithoutQueueTicketsInput = {
     id?: string
     firstName: string
     lastName: string
@@ -5729,12 +5901,12 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type UserCreateOrConnectWithoutTicketsInput = {
+  export type UserCreateOrConnectWithoutQueueTicketsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutTicketsInput, UserUncheckedCreateWithoutTicketsInput>
+    create: XOR<UserCreateWithoutQueueTicketsInput, UserUncheckedCreateWithoutQueueTicketsInput>
   }
 
-  export type BranchCreateWithoutTicketsInput = {
+  export type BranchCreateWithoutQueueTicketsInput = {
     id?: string
     name: string
     address: string
@@ -5743,7 +5915,7 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type BranchUncheckedCreateWithoutTicketsInput = {
+  export type BranchUncheckedCreateWithoutQueueTicketsInput = {
     id?: string
     name: string
     address: string
@@ -5752,23 +5924,23 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type BranchCreateOrConnectWithoutTicketsInput = {
+  export type BranchCreateOrConnectWithoutQueueTicketsInput = {
     where: BranchWhereUniqueInput
-    create: XOR<BranchCreateWithoutTicketsInput, BranchUncheckedCreateWithoutTicketsInput>
+    create: XOR<BranchCreateWithoutQueueTicketsInput, BranchUncheckedCreateWithoutQueueTicketsInput>
   }
 
-  export type UserUpsertWithoutTicketsInput = {
-    update: XOR<UserUpdateWithoutTicketsInput, UserUncheckedUpdateWithoutTicketsInput>
-    create: XOR<UserCreateWithoutTicketsInput, UserUncheckedCreateWithoutTicketsInput>
+  export type UserUpsertWithoutQueueTicketsInput = {
+    update: XOR<UserUpdateWithoutQueueTicketsInput, UserUncheckedUpdateWithoutQueueTicketsInput>
+    create: XOR<UserCreateWithoutQueueTicketsInput, UserUncheckedCreateWithoutQueueTicketsInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutTicketsInput = {
+  export type UserUpdateToOneWithWhereWithoutQueueTicketsInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutTicketsInput, UserUncheckedUpdateWithoutTicketsInput>
+    data: XOR<UserUpdateWithoutQueueTicketsInput, UserUncheckedUpdateWithoutQueueTicketsInput>
   }
 
-  export type UserUpdateWithoutTicketsInput = {
+  export type UserUpdateWithoutQueueTicketsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
@@ -5779,7 +5951,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUncheckedUpdateWithoutTicketsInput = {
+  export type UserUncheckedUpdateWithoutQueueTicketsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
@@ -5790,18 +5962,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type BranchUpsertWithoutTicketsInput = {
-    update: XOR<BranchUpdateWithoutTicketsInput, BranchUncheckedUpdateWithoutTicketsInput>
-    create: XOR<BranchCreateWithoutTicketsInput, BranchUncheckedCreateWithoutTicketsInput>
+  export type BranchUpsertWithoutQueueTicketsInput = {
+    update: XOR<BranchUpdateWithoutQueueTicketsInput, BranchUncheckedUpdateWithoutQueueTicketsInput>
+    create: XOR<BranchCreateWithoutQueueTicketsInput, BranchUncheckedCreateWithoutQueueTicketsInput>
     where?: BranchWhereInput
   }
 
-  export type BranchUpdateToOneWithWhereWithoutTicketsInput = {
+  export type BranchUpdateToOneWithWhereWithoutQueueTicketsInput = {
     where?: BranchWhereInput
-    data: XOR<BranchUpdateWithoutTicketsInput, BranchUncheckedUpdateWithoutTicketsInput>
+    data: XOR<BranchUpdateWithoutQueueTicketsInput, BranchUncheckedUpdateWithoutQueueTicketsInput>
   }
 
-  export type BranchUpdateWithoutTicketsInput = {
+  export type BranchUpdateWithoutQueueTicketsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -5810,7 +5982,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type BranchUncheckedUpdateWithoutTicketsInput = {
+  export type BranchUncheckedUpdateWithoutQueueTicketsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
@@ -5821,90 +5993,90 @@ export namespace Prisma {
 
   export type QueueTicketCreateManyCustomerInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     branchId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    branch?: BranchUpdateOneRequiredWithoutTicketsNestedInput
+    branch?: BranchUpdateOneRequiredWithoutQueueTicketsNestedInput
   }
 
   export type QueueTicketUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     branchId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QueueTicketUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     branchId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QueueTicketCreateManyBranchInput = {
     id?: string
-    ticketNumber: string
+    ticketNumber: number
     customerId: string
     serviceType: string
-    status?: $Enums.TicketStatus
+    status?: $Enums.QueueStatus
+    createdAt?: Date | string
     calledAt?: Date | string | null
     completedAt?: Date | string | null
-    createdAt?: Date | string
   }
 
   export type QueueTicketUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    customer?: UserUpdateOneRequiredWithoutTicketsNestedInput
+    customer?: UserUpdateOneRequiredWithoutQueueTicketsNestedInput
   }
 
   export type QueueTicketUncheckedUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QueueTicketUncheckedUpdateManyWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
-    ticketNumber?: StringFieldUpdateOperationsInput | string
+    ticketNumber?: IntFieldUpdateOperationsInput | number
     customerId?: StringFieldUpdateOperationsInput | string
     serviceType?: StringFieldUpdateOperationsInput | string
-    status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
+    status?: EnumQueueStatusFieldUpdateOperationsInput | $Enums.QueueStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     calledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

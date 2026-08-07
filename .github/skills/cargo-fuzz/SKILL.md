@@ -14,13 +14,14 @@ cargo-fuzz is the de facto choice for fuzzing Rust projects when using Cargo. It
 
 cargo-fuzz is currently the primary and most mature fuzzing solution for Rust projects using Cargo.
 
-| Fuzzer | Best For | Complexity |
-|--------|----------|------------|
-| cargo-fuzz | Cargo-based Rust projects, quick setup | Low |
-| AFL++ | Multi-core fuzzing, non-Cargo projects | Medium |
-| LibAFL | Custom fuzzers, research, advanced use cases | High |
+| Fuzzer     | Best For                                     | Complexity |
+| ---------- | -------------------------------------------- | ---------- |
+| cargo-fuzz | Cargo-based Rust projects, quick setup       | Low        |
+| AFL++      | Multi-core fuzzing, non-Cargo projects       | Medium     |
+| LibAFL     | Custom fuzzers, research, advanced use cases | High       |
 
 **Choose cargo-fuzz when:**
+
 - Your project uses Cargo (required)
 - You want simple, quick setup with minimal configuration
 - You need integrated sanitizer support
@@ -43,6 +44,7 @@ fuzz_target!(|data: &[u8]| {
 ```
 
 Initialize and run:
+
 ```bash
 cargo fuzz init
 # Edit fuzz/fuzz_targets/fuzz_target_1.rs with your harness
@@ -88,11 +90,13 @@ Cargo.toml
 ```
 
 Initialize fuzzing:
+
 ```bash
 cargo fuzz init
 ```
 
 This creates:
+
 ```text
 fuzz/
 ├── Cargo.toml
@@ -124,12 +128,12 @@ fuzz_target!(|data: &[u8]| {
 
 ### Harness Rules
 
-| Do | Don't |
-|----|-------|
-| Structure code as library crate | Keep everything in main.rs |
-| Use `fuzz_target!` macro | Write custom main function |
-| Handle `Result::Err` gracefully | Panic on expected errors |
-| Keep harness deterministic | Use random number generators |
+| Do                              | Don't                        |
+| ------------------------------- | ---------------------------- |
+| Structure code as library crate | Keep everything in main.rs   |
+| Use `fuzz_target!` macro        | Write custom main function   |
+| Handle `Result::Err` gracefully | Panic on expected errors     |
+| Keep harness deterministic      | Use random number generators |
 
 > **See Also:** For detailed harness writing techniques and structure-aware fuzzing with the
 > `arbitrary` crate, see the **fuzz-harness-writing** technique skill.
@@ -159,6 +163,7 @@ fuzz_target!(|data: your_project::Name| {
 ```
 
 Add to your library's `Cargo.toml`:
+
 ```toml
 [dependencies]
 arbitrary = { version = "1", features = ["derive"] }
@@ -181,6 +186,7 @@ cargo +nightly fuzz run --sanitizer none fuzz_target_1
 ```
 
 Check if your project uses unsafe code:
+
 ```bash
 cargo install cargo-geiger
 cargo geiger
@@ -204,12 +210,12 @@ cargo +nightly fuzz run fuzz_target_1 -- -dict=./dict.dict
 
 ### Interpreting Output
 
-| Output | Meaning |
-|--------|---------|
-| `NEW` | New coverage-increasing input discovered |
-| `pulse` | Periodic status update |
-| `INITED` | Fuzzer initialized successfully |
-| Crash with stack trace | Bug found, saved to `fuzz/artifacts/` |
+| Output                 | Meaning                                  |
+| ---------------------- | ---------------------------------------- |
+| `NEW`                  | New coverage-increasing input discovered |
+| `pulse`                | Periodic status update                   |
+| `INITED`               | Fuzzer initialized successfully          |
+| Crash with stack trace | Bug found, saved to `fuzz/artifacts/`    |
 
 Corpus location: `fuzz/corpus/fuzz_target_1/`
 Crashes location: `fuzz/artifacts/fuzz_target_1/`
@@ -287,6 +293,7 @@ chmod +x ./generate_html
 ```
 
 Generate HTML report:
+
 ```bash
 ./generate_html fuzz_target_1 src/lib.rs
 ```
@@ -300,13 +307,13 @@ HTML report saved to: `fuzz_html/`
 
 ### Tips and Tricks
 
-| Tip | Why It Helps |
-|-----|--------------|
-| Start with a seed corpus | Dramatically speeds up initial coverage discovery |
-| Use `--sanitizer none` for safe Rust | 2x performance improvement |
-| Check coverage regularly | Identifies gaps in harness or seed corpus |
-| Use dictionaries for parsers | Helps overcome magic value checks |
-| Structure code as library | Required for cargo-fuzz integration |
+| Tip                                  | Why It Helps                                      |
+| ------------------------------------ | ------------------------------------------------- |
+| Start with a seed corpus             | Dramatically speeds up initial coverage discovery |
+| Use `--sanitizer none` for safe Rust | 2x performance improvement                        |
+| Check coverage regularly             | Identifies gaps in harness or seed corpus         |
+| Use dictionaries for parsers         | Helps overcome magic value checks                 |
+| Structure code as library            | Required for cargo-fuzz integration               |
 
 ### libFuzzer Options
 
@@ -394,6 +401,7 @@ fuzz_target!(|data: &[u8]| {
 ```
 
 Seed the corpus:
+
 ```bash
 mkdir fuzz/corpus/fuzz_target_1/
 curl -o fuzz/corpus/fuzz_target_1/320x240.ogg \
@@ -401,11 +409,13 @@ curl -o fuzz/corpus/fuzz_target_1/320x240.ogg \
 ```
 
 Run:
+
 ```bash
 cargo +nightly fuzz run fuzz_target_1
 ```
 
 Analyze coverage:
+
 ```bash
 cargo +nightly fuzz coverage fuzz_target_1
 ./generate_html fuzz_target_1 src/lib.rs
@@ -413,34 +423,34 @@ cargo +nightly fuzz coverage fuzz_target_1
 
 ## Troubleshooting
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| "requires nightly" error | Using stable toolchain | Use `cargo +nightly fuzz` |
-| Slow fuzzing performance | ASan enabled for safe Rust | Add `--sanitizer none` flag |
-| "cannot find binary" | No library crate | Move code from `main.rs` to `lib.rs` |
-| Sanitizer compilation issues | Wrong nightly version | Try different nightly: `rustup install nightly-2024-01-01` |
-| Low coverage | Missing seed corpus | Add sample inputs to `fuzz/corpus/fuzz_target_1/` |
-| Magic value not found | No dictionary | Create dictionary file with magic values |
+| Problem                      | Cause                      | Solution                                                   |
+| ---------------------------- | -------------------------- | ---------------------------------------------------------- |
+| "requires nightly" error     | Using stable toolchain     | Use `cargo +nightly fuzz`                                  |
+| Slow fuzzing performance     | ASan enabled for safe Rust | Add `--sanitizer none` flag                                |
+| "cannot find binary"         | No library crate           | Move code from `main.rs` to `lib.rs`                       |
+| Sanitizer compilation issues | Wrong nightly version      | Try different nightly: `rustup install nightly-2024-01-01` |
+| Low coverage                 | Missing seed corpus        | Add sample inputs to `fuzz/corpus/fuzz_target_1/`          |
+| Magic value not found        | No dictionary              | Create dictionary file with magic values                   |
 
 ## Related Skills
 
 ### Technique Skills
 
-| Skill | Use Case |
-|-------|----------|
+| Skill                    | Use Case                                       |
+| ------------------------ | ---------------------------------------------- |
 | **fuzz-harness-writing** | Structure-aware fuzzing with `arbitrary` crate |
-| **address-sanitizer** | Understanding ASan output and configuration |
-| **coverage-analysis** | Measuring and improving fuzzing effectiveness |
-| **fuzzing-corpus** | Building and managing seed corpora |
+| **address-sanitizer**    | Understanding ASan output and configuration    |
+| **coverage-analysis**    | Measuring and improving fuzzing effectiveness  |
+| **fuzzing-corpus**       | Building and managing seed corpora             |
 | **fuzzing-dictionaries** | Creating dictionaries for format-aware fuzzing |
 
 ### Related Fuzzers
 
-| Skill | When to Consider |
-|-------|------------------|
-| **libfuzzer** | Fuzzing C/C++ code with similar workflow |
-| **aflpp** | Multi-core fuzzing or non-Cargo Rust projects |
-| **libafl** | Advanced fuzzing research or custom fuzzer development |
+| Skill         | When to Consider                                       |
+| ------------- | ------------------------------------------------------ |
+| **libfuzzer** | Fuzzing C/C++ code with similar workflow               |
+| **aflpp**     | Multi-core fuzzing or non-Cargo Rust projects          |
+| **libafl**    | Advanced fuzzing research or custom fuzzer development |
 
 ## Resources
 

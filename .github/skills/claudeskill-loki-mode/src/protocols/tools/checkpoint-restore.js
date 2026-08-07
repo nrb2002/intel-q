@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 /**
  * loki/checkpoint-restore tool
@@ -10,54 +10,54 @@ const crypto = require('crypto');
  * List available checkpoints and restore project state from a specific checkpoint.
  */
 
-const TOOL_NAME = 'loki/checkpoint-restore';
+const TOOL_NAME = "loki/checkpoint-restore";
 
 const schema = {
   name: TOOL_NAME,
-  description: 'List available checkpoints or restore project state from a specific checkpoint.',
+  description: "List available checkpoints or restore project state from a specific checkpoint.",
   inputSchema: {
-    type: 'object',
+    type: "object",
     properties: {
       action: {
-        type: 'string',
-        enum: ['list', 'create', 'restore'],
-        description: 'Action to perform (default: list)',
-        default: 'list'
+        type: "string",
+        enum: ["list", "create", "restore"],
+        description: "Action to perform (default: list)",
+        default: "list",
       },
       checkpointId: {
-        type: 'string',
-        description: 'Checkpoint ID (required for restore action)'
+        type: "string",
+        description: "Checkpoint ID (required for restore action)",
       },
       label: {
-        type: 'string',
-        description: 'Label for the checkpoint (used with create action)'
-      }
+        type: "string",
+        description: "Label for the checkpoint (used with create action)",
+      },
     },
-    required: []
-  }
+    required: [],
+  },
 };
 
 function execute(params) {
-  const action = params.action || 'list';
-  const lokiDir = path.resolve(process.cwd(), '.loki');
-  const checkpointDir = path.join(lokiDir, 'checkpoints');
+  const action = params.action || "list";
+  const lokiDir = path.resolve(process.cwd(), ".loki");
+  const checkpointDir = path.join(lokiDir, "checkpoints");
 
-  if (action === 'list') {
+  if (action === "list") {
     return listCheckpoints(checkpointDir);
   }
 
-  if (action === 'create') {
+  if (action === "create") {
     return createCheckpoint(lokiDir, checkpointDir, params.label);
   }
 
-  if (action === 'restore') {
+  if (action === "restore") {
     if (!params.checkpointId) {
-      return { success: false, error: 'checkpointId is required for restore action' };
+      return { success: false, error: "checkpointId is required for restore action" };
     }
     return restoreCheckpoint(lokiDir, checkpointDir, params.checkpointId);
   }
 
-  return { success: false, error: 'Unknown action: ' + action };
+  return { success: false, error: "Unknown action: " + action };
 }
 
 function listCheckpoints(checkpointDir) {
@@ -69,23 +69,23 @@ function listCheckpoints(checkpointDir) {
   try {
     const files = fs.readdirSync(checkpointDir);
     for (const file of files) {
-      if (!file.endsWith('.json')) continue;
+      if (!file.endsWith(".json")) continue;
       const fullPath = path.join(checkpointDir, file);
       try {
-        const data = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(fullPath, "utf8"));
         entries.push({
-          id: data.id || file.replace('.json', ''),
-          label: data.label || '',
+          id: data.id || file.replace(".json", ""),
+          label: data.label || "",
           createdAt: data.createdAt || null,
-          phase: data.phase || 'unknown',
-          tasksCompleted: data.tasksCompleted || 0
+          phase: data.phase || "unknown",
+          tasksCompleted: data.tasksCompleted || 0,
         });
       } catch (err) {
         // Skip corrupted checkpoints
       }
     }
   } catch (err) {
-    return { success: false, error: 'Failed to read checkpoints: ' + err.message };
+    return { success: false, error: "Failed to read checkpoints: " + err.message };
   }
 
   // Sort by creation time descending
@@ -99,32 +99,32 @@ function listCheckpoints(checkpointDir) {
 }
 
 function createCheckpoint(lokiDir, checkpointDir, label) {
-  const stateDir = path.join(lokiDir, 'state');
+  const stateDir = path.join(lokiDir, "state");
 
   try {
     fs.mkdirSync(checkpointDir, { recursive: true });
   } catch (err) {
-    return { success: false, error: 'Failed to create checkpoint directory: ' + err.message };
+    return { success: false, error: "Failed to create checkpoint directory: " + err.message };
   }
 
-  const checkpointId = 'chk-' + crypto.randomBytes(4).toString('hex');
+  const checkpointId = "chk-" + crypto.randomBytes(4).toString("hex");
   const timestamp = new Date().toISOString();
 
   // Snapshot all state files
   const snapshot = {
     id: checkpointId,
-    label: label || '',
+    label: label || "",
     createdAt: timestamp,
-    state: {}
+    state: {},
   };
 
   if (fs.existsSync(stateDir)) {
     try {
       const files = fs.readdirSync(stateDir);
       for (const file of files) {
-        if (!file.endsWith('.json')) continue;
+        if (!file.endsWith(".json")) continue;
         try {
-          const content = fs.readFileSync(path.join(stateDir, file), 'utf8');
+          const content = fs.readFileSync(path.join(stateDir, file), "utf8");
           snapshot.state[file] = JSON.parse(content);
         } catch (err) {
           // Skip files that cannot be read
@@ -136,28 +136,28 @@ function createCheckpoint(lokiDir, checkpointDir, label) {
   }
 
   // Extract summary fields
-  const orch = snapshot.state['orchestrator.json'];
+  const orch = snapshot.state["orchestrator.json"];
   if (orch) {
-    snapshot.phase = orch.currentPhase || 'unknown';
+    snapshot.phase = orch.currentPhase || "unknown";
     snapshot.tasksCompleted = orch.tasksCompleted || 0;
   }
 
   try {
     fs.writeFileSync(
-      path.join(checkpointDir, checkpointId + '.json'),
+      path.join(checkpointDir, checkpointId + ".json"),
       JSON.stringify(snapshot, null, 2),
-      'utf8'
+      "utf8",
     );
   } catch (err) {
-    return { success: false, error: 'Failed to write checkpoint: ' + err.message };
+    return { success: false, error: "Failed to write checkpoint: " + err.message };
   }
 
   return {
     success: true,
     checkpointId: checkpointId,
-    label: label || '',
+    label: label || "",
     createdAt: timestamp,
-    stateFiles: Object.keys(snapshot.state).length
+    stateFiles: Object.keys(snapshot.state).length,
   };
 }
 
@@ -167,29 +167,29 @@ const CHECKPOINT_ID_RE = /^chk-[0-9a-f]{8}$/;
 function restoreCheckpoint(lokiDir, checkpointDir, checkpointId) {
   // Validate format before any filesystem access to prevent path traversal.
   if (!CHECKPOINT_ID_RE.test(checkpointId)) {
-    return { success: false, error: 'Invalid checkpoint ID format' };
+    return { success: false, error: "Invalid checkpoint ID format" };
   }
 
-  const checkpointPath = path.resolve(checkpointDir, checkpointId + '.json');
+  const checkpointPath = path.resolve(checkpointDir, checkpointId + ".json");
 
   // Verify the resolved path is still inside checkpointDir.
   const resolvedDir = path.resolve(checkpointDir);
   if (!checkpointPath.startsWith(resolvedDir + path.sep) && checkpointPath !== resolvedDir) {
-    return { success: false, error: 'Invalid checkpoint ID: path traversal detected' };
+    return { success: false, error: "Invalid checkpoint ID: path traversal detected" };
   }
 
   if (!fs.existsSync(checkpointPath)) {
-    return { success: false, error: 'Checkpoint not found: ' + checkpointId };
+    return { success: false, error: "Checkpoint not found: " + checkpointId };
   }
 
   let snapshot;
   try {
-    snapshot = JSON.parse(fs.readFileSync(checkpointPath, 'utf8'));
+    snapshot = JSON.parse(fs.readFileSync(checkpointPath, "utf8"));
   } catch (err) {
-    return { success: false, error: 'Failed to read checkpoint: ' + err.message };
+    return { success: false, error: "Failed to read checkpoint: " + err.message };
   }
 
-  const stateDir = path.join(lokiDir, 'state');
+  const stateDir = path.join(lokiDir, "state");
   try {
     fs.mkdirSync(stateDir, { recursive: true });
   } catch (err) {
@@ -201,11 +201,7 @@ function restoreCheckpoint(lokiDir, checkpointDir, checkpointId) {
   const stateEntries = snapshot.state || {};
   for (const [filename, content] of Object.entries(stateEntries)) {
     try {
-      fs.writeFileSync(
-        path.join(stateDir, filename),
-        JSON.stringify(content, null, 2),
-        'utf8'
-      );
+      fs.writeFileSync(path.join(stateDir, filename), JSON.stringify(content, null, 2), "utf8");
       restored.push(filename);
     } catch (err) {
       // Skip files that cannot be written
@@ -215,10 +211,10 @@ function restoreCheckpoint(lokiDir, checkpointDir, checkpointId) {
   return {
     success: true,
     checkpointId: checkpointId,
-    label: snapshot.label || '',
+    label: snapshot.label || "",
     restoredAt: new Date().toISOString(),
     restoredFiles: restored,
-    restoredCount: restored.length
+    restoredCount: restored.length,
   };
 }
 

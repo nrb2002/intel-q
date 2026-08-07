@@ -43,6 +43,7 @@ parallel without collision.
 All paths relative to repo root `/Users/lokesh/git/loki-mode`.
 
 ### Proxy 1 - circuit-breaker no-change counter
+
 - Var declared: `autonomy/completion-council.sh:70` (`COUNCIL_CONSECUTIVE_NO_CHANGE=0`).
 - Incremented: `completion-council.sh:178`; reset: `:180`. Driven by a combined
   hash of `git diff --stat HEAD` + staged diff + last commit hash
@@ -55,6 +56,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
 - Updated every iteration via `council_track_iteration` (run.sh:12390).
 
 ### Proxy 2 - file-churn oscillation / reverts
+
 - Existing data: `convergence.log` is appended at
   `completion-council.sh:215` with line format
   `timestamp|iteration|files_changed|consecutive_no_change|done_signals`.
@@ -77,6 +79,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   decision function stays pure (no git calls). See slice A for which.
 
 ### Proxy 3 - persistent council split
+
 - approve_count computed in `council_vote` (`completion-council.sh:270`,
   tallied `:388`, anti-sycophancy adjust `:417`).
 - effective_threshold: `completion-council.sh:293`
@@ -101,11 +104,13 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   a known limit (section 5).
 
 ### notify_intervention_needed
+
 - `autonomy/run.sh:2328`. Signature: `notify_intervention_needed "$reason"`;
   thin wrapper over `send_notification "Intervention Needed" "$reason"
-  "critical"`.
+"critical"`.
 
 ### PAUSE consume / clear path (perpetual-mode crux)
+
 - Consumer: `check_human_intervention` (run.sh:12701), PAUSE branch
   `:12708`.
 - Perpetual auto-clear: `:12711-12730`. In perpetual mode PAUSE is
@@ -124,6 +129,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   "notify-only; PAUSE will not halt this run" line.
 
 ### write_structured_handoff
+
 - `autonomy/run.sh:8816`. Verified single live definition (the
   "active definition is below" comment at :8811 refers to
   `load_handoff_context`, not a second handoff def; grep shows one
@@ -132,6 +138,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   `.loki/memory/handoffs/<ts>.json` + `.md`.
 
 ### Loop point for the escalation check
+
 - Slot the ACTION immediately AFTER `council_track_iteration` in the main loop:
   run.sh:12388-12391. At this point proxy 1 and proxy 2 are freshly written for
   this iteration, and proxy 3 is fresh exactly when it matters (circuit-forced
@@ -139,6 +146,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   (run.sh:12408+), so escalation is evaluated every iteration.
 
 ### Mirror precedent (action shape)
+
 - Gate-escalation block run.sh:12308-12318 is the precedent to clone: write a
   `signals/` marker (`:12310`), call a handoff hook with its own opt-out
   (`:12314`), then `touch .loki/PAUSE` (`:12317`). Our action mirrors this with
@@ -150,6 +158,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
 ## 2. Escalation decision function design
 
 ### Inputs (all read from persisted state, no live shell vars)
+
 1. `p1` = proxy 1 hot: from `state.json.consecutive_no_change`. Hot when
    `>= LOKI_UNCERTAINTY_NOCHANGE_MIN` (default = `COUNCIL_STAGNATION_LIMIT` - 1,
    i.e. "approaching circuit-breaker"). Reading slightly below the breaker limit
@@ -162,6 +171,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
    `>= LOKI_UNCERTAINTY_SPLIT_ROUNDS` (default 2).
 
 ### Co-occurrence + N-round debounce
+
 - Per round (= per iteration; "round" is defined as one main-loop iteration),
   compute `hot_count = p1 + p2 + p3`.
 - `co_occur = (hot_count >= 2)`.
@@ -173,6 +183,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
 - A single noisy proxy can NEVER escalate alone (requires hot_count >= 2).
 
 ### Debounce (escalate once per stuck-episode)
+
 - `uncertainty.json` carries `escalated_episode: true|false`.
 - On escalate, set `escalated_episode = true` and record
   `escalated_at_iteration`.
@@ -183,6 +194,7 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
   the reset condition explicitly so a dev does not "helpfully" keep it latched.
 
 ### State persistence
+
 - File: `.loki/state/uncertainty.json` (singular; the `uncertainty-*.json` glob
   in the brief maps to this one file - keep it single to avoid an unbounded
   directory). Schema:
@@ -194,22 +206,26 @@ All paths relative to repo root `/Users/lokesh/git/loki-mode`.
     "escalated_at_iteration": 0,
     "diff_hash_ring": ["<h>", "<h>", "..."],
     "last_round_iteration": 0,
-    "last_proxies": {"p1": false, "p2": false, "p3": false}
+    "last_proxies": { "p1": false, "p2": false, "p3": false }
   }
   ```
 - Ring buffer bounded to 6 entries (constant). All writes atomic temp+mv,
   mirroring evidence-block.json (`completion-council.sh:1059-1086`).
 
 ### Knob-first byte-identical guard
+
 First line of `uncertainty_should_escalate`, BEFORE any read or write:
+
 ```
 [ "${LOKI_UNCERTAINTY_ESCALATION:-1}" = "0" ] && return 1
 ```
+
 (rc 1 = do-not-escalate; mirrors `council_evidence_gate`'s knob-first guard at
 completion-council.sh:909). When off: zero file reads, zero writes, zero state
 file creation => byte-identical.
 
 ### Knobs summary (all opt-out / tunable, none required)
+
 - `LOKI_UNCERTAINTY_ESCALATION` (default 1) - master on/off.
 - `LOKI_UNCERTAINTY_ROUNDS` (default 2) - N consecutive co-occurrence rounds.
 - `LOKI_UNCERTAINTY_NOCHANGE_MIN` (default `COUNCIL_STAGNATION_LIMIT - 1`) - p1
@@ -226,6 +242,7 @@ only), atomic temp+mv for all state writes, knob-first opt-out where the slice
 touches the hot loop.
 
 ### Slice A - decision function + state schema (completion-council.sh)
+
 - Region: add `uncertainty_should_escalate` and a tiny
   `_uncertainty_read_state` / `_uncertainty_write_state` pair near the other
   `council_*` state helpers (after `council_circuit_breaker_triggered`,
@@ -241,6 +258,7 @@ touches the hot loop.
 - File-region disjoint from slice B (different file).
 
 ### Slice B - action + wiring (run.sh)
+
 - Region: new block right after `council_track_iteration` call
   (run.sh:12389-12391).
 - Logic:
@@ -258,6 +276,7 @@ touches the hot loop.
 - File-region disjoint from slices A, C, D.
 
 ### Slice C - tests (tests/test-uncertainty-escalation.sh)
+
 - New file. Sources the real `uncertainty_should_escalate` from
   completion-council.sh, stubs `log_*`, runs per-case throwaway dirs. Models
   tests/test-evidence-gate.sh exactly. Asserts decision-only (no real notify /
@@ -265,6 +284,7 @@ touches the hot loop.
 - File-region disjoint (new file).
 
 ### Slice D - docs + knob registration
+
 - Register the four knobs in the config-comment block (the env-var doc region
   around run.sh:91-128 and the yaml mapping near :282/:424) and
   `autonomy/config.example.yaml`. Add a short section to the user-facing docs.
@@ -289,6 +309,7 @@ defined (mirrors evidence-gate's absent-impl banner). Each case sets
 `COUNCIL_STATE_DIR` and `ITERATION_COUNT` explicitly.
 
 Cases:
+
 1. PROXY READ - p1 only hot: `consecutive_no_change` >= min, hash unique,
    verdicts approved. Assert `last_proxies.p1 == true`, others false, rc 1
    (NO escalate on 1 proxy). Proves proxy 1 is read.

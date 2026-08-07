@@ -335,7 +335,7 @@ export function createSignal(
   type: SignalType,
   source: SignalSource,
   action: string,
-  options: Partial<LearningSignal> = {}
+  options: Partial<LearningSignal> = {},
 ): LearningSignal {
   return {
     id: options.id || generateId(),
@@ -358,7 +358,7 @@ export function createUserPreferenceSignal(
   action: string,
   preferenceKey: string,
   preferenceValue: unknown,
-  options: Partial<UserPreferenceSignal> = {}
+  options: Partial<UserPreferenceSignal> = {},
 ): UserPreferenceSignal {
   const base = createSignal(SignalType.USER_PREFERENCE, source, action, {
     ...options,
@@ -382,7 +382,7 @@ export function createErrorPatternSignal(
   action: string,
   errorType: string,
   errorMessage: string,
-  options: Partial<ErrorPatternSignal> = {}
+  options: Partial<ErrorPatternSignal> = {},
 ): ErrorPatternSignal {
   const base = createSignal(SignalType.ERROR_PATTERN, source, action, {
     ...options,
@@ -408,7 +408,7 @@ export function createSuccessPatternSignal(
   action: string,
   patternName: string,
   actionSequence: string[],
-  options: Partial<SuccessPatternSignal> = {}
+  options: Partial<SuccessPatternSignal> = {},
 ): SuccessPatternSignal {
   const base = createSignal(SignalType.SUCCESS_PATTERN, source, action, {
     ...options,
@@ -433,7 +433,7 @@ export function createToolEfficiencySignal(
   source: SignalSource,
   action: string,
   toolName: string,
-  options: Partial<ToolEfficiencySignal> = {}
+  options: Partial<ToolEfficiencySignal> = {},
 ): ToolEfficiencySignal {
   const base = createSignal(SignalType.TOOL_EFFICIENCY, source, action, {
     ...options,
@@ -459,7 +459,7 @@ export function createWorkflowPatternSignal(
   action: string,
   workflowName: string,
   steps: string[],
-  options: Partial<WorkflowPatternSignal> = {}
+  options: Partial<WorkflowPatternSignal> = {},
 ): WorkflowPatternSignal {
   const base = createSignal(SignalType.WORKFLOW_PATTERN, source, action, {
     ...options,
@@ -485,7 +485,7 @@ export function createContextRelevanceSignal(
   action: string,
   query: string,
   retrievedContextIds: string[],
-  options: Partial<ContextRelevanceSignal> = {}
+  options: Partial<ContextRelevanceSignal> = {},
 ): ContextRelevanceSignal {
   const precision = options.precision ?? 0.0;
   let outcome: Outcome;
@@ -642,26 +642,23 @@ function parseSignalType(data: Record<string, unknown>): AnyLearningSignal {
 /**
  * Read signals from storage.
  */
-export function getSignals(options: {
-  lokiDir?: string;
-  signalType?: SignalType;
-  source?: SignalSource;
-  since?: Date;
-  limit?: number;
-} = {}): AnyLearningSignal[] {
-  const {
-    lokiDir = ".loki",
-    signalType,
-    source,
-    since,
-    limit = 100,
-  } = options;
+export function getSignals(
+  options: {
+    lokiDir?: string;
+    signalType?: SignalType;
+    source?: SignalSource;
+    since?: Date;
+    limit?: number;
+  } = {},
+): AnyLearningSignal[] {
+  const { lokiDir = ".loki", signalType, source, since, limit = 100 } = options;
 
   const signalsDir = getSignalsDir(lokiDir);
   const signals: AnyLearningSignal[] = [];
 
   try {
-    const files = fs.readdirSync(signalsDir)
+    const files = fs
+      .readdirSync(signalsDir)
       .filter((f) => f.endsWith(".json"))
       .sort()
       .reverse();
@@ -706,7 +703,10 @@ export function getSignals(options: {
 /**
  * Get a specific signal by ID.
  */
-export function getSignalById(signalId: string, lokiDir: string = ".loki"): AnyLearningSignal | null {
+export function getSignalById(
+  signalId: string,
+  lokiDir: string = ".loki",
+): AnyLearningSignal | null {
   const signalsDir = getSignalsDir(lokiDir);
 
   try {

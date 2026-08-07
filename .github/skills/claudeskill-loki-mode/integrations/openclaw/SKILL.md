@@ -6,12 +6,14 @@ description: "Launch Loki Mode autonomous SDLC agent. Handles PRD-to-deployment 
 # Loki Mode - OpenClaw Skill
 
 ## When to use
+
 - User asks to "build", "implement", or "develop" a feature from a PRD
 - User provides a requirements document and wants autonomous execution
 - User says "loki mode" or references autonomous development
 - User wants to run a full SDLC cycle on a codebase
 
 ## Prerequisites
+
 - `loki` CLI installed on the host (via `npm install -g loki-mode` or Homebrew)
 - One of: Claude Code, Codex CLI, or Gemini CLI installed
 - Corresponding API key set (ANTHROPIC_API_KEY, OPENAI_API_KEY, or GOOGLE_API_KEY)
@@ -19,12 +21,15 @@ description: "Launch Loki Mode autonomous SDLC agent. Handles PRD-to-deployment 
 ## How to invoke
 
 ### Start a session
+
 Use the bash tool with background mode:
+
 ```
 bash(command: "loki start <prd-path> --bg --yes --no-dashboard", pty: true, background: true, workdir: "<project-dir>")
 ```
 
 Key flags:
+
 - `--bg`: Background mode (session outlives the tool call)
 - `--yes`: Skip confirmation prompts
 - `--no-dashboard`: Avoid port conflicts in sandboxed environments
@@ -32,12 +37,15 @@ Key flags:
 - `--budget <amount>`: Set cost limit in USD (auto-pause when exceeded)
 
 ### Monitor progress
+
 Poll status every 30 seconds:
+
 ```
 bash(command: "loki status --json", workdir: "<project-dir>")
 ```
 
 The JSON output contains:
+
 - `version`: Loki Mode version string
 - `status`: inactive, running, paused, stopped, completed, unknown
 - `phase`: Current SDLC phase (e.g., BOOTSTRAP, DISCOVERY, ARCHITECTURE, DEVELOPMENT, QA, DEPLOYMENT)
@@ -49,22 +57,28 @@ The JSON output contains:
 - `task_counts`: Object with `total`, `completed`, `failed`, `pending` counts
 
 For budget tracking (not in JSON output), read the budget file directly:
+
 ```
 bash(command: "cat .loki/metrics/budget.json 2>/dev/null || echo '{}'", workdir: "<project-dir>")
 ```
+
 Budget JSON fields: `budget_limit`, `budget_used`
 
 ### Report progress to channel
+
 After each poll, summarize changes:
+
 - Phase transitions ("Moved from ARCHITECTURE to DEVELOPMENT")
 - Task completion counts ("12/20 tasks complete, 0 failed")
 - Elapsed time ("Running for 45 minutes")
 - Error states that need attention (failed tasks > 0, status is unknown)
 
 If budget tracking is active, include cost in updates:
+
 - "Estimated cost: $4.50 / $50.00 budget"
 
 ### Control commands
+
 - Pause: `bash(command: "loki pause", workdir: "<project-dir>")`
 - Resume: `bash(command: "loki resume", workdir: "<project-dir>")`
 - Stop: `bash(command: "loki stop", workdir: "<project-dir>")`
@@ -72,13 +86,16 @@ If budget tracking is active, include cost in updates:
 - Logs: `bash(command: "loki logs --tail 50", workdir: "<project-dir>")`
 
 ### Session complete
+
 When status becomes "stopped" or "completed":
+
 1. Run `loki status --json` for final summary
 2. Run `git log --oneline -20` to show commits made
 3. Report final task counts, elapsed time, and duration
 4. If council verdict exists, include it: `cat .loki/council/report.md`
 
 ## Critical rules
+
 - ALWAYS use --bg flag (session must outlive the tool call)
 - ALWAYS use --yes flag (no confirmation prompts in non-interactive channels)
 - NEVER run loki in the OpenClaw workspace directory itself

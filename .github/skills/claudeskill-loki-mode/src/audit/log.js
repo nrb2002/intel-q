@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 const MAX_MEMORY_ENTRIES = 1000;
-const HASH_ALGO = 'sha256';
+const HASH_ALGO = "sha256";
 
 class AuditLog {
   constructor(opts) {
     const projectDir = (opts && opts.projectDir) || process.cwd();
-    this._logDir = (opts && opts.logDir) || path.join(projectDir, '.loki', 'audit');
-    this._logFile = path.join(this._logDir, 'audit.jsonl');
+    this._logDir = (opts && opts.logDir) || path.join(projectDir, ".loki", "audit");
+    this._logFile = path.join(this._logDir, "audit.jsonl");
     this._entries = [];
-    this._lastHash = 'GENESIS';
+    this._lastHash = "GENESIS";
     this._entryCount = 0;
     this._loadChainTip();
   }
@@ -48,8 +48,13 @@ class AuditLog {
     if (!fs.existsSync(this._logDir)) {
       fs.mkdirSync(this._logDir, { recursive: true });
     }
-    var lines = this._entries.map(function (e) { return JSON.stringify(e); }).join('\n') + '\n';
-    fs.appendFileSync(this._logFile, lines, 'utf8');
+    var lines =
+      this._entries
+        .map(function (e) {
+          return JSON.stringify(e);
+        })
+        .join("\n") + "\n";
+    fs.appendFileSync(this._logFile, lines, "utf8");
     this._entries = [];
   }
 
@@ -58,26 +63,36 @@ class AuditLog {
     if (!fs.existsSync(this._logFile)) {
       return { valid: true, entries: 0, brokenAt: null, error: null };
     }
-    var content = fs.readFileSync(this._logFile, 'utf8').trim();
+    var content = fs.readFileSync(this._logFile, "utf8").trim();
     if (!content) {
       return { valid: true, entries: 0, brokenAt: null, error: null };
     }
-    var lines = content.split('\n');
-    var expectedPrevHash = 'GENESIS';
+    var lines = content.split("\n");
+    var expectedPrevHash = "GENESIS";
     var count = 0;
     for (var i = 0; i < lines.length; i++) {
       var entry;
-      try { entry = JSON.parse(lines[i]); } catch (e) {
-        return { valid: false, entries: count, brokenAt: i, error: 'Invalid JSON at line ' + i };
+      try {
+        entry = JSON.parse(lines[i]);
+      } catch (e) {
+        return { valid: false, entries: count, brokenAt: i, error: "Invalid JSON at line " + i };
       }
       if (entry.previousHash !== expectedPrevHash) {
-        return { valid: false, entries: count, brokenAt: i,
-          error: 'Hash chain broken at entry ' + i };
+        return {
+          valid: false,
+          entries: count,
+          brokenAt: i,
+          error: "Hash chain broken at entry " + i,
+        };
       }
       var computedHash = this._computeHash(entry);
       if (computedHash !== entry.hash) {
-        return { valid: false, entries: count, brokenAt: i,
-          error: 'Hash mismatch at entry ' + i + ': entry has been tampered with' };
+        return {
+          valid: false,
+          entries: count,
+          brokenAt: i,
+          error: "Hash mismatch at entry " + i + ": entry has been tampered with",
+        };
       }
       expectedPrevHash = entry.hash;
       count++;
@@ -88,16 +103,35 @@ class AuditLog {
   readEntries(filter) {
     this.flush();
     if (!fs.existsSync(this._logFile)) return [];
-    var content = fs.readFileSync(this._logFile, 'utf8').trim();
+    var content = fs.readFileSync(this._logFile, "utf8").trim();
     if (!content) return [];
-    var entries = content.split('\n').map(function (line) {
-      try { return JSON.parse(line); } catch (_) { return null; }
-    }).filter(Boolean);
+    var entries = content
+      .split("\n")
+      .map(function (line) {
+        try {
+          return JSON.parse(line);
+        } catch (_) {
+          return null;
+        }
+      })
+      .filter(Boolean);
     if (filter) {
-      if (filter.who) entries = entries.filter(function (e) { return e.who === filter.who; });
-      if (filter.what) entries = entries.filter(function (e) { return e.what === filter.what; });
-      if (filter.since) entries = entries.filter(function (e) { return e.timestamp >= filter.since; });
-      if (filter.until) entries = entries.filter(function (e) { return e.timestamp <= filter.until; });
+      if (filter.who)
+        entries = entries.filter(function (e) {
+          return e.who === filter.who;
+        });
+      if (filter.what)
+        entries = entries.filter(function (e) {
+          return e.what === filter.what;
+        });
+      if (filter.since)
+        entries = entries.filter(function (e) {
+          return e.timestamp >= filter.since;
+        });
+      if (filter.until)
+        entries = entries.filter(function (e) {
+          return e.timestamp <= filter.until;
+        });
     }
     return entries;
   }
@@ -126,25 +160,30 @@ class AuditLog {
 
   _computeHash(entry) {
     var data = JSON.stringify({
-      seq: entry.seq, timestamp: entry.timestamp, who: entry.who,
-      what: entry.what, where: entry.where, why: entry.why,
-      metadata: entry.metadata, previousHash: entry.previousHash,
+      seq: entry.seq,
+      timestamp: entry.timestamp,
+      who: entry.who,
+      what: entry.what,
+      where: entry.where,
+      why: entry.why,
+      metadata: entry.metadata,
+      previousHash: entry.previousHash,
     });
-    return crypto.createHash(HASH_ALGO).update(data).digest('hex');
+    return crypto.createHash(HASH_ALGO).update(data).digest("hex");
   }
 
   _loadChainTip() {
     if (!fs.existsSync(this._logFile)) return;
     try {
-      var content = fs.readFileSync(this._logFile, 'utf8').trim();
+      var content = fs.readFileSync(this._logFile, "utf8").trim();
       if (!content) return;
-      var lines = content.split('\n');
+      var lines = content.split("\n");
       var lastLine = lines[lines.length - 1];
       var lastEntry = JSON.parse(lastLine);
       this._lastHash = lastEntry.hash;
       this._entryCount = (lastEntry.seq || 0) + 1;
     } catch (_) {
-      console.warn('[audit] Warning: corrupted chain tip detected, starting fresh chain');
+      console.warn("[audit] Warning: corrupted chain tip detected, starting fresh chain");
       this._chainCorrupted = true;
     }
   }

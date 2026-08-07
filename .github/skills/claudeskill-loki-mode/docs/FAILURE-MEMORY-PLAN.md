@@ -93,9 +93,10 @@ within a run, so the within-run loop is closed by a recency read instead.
 ## Verification performed (so the reviewer can trust the deviation)
 
 Ran the real `memory` modules against a temp `.loki/memory`:
+
 - Stored a failed `EpisodeTrace` (outcome="failure", goal="build a todo REST API")
   with `ErrorEntry(error_type="IterationError", message="phase=ACT; signature:
-  handler > parse > json.loads; fp=abc123def456", resolution="")`.
+handler > parse > json.loads; fp=abc123def456", resolution="")`.
 - `MemoryStorage.list_episodes(since=now-24h)` -> 1 episode; filtered
   outcome=="failure" -> 1; surfaced the lesson WITH its full message. (Connector B
   recency read works.)
@@ -168,6 +169,7 @@ if os.environ.get('_LOKI_FAILURE_MEMORY', '1') != '0' and outcome == 'failure':
 ```
 
 Notes:
+
 - `trace.outcome` is already "failure" for non-zero exit (9411-9413, 9460), so
   the failed-episode filter (consolidation.py:192) and Connector B's recency read
   both see it. No extra outcome wiring.
@@ -256,11 +258,11 @@ On-disk crash JSON is the post-scrub whitelist dict (crash_capture.py:194-200).
 For ordinary failures the crash file is written at run.sh:12033 with
 `error_class="IterationError"`.
 
-| ErrorEntry field | Source crash field(s) | Mapping rule |
-|------------------|------------------------|--------------|
-| `error_type` | `error_class` -> else `friction_kind` -> `"IterationError"` | `error_class` is the sanitized class token (for ordinary failures it is "IterationError"; for friction records "Friction" with `friction_kind` carrying the kind). Becomes the displayed label. |
-| `message` | composed from `rarv_phase` + `friction_kind` + `stack_signature` (first 5 frames) + `fingerprint` (first 12 chars) | THIS is the discriminating, retrievable content (Connector B surfaces it directly; `extract_anti_patterns` would have thrown it away). All from whitelisted fields; never raw stack text. |
-| `resolution` | none at capture time | `""` (tolerated downstream). |
+| ErrorEntry field | Source crash field(s)                                                                                              | Mapping rule                                                                                                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `error_type`     | `error_class` -> else `friction_kind` -> `"IterationError"`                                                        | `error_class` is the sanitized class token (for ordinary failures it is "IterationError"; for friction records "Friction" with `friction_kind` carrying the kind). Becomes the displayed label. |
+| `message`        | composed from `rarv_phase` + `friction_kind` + `stack_signature` (first 5 frames) + `fingerprint` (first 12 chars) | THIS is the discriminating, retrievable content (Connector B surfaces it directly; `extract_anti_patterns` would have thrown it away). All from whitelisted fields; never raw stack text.       |
+| `resolution`     | none at capture time                                                                                               | `""` (tolerated downstream).                                                                                                                                                                    |
 
 Telemetry-off fallback (no crash file): `error_type="IterationError"`,
 `message="phase=<rarv_phase>; exit=<exit_code>"`, `resolution=""`. Uses only
@@ -320,10 +322,12 @@ simulation exercising the real Python modules), `tests/crash/`, and
 `tests/test-crash-cli.sh`.
 
 ### Test 1 (PRIMARY) - end-to-end, driven by the REAL input and the REAL query
+
 New file: `tests/integration/test_failure_memory_loop.sh`
 
 This test must NOT seed a query-matching record and must NOT put the error class
 in the query (that is the mask that hid the original retrieval bug):
+
 1. Input via the real path: write the crash file the way run.sh:12033 does
    (`error_class="IterationError"`, a stack producing a `stack_signature`), via
    `autonomy/lib/crash_capture.py` so the whitelist is authentic.
@@ -338,19 +342,23 @@ in the query (that is the mask that hid the original retrieval bug):
    ErrorEntry (`phase=...; exit=...`) and Connector B still emits the block.
 
 ### Test 2 - knob off is inert
+
 `LOKI_FAILURE_MEMORY=0`: no ErrorEntry attached; no `PAST FAILURES TO AVOID:`.
 
 ### Test 3 - Connector A mapping unit (Python, tests/memory/)
+
 Feed crash JSON shapes (IterationError, Friction, ScrubError minimal, and the
 no-file fallback) and assert the mapping (error_class vs friction_kind fallback;
 empty resolution; message composed only from whitelisted/non-sensitive fields).
 
 ### Test 4 - privacy regression (tests/crash/ negative style)
+
 Assert the ErrorEntry message and the rendered block contain none of: home path,
 repo owner/name, email, IPv4/IPv6 (cannot, since inputs are whitelisted or the
 non-sensitive fallback - guard test).
 
 ### Test 5 - Bun parity (only if a static line is added)
+
 If a static directive line is added, extend
 `loki-ts/tests/parity/build_prompt.test.ts` and refresh fixtures. If kept purely
 dynamic (recommended), assert the existing parity suite passes unchanged.
@@ -394,16 +402,16 @@ dynamic (recommended), assert the existing parity suite passes unchanged.
 
 ## Risks
 
-| # | Risk | Likelihood | Impact | Mitigation |
-|---|------|-----------|--------|------------|
-| 1 | Crash-file-to-episode mismatch when multiple crash files exist in one iteration | Medium | Low | Connector A picks most-recent-by-mtime; the per-iteration crash write (12033) runs just before capture. Connector B's recency read is on EPISODES (not crash files), so even a wrong crash file only mislabels one lesson, not the loop. Future: match by fingerprint/timestamp. |
-| 2 | Within-run loop closure (anti-pattern unreachable via goal query) | Was HIGH | High | RESOLVED by switching Connector B to a recency-scoped direct episode read (verified by live module run). The literal retrieve_anti_patterns path returned []; recency read returned the lesson. |
-| 3 | Telemetry-off silently empties the loop (no crash file) | Was HIGH | High | RESOLVED by Connector A's non-sensitive synthesized-fallback ErrorEntry. Feature is now independent of telemetry state. |
-| 4 | Retrieval relevance: recency may surface a failure unrelated to the current sub-goal | Low | Low | Within a run the goal is roughly constant, so recent failures are relevant by construction. Capped at 3. |
-| 5 | Lesson quality is thin (no auto-resolution) | Medium | Medium | message carries phase + stack_signature + fingerprint (discriminating). Flagged NOT tested for repeat-reduction. Future: thread a resolution/fix once available. |
-| 6 | Prompt bloat | Low | Low | <=3 recent + <=3 cross-run lines, each bounded (<=240 chars). No static line (Bun parity unchanged). |
-| 7 | Privacy: lesson leaking raw data | Low | High | Inputs are whitelisted crash fields or non-sensitive fallback (phase/exit only). Guard test (Test 4) asserts no path/repo/email/IP. Local only, no egress. |
-| 8 | Perpetual-mode volume / consolidation lock contention | Eliminated | n/a | Connector C (per-iteration consolidation) was DROPPED; only the existing end-of-run consolidations remain. Index-staleness (BUG-MEM-002) also moot for this feature since Connector B reads episodes, not the vector index. |
+| #   | Risk                                                                                 | Likelihood | Impact | Mitigation                                                                                                                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------------ | ---------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Crash-file-to-episode mismatch when multiple crash files exist in one iteration      | Medium     | Low    | Connector A picks most-recent-by-mtime; the per-iteration crash write (12033) runs just before capture. Connector B's recency read is on EPISODES (not crash files), so even a wrong crash file only mislabels one lesson, not the loop. Future: match by fingerprint/timestamp. |
+| 2   | Within-run loop closure (anti-pattern unreachable via goal query)                    | Was HIGH   | High   | RESOLVED by switching Connector B to a recency-scoped direct episode read (verified by live module run). The literal retrieve_anti_patterns path returned []; recency read returned the lesson.                                                                                  |
+| 3   | Telemetry-off silently empties the loop (no crash file)                              | Was HIGH   | High   | RESOLVED by Connector A's non-sensitive synthesized-fallback ErrorEntry. Feature is now independent of telemetry state.                                                                                                                                                          |
+| 4   | Retrieval relevance: recency may surface a failure unrelated to the current sub-goal | Low        | Low    | Within a run the goal is roughly constant, so recent failures are relevant by construction. Capped at 3.                                                                                                                                                                         |
+| 5   | Lesson quality is thin (no auto-resolution)                                          | Medium     | Medium | message carries phase + stack_signature + fingerprint (discriminating). Flagged NOT tested for repeat-reduction. Future: thread a resolution/fix once available.                                                                                                                 |
+| 6   | Prompt bloat                                                                         | Low        | Low    | <=3 recent + <=3 cross-run lines, each bounded (<=240 chars). No static line (Bun parity unchanged).                                                                                                                                                                             |
+| 7   | Privacy: lesson leaking raw data                                                     | Low        | High   | Inputs are whitelisted crash fields or non-sensitive fallback (phase/exit only). Guard test (Test 4) asserts no path/repo/email/IP. Local only, no egress.                                                                                                                       |
+| 8   | Perpetual-mode volume / consolidation lock contention                                | Eliminated | n/a    | Connector C (per-iteration consolidation) was DROPPED; only the existing end-of-run consolidations remain. Index-staleness (BUG-MEM-002) also moot for this feature since Connector B reads episodes, not the vector index.                                                      |
 
 ---
 
@@ -417,6 +425,7 @@ dynamic (recommended), assert the existing parity suite passes unchanged.
 5. CHANGELOG entry. (Version bump and commit are out of scope for this plan.)
 
 ## Critical Files for Implementation
+
 - /Users/lokesh/git/loki-mode/autonomy/run.sh
 - /Users/lokesh/git/loki-mode/memory/storage.py
 - /Users/lokesh/git/loki-mode/memory/schemas.py

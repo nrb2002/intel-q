@@ -31,12 +31,12 @@ echo 'LOKI_OTEL_ENDPOINT=http://otel-collector:4318' >> .env
 docker compose --profile observability up -d
 ```
 
-| Service        | URL                       | Purpose                  |
-|----------------|---------------------------|--------------------------|
-| Dashboard      | http://localhost:57374     | Autonomi dashboard       |
-| Jaeger UI      | http://localhost:16686     | Trace visualization      |
-| OTLP (gRPC)   | localhost:4317             | Trace ingestion (gRPC)   |
-| OTLP (HTTP)    | localhost:4318             | Trace ingestion (HTTP)   |
+| Service     | URL                    | Purpose                |
+| ----------- | ---------------------- | ---------------------- |
+| Dashboard   | http://localhost:57374 | Autonomi dashboard     |
+| Jaeger UI   | http://localhost:16686 | Trace visualization    |
+| OTLP (gRPC) | localhost:4317         | Trace ingestion (gRPC) |
+| OTLP (HTTP) | localhost:4318         | Trace ingestion (HTTP) |
 
 ## Enterprise Features
 
@@ -75,11 +75,11 @@ LOKI_JIRA_TOKEN=your-api-token
 
 Data is stored in Docker named volumes and survives `docker compose down`:
 
-| Volume        | Container Path       | Contents                     |
-|---------------|----------------------|------------------------------|
-| `checkpoints` | `/app/.loki/state`   | Agent state and checkpoints  |
-| `audit`       | `/app/.loki/audit`   | Audit logs                   |
-| `projects`    | `/workspace`         | Project workspaces           |
+| Volume        | Container Path     | Contents                    |
+| ------------- | ------------------ | --------------------------- |
+| `checkpoints` | `/app/.loki/state` | Agent state and checkpoints |
+| `audit`       | `/app/.loki/audit` | Audit logs                  |
+| `projects`    | `/workspace`       | Project workspaces          |
 
 To fully reset all data:
 

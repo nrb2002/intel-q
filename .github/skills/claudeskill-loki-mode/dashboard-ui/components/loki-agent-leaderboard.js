@@ -8,13 +8,13 @@
  * <loki-agent-leaderboard api-url="http://localhost:57374" theme="dark"></loki-agent-leaderboard>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 const RANK_COLORS = {
-  1: { bg: 'rgba(212, 160, 60, 0.15)', border: '#D4A03C', label: '1st' },
-  2: { bg: 'rgba(147, 144, 132, 0.15)', border: '#939084', label: '2nd' },
-  3: { bg: 'rgba(196, 130, 91, 0.15)', border: '#C4825B', label: '3rd' },
+  1: { bg: "rgba(212, 160, 60, 0.15)", border: "#D4A03C", label: "1st" },
+  2: { bg: "rgba(147, 144, 132, 0.15)", border: "#939084", label: "2nd" },
+  3: { bg: "rgba(196, 130, 91, 0.15)", border: "#C4825B", label: "3rd" },
 };
 
 /**
@@ -25,7 +25,7 @@ const RANK_COLORS = {
  */
 export class LokiAgentLeaderboard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -51,17 +51,17 @@ export class LokiAgentLeaderboard extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -78,14 +78,14 @@ export class LokiAgentLeaderboard extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/agents/leaderboard');
+      const data = await this._api._get("/api/v2/agents/leaderboard");
       const agents = data.agents || [];
       // Track rank changes
       const newRanks = {};
       agents.forEach((a, i) => {
         newRanks[a.type || a.name] = i + 1;
       });
-      this._previousRanks = { ...this._currentRanks || {} };
+      this._previousRanks = { ...(this._currentRanks || {}) };
       this._currentRanks = newRanks;
       this._agents = agents;
     } catch {
@@ -103,12 +103,54 @@ export class LokiAgentLeaderboard extends LokiElement {
 
   _getDemoData() {
     return [
-      { type: 'code-generator',    name: 'Code Generator',     tasks: 24, quality: 9.2, speed: 'fast',   cost_usd: 2.40 },
-      { type: 'test-writer',       name: 'Test Writer',        tasks: 18, quality: 9.0, speed: 'fast',   cost_usd: 1.20 },
-      { type: 'code-reviewer',     name: 'Code Reviewer',      tasks: 15, quality: 8.8, speed: 'medium', cost_usd: 1.80 },
-      { type: 'architect',         name: 'Architect',          tasks: 8,  quality: 9.5, speed: 'slow',   cost_usd: 3.10 },
-      { type: 'debugger',          name: 'Debugger',           tasks: 12, quality: 8.5, speed: 'fast',   cost_usd: 0.95 },
-      { type: 'doc-writer',        name: 'Documentation',      tasks: 10, quality: 8.3, speed: 'fast',   cost_usd: 0.60 },
+      {
+        type: "code-generator",
+        name: "Code Generator",
+        tasks: 24,
+        quality: 9.2,
+        speed: "fast",
+        cost_usd: 2.4,
+      },
+      {
+        type: "test-writer",
+        name: "Test Writer",
+        tasks: 18,
+        quality: 9.0,
+        speed: "fast",
+        cost_usd: 1.2,
+      },
+      {
+        type: "code-reviewer",
+        name: "Code Reviewer",
+        tasks: 15,
+        quality: 8.8,
+        speed: "medium",
+        cost_usd: 1.8,
+      },
+      {
+        type: "architect",
+        name: "Architect",
+        tasks: 8,
+        quality: 9.5,
+        speed: "slow",
+        cost_usd: 3.1,
+      },
+      {
+        type: "debugger",
+        name: "Debugger",
+        tasks: 12,
+        quality: 8.5,
+        speed: "fast",
+        cost_usd: 0.95,
+      },
+      {
+        type: "doc-writer",
+        name: "Documentation",
+        tasks: 10,
+        quality: 8.3,
+        speed: "fast",
+        cost_usd: 0.6,
+      },
     ];
   }
 
@@ -120,12 +162,12 @@ export class LokiAgentLeaderboard extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _toggleAgent(agentType) {
@@ -135,24 +177,24 @@ export class LokiAgentLeaderboard extends LokiElement {
 
   _bindEvents() {
     const root = this.shadowRoot;
-    root.querySelectorAll('.agent-row').forEach(row => {
-      row.addEventListener('click', () => {
+    root.querySelectorAll(".agent-row").forEach((row) => {
+      row.addEventListener("click", () => {
         this._toggleAgent(row.dataset.agent);
       });
     });
   }
 
   _getQualityColor(score) {
-    if (score >= 9) return 'var(--loki-green, #1FC5A8)';
-    if (score >= 8) return 'var(--loki-blue, #2F71E3)';
-    if (score >= 7) return 'var(--loki-yellow, #D4A03C)';
-    return 'var(--loki-red, #C45B5B)';
+    if (score >= 9) return "var(--loki-green, #1FC5A8)";
+    if (score >= 8) return "var(--loki-blue, #2F71E3)";
+    if (score >= 7) return "var(--loki-yellow, #D4A03C)";
+    return "var(--loki-red, #C45B5B)";
   }
 
   _getSpeedLabel(speed) {
-    if (speed === 'fast') return { label: 'Fast', color: 'var(--loki-green, #1FC5A8)' };
-    if (speed === 'medium') return { label: 'Medium', color: 'var(--loki-yellow, #D4A03C)' };
-    return { label: 'Slow', color: 'var(--loki-red, #C45B5B)' };
+    if (speed === "fast") return { label: "Fast", color: "var(--loki-green, #1FC5A8)" };
+    if (speed === "medium") return { label: "Medium", color: "var(--loki-yellow, #D4A03C)" };
+    return { label: "Slow", color: "var(--loki-red, #C45B5B)" };
   }
 
   _getStyles() {
@@ -381,31 +423,33 @@ export class LokiAgentLeaderboard extends LokiElement {
       return;
     }
 
-    const rows = this._agents.map((agent, idx) => {
-      const rank = idx + 1;
-      const rankCfg = RANK_COLORS[rank];
-      const agentKey = agent.type || agent.name;
-      const rankChange = this._getRankChange(agentKey);
-      const isExpanded = this._expandedAgent === agentKey;
-      const qualityColor = this._getQualityColor(agent.quality);
-      const speedCfg = this._getSpeedLabel(agent.speed);
-      const qualityPct = ((agent.quality || 0) / 10) * 100;
+    const rows = this._agents
+      .map((agent, idx) => {
+        const rank = idx + 1;
+        const rankCfg = RANK_COLORS[rank];
+        const agentKey = agent.type || agent.name;
+        const rankChange = this._getRankChange(agentKey);
+        const isExpanded = this._expandedAgent === agentKey;
+        const qualityColor = this._getQualityColor(agent.quality);
+        const speedCfg = this._getSpeedLabel(agent.speed);
+        const qualityPct = ((agent.quality || 0) / 10) * 100;
 
-      let rankHtml;
-      if (rankCfg) {
-        rankHtml = `<div class="rank-badge" style="background: ${rankCfg.bg}; color: ${rankCfg.border};">${rank}</div>`;
-      } else {
-        rankHtml = `<span class="rank-number" style="color: var(--loki-text-muted);">${rank}</span>`;
-      }
+        let rankHtml;
+        if (rankCfg) {
+          rankHtml = `<div class="rank-badge" style="background: ${rankCfg.bg}; color: ${rankCfg.border};">${rank}</div>`;
+        } else {
+          rankHtml = `<span class="rank-number" style="color: var(--loki-text-muted);">${rank}</span>`;
+        }
 
-      let rankChangeHtml = '';
-      if (rankChange > 0) {
-        rankChangeHtml = `<span class="rank-change rank-up">+${rankChange}</span>`;
-      } else if (rankChange < 0) {
-        rankChangeHtml = `<span class="rank-change rank-down">${rankChange}</span>`;
-      }
+        let rankChangeHtml = "";
+        if (rankChange > 0) {
+          rankChangeHtml = `<span class="rank-change rank-up">+${rankChange}</span>`;
+        } else if (rankChange < 0) {
+          rankChangeHtml = `<span class="rank-change rank-down">${rankChange}</span>`;
+        }
 
-      const detailHtml = isExpanded ? `
+        const detailHtml = isExpanded
+          ? `
         <div class="agent-detail">
           <div class="detail-metric">
             <span class="detail-label">Total Cost</span>
@@ -413,22 +457,23 @@ export class LokiAgentLeaderboard extends LokiElement {
           </div>
           <div class="detail-metric">
             <span class="detail-label">Avg Time/Task</span>
-            <span class="detail-value">${agent.avg_time || '--'}</span>
+            <span class="detail-value">${agent.avg_time || "--"}</span>
           </div>
           <div class="detail-metric">
             <span class="detail-label">Success Rate</span>
-            <span class="detail-value">${agent.success_rate != null ? agent.success_rate + '%' : '--'}</span>
+            <span class="detail-value">${agent.success_rate != null ? agent.success_rate + "%" : "--"}</span>
           </div>
         </div>
-      ` : '';
+      `
+          : "";
 
-      return `
-        <div class="agent-row ${rank <= 3 ? 'top-3' : ''}" data-agent="${this._escapeHtml(agentKey)}"
-             style="${rankCfg ? 'border-left-color: ' + rankCfg.border + ';' : ''}">
+        return `
+        <div class="agent-row ${rank <= 3 ? "top-3" : ""}" data-agent="${this._escapeHtml(agentKey)}"
+             style="${rankCfg ? "border-left-color: " + rankCfg.border + ";" : ""}">
           <div class="rank-cell">${rankHtml}${rankChangeHtml}</div>
           <div class="agent-name-cell">
             <span class="agent-name">${this._escapeHtml(agent.name || agent.type)}</span>
-            <span class="agent-type">${this._escapeHtml(agent.type || '')}</span>
+            <span class="agent-type">${this._escapeHtml(agent.type || "")}</span>
           </div>
           <div class="metric-cell">${agent.tasks || 0}</div>
           <div class="metric-cell">
@@ -443,7 +488,8 @@ export class LokiAgentLeaderboard extends LokiElement {
         </div>
         ${detailHtml}
       `;
-    }).join('');
+      })
+      .join("");
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -469,8 +515,8 @@ export class LokiAgentLeaderboard extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-agent-leaderboard')) {
-  customElements.define('loki-agent-leaderboard', LokiAgentLeaderboard);
+if (!customElements.get("loki-agent-leaderboard")) {
+  customElements.define("loki-agent-leaderboard", LokiAgentLeaderboard);
 }
 
 export default LokiAgentLeaderboard;

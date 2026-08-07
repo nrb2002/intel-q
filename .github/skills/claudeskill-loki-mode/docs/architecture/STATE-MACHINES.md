@@ -43,14 +43,14 @@ Sampled spot-checks against the live source. The function/file is correct in
 every case below; only the line number drifted. Verify with `grep -n` before
 citing.
 
-| Section | Citation in doc | Actual location (v7.5.7) | Delta |
-|---|---|---|---|
-| 2.1 | `run.sh:7380` (`run_autonomous`) | `run.sh:10253` | +2873 |
-| 2.2 | `run.sh:1325` (`get_rarv_tier`) | `run.sh:1484` | +159 |
-| 2.4 | `run.sh:8059` / `run.sh:10419` (`check_human_intervention`) | `run.sh:11262` | +843 to +3203 |
-| 3.1 | `completion-council.sh:1359` (`council_should_stop`) | `completion-council.sh:1605` | +246 |
-| 13 | `run.sh:6464` (`create_checkpoint`) | `run.sh:6943` | +479 |
-| 14 | `run.sh:1229` (`detect_complexity`) | `run.sh:1338` | +109 |
+| Section | Citation in doc                                             | Actual location (v7.5.7)     | Delta         |
+| ------- | ----------------------------------------------------------- | ---------------------------- | ------------- |
+| 2.1     | `run.sh:7380` (`run_autonomous`)                            | `run.sh:10253`               | +2873         |
+| 2.2     | `run.sh:1325` (`get_rarv_tier`)                             | `run.sh:1484`                | +159          |
+| 2.4     | `run.sh:8059` / `run.sh:10419` (`check_human_intervention`) | `run.sh:11262`               | +843 to +3203 |
+| 3.1     | `completion-council.sh:1359` (`council_should_stop`)        | `completion-council.sh:1605` | +246          |
+| 13      | `run.sh:6464` (`create_checkpoint`)                         | `run.sh:6943`                | +479          |
+| 14      | `run.sh:1229` (`detect_complexity`)                         | `run.sh:1338`                | +109          |
 
 Drift trend: `autonomy/run.sh` and `autonomy/completion-council.sh` have grown
 roughly 800-3000 lines per minor release. **For navigation, prefer `grep -n
@@ -214,13 +214,13 @@ Source: `autonomy/run.sh:7380-8047`
                                       exceeded
 ```
 
-| State | Value in state.json | Trigger In | Trigger Out | Source |
-|-------|---------------------|------------|-------------|--------|
-| running | `"running"` | Provider invoked | Provider exits | `run.sh:7380` |
-| exited | `"exited"` | Provider exit | Post-iteration checks | `run.sh:7380` |
-| council_approved | `"council_approved"` | Council votes COMPLETE | Loop returns 0 | `run.sh:7380` |
-| completion_promise_fulfilled | `"completion_promise_fulfilled"` | Promise text found in output | Loop returns 0 | `run.sh:7380` |
-| failed | `"failed"` | MAX_RETRIES exceeded | Loop returns 1 | `run.sh:8047` |
+| State                        | Value in state.json              | Trigger In                   | Trigger Out           | Source        |
+| ---------------------------- | -------------------------------- | ---------------------------- | --------------------- | ------------- |
+| running                      | `"running"`                      | Provider invoked             | Provider exits        | `run.sh:7380` |
+| exited                       | `"exited"`                       | Provider exit                | Post-iteration checks | `run.sh:7380` |
+| council_approved             | `"council_approved"`             | Council votes COMPLETE       | Loop returns 0        | `run.sh:7380` |
+| completion_promise_fulfilled | `"completion_promise_fulfilled"` | Promise text found in output | Loop returns 0        | `run.sh:7380` |
+| failed                       | `"failed"`                       | MAX_RETRIES exceeded         | Loop returns 1        | `run.sh:8047` |
 
 Persistence: `.loki/state.json` via `save_state()` at `run.sh:6911-6952`
 
@@ -240,12 +240,12 @@ Source: `autonomy/run.sh:1325-1359`
   (opus)        (sonnet)     (sonnet)        (haiku)
 ```
 
-| Phase | iteration % 4 | Model Tier | Purpose |
-|-------|---------------|------------|---------|
-| REASON | 0 | planning (opus) | Architecture, system design, high-level decisions |
-| ACT | 1 | development (sonnet) | Implementation, writing code |
-| REFLECT | 2 | development (sonnet) | Code review, analysis |
-| VERIFY | 3 | fast (haiku) | Unit tests, validation, monitoring |
+| Phase   | iteration % 4 | Model Tier           | Purpose                                           |
+| ------- | ------------- | -------------------- | ------------------------------------------------- |
+| REASON  | 0             | planning (opus)      | Architecture, system design, high-level decisions |
+| ACT     | 1             | development (sonnet) | Implementation, writing code                      |
+| REFLECT | 2             | development (sonnet) | Code review, analysis                             |
+| VERIFY  | 3             | fast (haiku)         | Unit tests, validation, monitoring                |
 
 Source: `get_rarv_tier()` at `run.sh:1325-1347`, `get_rarv_phase_name()` at `run.sh:1349-1359`
 
@@ -289,14 +289,15 @@ Source: `autonomy/loki:485` (cmd_start), `autonomy/run.sh:10419` (check_human_in
 
 Signal files (checked by `check_human_intervention` at `run.sh:8059`):
 
-| File | Effect | Created By |
-|------|--------|------------|
-| `.loki/PAUSE` | Pause after current iteration | Dashboard, user, `loki pause` |
-| `.loki/STOP` | Stop execution entirely | Dashboard, user, `loki stop` |
-| `.loki/INPUT` | Wait for human input | Dashboard (contains directive text) |
-| `.loki/RESUME` | Resume from pause | Dashboard, user, `loki resume` |
+| File           | Effect                        | Created By                          |
+| -------------- | ----------------------------- | ----------------------------------- |
+| `.loki/PAUSE`  | Pause after current iteration | Dashboard, user, `loki pause`       |
+| `.loki/STOP`   | Stop execution entirely       | Dashboard, user, `loki stop`        |
+| `.loki/INPUT`  | Wait for human input          | Dashboard (contains directive text) |
+| `.loki/RESUME` | Resume from pause             | Dashboard, user, `loki resume`      |
 
 Interrupt handling (Ctrl+C): `run.sh:8261` (cleanup function)
+
 - `INTERRUPT_COUNT=0`, first Ctrl+C sets `PAUSED=true`
 - Second Ctrl+C within window triggers full stop
 
@@ -394,12 +395,12 @@ Source: `completion-council.sh:1359` (council_should_stop), `completion-council.
                 else ──> return 1 (CONTINUE)
 ```
 
-| State | Persistence | Source |
-|-------|-------------|--------|
-| convergence.log | `.loki/council/convergence.log` | Git diff hashes per iteration |
-| votes/round-N.json | `.loki/council/votes/round-N.json` | Per-round vote tallies |
-| prd-requirements.json | `.loki/council/prd-requirements.json` | Extracted requirements |
-| verdicts.jsonl | `.loki/council/verdicts.jsonl` | Historical verdicts |
+| State                 | Persistence                           | Source                        |
+| --------------------- | ------------------------------------- | ----------------------------- |
+| convergence.log       | `.loki/council/convergence.log`       | Git diff hashes per iteration |
+| votes/round-N.json    | `.loki/council/votes/round-N.json`    | Per-round vote tallies        |
+| prd-requirements.json | `.loki/council/prd-requirements.json` | Extracted requirements        |
+| verdicts.jsonl        | `.loki/council/verdicts.jsonl`        | Historical verdicts           |
 
 ### 3.2 Circuit Breaker
 
@@ -456,6 +457,7 @@ Source: `completion-council.sh:1204` (council_devils_advocate_review)
 ```
 
 Configuration:
+
 - `COUNCIL_SIZE`: Number of members (default 3)
 - `COUNCIL_THRESHOLD`: Votes for completion (default 2)
 - `COUNCIL_CHECK_INTERVAL`: Check every N iterations (default 5)
@@ -509,16 +511,16 @@ Source: `providers/loader.sh:14-62`
 
 Required provider variables (`loader.sh:65-83`):
 
-| Variable | Example (Claude) |
-|----------|------------------|
-| PROVIDER_NAME | `"claude"` |
-| PROVIDER_DISPLAY_NAME | `"Claude Code"` |
-| PROVIDER_CLI | `"claude"` |
-| PROVIDER_AUTONOMOUS_FLAG | `"-p"` |
-| PROVIDER_PROMPT_POSITIONAL | `"false"` |
-| PROVIDER_HAS_SUBAGENTS | `"true"` |
-| PROVIDER_HAS_PARALLEL | `"true"` |
-| PROVIDER_DEGRADED | `"false"` |
+| Variable                   | Example (Claude) |
+| -------------------------- | ---------------- |
+| PROVIDER_NAME              | `"claude"`       |
+| PROVIDER_DISPLAY_NAME      | `"Claude Code"`  |
+| PROVIDER_CLI               | `"claude"`       |
+| PROVIDER_AUTONOMOUS_FLAG   | `"-p"`           |
+| PROVIDER_PROMPT_POSITIONAL | `"false"`        |
+| PROVIDER_HAS_SUBAGENTS     | `"true"`         |
+| PROVIDER_HAS_PARALLEL      | `"true"`         |
+| PROVIDER_DEGRADED          | `"false"`        |
 
 Supported providers: `claude`, `codex`, `gemini`, `cline`, `aider`
 
@@ -581,15 +583,16 @@ Source: `providers/claude.sh`, `providers/codex.sh`, `providers/gemini.sh`,
 
 Provider capability matrix:
 
-| Provider | Subagents | Parallel | MCP | Degraded |
-|----------|-----------|----------|-----|----------|
-| Claude   | true      | true     | true| false    |
-| Cline    | true      | false    | true| false    |
-| Codex    | false     | false    | true| true     |
-| Gemini   | false     | false    | false| true    |
-| Aider    | false     | false    | false| true    |
+| Provider | Subagents | Parallel | MCP   | Degraded |
+| -------- | --------- | -------- | ----- | -------- |
+| Claude   | true      | true     | true  | false    |
+| Cline    | true      | false    | true  | false    |
+| Codex    | false     | false    | true  | true     |
+| Gemini   | false     | false    | false | true     |
+| Aider    | false     | false    | false | true     |
 
 When `PROVIDER_DEGRADED=true`:
+
 - `build_prompt()` generates simplified prompts (no RARV/SDLC injection)
 - Sequential execution only (no parallel worktrees)
 - No subagent dispatch
@@ -787,6 +790,7 @@ Source: `memory/consolidation.py`
 ```
 
 Persistence:
+
 - Input: `.loki/memory/episodic/*.json`
 - Output: `.loki/memory/semantic/patterns/*.json`
 - Links: Zettelkasten-style (stored inline in pattern JSON)
@@ -823,12 +827,12 @@ Source: `memory/token_economics.py:29-58`
                        index
 ```
 
-| Threshold | Metric | Operator | Value | Action | Priority |
-|-----------|--------|----------|-------|--------|----------|
-| 1 | ratio (discovery/read) | > | 0.15 | compress_layer3 | 1 |
-| 2 | savings_percent | < | 50 | review_topic_relevance | 2 |
-| 3 | layer3_loads | > | 3 | create_specialized_index | 3 |
-| 4 | discovery_tokens | > | 200 | reorganize_topic_index | 4 |
+| Threshold | Metric                 | Operator | Value | Action                   | Priority |
+| --------- | ---------------------- | -------- | ----- | ------------------------ | -------- |
+| 1         | ratio (discovery/read) | >        | 0.15  | compress_layer3          | 1        |
+| 2         | savings_percent        | <        | 50    | review_topic_relevance   | 2        |
+| 3         | layer3_loads           | >        | 3     | create_specialized_index | 3        |
+| 4         | discovery_tokens       | >        | 200   | reorganize_topic_index   | 4        |
 
 Persistence: `.loki/memory/` (tracked inline with access metadata)
 
@@ -922,6 +926,7 @@ Source: `.loki/queue/pending.json`
 ```
 
 Queue entry format:
+
 ```json
 {
   "id": "task-NNN",
@@ -1214,8 +1219,8 @@ Written atomically every 2 seconds by `run.sh` to `.loki/dashboard-state.json`.
   "mode": "autonomous|interactive",
   "provider": "claude|codex|gemini|cline|aider",
   "current_task": "...",
-  "budget": {"limit": 0.0, "used": 0.0, "remaining": 0.0},
-  "qualityGates": {"gate_name": {"status": "passed|failed"}}
+  "budget": { "limit": 0.0, "used": 0.0, "remaining": 0.0 },
+  "qualityGates": { "gate_name": { "status": "passed|failed" } }
 }
 ```
 
@@ -1304,30 +1309,30 @@ Source: `events/bus.py:21-44`
 
 Event Types:
 
-| Type | Value | Description |
-|------|-------|-------------|
-| STATE | `"state"` | Phase changes, status updates |
-| MEMORY | `"memory"` | Memory store/retrieve operations |
-| TASK | `"task"` | Task lifecycle (claim, complete, fail) |
-| METRIC | `"metric"` | Token usage, timing data |
-| ERROR | `"error"` | Errors and failures |
-| SESSION | `"session"` | Session start/stop/pause |
-| COMMAND | `"command"` | CLI command execution |
-| USER | `"user"` | User actions (VS Code, dashboard) |
+| Type    | Value       | Description                            |
+| ------- | ----------- | -------------------------------------- |
+| STATE   | `"state"`   | Phase changes, status updates          |
+| MEMORY  | `"memory"`  | Memory store/retrieve operations       |
+| TASK    | `"task"`    | Task lifecycle (claim, complete, fail) |
+| METRIC  | `"metric"`  | Token usage, timing data               |
+| ERROR   | `"error"`   | Errors and failures                    |
+| SESSION | `"session"` | Session start/stop/pause               |
+| COMMAND | `"command"` | CLI command execution                  |
+| USER    | `"user"`    | User actions (VS Code, dashboard)      |
 
 Event Sources:
 
-| Source | Value | Description |
-|--------|-------|-------------|
-| CLI | `"cli"` | `loki` CLI commands |
-| API | `"api"` | Dashboard REST API |
-| VSCODE | `"vscode"` | VS Code extension |
-| MCP | `"mcp"` | MCP server tools |
-| SKILL | `"skill"` | Skill module execution |
-| HOOK | `"hook"` | Git/lifecycle hooks |
-| DASHBOARD | `"dashboard"` | Dashboard UI actions |
-| MEMORY | `"memory"` | Memory system operations |
-| RUNNER | `"runner"` | run.sh orchestrator |
+| Source    | Value         | Description              |
+| --------- | ------------- | ------------------------ |
+| CLI       | `"cli"`       | `loki` CLI commands      |
+| API       | `"api"`       | Dashboard REST API       |
+| VSCODE    | `"vscode"`    | VS Code extension        |
+| MCP       | `"mcp"`       | MCP server tools         |
+| SKILL     | `"skill"`     | Skill module execution   |
+| HOOK      | `"hook"`      | Git/lifecycle hooks      |
+| DASHBOARD | `"dashboard"` | Dashboard UI actions     |
+| MEMORY    | `"memory"`    | Memory system operations |
+| RUNNER    | `"runner"`    | run.sh orchestrator      |
 
 ### 9.3 Event Data Structure
 
@@ -1445,31 +1450,31 @@ Source: `mcp/server.py:473-1403`
 
 **Tools** (`@mcp.tool()`):
 
-| Tool | Purpose | State Read | State Write | Line |
-|------|---------|------------|-------------|------|
-| loki_memory_retrieve | Retrieve memories | episodic/, semantic/ | -- | 472 |
-| loki_memory_store_pattern | Store semantic pattern | -- | semantic/patterns/ | 537 |
-| loki_task_queue_list | List tasks | queue.json | -- | 597 |
-| loki_task_queue_add | Add task | -- | queue.json | 641 |
-| loki_task_queue_update | Update task status | queue.json | queue.json | 717 |
-| loki_state_get | Get autonomy state | state.json | -- | 788 |
-| loki_metrics_efficiency | Get efficiency data | metrics/efficiency/ | -- | 842 |
-| loki_consolidate_memory | Run consolidation | episodic/ | semantic/ | 888 |
-| loki_start_project | Start RARV execution | -- | spawns run.sh | 992 |
-| loki_project_status | Get project status | state.json, dashboard-state | -- | 1044 |
-| loki_agent_metrics | Agent performance | Dashboard DB | -- | 1094 |
-| loki_checkpoint_restore | Restore checkpoint | checkpoints/ | (various) | 1132 |
-| loki_quality_report | Quality gate status | council/verdicts.jsonl | -- | 1182 |
-| loki_code_search | Search codebase | (ChromaDB) | -- | 1255 |
-| loki_code_search_stats | ChromaDB index stats | (ChromaDB) | -- | 1343 |
+| Tool                      | Purpose                | State Read                  | State Write        | Line |
+| ------------------------- | ---------------------- | --------------------------- | ------------------ | ---- |
+| loki_memory_retrieve      | Retrieve memories      | episodic/, semantic/        | --                 | 472  |
+| loki_memory_store_pattern | Store semantic pattern | --                          | semantic/patterns/ | 537  |
+| loki_task_queue_list      | List tasks             | queue.json                  | --                 | 597  |
+| loki_task_queue_add       | Add task               | --                          | queue.json         | 641  |
+| loki_task_queue_update    | Update task status     | queue.json                  | queue.json         | 717  |
+| loki_state_get            | Get autonomy state     | state.json                  | --                 | 788  |
+| loki_metrics_efficiency   | Get efficiency data    | metrics/efficiency/         | --                 | 842  |
+| loki_consolidate_memory   | Run consolidation      | episodic/                   | semantic/          | 888  |
+| loki_start_project        | Start RARV execution   | --                          | spawns run.sh      | 992  |
+| loki_project_status       | Get project status     | state.json, dashboard-state | --                 | 1044 |
+| loki_agent_metrics        | Agent performance      | Dashboard DB                | --                 | 1094 |
+| loki_checkpoint_restore   | Restore checkpoint     | checkpoints/                | (various)          | 1132 |
+| loki_quality_report       | Quality gate status    | council/verdicts.jsonl      | --                 | 1182 |
+| loki_code_search          | Search codebase        | (ChromaDB)                  | --                 | 1255 |
+| loki_code_search_stats    | ChromaDB index stats   | (ChromaDB)                  | --                 | 1343 |
 
 **Resources** (`@mcp.resource()`):
 
-| Resource URI | Function | State Read | Line |
-|-------------|----------|------------|------|
-| loki://state/continuity | get_continuity | continuity.md | 928 |
-| loki://memory/index | get_memory_index | memory/index.json | 941 |
-| loki://queue/pending | get_pending_tasks | queue.json | 963 |
+| Resource URI            | Function          | State Read        | Line |
+| ----------------------- | ----------------- | ----------------- | ---- |
+| loki://state/continuity | get_continuity    | continuity.md     | 928  |
+| loki://memory/index     | get_memory_index  | memory/index.json | 941  |
+| loki://queue/pending    | get_pending_tasks | queue.json        | 963  |
 
 ### 10.2 Path Security Validation
 
@@ -1543,10 +1548,10 @@ Source: `autonomy/context-tracker.py`
 Provider pricing (USD per million tokens):
 
 | Provider | Input | Output | Cache Read | Cache Creation |
-|----------|-------|--------|------------|----------------|
-| Claude | $3.00 | $15.00 | $0.30 | $3.75 |
-| Codex | $2.00 | $8.00 | -- | -- |
-| Gemini | $1.25 | $5.00 | -- | -- |
+| -------- | ----- | ------ | ---------- | -------------- |
+| Claude   | $3.00 | $15.00 | $0.30      | $3.75          |
+| Codex    | $2.00 | $8.00  | --         | --             |
+| Gemini   | $1.25 | $5.00  | --         | --             |
 
 Context window sizes: Claude=200K, Codex=200K, Gemini=1M
 
@@ -1593,16 +1598,17 @@ Source: `autonomy/notification-checker.py:24-72`
 
 6 trigger types:
 
-| Trigger ID | Type | Condition | Severity | Default |
-|------------|------|-----------|----------|---------|
-| budget-80pct | budget_threshold | budget.used/limit >= 80% | warning | enabled |
-| context-90pct | context_threshold | context_window_pct >= 90% | critical | enabled |
-| sensitive-file | file_access | regex match on .env/.pem/.key/secret | critical | enabled |
-| quality-gate-fail | quality_gate | qualityGates[gate].status == "failed" | warning | enabled |
-| stuck-iteration | stagnation | 3+ consecutive "no_change" in convergence.log | warning | enabled |
-| compaction-freq | compaction_frequency | 3+ compactions in last hour | warning | enabled |
+| Trigger ID        | Type                 | Condition                                     | Severity | Default |
+| ----------------- | -------------------- | --------------------------------------------- | -------- | ------- |
+| budget-80pct      | budget_threshold     | budget.used/limit >= 80%                      | warning  | enabled |
+| context-90pct     | context_threshold    | context_window_pct >= 90%                     | critical | enabled |
+| sensitive-file    | file_access          | regex match on .env/.pem/.key/secret          | critical | enabled |
+| quality-gate-fail | quality_gate         | qualityGates[gate].status == "failed"         | warning  | enabled |
+| stuck-iteration   | stagnation           | 3+ consecutive "no_change" in convergence.log | warning  | enabled |
+| compaction-freq   | compaction_frequency | 3+ compactions in last hour                   | warning  | enabled |
 
 Notification data structure:
+
 ```json
 {
   "id": "notif-TIMESTAMP-TRIGGER_ID",
@@ -1735,6 +1741,7 @@ Source: `autonomy/run.sh:6464` (create_checkpoint)
 ```
 
 Checkpoints are created:
+
 - After each successful iteration (inside `run_autonomous()`)
 - After each failed iteration (inside `run_autonomous()`)
 
@@ -1781,11 +1788,11 @@ Source: `autonomy/run.sh:1229` (detect_complexity), `run.sh:1322` (get_complexit
                                   DEPLOY
 ```
 
-| Tier | File Count | External Deps | Microservices | PRD | Phase Count |
-|------|-----------|---------------|---------------|-----|-------------|
-| simple | <=5 | no | no | <200 words + <5 features | 3 |
-| standard | 6-50 | (default) | no | 200-1000 words | 6 |
-| complex | >50 | yes | yes | >1000 words or >15 features | 8 |
+| Tier     | File Count | External Deps | Microservices | PRD                         | Phase Count |
+| -------- | ---------- | ------------- | ------------- | --------------------------- | ----------- |
+| simple   | <=5        | no            | no            | <200 words + <5 features    | 3           |
+| standard | 6-50       | (default)     | no            | 200-1000 words              | 6           |
+| complex  | >50        | yes           | yes           | >1000 words or >15 features | 8           |
 
 Persistence: `.loki/dashboard-state.json` field `complexity`
 Override: `COMPLEXITY_TIER` environment variable (bypasses auto-detection)

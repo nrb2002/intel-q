@@ -24,11 +24,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.9.0
+ * Prisma Client JS version: 7.9.1
  * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.9.0",
+  client: "7.9.1",
   engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
@@ -147,9 +147,9 @@ exports.Prisma.QueueTicketScalarFieldEnum = {
   branchId: 'branchId',
   serviceType: 'serviceType',
   status: 'status',
+  createdAt: 'createdAt',
   calledAt: 'calledAt',
-  completedAt: 'completedAt',
-  createdAt: 'createdAt'
+  completedAt: 'completedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -167,16 +167,16 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.UserRole = exports.$Enums.UserRole = {
-  customer: 'customer',
-  staff: 'staff',
-  admin: 'admin'
+  CUSTOMER: 'CUSTOMER',
+  STAFF: 'STAFF',
+  ADMIN: 'ADMIN'
 };
 
-exports.TicketStatus = exports.$Enums.TicketStatus = {
-  waiting: 'waiting',
-  called: 'called',
-  completed: 'completed',
-  cancelled: 'cancelled'
+exports.QueueStatus = exports.$Enums.QueueStatus = {
+  WAITING: 'WAITING',
+  IN_SERVICE: 'IN_SERVICE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.Prisma.ModelName = {

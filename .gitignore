@@ -40,9 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
 /lib/generated/prisma
-=======
 .vercel
 .env*
->>>>>>> ec33b719c1aff5556b7200d335acfb947b351aa0

@@ -7,6 +7,7 @@
 ## When This Module Applies
 
 Load this module when ANY of the following are true:
+
 - Your prompt contains a `MIROFISH MARKET VALIDATION` section
 - The project has `.loki/mirofish-context.json`
 - The session was started with `--mirofish` flag
@@ -17,6 +18,7 @@ Load this module when ANY of the following are true:
 ## Understanding MiroFish Advisory Data
 
 When present, MiroFish context includes:
+
 - **overall_sentiment**: positive, negative, or mixed
 - **sentiment_score**: 0.0-1.0 (higher = more positive)
 - **confidence**: low, medium, or high (based on simulation depth)
@@ -28,17 +30,18 @@ When present, MiroFish context includes:
 
 When MiroFish identifies key concerns, address them proactively:
 
-| Concern Category | Action |
-|-----------------|--------|
-| User adoption / UX | Prioritize UX polish and onboarding |
-| Market fit / demand | Validate core value proposition first |
-| Competition | Differentiate early, focus unique features |
-| Privacy / trust | Add transparency features, opt-in controls |
-| Technical feasibility | Prototype risky components first |
+| Concern Category      | Action                                     |
+| --------------------- | ------------------------------------------ |
+| User adoption / UX    | Prioritize UX polish and onboarding        |
+| Market fit / demand   | Validate core value proposition first      |
+| Competition           | Differentiate early, focus unique features |
+| Privacy / trust       | Add transparency features, opt-in controls |
+| Technical feasibility | Prototype risky components first           |
 
 ## Sentiment-Aware Feature Ordering
 
 Use feature reception scores to influence implementation order:
+
 - **Score >= 0.8**: High demand -- implement first (validated demand)
 - **Score 0.6-0.79**: Moderate interest -- standard priority
 - **Score 0.4-0.59**: Lukewarm -- consider redesign before building
@@ -46,12 +49,12 @@ Use feature reception scores to influence implementation order:
 
 ## Confidence Score Interpretation
 
-| Range | Meaning | Action |
-|-------|---------|--------|
-| 80-100 | Strong market signal | Proceed with confidence |
-| 60-79 | Moderate signal | Consider pivots for weak areas |
-| 40-59 | Weak signal | Recommend PRD revision before heavy implementation |
-| Below 40 | Insufficient data | Treat as noise, proceed with caution |
+| Range    | Meaning              | Action                                             |
+| -------- | -------------------- | -------------------------------------------------- |
+| 80-100   | Strong market signal | Proceed with confidence                            |
+| 60-79    | Moderate signal      | Consider pivots for weak areas                     |
+| 40-59    | Weak signal          | Recommend PRD revision before heavy implementation |
+| Below 40 | Insufficient data    | Treat as noise, proceed with caution               |
 
 ## Pipeline Status
 
@@ -81,10 +84,12 @@ pipeline is still running. This is normal -- MiroFish simulations take 15-45 min
 ## Configuration
 
 MiroFish requires these environment variables for its Docker container:
+
 - `LLM_API_KEY` (required) -- API key for MiroFish's LLM provider
 - `ZEP_API_KEY` (required) -- Zep Cloud key for graph memory
 
 CLI flags:
+
 - `--mirofish [URL]` -- Enable with optional custom URL (default: localhost:5001)
 - `--mirofish-docker IMAGE` -- Auto-start MiroFish Docker container
 - `--mirofish-rounds N` -- Simulation rounds (default: 100)

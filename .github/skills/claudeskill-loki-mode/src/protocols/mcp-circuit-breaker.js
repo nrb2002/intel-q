@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { EventEmitter } = require('events');
+const { EventEmitter } = require("events");
 
 /**
  * Circuit Breaker for MCP server connections.
@@ -18,9 +18,9 @@ const { EventEmitter } = require('events');
  */
 
 const STATE = {
-  CLOSED: 'CLOSED',
-  OPEN: 'OPEN',
-  HALF_OPEN: 'HALF_OPEN'
+  CLOSED: "CLOSED",
+  OPEN: "OPEN",
+  HALF_OPEN: "HALF_OPEN",
 };
 
 class CircuitBreaker extends EventEmitter {
@@ -62,9 +62,9 @@ class CircuitBreaker extends EventEmitter {
       if (Date.now() - this._openedAt >= this._resetTimeout) {
         this._transitionTo(STATE.HALF_OPEN);
       } else {
-        this.emit('rejected');
-        const err = new Error('Circuit breaker is OPEN');
-        err.code = 'CIRCUIT_OPEN';
+        this.emit("rejected");
+        const err = new Error("Circuit breaker is OPEN");
+        err.code = "CIRCUIT_OPEN";
         throw err;
       }
     }
@@ -157,7 +157,7 @@ class CircuitBreaker extends EventEmitter {
     }
 
     if (oldState !== newState) {
-      this.emit(newState.toLowerCase().replace('_', '-'));
+      this.emit(newState.toLowerCase().replace("_", "-"));
     }
   }
 }

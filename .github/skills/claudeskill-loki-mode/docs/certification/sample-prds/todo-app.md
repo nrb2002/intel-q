@@ -9,6 +9,7 @@ A command-line todo application written in Node.js. No external dependencies, no
 ## Requirements
 
 ### Functional
+
 - Add a todo item with a title (string, max 200 characters)
 - List all todo items with their status (pending/complete)
 - Mark a todo item as complete by ID
@@ -16,6 +17,7 @@ A command-line todo application written in Node.js. No external dependencies, no
 - Each todo has: id (auto-generated UUID), title, status, createdAt timestamp
 
 ### Non-Functional
+
 - Store todos in a local JSON file (`todos.json`)
 - Data persists between runs
 - CLI responds in under 100ms for all operations

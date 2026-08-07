@@ -1,14 +1,17 @@
 # PRD: Microservice
 
 ## Overview
+
 A containerized microservice with health checks, structured logging, graceful shutdown, and observability. Follows twelve-factor app principles for cloud-native deployment.
 
 ## Target Users
+
 - Backend engineers building distributed systems
 - Teams decomposing monoliths into microservices
 - DevOps engineers designing cloud-native architectures
 
 ## Core Features
+
 1. **HTTP API** - RESTful endpoints with request validation, error handling, and content negotiation
 2. **Health Checks** - Liveness and readiness probe endpoints for container orchestration
 3. **Structured Logging** - JSON-formatted logs with correlation IDs, log levels, and context fields
@@ -18,6 +21,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 7. **Observability** - Prometheus metrics endpoint with request duration, error rate, and custom counters
 
 ## Technical Requirements
+
 - Node.js with Express and TypeScript
 - Docker and docker-compose for local development
 - Prisma ORM with PostgreSQL
@@ -27,6 +31,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 - Health check middleware
 
 ## Quality Gates
+
 - Unit tests for business logic and middleware
 - Integration tests with test database
 - Docker image builds and starts successfully
@@ -35,6 +40,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 - Metrics endpoint serves valid Prometheus format
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -66,6 +72,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 ```
 
 ## Out of Scope
+
 - Service mesh or sidecar proxy configuration
 - Message queue integration (RabbitMQ, Kafka)
 - API gateway or load balancer setup
@@ -75,6 +82,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 - CI/CD pipeline configuration
 
 ## Acceptance Criteria
+
 - Docker image builds with multi-stage Dockerfile under 150MB
 - GET /health/live returns 200 immediately after startup
 - GET /health/ready returns 200 only when database is connected
@@ -84,6 +92,7 @@ A containerized microservice with health checks, structured logging, graceful sh
 - Environment variables validated on startup; missing required vars cause exit 1
 
 ## Success Metrics
+
 - Service starts in Docker and responds to API requests
 - Health probes return healthy status after startup
 - Logs are valid JSON with correlation IDs across requests

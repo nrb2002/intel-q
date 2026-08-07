@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * GitHub Actions Trigger Context Handler
@@ -12,20 +12,20 @@
  * Allowed provider values. The workflow_dispatch REST API can supply any
  * string even when the YAML declares a choice type, so we validate here.
  */
-var ALLOWED_PROVIDERS = ['claude', 'codex', 'cline', 'aider'];
+var ALLOWED_PROVIDERS = ["claude", "codex", "cline", "aider"];
 
 /**
  * Label-to-configuration mapping.
  * GitHub labels on issues/PRs can control Loki Mode behavior.
  */
 const LABEL_CONFIG_MAP = {
-  'loki-mode': { enabled: true },
-  'loki-priority-high': { priority: 'high' },
-  'loki-priority-low': { priority: 'low' },
-  'loki-provider-codex': { provider: 'codex' },
-  'loki-provider-cline': { provider: 'cline' },
-  'loki-provider-aider': { provider: 'aider' },
-  'loki-dry-run': { dryRun: true },
+  "loki-mode": { enabled: true },
+  "loki-priority-high": { priority: "high" },
+  "loki-priority-low": { priority: "low" },
+  "loki-provider-codex": { provider: "codex" },
+  "loki-provider-cline": { provider: "cline" },
+  "loki-provider-aider": { provider: "aider" },
+  "loki-dry-run": { dryRun: true },
 };
 
 /**
@@ -41,19 +41,19 @@ function parseTriggerContext(options) {
   const { eventName, payload, inputs } = options;
 
   switch (eventName) {
-    case 'issues':
+    case "issues":
       return parseIssueEvent(payload);
-    case 'pull_request_review':
+    case "pull_request_review":
       return parsePullRequestReviewEvent(payload);
-    case 'schedule':
+    case "schedule":
       return parseScheduleEvent(payload);
-    case 'workflow_dispatch':
+    case "workflow_dispatch":
       return parseWorkflowDispatchEvent(payload, inputs);
     default:
       return {
-        triggerType: 'unknown',
-        prd: '',
-        provider: 'claude',
+        triggerType: "unknown",
+        prd: "",
+        provider: "claude",
         dryRun: false,
         sourceId: null,
         sourceType: null,
@@ -74,26 +74,26 @@ function parseIssueEvent(payload) {
   const issue = payload.issue || {};
   const label = payload.label || {};
   const labels = (issue.labels || []).map(function (l) {
-    return typeof l === 'string' ? l : l.name;
+    return typeof l === "string" ? l : l.name;
   });
 
   const config = mapLabelsToConfig(labels);
 
   return {
-    triggerType: 'issue',
-    prd: extractPrdFromBody(issue.body || ''),
-    provider: config.provider || 'claude',
+    triggerType: "issue",
+    prd: extractPrdFromBody(issue.body || ""),
+    provider: config.provider || "claude",
     dryRun: config.dryRun || false,
-    sourceId: String(issue.number || ''),
-    sourceType: 'issue',
+    sourceId: String(issue.number || ""),
+    sourceType: "issue",
     labels: labels,
     metadata: {
       issueNumber: issue.number,
-      issueTitle: issue.title || '',
-      issueUrl: issue.html_url || '',
-      triggerLabel: label.name || '',
-      author: (issue.user || {}).login || '',
-      repository: (payload.repository || {}).full_name || '',
+      issueTitle: issue.title || "",
+      issueUrl: issue.html_url || "",
+      triggerLabel: label.name || "",
+      author: (issue.user || {}).login || "",
+      repository: (payload.repository || {}).full_name || "",
     },
   };
 }
@@ -109,29 +109,29 @@ function parsePullRequestReviewEvent(payload) {
   const pr = payload.pull_request || {};
   const review = payload.review || {};
   const labels = (pr.labels || []).map(function (l) {
-    return typeof l === 'string' ? l : l.name;
+    return typeof l === "string" ? l : l.name;
   });
 
   const config = mapLabelsToConfig(labels);
 
   return {
-    triggerType: 'pull_request_review',
-    prd: extractPrdFromBody(pr.body || ''),
-    provider: config.provider || 'claude',
+    triggerType: "pull_request_review",
+    prd: extractPrdFromBody(pr.body || ""),
+    provider: config.provider || "claude",
     dryRun: config.dryRun || false,
-    sourceId: String(pr.number || ''),
-    sourceType: 'pull_request',
+    sourceId: String(pr.number || ""),
+    sourceType: "pull_request",
     labels: labels,
     metadata: {
       prNumber: pr.number,
-      prTitle: pr.title || '',
-      prUrl: pr.html_url || '',
-      prHead: (pr.head || {}).ref || '',
-      prBase: (pr.base || {}).ref || '',
-      reviewState: review.state || '',
-      reviewAuthor: (review.user || {}).login || '',
-      author: (pr.user || {}).login || '',
-      repository: (payload.repository || {}).full_name || '',
+      prTitle: pr.title || "",
+      prUrl: pr.html_url || "",
+      prHead: (pr.head || {}).ref || "",
+      prBase: (pr.base || {}).ref || "",
+      reviewState: review.state || "",
+      reviewAuthor: (review.user || {}).login || "",
+      author: (pr.user || {}).login || "",
+      repository: (payload.repository || {}).full_name || "",
     },
   };
 }
@@ -144,16 +144,16 @@ function parsePullRequestReviewEvent(payload) {
  */
 function parseScheduleEvent(payload) {
   return {
-    triggerType: 'schedule',
-    prd: '',
-    provider: 'claude',
+    triggerType: "schedule",
+    prd: "",
+    provider: "claude",
     dryRun: false,
     sourceId: null,
     sourceType: null,
     labels: [],
     metadata: {
-      schedule: (payload || {}).schedule || '',
-      repository: (payload.repository || {}).full_name || '',
+      schedule: (payload || {}).schedule || "",
+      repository: (payload.repository || {}).full_name || "",
     },
   };
 }
@@ -166,15 +166,15 @@ function parseScheduleEvent(payload) {
  * @returns {Object} Trigger context
  */
 function parseWorkflowDispatchEvent(payload, inputs) {
-  const prdContent = (inputs || {}).prd_content || '';
+  const prdContent = (inputs || {}).prd_content || "";
   // Validate provider against the allowed set to prevent shell metacharacter injection.
   // The GitHub UI enforces the choice constraint but the REST API does not.
-  var rawProvider = (inputs || {}).provider || 'claude';
-  var provider = ALLOWED_PROVIDERS.indexOf(rawProvider) !== -1 ? rawProvider : 'claude';
-  const dryRun = (inputs || {}).dry_run === true || (inputs || {}).dry_run === 'true';
+  var rawProvider = (inputs || {}).provider || "claude";
+  var provider = ALLOWED_PROVIDERS.indexOf(rawProvider) !== -1 ? rawProvider : "claude";
+  const dryRun = (inputs || {}).dry_run === true || (inputs || {}).dry_run === "true";
 
   return {
-    triggerType: 'workflow_dispatch',
+    triggerType: "workflow_dispatch",
     prd: prdContent,
     provider: provider,
     dryRun: dryRun,
@@ -182,8 +182,8 @@ function parseWorkflowDispatchEvent(payload, inputs) {
     sourceType: null,
     labels: [],
     metadata: {
-      sender: ((payload || {}).sender || {}).login || '',
-      repository: ((payload || {}).repository || {}).full_name || '',
+      sender: ((payload || {}).sender || {}).login || "",
+      repository: ((payload || {}).repository || {}).full_name || "",
     },
   };
 }
@@ -202,8 +202,8 @@ function parseWorkflowDispatchEvent(payload, inputs) {
  * @returns {string} Extracted PRD content
  */
 function extractPrdFromBody(body) {
-  if (!body || typeof body !== 'string') {
-    return '';
+  if (!body || typeof body !== "string") {
+    return "";
   }
 
   // Try HTML comment markers first

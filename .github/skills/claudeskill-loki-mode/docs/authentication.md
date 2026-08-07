@@ -82,15 +82,16 @@ Tokens are stored securely in `~/.loki/dashboard/tokens.json` with:
 
 ### Token Scopes
 
-| Scope | Description | Included In |
-|-------|-------------|-------------|
-| `*` | All operations | Admin role |
+| Scope     | Description                       | Included In               |
+| --------- | --------------------------------- | ------------------------- |
+| `*`       | All operations                    | Admin role                |
 | `control` | Start/stop sessions, modify tasks | Operator role, Admin role |
-| `write` | Create/update tasks, modify state | Operator role, Admin role |
-| `read` | View dashboard, logs, metrics | All roles |
-| `audit` | View audit logs | Auditor role, Admin role |
+| `write`   | Create/update tasks, modify state | Operator role, Admin role |
+| `read`    | View dashboard, logs, metrics     | All roles                 |
+| `audit`   | View audit logs                   | Auditor role, Admin role  |
 
 Scope hierarchy:
+
 - `*` includes all scopes
 - `control` includes `write` and `read`
 - `write` includes `read`
@@ -99,12 +100,12 @@ Scope hierarchy:
 
 Predefined roles map to common access patterns:
 
-| Role | Scopes | Description |
-|------|--------|-------------|
-| `admin` | `*` | Full access to all endpoints |
-| `operator` | `control`, `read`, `write` | Start/stop sessions, manage tasks |
-| `viewer` | `read` | Read-only dashboard access |
-| `auditor` | `read`, `audit` | Read access plus audit log viewing |
+| Role       | Scopes                     | Description                        |
+| ---------- | -------------------------- | ---------------------------------- |
+| `admin`    | `*`                        | Full access to all endpoints       |
+| `operator` | `control`, `read`, `write` | Start/stop sessions, manage tasks  |
+| `viewer`   | `read`                     | Read-only dashboard access         |
+| `auditor`  | `read`, `audit`            | Read access plus audit log viewing |
 
 Generate token with role:
 
@@ -149,12 +150,12 @@ export LOKI_OIDC_CLIENT_ID=your-client-id
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_OIDC_ISSUER` | - | OIDC issuer URL (required) |
-| `LOKI_OIDC_CLIENT_ID` | - | OIDC client/application ID (required) |
-| `LOKI_OIDC_AUDIENCE` | *(client_id)* | Expected JWT audience claim |
-| `LOKI_OIDC_SCOPES` | `openid,email,profile` | OIDC scopes to request |
+| Variable              | Default                | Description                           |
+| --------------------- | ---------------------- | ------------------------------------- |
+| `LOKI_OIDC_ISSUER`    | -                      | OIDC issuer URL (required)            |
+| `LOKI_OIDC_CLIENT_ID` | -                      | OIDC client/application ID (required) |
+| `LOKI_OIDC_AUDIENCE`  | _(client_id)_          | Expected JWT audience claim           |
+| `LOKI_OIDC_SCOPES`    | `openid,email,profile` | OIDC scopes to request                |
 
 ### OIDC Flow
 

@@ -8,8 +8,8 @@
  * <loki-session-diff api-url="http://localhost:57374"></loki-session-diff>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * @class LokiSessionDiff
@@ -18,7 +18,7 @@ import { getApiClient } from '../core/loki-api-client.js';
  */
 export class LokiSessionDiff extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -45,23 +45,23 @@ export class LokiSessionDiff extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _loadData() {
     try {
-      this._data = await this._api._get('/api/session-diff');
+      this._data = await this._api._get("/api/session-diff");
       this._error = null;
     } catch (err) {
       this._error = err.message;
@@ -83,8 +83,12 @@ export class LokiSessionDiff extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _toggleDecision(index) {
@@ -321,40 +325,42 @@ export class LokiSessionDiff extends LokiElement {
     }
 
     const d = this._data || {};
-    const period = this._escapeHtml(d.period || '--');
+    const period = this._escapeHtml(d.period || "--");
     const counts = d.counts || {};
     const highlights = d.highlights || [];
     const decisions = d.decisions || [];
 
-    let highlightsHtml = '';
+    let highlightsHtml = "";
     if (highlights.length > 0) {
       highlightsHtml = `
         <div class="highlights-section">
           <div class="section-label">Highlights</div>
           <ul class="highlight-list">
-            ${highlights.map(h => `<li class="highlight-item">${this._escapeHtml(h)}</li>`).join('')}
+            ${highlights.map((h) => `<li class="highlight-item">${this._escapeHtml(h)}</li>`).join("")}
           </ul>
         </div>
       `;
     }
 
-    let decisionsHtml = '';
+    let decisionsHtml = "";
     if (decisions.length > 0) {
       decisionsHtml = `
         <div class="decisions-section">
           <div class="section-label">Decisions</div>
-          ${decisions.map((dec, i) => {
-            const isExpanded = this._expandedDecisions.has(i);
-            return `
+          ${decisions
+            .map((dec, i) => {
+              const isExpanded = this._expandedDecisions.has(i);
+              return `
               <div class="decision-item">
                 <button class="decision-header" data-index="${i}">
-                  <span class="decision-arrow ${isExpanded ? 'expanded' : ''}">&#9654;</span>
-                  ${this._escapeHtml(dec.title || dec.decision || 'Decision')}
+                  <span class="decision-arrow ${isExpanded ? "expanded" : ""}">&#9654;</span>
+                  ${this._escapeHtml(dec.title || dec.decision || "Decision")}
                 </button>
-                ${isExpanded ? `<div class="decision-reasoning">${this._escapeHtml(dec.reasoning || dec.rationale || 'No reasoning provided')}</div>` : ''}
+                ${isExpanded ? `<div class="decision-reasoning">${this._escapeHtml(dec.reasoning || dec.rationale || "No reasoning provided")}</div>` : ""}
               </div>
             `;
-          }).join('')}
+            })
+            .join("")}
         </div>
       `;
     }
@@ -371,19 +377,19 @@ export class LokiSessionDiff extends LokiElement {
         <div class="summary-grid">
           <div class="summary-item">
             <div class="summary-label">Created</div>
-            <div class="summary-value">${counts.tasks_created != null ? counts.tasks_created : '--'}</div>
+            <div class="summary-value">${counts.tasks_created != null ? counts.tasks_created : "--"}</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Completed</div>
-            <div class="summary-value">${counts.tasks_completed != null ? counts.tasks_completed : '--'}</div>
+            <div class="summary-value">${counts.tasks_completed != null ? counts.tasks_completed : "--"}</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Blocked</div>
-            <div class="summary-value">${counts.tasks_blocked != null ? counts.tasks_blocked : '--'}</div>
+            <div class="summary-value">${counts.tasks_blocked != null ? counts.tasks_blocked : "--"}</div>
           </div>
           <div class="summary-item">
             <div class="summary-label">Errors</div>
-            <div class="summary-value ${(counts.errors || 0) > 0 ? 'error-count' : ''}">${counts.errors != null ? counts.errors : '--'}</div>
+            <div class="summary-value ${(counts.errors || 0) > 0 ? "error-count" : ""}">${counts.errors != null ? counts.errors : "--"}</div>
           </div>
         </div>
 
@@ -393,16 +399,16 @@ export class LokiSessionDiff extends LokiElement {
     `;
 
     // Attach decision toggle listeners
-    this.shadowRoot.querySelectorAll('.decision-header').forEach(btn => {
-      btn.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".decision-header").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._toggleDecision(parseInt(btn.dataset.index));
       });
     });
   }
 }
 
-if (!customElements.get('loki-session-diff')) {
-  customElements.define('loki-session-diff', LokiSessionDiff);
+if (!customElements.get("loki-session-diff")) {
+  customElements.define("loki-session-diff", LokiSessionDiff);
 }
 
 export default LokiSessionDiff;

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Metric definitions for Loki Mode observability.
@@ -19,7 +19,7 @@ let _metrics = null;
 
 function _getOtel() {
   if (!_otel) {
-    _otel = require('./otel');
+    _otel = require("./otel");
   }
   return _otel;
 }
@@ -32,44 +32,44 @@ function initMetrics() {
   if (_metrics) return _metrics;
 
   const otel = _getOtel();
-  const meter = otel.meterProvider.getMeter('loki-mode');
+  const meter = otel.meterProvider.getMeter("loki-mode");
 
   _metrics = {
     taskDuration: meter.createHistogram(
-      'loki_task_duration_seconds',
-      'Duration of task execution in seconds',
-      's',
-      [0.1, 0.5, 1, 2.5, 5, 10, 30, 60, 120, 300, 600]
+      "loki_task_duration_seconds",
+      "Duration of task execution in seconds",
+      "s",
+      [0.1, 0.5, 1, 2.5, 5, 10, 30, 60, 120, 300, 600],
     ),
 
     qualityGatePass: meter.createCounter(
-      'loki_quality_gate_pass_total',
-      'Total number of quality gate passes',
-      '{passes}'
+      "loki_quality_gate_pass_total",
+      "Total number of quality gate passes",
+      "{passes}",
     ),
 
     qualityGateFail: meter.createCounter(
-      'loki_quality_gate_fail_total',
-      'Total number of quality gate failures',
-      '{failures}'
+      "loki_quality_gate_fail_total",
+      "Total number of quality gate failures",
+      "{failures}",
     ),
 
     agentActive: meter.createGauge(
-      'loki_agent_active',
-      'Number of currently active agents',
-      '{agents}'
+      "loki_agent_active",
+      "Number of currently active agents",
+      "{agents}",
     ),
 
     tokensConsumed: meter.createCounter(
-      'loki_tokens_consumed_total',
-      'Total tokens consumed by model and agent type',
-      '{tokens}'
+      "loki_tokens_consumed_total",
+      "Total tokens consumed by model and agent type",
+      "{tokens}",
     ),
 
     councilApprovalRate: meter.createGauge(
-      'loki_council_approval_rate',
-      'Current council approval rate (0.0 to 1.0)',
-      '1'
+      "loki_council_approval_rate",
+      "Current council approval rate (0.0 to 1.0)",
+      "1",
     ),
   };
 

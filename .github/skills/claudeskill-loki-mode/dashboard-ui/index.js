@@ -24,9 +24,9 @@ import {
   KeyboardHandler,
   KEYBOARD_SHORTCUTS,
   ARIA_PATTERNS,
-} from './core/loki-theme.js';
-import { LokiApiClient, getApiClient, createApiClient, ApiEvents } from './core/loki-api-client.js';
-import { LokiState, getState, createStore, STATE_CHANGE_EVENT } from './core/loki-state.js';
+} from "./core/loki-theme.js";
+import { LokiApiClient, getApiClient, createApiClient, ApiEvents } from "./core/loki-api-client.js";
+import { LokiState, getState, createStore, STATE_CHANGE_EVENT } from "./core/loki-state.js";
 
 // Import unified styles directly for full access
 import {
@@ -39,7 +39,7 @@ import {
   Z_INDEX,
   generateThemeCSS,
   generateTokensCSS,
-} from './core/loki-unified-styles.js';
+} from "./core/loki-unified-styles.js";
 
 // Re-export core utilities (legacy)
 export { LokiTheme, LokiElement, THEME_VARIABLES, COMMON_STYLES };
@@ -65,43 +65,43 @@ export {
 };
 
 // Components
-export { LokiOverview } from './components/loki-overview.js';
-export { LokiTaskBoard } from './components/loki-task-board.js';
-export { LokiSessionControl } from './components/loki-session-control.js';
-export { LokiLogStream } from './components/loki-log-stream.js';
-export { LokiMemoryBrowser } from './components/loki-memory-browser.js';
-export { LokiLearningDashboard } from './components/loki-learning-dashboard.js';
-export { LokiCouncilDashboard } from './components/loki-council-dashboard.js';
-export { LokiChecklistViewer } from './components/loki-checklist-viewer.js';
-export { LokiAppStatus } from './components/loki-app-status.js';
-export { LokiCostDashboard } from './components/loki-cost-dashboard.js';
-export { LokiCheckpointViewer } from './components/loki-checkpoint-viewer.js';
-export { LokiContextTracker } from './components/loki-context-tracker.js';
-export { LokiNotificationCenter } from './components/loki-notification-center.js';
-export { LokiSessionDiff } from './components/loki-session-diff.js';
-export { LokiPromptOptimizer } from './components/loki-prompt-optimizer.js';
-export { LokiQualityScore } from './components/loki-quality-score.js';
-export { LokiMigrationDashboard } from './components/loki-migration-dashboard.js';
-export { LokiAnalytics } from './components/loki-analytics.js';
-export { LokiQualityGates } from './components/loki-quality-gates.js';
-export { LokiRarvTimeline } from './components/loki-rarv-timeline.js';
-export { LokiRunManager } from './components/loki-run-manager.js';
-export { LokiAuditViewer } from './components/loki-audit-viewer.js';
-export { LokiApiKeys } from './components/loki-api-keys.js';
-export { LokiTenantSwitcher } from './components/loki-tenant-switcher.js';
-export { LokiActivityStream } from './components/loki-activity-stream.js';
-export { LokiProviderHealth } from './components/loki-provider-health.js';
-export { LokiPipelineView } from './components/loki-pipeline-view.js';
-export { LokiMemoryGraph } from './components/loki-memory-graph.js';
-export { LokiCostWaterfall } from './components/loki-cost-waterfall.js';
-export { LokiAgentLeaderboard } from './components/loki-agent-leaderboard.js';
-export { LokiManagedMemoryPanel } from './components/loki-managed-memory-panel.js';
-export { LokiEscalations } from './components/loki-escalations.js';
-export { LokiCouncilTranscripts } from './components/loki-council-transcripts.js';
-export { LokiWikiBrowser } from './components/loki-wiki-browser.js';
+export { LokiOverview } from "./components/loki-overview.js";
+export { LokiTaskBoard } from "./components/loki-task-board.js";
+export { LokiSessionControl } from "./components/loki-session-control.js";
+export { LokiLogStream } from "./components/loki-log-stream.js";
+export { LokiMemoryBrowser } from "./components/loki-memory-browser.js";
+export { LokiLearningDashboard } from "./components/loki-learning-dashboard.js";
+export { LokiCouncilDashboard } from "./components/loki-council-dashboard.js";
+export { LokiChecklistViewer } from "./components/loki-checklist-viewer.js";
+export { LokiAppStatus } from "./components/loki-app-status.js";
+export { LokiCostDashboard } from "./components/loki-cost-dashboard.js";
+export { LokiCheckpointViewer } from "./components/loki-checkpoint-viewer.js";
+export { LokiContextTracker } from "./components/loki-context-tracker.js";
+export { LokiNotificationCenter } from "./components/loki-notification-center.js";
+export { LokiSessionDiff } from "./components/loki-session-diff.js";
+export { LokiPromptOptimizer } from "./components/loki-prompt-optimizer.js";
+export { LokiQualityScore } from "./components/loki-quality-score.js";
+export { LokiMigrationDashboard } from "./components/loki-migration-dashboard.js";
+export { LokiAnalytics } from "./components/loki-analytics.js";
+export { LokiQualityGates } from "./components/loki-quality-gates.js";
+export { LokiRarvTimeline } from "./components/loki-rarv-timeline.js";
+export { LokiRunManager } from "./components/loki-run-manager.js";
+export { LokiAuditViewer } from "./components/loki-audit-viewer.js";
+export { LokiApiKeys } from "./components/loki-api-keys.js";
+export { LokiTenantSwitcher } from "./components/loki-tenant-switcher.js";
+export { LokiActivityStream } from "./components/loki-activity-stream.js";
+export { LokiProviderHealth } from "./components/loki-provider-health.js";
+export { LokiPipelineView } from "./components/loki-pipeline-view.js";
+export { LokiMemoryGraph } from "./components/loki-memory-graph.js";
+export { LokiCostWaterfall } from "./components/loki-cost-waterfall.js";
+export { LokiAgentLeaderboard } from "./components/loki-agent-leaderboard.js";
+export { LokiManagedMemoryPanel } from "./components/loki-managed-memory-panel.js";
+export { LokiEscalations } from "./components/loki-escalations.js";
+export { LokiCouncilTranscripts } from "./components/loki-council-transcripts.js";
+export { LokiWikiBrowser } from "./components/loki-wiki-browser.js";
 
 // Version
-export const VERSION = '1.4.0';
+export const VERSION = "1.4.0";
 
 /**
  * Initialize all components with default configuration
@@ -135,38 +135,38 @@ export function init(config = {}) {
 
 // Auto-register components when imported
 const componentModules = [
-  './components/loki-overview.js',
-  './components/loki-task-board.js',
-  './components/loki-session-control.js',
-  './components/loki-log-stream.js',
-  './components/loki-memory-browser.js',
-  './components/loki-learning-dashboard.js',
-  './components/loki-council-dashboard.js',
-  './components/loki-checklist-viewer.js',
-  './components/loki-app-status.js',
-  './components/loki-cost-dashboard.js',
-  './components/loki-checkpoint-viewer.js',
-  './components/loki-context-tracker.js',
-  './components/loki-notification-center.js',
-  './components/loki-session-diff.js',
-  './components/loki-prompt-optimizer.js',
-  './components/loki-quality-score.js',
-  './components/loki-migration-dashboard.js',
-  './components/loki-analytics.js',
-  './components/loki-quality-gates.js',
-  './components/loki-rarv-timeline.js',
-  './components/loki-run-manager.js',
-  './components/loki-audit-viewer.js',
-  './components/loki-api-keys.js',
-  './components/loki-tenant-switcher.js',
-  './components/loki-activity-stream.js',
-  './components/loki-provider-health.js',
-  './components/loki-pipeline-view.js',
-  './components/loki-memory-graph.js',
-  './components/loki-cost-waterfall.js',
-  './components/loki-agent-leaderboard.js',
-  './components/loki-managed-memory-panel.js',
-  './components/loki-wiki-browser.js',
+  "./components/loki-overview.js",
+  "./components/loki-task-board.js",
+  "./components/loki-session-control.js",
+  "./components/loki-log-stream.js",
+  "./components/loki-memory-browser.js",
+  "./components/loki-learning-dashboard.js",
+  "./components/loki-council-dashboard.js",
+  "./components/loki-checklist-viewer.js",
+  "./components/loki-app-status.js",
+  "./components/loki-cost-dashboard.js",
+  "./components/loki-checkpoint-viewer.js",
+  "./components/loki-context-tracker.js",
+  "./components/loki-notification-center.js",
+  "./components/loki-session-diff.js",
+  "./components/loki-prompt-optimizer.js",
+  "./components/loki-quality-score.js",
+  "./components/loki-migration-dashboard.js",
+  "./components/loki-analytics.js",
+  "./components/loki-quality-gates.js",
+  "./components/loki-rarv-timeline.js",
+  "./components/loki-run-manager.js",
+  "./components/loki-audit-viewer.js",
+  "./components/loki-api-keys.js",
+  "./components/loki-tenant-switcher.js",
+  "./components/loki-activity-stream.js",
+  "./components/loki-provider-health.js",
+  "./components/loki-pipeline-view.js",
+  "./components/loki-memory-graph.js",
+  "./components/loki-cost-waterfall.js",
+  "./components/loki-agent-leaderboard.js",
+  "./components/loki-managed-memory-panel.js",
+  "./components/loki-wiki-browser.js",
 ];
 
 // Components are registered via customElements.define in their respective files

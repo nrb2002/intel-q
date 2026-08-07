@@ -24,6 +24,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 ### P0 -- Must Have
 
 #### Monaco Editor Integration
+
 - Replace the read-only code viewer with Monaco Editor (VS Code's editor)
 - Syntax highlighting for all major languages (JS, TS, Python, HTML, CSS, JSON, MD, Go, Rust)
 - Read-only mode by default, editable when user clicks "Edit" button
@@ -32,6 +33,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - Show unsaved changes indicator (dot on tab)
 
 #### Resizable Split Panes
+
 - Three-pane layout: file tree | editor | preview
 - Drag handles between panes to resize
 - Pane sizes persist to localStorage
@@ -39,6 +41,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - Minimum widths: file tree 180px, editor 300px, preview 300px
 
 #### Integrated Terminal
+
 - xterm.js terminal emulator in a bottom panel
 - WebSocket-connected to backend for real-time output
 - Resizable height (drag handle)
@@ -47,6 +50,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - Toggle with Cmd/Ctrl+` keyboard shortcut
 
 #### File Operations
+
 - Create new file (right-click context menu or button)
 - Create new directory
 - Rename file/directory (inline edit)
@@ -56,6 +60,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 ### P1 -- Should Have
 
 #### Tab System
+
 - Open multiple files in tabs
 - Close tabs (with unsaved changes warning)
 - Tab reordering via drag
@@ -63,12 +68,14 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - Active tab highlighted
 
 #### Search
+
 - Cmd/Ctrl+P: fuzzy file search (like VS Code quick open)
 - Cmd/Ctrl+Shift+F: search across all files in project
 - Search results panel with file + line previews
 - Click result to open file at line
 
 #### Preview Enhancements
+
 - URL bar showing current preview path
 - Back/forward navigation buttons
 - Refresh button
@@ -79,18 +86,21 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 ### P2 -- Nice to Have
 
 #### Git Integration
+
 - Show git status in file tree (modified, added, untracked)
 - Diff view for modified files
 - Commit from UI
 - Branch indicator in header
 
 #### AI Chat Panel
+
 - Side panel for chat with Claude about the project
 - Context-aware: knows which file is open, what project is about
 - "Fix this" button on error highlights
 - "Explain" button on selected code
 
 #### Deployment
+
 - "Deploy" button that runs loki deploy
 - Deploy status indicator
 - Preview deployed URL
@@ -98,6 +108,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 ## Technical Architecture
 
 ### Frontend
+
 - React 19 + TypeScript + Tailwind CSS (existing stack)
 - Monaco Editor: `@monaco-editor/react` package
 - xterm.js: `@xterm/xterm` + `@xterm/addon-fit` + `@xterm/addon-web-links`
@@ -105,6 +116,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - File operations: REST API calls to new CRUD endpoints
 
 ### Backend (web-app/server.py)
+
 - `PUT /api/sessions/:id/file?path=` -- save file content
 - `POST /api/sessions/:id/file` -- create new file
 - `DELETE /api/sessions/:id/file?path=` -- delete file
@@ -114,6 +126,7 @@ Transform Purple Lab from a basic file viewer into a production-grade fullstack 
 - WebSocket terminal: `/ws/terminal/:id` -- PTY-backed terminal session
 
 ### Security
+
 - All file operations scoped to project directory (path traversal protection)
 - File size limits on saves (1MB)
 - Rate limiting on file operations

@@ -4,24 +4,24 @@
 
 Every pattern in this document is traced to a specific source. If a pattern is our synthesis (not directly from a paper), it is marked as such.
 
-| # | Source | Year | Key Contribution |
-|---|--------|------|-----------------|
-| 1 | Michael Feathers, *Working Effectively with Legacy Code* | 2004 | Characterization tests, seams, dependency-breaking |
-| 2 | Martin Fowler, Strangler Fig Application | 2004 | Incremental replacement via facade |
-| 3 | Eric Evans, *Domain-Driven Design* Ch.14 | 2003 | Anti-Corruption Layer |
-| 4 | Amazon AGI Lab, "How Agentic AI Helps Heal Systems" | 2026 | Friction-as-semantics, RL gyms, agents as universal API |
-| 5 | arXiv:2602.22518, RepoMod-Bench | 2026 | System-boundary testing for behavioral equivalence |
-| 6 | arXiv:2602.04341, Model-Driven Modernization | 2026 | Observability + contract tests for conformance |
-| 7 | arXiv:2506.02290, HEC | 2025 | Equivalence verification via equality saturation |
-| 8 | arXiv:2502.12466, EquiBench | 2025 | LLM code equivalence reasoning benchmarks |
-| 9 | arXiv:2510.18509, VAPU | 2025 | Multi-agent pipeline for autonomous legacy updates |
-| 10 | arXiv:2504.11335, Code Reborn | 2025 | COBOL-to-Java AI-driven, 93% accuracy |
-| 11 | arXiv:2501.19204, Multi-Agent Web App Upgrades | 2025 | Autonomous legacy web application upgrades |
-| 12 | AWS Transform | 2025-2026 | Decomposition agents, semantic seeding, 1.1B LOC analyzed |
-| 13 | GitHub Copilot Legacy Systems | 2025 | 3-agent pattern: extract, test, rewrite |
-| 14 | Mark Seemann, Empirical Characterization Testing | 2025 | Falsifiable experiment pattern for characterization |
-| 15 | arXiv:2511.04427v2 | 2025 | Velocity-quality tradeoff (807 repos studied) |
-| 16 | ThoughtWorks, Strangler Fig Guide | 2025 | Practical implementation steps |
+| #   | Source                                                   | Year      | Key Contribution                                          |
+| --- | -------------------------------------------------------- | --------- | --------------------------------------------------------- |
+| 1   | Michael Feathers, _Working Effectively with Legacy Code_ | 2004      | Characterization tests, seams, dependency-breaking        |
+| 2   | Martin Fowler, Strangler Fig Application                 | 2004      | Incremental replacement via facade                        |
+| 3   | Eric Evans, _Domain-Driven Design_ Ch.14                 | 2003      | Anti-Corruption Layer                                     |
+| 4   | Amazon AGI Lab, "How Agentic AI Helps Heal Systems"      | 2026      | Friction-as-semantics, RL gyms, agents as universal API   |
+| 5   | arXiv:2602.22518, RepoMod-Bench                          | 2026      | System-boundary testing for behavioral equivalence        |
+| 6   | arXiv:2602.04341, Model-Driven Modernization             | 2026      | Observability + contract tests for conformance            |
+| 7   | arXiv:2506.02290, HEC                                    | 2025      | Equivalence verification via equality saturation          |
+| 8   | arXiv:2502.12466, EquiBench                              | 2025      | LLM code equivalence reasoning benchmarks                 |
+| 9   | arXiv:2510.18509, VAPU                                   | 2025      | Multi-agent pipeline for autonomous legacy updates        |
+| 10  | arXiv:2504.11335, Code Reborn                            | 2025      | COBOL-to-Java AI-driven, 93% accuracy                     |
+| 11  | arXiv:2501.19204, Multi-Agent Web App Upgrades           | 2025      | Autonomous legacy web application upgrades                |
+| 12  | AWS Transform                                            | 2025-2026 | Decomposition agents, semantic seeding, 1.1B LOC analyzed |
+| 13  | GitHub Copilot Legacy Systems                            | 2025      | 3-agent pattern: extract, test, rewrite                   |
+| 14  | Mark Seemann, Empirical Characterization Testing         | 2025      | Falsifiable experiment pattern for characterization       |
+| 15  | arXiv:2511.04427v2                                       | 2025      | Velocity-quality tradeoff (807 repos studied)             |
+| 16  | ThoughtWorks, Strangler Fig Guide                        | 2025      | Practical implementation steps                            |
 
 ---
 
@@ -47,12 +47,12 @@ Mark Seemann's empirical characterization testing (2025) explains: writing a fai
 
 ### Characterization vs Unit Tests
 
-| Aspect | Characterization Test | Unit Test |
-|--------|---------------------|-----------|
-| **Verifies** | What code DOES | What code SHOULD do |
-| **Written** | After code exists | Before code exists (TDD) |
+| Aspect               | Characterization Test                | Unit Test                         |
+| -------------------- | ------------------------------------ | --------------------------------- |
+| **Verifies**         | What code DOES                       | What code SHOULD do               |
+| **Written**          | After code exists                    | Before code exists (TDD)          |
 | **When they differ** | Characterization wins during healing | Unit test wins in new development |
-| **Purpose** | Change detector | Correctness proof |
+| **Purpose**          | Change detector                      | Correctness proof                 |
 
 ### Dependency-Breaking Techniques (Feathers)
 
@@ -107,13 +107,13 @@ Named after strangler figs that gradually grow around a host tree until they rep
 
 ### Best Practices (ThoughtWorks + AWS)
 
-| Practice | Source | Rationale |
-|----------|--------|-----------|
-| Start with low-risk components | ThoughtWorks | Build confidence before tackling critical paths |
-| Handle shared databases via views/APIs | ThoughtWorks | Direct DB access creates hidden coupling |
-| Use feature flags and canary releases | ThoughtWorks | Reversible deployment |
-| Maintain a living migration roadmap | ThoughtWorks | Track what's strangled, in-progress, and next |
-| Use semantic seeding for decomposition | AWS Transform | Groups code into natural domains automatically |
+| Practice                               | Source        | Rationale                                       |
+| -------------------------------------- | ------------- | ----------------------------------------------- |
+| Start with low-risk components         | ThoughtWorks  | Build confidence before tackling critical paths |
+| Handle shared databases via views/APIs | ThoughtWorks  | Direct DB access creates hidden coupling        |
+| Use feature flags and canary releases  | ThoughtWorks  | Reversible deployment                           |
+| Maintain a living migration roadmap    | ThoughtWorks  | Track what's strangled, in-progress, and next   |
+| Use semantic seeding for decomposition | AWS Transform | Groups code into natural domains automatically  |
 
 ---
 
@@ -216,14 +216,14 @@ HEC (arXiv:2506.02290) uses e-graphs and equality saturation for formal equivale
 
 AWS Transform uses specialized AI agents organized by domain:
 
-| Agent Category | Purpose | Loki Equivalent |
-|---------------|---------|-----------------|
-| **Code Agent** | Analyze types, LOC, complexity, dependencies | Archaeology phase, sonnet |
-| **Data Source Agent** | Identify databases, files, configs and their usage | Archaeology phase, sonnet |
-| **Decomposition Agent** | Group code into logical domains via semantic seeding | Isolate phase, opus |
-| **Refactor Agent** | Transform legacy code to modern language | Modernize phase, sonnet |
-| **Reforge Agent** | Optimize refactored code for maintainability | Modernize phase, sonnet |
-| **Testing Agent** | Generate test plans from application dependencies | All phases, sonnet |
+| Agent Category          | Purpose                                              | Loki Equivalent           |
+| ----------------------- | ---------------------------------------------------- | ------------------------- |
+| **Code Agent**          | Analyze types, LOC, complexity, dependencies         | Archaeology phase, sonnet |
+| **Data Source Agent**   | Identify databases, files, configs and their usage   | Archaeology phase, sonnet |
+| **Decomposition Agent** | Group code into logical domains via semantic seeding | Isolate phase, opus       |
+| **Refactor Agent**      | Transform legacy code to modern language             | Modernize phase, sonnet   |
+| **Reforge Agent**       | Optimize refactored code for maintainability         | Modernize phase, sonnet   |
+| **Testing Agent**       | Generate test plans from application dependencies    | All phases, sonnet        |
 
 **Semantic Seeding:** AWS Transform identifies natural domain boundaries by analyzing code semantics, not just syntactic structure. This determines WHERE to place strangler fig boundaries.
 
@@ -263,15 +263,15 @@ Requirements -> Developer Agent -> Verification Agent -> Finalizer Agent
 
 ### Sources of Knowledge (Ordered by Value)
 
-| Source | Value | Method | Validation |
-|--------|-------|--------|------------|
-| Code comments (hack, workaround, don't touch) | High | Regex scan | Cross-reference with git blame |
-| Git blame history | High | `git log --follow --diff-filter=M` | Date + author + commit message |
-| Error messages | Medium | Grep user-facing strings | Often encode business rules |
-| Test fixtures | Medium | Analyze expected values | Encode business expectations |
-| Configuration (magic numbers, thresholds) | Medium | Find hardcoded values | Trace usage to business logic |
-| Dead code | Low-Medium | Static analysis for unreachable code | May be called dynamically |
-| Documentation | Variable | Read docs, verify against code | Often outdated |
+| Source                                        | Value      | Method                               | Validation                     |
+| --------------------------------------------- | ---------- | ------------------------------------ | ------------------------------ |
+| Code comments (hack, workaround, don't touch) | High       | Regex scan                           | Cross-reference with git blame |
+| Git blame history                             | High       | `git log --follow --diff-filter=M`   | Date + author + commit message |
+| Error messages                                | Medium     | Grep user-facing strings             | Often encode business rules    |
+| Test fixtures                                 | Medium     | Analyze expected values              | Encode business expectations   |
+| Configuration (magic numbers, thresholds)     | Medium     | Find hardcoded values                | Trace usage to business logic  |
+| Dead code                                     | Low-Medium | Static analysis for unreachable code | May be called dynamically      |
+| Documentation                                 | Variable   | Read docs, verify against code       | Often outdated                 |
 
 ### Comment Archaeology Patterns
 
@@ -290,16 +290,16 @@ git log --format='%at %H' --diff-filter=M -- <file> | head -1
 
 ## 7. Healing Anti-Patterns (Validated)
 
-| Anti-Pattern | Why It Fails | What to Do | Source |
-|-------------|-------------|-----------|--------|
-| **Big Bang Rewrite** | Destroys institutional knowledge, 15.3% success rate at 50K+ LOC | Strangler Fig | Fowler 2004, arXiv:2602.22518 |
-| **Fixing Quirks Without Classification** | "This sleep(2) is unnecessary" -- may prevent race condition | Classify friction first | Amazon AGI Lab 2026 |
-| **Unit-Level Equivalence Testing** | Allows test overfitting, misses system-level behavioral changes | System-boundary testing | arXiv:2602.22518 |
-| **Comment Deletion as "Cleanup"** | Removes institutional knowledge permanently | Extract to institutional-knowledge.md first | Synthesis |
-| **Test Deletion** | "These tests are weird/slow" -- they capture critical behaviors | Keep until characterization complete | Feathers 2004 |
-| **Over-Abstracting** | Adding clean architecture layers adds complexity | Anti-corruption layer at boundaries only | Evans 2003 |
-| **Skipping Archaeology** | "I can see what this does" -- you see structure, not semantics | Always characterize before modifying | Feathers 2004, Amazon 2026 |
-| **Ignoring Dead Code** | May be called via reflection, dynamic dispatch, or external systems | Runtime analysis before removal | Feathers 2004 |
+| Anti-Pattern                             | Why It Fails                                                        | What to Do                                  | Source                        |
+| ---------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------- | ----------------------------- |
+| **Big Bang Rewrite**                     | Destroys institutional knowledge, 15.3% success rate at 50K+ LOC    | Strangler Fig                               | Fowler 2004, arXiv:2602.22518 |
+| **Fixing Quirks Without Classification** | "This sleep(2) is unnecessary" -- may prevent race condition        | Classify friction first                     | Amazon AGI Lab 2026           |
+| **Unit-Level Equivalence Testing**       | Allows test overfitting, misses system-level behavioral changes     | System-boundary testing                     | arXiv:2602.22518              |
+| **Comment Deletion as "Cleanup"**        | Removes institutional knowledge permanently                         | Extract to institutional-knowledge.md first | Synthesis                     |
+| **Test Deletion**                        | "These tests are weird/slow" -- they capture critical behaviors     | Keep until characterization complete        | Feathers 2004                 |
+| **Over-Abstracting**                     | Adding clean architecture layers adds complexity                    | Anti-corruption layer at boundaries only    | Evans 2003                    |
+| **Skipping Archaeology**                 | "I can see what this does" -- you see structure, not semantics      | Always characterize before modifying        | Feathers 2004, Amazon 2026    |
+| **Ignoring Dead Code**                   | May be called via reflection, dynamic dispatch, or external systems | Runtime analysis before removal             | Feathers 2004                 |
 
 ---
 
@@ -307,14 +307,15 @@ git log --format='%at %H' --diff-filter=M -- <file> | head -1
 
 Based on arXiv:2602.22518 (RepoMod-Bench) and arXiv:2504.11335 (Code Reborn):
 
-| Codebase Size | Expected Outcome | Strategy |
-|---------------|-----------------|----------|
-| <10K LOC | 91.3% automated pass rate | Full automated healing |
-| 10K-50K LOC | ~50% automated pass rate | Automated archaeology + guided modernization |
-| 50K-200K LOC | ~15% automated pass rate | Break into components first, then heal each |
-| >200K LOC | Not practical end-to-end | AWS Transform or similar enterprise tooling |
+| Codebase Size | Expected Outcome          | Strategy                                     |
+| ------------- | ------------------------- | -------------------------------------------- |
+| <10K LOC      | 91.3% automated pass rate | Full automated healing                       |
+| 10K-50K LOC   | ~50% automated pass rate  | Automated archaeology + guided modernization |
+| 50K-200K LOC  | ~15% automated pass rate  | Break into components first, then heal each  |
+| >200K LOC     | Not practical end-to-end  | AWS Transform or similar enterprise tooling  |
 
 **Code Reborn (arXiv:2504.11335) findings for COBOL-to-Java:**
+
 - 93% accuracy (vs 75% manual, 82% rule-based tools)
 - 35% complexity reduction
 - 33% coupling reduction
@@ -325,6 +326,7 @@ Based on arXiv:2602.22518 (RepoMod-Bench) and arXiv:2504.11335 (Code Reborn):
 ## 9. Language-Specific Patterns (Condensed)
 
 ### COBOL / Mainframe
+
 - COPYBOOK files = shared data structures (must map ALL usage)
 - PARAGRAPH names = business process steps
 - 88-level conditions = enum-like business rules
@@ -332,6 +334,7 @@ Based on arXiv:2602.22518 (RepoMod-Bench) and arXiv:2504.11335 (Code Reborn):
 - **200 billion lines still running** banks, insurance, government
 
 ### Legacy Java (Pre-8)
+
 - XML configuration (Spring XML, Hibernate HBM) = wiring
 - EJB session beans = transaction semantics
 - Servlet filter chain ordering matters
@@ -339,12 +342,14 @@ Based on arXiv:2602.22518 (RepoMod-Bench) and arXiv:2504.11335 (Code Reborn):
 - ThreadLocal = hidden state
 
 ### Legacy PHP (Pre-7)
+
 - register_globals behavior (security risk)
 - mysql_* functions (SQL injection risk)
 - include/require with variable paths (dynamic loading)
 - Session handling with custom save handlers
 
 ### Legacy Python (2.x)
+
 - print statement vs function
 - unicode/str confusion
 - Integer division behavior (// vs /)

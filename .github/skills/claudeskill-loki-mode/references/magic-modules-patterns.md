@@ -8,10 +8,10 @@ Detailed reference for the Magic Modules system: spec format, freshness protocol
 
 Magic Modules is an adaptation of two Google Labs experiments. The spec format, the debate protocol, and the integration with Loki Mode's RARV cycle are re-implemented for this codebase. Credit for the underlying ideas belongs to the original authors.
 
-| Project | Author | Contribution | Link |
-|---------|--------|--------------|------|
+| Project      | Author                    | Contribution                                                                                                          | Link                                                                             |
+| ------------ | ------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | MagicModules | Roman Nurik (Google Labs) | Spec-first component generation, markdown specs as source of truth, SHA-based freshness check, single-source registry | [github.com/romannurik/MagicModules](https://github.com/romannurik/MagicModules) |
-| MoMoA | Reto Meier (Google Labs) | Multi-persona debate, conflicting expert critique, consensus with HITL escalation | [github.com/retomeier/momoa](https://github.com/retomeier/momoa) |
+| MoMoA        | Reto Meier (Google Labs)  | Multi-persona debate, conflicting expert critique, consensus with HITL escalation                                     | [github.com/retomeier/momoa](https://github.com/retomeier/momoa)                 |
 
 This adaptation is not a copy. Differences from the originals:
 
@@ -31,46 +31,51 @@ Specs are authored in Markdown with a YAML front matter block. The spec is the s
 ```markdown
 ---
 name: Button
-target: both              # react | webcomponent | both
+target: both # react | webcomponent | both
 version: 1
 tags: [form, action, primary]
 design_tokens:
   color_primary: token.color.accent
   radius: token.radius.md
   font: token.font.body
-a11y_level: AA            # A | AA | AAA
-stability: stable         # experimental | beta | stable
+a11y_level: AA # A | AA | AAA
+stability: stable # experimental | beta | stable
 owner: team-ui
 ---
 
 # Button
 
 ## Purpose
+
 A primary action trigger. Used when a user needs to commit to a single most-important action on a screen.
 
 ## Props
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | string | required | Visible label text |
-| `onClick` | function | required | Handler for activation |
-| `variant` | 'primary' \| 'secondary' \| 'ghost' | 'primary' | Visual weight |
-| `loading` | boolean | false | Shows spinner, disables click |
-| `disabled` | boolean | false | Non-interactive state |
-| `iconLeft` | ReactNode \| slot | null | Optional leading icon |
+
+| Name       | Type                                | Default   | Description                   |
+| ---------- | ----------------------------------- | --------- | ----------------------------- |
+| `label`    | string                              | required  | Visible label text            |
+| `onClick`  | function                            | required  | Handler for activation        |
+| `variant`  | 'primary' \| 'secondary' \| 'ghost' | 'primary' | Visual weight                 |
+| `loading`  | boolean                             | false     | Shows spinner, disables click |
+| `disabled` | boolean                             | false     | Non-interactive state         |
+| `iconLeft` | ReactNode \| slot                   | null      | Optional leading icon         |
 
 ## Behavior
+
 - Click or Enter or Space activates the button
 - While `loading` is true, clicks are suppressed and a spinner replaces `iconLeft`
 - `disabled` sets `aria-disabled=true` and blocks pointer events
 - The component never manages its own loading state -- it is controlled via the `loading` prop
 
 ## Accessibility
+
 - Uses a native `<button>` element (React) or `role="button"` (WC)
 - Focus ring is visible and uses `token.color.focus`
 - `loading` announces via `aria-busy=true`
 - `disabled` uses `aria-disabled` rather than the `disabled` attribute to keep focus reachable
 
 ## Visual
+
 - Height: token.spacing.height.md
 - Padding: token.spacing.x.md
 - Radius: token.radius.md
@@ -78,6 +83,7 @@ A primary action trigger. Used when a user needs to commit to a single most-impo
 - Transitions respect `prefers-reduced-motion`
 
 ## Test Expectations
+
 - Renders the label
 - Calls onClick on click, Enter, and Space
 - Does not call onClick when `loading` or `disabled`
@@ -85,6 +91,7 @@ A primary action trigger. Used when a user needs to commit to a single most-impo
 - Focus ring visible when keyboard-focused
 
 ## Notes
+
 <!-- Free-form notes for downstream maintainers -->
 ```
 
@@ -138,13 +145,13 @@ For Web Components:
 
 A component is stale when any of the following is true:
 
-| Condition | Action |
-|-----------|--------|
-| File hash marker != registry hash | Regenerate |
-| File missing but registry entry exists | Regenerate |
-| Registry entry missing but spec exists | Create registry entry and generate |
-| Spec removed but file exists | Warn and list as orphan; do not auto-delete |
-| Token referenced by spec changed | Regenerate all specs using that token |
+| Condition                              | Action                                      |
+| -------------------------------------- | ------------------------------------------- |
+| File hash marker != registry hash      | Regenerate                                  |
+| File missing but registry entry exists | Regenerate                                  |
+| Registry entry missing but spec exists | Create registry entry and generate          |
+| Spec removed but file exists           | Warn and list as orphan; do not auto-delete |
+| Token referenced by spec changed       | Regenerate all specs using that token       |
 
 ### Forcing Regeneration
 
@@ -204,13 +211,13 @@ All persona prompts share a common header that includes the spec, the generated 
 
 ### Consensus Rules
 
-| Round 3 Outcome | Action |
-|-----------------|--------|
-| All personas agree on diff | Apply diff; component passes debate |
-| Majority agrees, minority concedes | Apply diff; record minority's `info` notes |
-| Split vote, no block | Apply diff that resolves all `warn` items; leave `info` items as code comments |
-| Any unresolved `block` | Escalate to HITL |
-| Personas contradict each other and cannot reconcile | Escalate to HITL |
+| Round 3 Outcome                                     | Action                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------ |
+| All personas agree on diff                          | Apply diff; component passes debate                                            |
+| Majority agrees, minority concedes                  | Apply diff; record minority's `info` notes                                     |
+| Split vote, no block                                | Apply diff that resolves all `warn` items; leave `info` items as code comments |
+| Any unresolved `block`                              | Escalate to HITL                                                               |
+| Personas contradict each other and cannot reconcile | Escalate to HITL                                                               |
 
 ### HITL Escalation
 
@@ -312,18 +319,18 @@ Debate transcripts participate in episodic memory so the system can surface prio
 
 ### Field Reference
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| `spec_hash` | string(12) | Current spec content hash |
-| `spec_version` | int | Bumped manually when breaking spec changes occur |
-| `targets` | string[] | Which stacks this component supports |
-| `generated.<target>.hash` | string(12) | Hash of the spec that generated this file |
-| `tags` | string[] | Free-form tags for filtering in `loki magic list` |
-| `a11y_level` | enum | Drives A11y persona severity |
-| `stability` | enum | `experimental` skips some debate rounds; `stable` runs full debate |
-| `last_debate` | object | Reference to the most recent debate transcript |
-| `hotspot_score` | float | Derived from git history; drives extra debate rounds |
-| `co_change_with` | string[] | Components that historically change in the same commit |
+| Field                     | Type       | Purpose                                                            |
+| ------------------------- | ---------- | ------------------------------------------------------------------ |
+| `spec_hash`               | string(12) | Current spec content hash                                          |
+| `spec_version`            | int        | Bumped manually when breaking spec changes occur                   |
+| `targets`                 | string[]   | Which stacks this component supports                               |
+| `generated.<target>.hash` | string(12) | Hash of the spec that generated this file                          |
+| `tags`                    | string[]   | Free-form tags for filtering in `loki magic list`                  |
+| `a11y_level`              | enum       | Drives A11y persona severity                                       |
+| `stability`               | enum       | `experimental` skips some debate rounds; `stable` runs full debate |
+| `last_debate`             | object     | Reference to the most recent debate transcript                     |
+| `hotspot_score`           | float      | Derived from git history; drives extra debate rounds               |
+| `co_change_with`          | string[]   | Components that historically change in the same commit             |
 
 ### Freshness Check Logic
 
@@ -587,18 +594,18 @@ If the A11y Advocate had flagged a `block`-severity contrast failure and no pers
 
 ## 9. Troubleshooting
 
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| `LOKI-MAGIC-HASH` header missing | File edited manually or created outside the generator | Restore the header or regenerate with `loki magic update --only <name> --force` |
-| Regeneration keeps triggering | Token file churn or whitespace differences in spec | Run `loki magic tokens extract --overwrite` once to stabilize; review spec for comment noise |
-| Debate escalates every time | Spec is under-specified in a way that makes one persona block | Expand the Accessibility or Behavior section with explicit choices |
-| Orphan listed in registry | Generated file has no matching spec | Either delete the file or restore its spec from git history |
-| Generated component does not match codebase style | Tokens not extracted or overridden | Run `loki magic tokens extract`, then `loki magic update --force` |
-| `magic_generate` returns `blocked` | Round 3 deadlock | Inspect `.loki/magic/debates/<component>-<hash>.json`; resolve by editing the spec or `--accept round-3` |
-| React and WC variants drift | Spec was edited after only one target regenerated | Run `loki magic update --only <name>` to rebuild all declared targets |
-| Registry stats show many stale | Token change invalidated many specs | Run `loki magic update` to regenerate all dependents |
-| Spec version bumped but hash unchanged | Manual version bump without content edit | Add a meaningful change, or leave the version unchanged |
-| Tests fail after regeneration | Generated tests reflect new behavior the spec describes | Update the consuming code to match the new API, or revise the spec to preserve old behavior |
+| Symptom                                           | Likely Cause                                                  | Fix                                                                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `LOKI-MAGIC-HASH` header missing                  | File edited manually or created outside the generator         | Restore the header or regenerate with `loki magic update --only <name> --force`                          |
+| Regeneration keeps triggering                     | Token file churn or whitespace differences in spec            | Run `loki magic tokens extract --overwrite` once to stabilize; review spec for comment noise             |
+| Debate escalates every time                       | Spec is under-specified in a way that makes one persona block | Expand the Accessibility or Behavior section with explicit choices                                       |
+| Orphan listed in registry                         | Generated file has no matching spec                           | Either delete the file or restore its spec from git history                                              |
+| Generated component does not match codebase style | Tokens not extracted or overridden                            | Run `loki magic tokens extract`, then `loki magic update --force`                                        |
+| `magic_generate` returns `blocked`                | Round 3 deadlock                                              | Inspect `.loki/magic/debates/<component>-<hash>.json`; resolve by editing the spec or `--accept round-3` |
+| React and WC variants drift                       | Spec was edited after only one target regenerated             | Run `loki magic update --only <name>` to rebuild all declared targets                                    |
+| Registry stats show many stale                    | Token change invalidated many specs                           | Run `loki magic update` to regenerate all dependents                                                     |
+| Spec version bumped but hash unchanged            | Manual version bump without content edit                      | Add a meaningful change, or leave the version unchanged                                                  |
+| Tests fail after regeneration                     | Generated tests reflect new behavior the spec describes       | Update the consuming code to match the new API, or revise the spec to preserve old behavior              |
 
 ---
 
@@ -606,15 +613,15 @@ If the A11y Advocate had flagged a `block`-severity contrast failure and no pers
 
 Magic Modules fills the visual-component-generation gap in Loki Mode. The table below compares the approach to adjacent tools.
 
-| Tool | Spec-First | Multi-Persona Debate | Design Tokens | Dual Target (React + WC) | Registry with Freshness | Open Source |
-|------|-----------|---------------------|---------------|-------------------------|------------------------|-------------|
-| **Loki Magic Modules** | Yes | Yes (4 personas) | Yes (extracted + overridable) | Yes | Yes (SHA hashes) | Yes |
-| MagicModules (Nurik) | Yes | No | Partial | React only | Yes | Yes |
-| MoMoA (Meier) | No (code-first) | Yes | No | React only | No | Yes |
-| Replit Agent Design Canvas | Visual canvas | No | Partial | React only | No | No |
-| bolt.new Visual Inspector | No (prompt-first) | No | No | React only | No | No |
-| Cursor Compose | No | No | No | Depends on user | No | No |
-| v0 by Vercel | Prompt-first, editable preview | No | Partial | React only | No | Partial (hosted) |
+| Tool                       | Spec-First                     | Multi-Persona Debate | Design Tokens                 | Dual Target (React + WC) | Registry with Freshness | Open Source      |
+| -------------------------- | ------------------------------ | -------------------- | ----------------------------- | ------------------------ | ----------------------- | ---------------- |
+| **Loki Magic Modules**     | Yes                            | Yes (4 personas)     | Yes (extracted + overridable) | Yes                      | Yes (SHA hashes)        | Yes              |
+| MagicModules (Nurik)       | Yes                            | No                   | Partial                       | React only               | Yes                     | Yes              |
+| MoMoA (Meier)              | No (code-first)                | Yes                  | No                            | React only               | No                      | Yes              |
+| Replit Agent Design Canvas | Visual canvas                  | No                   | Partial                       | React only               | No                      | No               |
+| bolt.new Visual Inspector  | No (prompt-first)              | No                   | No                            | React only               | No                      | No               |
+| Cursor Compose             | No                             | No                   | No                            | Depends on user          | No                      | No               |
+| v0 by Vercel               | Prompt-first, editable preview | No                   | Partial                       | React only               | No                      | Partial (hosted) |
 
 Key differentiators:
 

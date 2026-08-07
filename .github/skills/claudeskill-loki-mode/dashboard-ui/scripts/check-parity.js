@@ -17,9 +17,9 @@
  *   --report     Write report to file
  */
 
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { writeFileSync, existsSync } from 'fs';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { writeFileSync, existsSync } from "fs";
 
 // Get script directory
 const __filename = fileURLToPath(import.meta.url);
@@ -30,14 +30,22 @@ const __dirname = dirname(__filename);
 const createMinimalDOM = () => {
   const mockStorage = {
     _data: {},
-    getItem(key) { return this._data[key] || null; },
-    setItem(key, value) { this._data[key] = String(value); },
-    removeItem(key) { delete this._data[key]; },
-    clear() { this._data = {}; },
+    getItem(key) {
+      return this._data[key] || null;
+    },
+    setItem(key, value) {
+      this._data[key] = String(value);
+    },
+    removeItem(key) {
+      delete this._data[key];
+    },
+    clear() {
+      this._data = {};
+    },
   };
 
   const mockElement = {
-    className: '',
+    className: "",
     removeAttribute() {},
     setAttribute() {},
   };
@@ -50,7 +58,7 @@ const createMinimalDOM = () => {
 };
 
 // Setup globals only if not already present (Node.js environment)
-if (typeof global !== 'undefined' && !global.document) {
+if (typeof global !== "undefined" && !global.document) {
   const mockDOM = createMinimalDOM();
   global.document = mockDOM;
   global.localStorage = mockDOM.localStorage;
@@ -62,8 +70,11 @@ if (typeof global !== 'undefined' && !global.document) {
     localStorage: mockDOM.localStorage,
   };
   global.matchMedia = global.window.matchMedia;
-  global.getComputedStyle = () => ({ getPropertyValue: () => '' });
-  global.MutationObserver = class { observe() {} disconnect() {} };
+  global.getComputedStyle = () => ({ getPropertyValue: () => "" });
+  global.MutationObserver = class {
+    observe() {}
+    disconnect() {}
+  };
   global.HTMLElement = class {};
   global.customElements = { define: () => {} };
 }
@@ -71,11 +82,11 @@ if (typeof global !== 'undefined' && !global.document) {
 // Parse arguments
 const args = process.argv.slice(2);
 const options = {
-  json: args.includes('--json'),
-  markdown: args.includes('--markdown'),
-  quiet: args.includes('--quiet'),
-  context: args.includes('--context') ? args[args.indexOf('--context') + 1] : null,
-  report: args.includes('--report') ? args[args.indexOf('--report') + 1] : null,
+  json: args.includes("--json"),
+  markdown: args.includes("--markdown"),
+  quiet: args.includes("--quiet"),
+  context: args.includes("--context") ? args[args.indexOf("--context") + 1] : null,
+  report: args.includes("--report") ? args[args.indexOf("--report") + 1] : null,
 };
 
 // =============================================================================
@@ -84,34 +95,34 @@ const options = {
 
 const CONTEXTS = {
   browser: {
-    name: 'Browser',
+    name: "Browser",
     setup: () => {
-      document.body.className = '';
-      document.documentElement.removeAttribute('data-loki-context');
+      document.body.className = "";
+      document.documentElement.removeAttribute("data-loki-context");
     },
     cleanup: () => {
-      document.body.className = '';
+      document.body.className = "";
     },
   },
   vscode: {
-    name: 'VS Code Webview',
+    name: "VS Code Webview",
     setup: () => {
-      document.body.className = 'vscode-body vscode-dark';
-      document.documentElement.setAttribute('data-loki-context', 'vscode');
+      document.body.className = "vscode-body vscode-dark";
+      document.documentElement.setAttribute("data-loki-context", "vscode");
     },
     cleanup: () => {
-      document.body.className = '';
-      document.documentElement.removeAttribute('data-loki-context');
+      document.body.className = "";
+      document.documentElement.removeAttribute("data-loki-context");
     },
   },
   cli: {
-    name: 'CLI Embedded',
+    name: "CLI Embedded",
     setup: () => {
-      document.body.className = '';
-      document.documentElement.setAttribute('data-loki-context', 'cli');
+      document.body.className = "";
+      document.documentElement.setAttribute("data-loki-context", "cli");
     },
     cleanup: () => {
-      document.documentElement.removeAttribute('data-loki-context');
+      document.documentElement.removeAttribute("data-loki-context");
     },
   },
 };
@@ -122,39 +133,37 @@ const FEATURE_MATRIX = {
   themes: {
     component: null,
     features: {
-      'theme-light': {
-        description: 'Light theme is defined',
+      "theme-light": {
+        description: "Light theme is defined",
         required: true,
         testFn: (THEMES) => !!THEMES?.light && Object.keys(THEMES.light).length > 20,
       },
-      'theme-dark': {
-        description: 'Dark theme is defined',
+      "theme-dark": {
+        description: "Dark theme is defined",
         required: true,
         testFn: (THEMES) => !!THEMES?.dark && Object.keys(THEMES.dark).length > 20,
       },
-      'theme-high-contrast': {
-        description: 'High contrast theme is defined',
+      "theme-high-contrast": {
+        description: "High contrast theme is defined",
         required: true,
-        testFn: (THEMES) => !!THEMES?.['high-contrast'],
+        testFn: (THEMES) => !!THEMES?.["high-contrast"],
       },
-      'theme-vscode-light': {
-        description: 'VS Code light theme is defined',
+      "theme-vscode-light": {
+        description: "VS Code light theme is defined",
         required: true,
-        testFn: (THEMES) => !!THEMES?.['vscode-light'],
+        testFn: (THEMES) => !!THEMES?.["vscode-light"],
       },
-      'theme-vscode-dark': {
-        description: 'VS Code dark theme is defined',
+      "theme-vscode-dark": {
+        description: "VS Code dark theme is defined",
         required: true,
-        testFn: (THEMES) => !!THEMES?.['vscode-dark'],
+        testFn: (THEMES) => !!THEMES?.["vscode-dark"],
       },
-      'theme-variables-complete': {
-        description: 'All themes have required variables',
+      "theme-variables-complete": {
+        description: "All themes have required variables",
         required: true,
         testFn: (THEMES) => {
-          const required = ['--loki-bg-primary', '--loki-text-primary', '--loki-accent'];
-          return Object.values(THEMES || {}).every(theme =>
-            required.every(v => v in theme)
-          );
+          const required = ["--loki-bg-primary", "--loki-text-primary", "--loki-accent"];
+          return Object.values(THEMES || {}).every((theme) => required.every((v) => v in theme));
         },
       },
     },
@@ -162,66 +171,74 @@ const FEATURE_MATRIX = {
   keyboardShortcuts: {
     component: null,
     features: {
-      'nav-next-item': {
-        description: 'ArrowDown shortcut defined',
+      "nav-next-item": {
+        description: "ArrowDown shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['navigation.nextItem']?.key === 'ArrowDown',
+        testFn: (_, KEYBOARD_SHORTCUTS) =>
+          KEYBOARD_SHORTCUTS?.["navigation.nextItem"]?.key === "ArrowDown",
       },
-      'nav-prev-item': {
-        description: 'ArrowUp shortcut defined',
+      "nav-prev-item": {
+        description: "ArrowUp shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['navigation.prevItem']?.key === 'ArrowUp',
+        testFn: (_, KEYBOARD_SHORTCUTS) =>
+          KEYBOARD_SHORTCUTS?.["navigation.prevItem"]?.key === "ArrowUp",
       },
-      'nav-confirm': {
-        description: 'Enter shortcut defined',
+      "nav-confirm": {
+        description: "Enter shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['navigation.confirm']?.key === 'Enter',
+        testFn: (_, KEYBOARD_SHORTCUTS) =>
+          KEYBOARD_SHORTCUTS?.["navigation.confirm"]?.key === "Enter",
       },
-      'nav-cancel': {
-        description: 'Escape shortcut defined',
+      "nav-cancel": {
+        description: "Escape shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['navigation.cancel']?.key === 'Escape',
+        testFn: (_, KEYBOARD_SHORTCUTS) =>
+          KEYBOARD_SHORTCUTS?.["navigation.cancel"]?.key === "Escape",
       },
-      'action-refresh': {
-        description: 'Refresh shortcut defined',
+      "action-refresh": {
+        description: "Refresh shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['action.refresh']?.key === 'r',
+        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.["action.refresh"]?.key === "r",
       },
-      'theme-toggle': {
-        description: 'Theme toggle shortcut defined',
+      "theme-toggle": {
+        description: "Theme toggle shortcut defined",
         required: true,
-        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.['theme.toggle']?.key === 'd',
+        testFn: (_, KEYBOARD_SHORTCUTS) => KEYBOARD_SHORTCUTS?.["theme.toggle"]?.key === "d",
       },
     },
   },
   ariaPatterns: {
     component: null,
     features: {
-      'button-pattern': {
-        description: 'Button ARIA pattern defined',
+      "button-pattern": {
+        description: "Button ARIA pattern defined",
         required: true,
-        testFn: (_, __, ARIA_PATTERNS) => ARIA_PATTERNS?.button?.role === 'button',
+        testFn: (_, __, ARIA_PATTERNS) => ARIA_PATTERNS?.button?.role === "button",
       },
-      'tab-patterns': {
-        description: 'Tab ARIA patterns defined',
+      "tab-patterns": {
+        description: "Tab ARIA patterns defined",
         required: true,
         testFn: (_, __, ARIA_PATTERNS) => {
-          return ARIA_PATTERNS?.tablist?.role === 'tablist' &&
-                 ARIA_PATTERNS?.tab?.role === 'tab' &&
-                 ARIA_PATTERNS?.tabpanel?.role === 'tabpanel';
+          return (
+            ARIA_PATTERNS?.tablist?.role === "tablist" &&
+            ARIA_PATTERNS?.tab?.role === "tab" &&
+            ARIA_PATTERNS?.tabpanel?.role === "tabpanel"
+          );
         },
       },
-      'log-pattern': {
-        description: 'Log ARIA pattern defined',
+      "log-pattern": {
+        description: "Log ARIA pattern defined",
         required: true,
-        testFn: (_, __, ARIA_PATTERNS) => ARIA_PATTERNS?.log?.role === 'log',
+        testFn: (_, __, ARIA_PATTERNS) => ARIA_PATTERNS?.log?.role === "log",
       },
-      'live-regions': {
-        description: 'Live region patterns defined',
+      "live-regions": {
+        description: "Live region patterns defined",
         required: true,
         testFn: (_, __, ARIA_PATTERNS) => {
-          return ARIA_PATTERNS?.livePolite?.ariaLive === 'polite' &&
-                 ARIA_PATTERNS?.liveAssertive?.ariaLive === 'assertive';
+          return (
+            ARIA_PATTERNS?.livePolite?.ariaLive === "polite" &&
+            ARIA_PATTERNS?.liveAssertive?.ariaLive === "assertive"
+          );
         },
       },
     },
@@ -229,45 +246,45 @@ const FEATURE_MATRIX = {
   componentFiles: {
     component: null,
     features: {
-      'task-board-exists': {
-        description: 'Task board component file exists',
+      "task-board-exists": {
+        description: "Task board component file exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../components/loki-task-board.js')),
+        testFn: () => existsSync(join(__dirname, "../components/loki-task-board.js")),
       },
-      'session-control-exists': {
-        description: 'Session control component file exists',
+      "session-control-exists": {
+        description: "Session control component file exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../components/loki-session-control.js')),
+        testFn: () => existsSync(join(__dirname, "../components/loki-session-control.js")),
       },
-      'log-stream-exists': {
-        description: 'Log stream component file exists',
+      "log-stream-exists": {
+        description: "Log stream component file exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../components/loki-log-stream.js')),
+        testFn: () => existsSync(join(__dirname, "../components/loki-log-stream.js")),
       },
-      'memory-browser-exists': {
-        description: 'Memory browser component file exists',
+      "memory-browser-exists": {
+        description: "Memory browser component file exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../components/loki-memory-browser.js')),
+        testFn: () => existsSync(join(__dirname, "../components/loki-memory-browser.js")),
       },
-      'unified-styles-exists': {
-        description: 'Unified styles module exists',
+      "unified-styles-exists": {
+        description: "Unified styles module exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../core/loki-unified-styles.js')),
+        testFn: () => existsSync(join(__dirname, "../core/loki-unified-styles.js")),
       },
-      'theme-module-exists': {
-        description: 'Theme module exists',
+      "theme-module-exists": {
+        description: "Theme module exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../core/loki-theme.js')),
+        testFn: () => existsSync(join(__dirname, "../core/loki-theme.js")),
       },
-      'api-client-exists': {
-        description: 'API client module exists',
+      "api-client-exists": {
+        description: "API client module exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../core/loki-api-client.js')),
+        testFn: () => existsSync(join(__dirname, "../core/loki-api-client.js")),
       },
-      'state-module-exists': {
-        description: 'State module exists',
+      "state-module-exists": {
+        description: "State module exists",
         required: true,
-        testFn: () => existsSync(join(__dirname, '../core/loki-state.js')),
+        testFn: () => existsSync(join(__dirname, "../core/loki-state.js")),
       },
     },
   },
@@ -281,12 +298,12 @@ async function runParityCheck() {
   let THEMES, KEYBOARD_SHORTCUTS, ARIA_PATTERNS;
 
   try {
-    const unifiedStyles = await import(join(__dirname, '../core/loki-unified-styles.js'));
+    const unifiedStyles = await import(join(__dirname, "../core/loki-unified-styles.js"));
     THEMES = unifiedStyles.THEMES;
     KEYBOARD_SHORTCUTS = unifiedStyles.KEYBOARD_SHORTCUTS;
     ARIA_PATTERNS = unifiedStyles.ARIA_PATTERNS;
   } catch (error) {
-    console.error('Failed to import unified styles:', error.message);
+    console.error("Failed to import unified styles:", error.message);
     process.exit(1);
   }
 
@@ -382,7 +399,7 @@ function formatAsMarkdown(report) {
   md += `- Total Features: ${report.summary.totalFeatures}\n`;
   md += `- Passed: ${report.summary.passedFeatures}\n`;
   md += `- Failed: ${report.summary.failedFeatures}\n`;
-  md += `- Parity Status: ${report.summary.parityPassed ? 'PASSED' : 'FAILED'}\n\n`;
+  md += `- Parity Status: ${report.summary.parityPassed ? "PASSED" : "FAILED"}\n\n`;
 
   for (const [contextId, context] of Object.entries(report.contexts)) {
     md += `## ${context.name}\n\n`;
@@ -391,8 +408,8 @@ function formatAsMarkdown(report) {
 
     for (const [categoryId, category] of Object.entries(context.categories)) {
       for (const [featureId, feature] of Object.entries(category.features)) {
-        const status = feature.passed ? 'PASS' : 'FAIL';
-        const required = feature.required ? 'Yes' : 'No';
+        const status = feature.passed ? "PASS" : "FAIL";
+        const required = feature.required ? "Yes" : "No";
         md += `| ${categoryId} | ${feature.description} | ${required} | ${status} |\n`;
       }
     }
@@ -404,29 +421,29 @@ function formatAsMarkdown(report) {
 }
 
 function formatAsText(report) {
-  let text = '';
-  text += '='.repeat(60) + '\n';
-  text += 'FEATURE PARITY CHECK REPORT\n';
-  text += '='.repeat(60) + '\n\n';
+  let text = "";
+  text += "=".repeat(60) + "\n";
+  text += "FEATURE PARITY CHECK REPORT\n";
+  text += "=".repeat(60) + "\n\n";
   text += `Generated: ${report.timestamp}\n\n`;
 
-  text += 'SUMMARY\n';
-  text += '-'.repeat(40) + '\n';
+  text += "SUMMARY\n";
+  text += "-".repeat(40) + "\n";
   text += `Total Features: ${report.summary.totalFeatures}\n`;
   text += `Passed: ${report.summary.passedFeatures}\n`;
   text += `Failed: ${report.summary.failedFeatures}\n`;
-  text += `Status: ${report.summary.parityPassed ? 'PASSED' : 'FAILED'}\n\n`;
+  text += `Status: ${report.summary.parityPassed ? "PASSED" : "FAILED"}\n\n`;
 
   for (const [contextId, context] of Object.entries(report.contexts)) {
     text += `\n${context.name.toUpperCase()}\n`;
-    text += '-'.repeat(40) + '\n';
+    text += "-".repeat(40) + "\n";
 
     for (const [categoryId, category] of Object.entries(context.categories)) {
       text += `\n  ${categoryId}:\n`;
 
       for (const [featureId, feature] of Object.entries(category.features)) {
-        const status = feature.passed ? '[PASS]' : '[FAIL]';
-        const required = feature.required ? '*' : ' ';
+        const status = feature.passed ? "[PASS]" : "[FAIL]";
+        const required = feature.required ? "*" : " ";
         text += `    ${status}${required} ${feature.description}\n`;
 
         if (feature.error) {
@@ -436,9 +453,9 @@ function formatAsText(report) {
     }
   }
 
-  text += '\n' + '='.repeat(60) + '\n';
+  text += "\n" + "=".repeat(60) + "\n";
   text += `* = Required feature\n`;
-  text += `Overall: ${report.summary.parityPassed ? 'PASSED' : 'FAILED'}\n`;
+  text += `Overall: ${report.summary.parityPassed ? "PASSED" : "FAILED"}\n`;
 
   return text;
 }
@@ -449,7 +466,7 @@ function formatAsText(report) {
 
 async function main() {
   if (!options.quiet) {
-    console.log('Running feature parity check...\n');
+    console.log("Running feature parity check...\n");
   }
 
   const report = await runParityCheck();
@@ -478,18 +495,18 @@ async function main() {
 
   // Exit with appropriate code
   if (!report.summary.parityPassed) {
-    console.error('\nFeature parity check FAILED\n');
+    console.error("\nFeature parity check FAILED\n");
     process.exit(1);
   }
 
   if (!options.quiet) {
-    console.log('\nFeature parity check PASSED\n');
+    console.log("\nFeature parity check PASSED\n");
   }
 
   process.exit(0);
 }
 
 main().catch((error) => {
-  console.error('Error running parity check:', error);
+  console.error("Error running parity check:", error);
   process.exit(1);
 });

@@ -22,11 +22,13 @@ Implements **selective autonomy** - shorter bursts of autonomous work with feedb
 > — Tim Dettmers, 2026
 
 **Problem with Perpetual Autonomy:**
+
 - Can waste resources on wrong approach
 - No opportunity for course correction
 - User feels disconnected from progress
 
 **Solution:**
+
 - Pause after N tasks or M minutes
 - Generate summary of accomplishments
 - Wait for explicit approval to continue
@@ -36,12 +38,14 @@ Implements **selective autonomy** - shorter bursts of autonomous work with feedb
 ## When to Use
 
 ### Use Checkpoint Mode For:
+
 - **Novel projects** where approach may need adjustment
 - **High-cost operations** (expensive API calls, cloud resources)
 - **Learning phases** where user wants to guide direction
 - **Regulated environments** requiring audit trail
 
 ### Use Perpetual Mode For:
+
 - **Well-defined PRDs** with clear requirements
 - **Established patterns** with high confidence
 - **Overnight builds** where interruption isn't desired
@@ -78,27 +82,32 @@ LOKI_CHECKPOINT_PHASES="architecture,deployment"
 ### On Checkpoint:
 
 1. **Generate Summary**
+
    ```markdown
    # Checkpoint Summary
 
    ## Tasks Completed (10)
+
    - Implemented POST /api/todos endpoint
    - Added unit tests (95% coverage)
    - Set up CI/CD pipeline
    - ...
 
    ## Next Actions
+
    - Deploy to staging
    - Run integration tests
    - Security audit
 
    ## Resources Used
+
    - 15 minutes elapsed
    - 3 Haiku agents, 2 Sonnet agents
    - Estimated cost: $0.45
    ```
 
 2. **Create Approval Signal**
+
    ```bash
    # System writes:
    .loki/signals/CHECKPOINT_SUMMARY_2026-01-14-10-30.md
@@ -142,11 +151,11 @@ if tasks_since_checkpoint >= CHECKPOINT_FREQUENCY:
 
 ## Comparison with Other Modes
 
-| Mode | Best For | Approval Frequency | Use Case |
-|------|----------|-------------------|----------|
-| **Perpetual** | Overnight builds | Never | Fully automated CI/CD |
-| **Checkpoint** | Novel projects | Every 10 tasks | Learning new domain |
-| **Supervised** | Critical systems | Every task | Production deployments |
+| Mode           | Best For         | Approval Frequency | Use Case               |
+| -------------- | ---------------- | ------------------ | ---------------------- |
+| **Perpetual**  | Overnight builds | Never              | Fully automated CI/CD  |
+| **Checkpoint** | Novel projects   | Every 10 tasks     | Learning new domain    |
+| **Supervised** | Critical systems | Every task         | Production deployments |
 
 ---
 

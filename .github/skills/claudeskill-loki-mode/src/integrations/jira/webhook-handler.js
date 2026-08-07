@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-var crypto = require('crypto');
+var crypto = require("crypto");
 
-var SUPPORTED_EVENTS = ['jira:issue_created', 'jira:issue_updated', 'sprint_started'];
+var SUPPORTED_EVENTS = ["jira:issue_created", "jira:issue_updated", "sprint_started"];
 
 /**
  * Jira Webhook Handler.
@@ -20,7 +20,7 @@ class WebhookHandler {
     this._secret = opts.secret || null;
     this._onEpicCreated = opts.onEpicCreated || null;
     this._onIssueUpdated = opts.onIssueUpdated || null;
-    this._issueTypes = opts.issueTypes || ['Epic', 'Story'];
+    this._issueTypes = opts.issueTypes || ["Epic", "Story"];
   }
 
   /**
@@ -33,39 +33,43 @@ class WebhookHandler {
     // Verify signature if secret is configured
     if (this._secret) {
       if (!this.verifySignature(headers, rawBody)) {
-        return { status: 401, response: { error: 'Invalid signature' } };
+        return { status: 401, response: { error: "Invalid signature" } };
       }
     }
 
     var body;
     try {
-      body = typeof rawBody === 'string' ? JSON.parse(rawBody) : JSON.parse(rawBody.toString());
+      body = typeof rawBody === "string" ? JSON.parse(rawBody) : JSON.parse(rawBody.toString());
     } catch (_) {
-      return { status: 400, response: { error: 'Invalid JSON body' } };
+      return { status: 400, response: { error: "Invalid JSON body" } };
     }
 
     var event = this.parseEvent(body);
     if (!event) {
-      return { status: 200, response: { ignored: true, reason: 'Unsupported event' } };
+      return { status: 200, response: { ignored: true, reason: "Unsupported event" } };
     }
 
     // Filter by issue type
-    var issueType = event.issue && event.issue.fields && event.issue.fields.issuetype
-      ? event.issue.fields.issuetype.name
-      : null;
+    var issueType =
+      event.issue && event.issue.fields && event.issue.fields.issuetype
+        ? event.issue.fields.issuetype.name
+        : null;
     if (issueType && this._issueTypes.indexOf(issueType) === -1) {
-      return { status: 200, response: { ignored: true, reason: 'Irrelevant issue type: ' + issueType } };
+      return {
+        status: 200,
+        response: { ignored: true, reason: "Irrelevant issue type: " + issueType },
+      };
     }
 
     // Dispatch to callbacks
     try {
-      if (event.eventType === 'jira:issue_created' && issueType === 'Epic' && this._onEpicCreated) {
+      if (event.eventType === "jira:issue_created" && issueType === "Epic" && this._onEpicCreated) {
         this._onEpicCreated(event.issue);
-      } else if (event.eventType === 'jira:issue_updated' && this._onIssueUpdated) {
+      } else if (event.eventType === "jira:issue_updated" && this._onIssueUpdated) {
         this._onIssueUpdated(event.issue, event.changelog);
       }
     } catch (callbackErr) {
-      return { status: 500, response: { error: 'Callback error: ' + callbackErr.message } };
+      return { status: 500, response: { error: "Callback error: " + callbackErr.message } };
     }
 
     return { status: 200, response: { processed: true, eventType: event.eventType } };
@@ -76,11 +80,15 @@ class WebhookHandler {
    */
   verifySignature(headers, rawBody) {
     if (!this._secret) return true;
-    var signature = headers['x-hub-signature'] || headers['X-Hub-Signature'] || '';
+    var signature = headers["x-hub-signature"] || headers["X-Hub-Signature"] || "";
     if (!signature) return false;
-    var bodyStr = typeof rawBody === 'string' ? rawBody : rawBody.toString();
-    var expected = 'sha256=' + crypto.createHmac('sha256', this._secret).update(bodyStr).digest('hex');
-    var sigBuf = Buffer.from(signature); var expBuf = Buffer.from(expected); if (sigBuf.length !== expBuf.length) return false; return crypto.timingSafeEqual(sigBuf, expBuf);
+    var bodyStr = typeof rawBody === "string" ? rawBody : rawBody.toString();
+    var expected =
+      "sha256=" + crypto.createHmac("sha256", this._secret).update(bodyStr).digest("hex");
+    var sigBuf = Buffer.from(signature);
+    var expBuf = Buffer.from(expected);
+    if (sigBuf.length !== expBuf.length) return false;
+    return crypto.timingSafeEqual(sigBuf, expBuf);
   }
 
   /**

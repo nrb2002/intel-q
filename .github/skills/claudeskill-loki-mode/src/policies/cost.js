@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode Policy Engine - Cost Control System
@@ -13,9 +13,9 @@
  *   - Cost data persisted to .loki/state/costs.json
  */
 
-const fs = require('fs');
-const path = require('path');
-const { EventEmitter } = require('events');
+const fs = require("fs");
+const path = require("path");
+const { EventEmitter } = require("events");
 
 // -------------------------------------------------------------------
 // CostController class
@@ -32,7 +32,7 @@ class CostController extends EventEmitter {
   constructor(projectDir, resourcePolicies) {
     super();
     this._projectDir = projectDir || process.cwd();
-    this._stateFile = path.join(this._projectDir, '.loki', 'state', 'costs.json');
+    this._stateFile = path.join(this._projectDir, ".loki", "state", "costs.json");
     this._state = this._loadState();
     this._budgetConfig = this._extractBudgetConfig(resourcePolicies || []);
     this._triggeredAlerts = new Set();
@@ -56,7 +56,7 @@ class CostController extends EventEmitter {
   _loadState() {
     try {
       if (fs.existsSync(this._stateFile)) {
-        const raw = fs.readFileSync(this._stateFile, 'utf8');
+        const raw = fs.readFileSync(this._stateFile, "utf8");
         return JSON.parse(raw);
       }
     } catch (_) {
@@ -77,7 +77,7 @@ class CostController extends EventEmitter {
       fs.mkdirSync(dir, { recursive: true });
     }
     this._state.triggeredAlerts = Array.from(this._triggeredAlerts);
-    fs.writeFileSync(this._stateFile, JSON.stringify(this._state, null, 2), 'utf8');
+    fs.writeFileSync(this._stateFile, JSON.stringify(this._state, null, 2), "utf8");
   }
 
   _extractBudgetConfig(resourcePolicies) {
@@ -87,7 +87,7 @@ class CostController extends EventEmitter {
         return {
           maxTokens: p.max_tokens,
           alerts: p.alerts || [50, 80, 100],
-          onExceed: p.on_exceed || 'shutdown',
+          onExceed: p.on_exceed || "shutdown",
           name: p.name,
         };
       }
@@ -115,15 +115,15 @@ class CostController extends EventEmitter {
     }
     this._state.projects[projectId].totalTokens += tokenCount;
     this._state.projects[projectId].entries.push({
-      agentId: agentId || 'unknown',
-      model: model || 'unknown',
+      agentId: agentId || "unknown",
+      model: model || "unknown",
       tokens: tokenCount,
       durationMs: durationMs || 0,
       timestamp: new Date().toISOString(),
     });
 
     // Update agent totals
-    const agentKey = agentId || 'unknown';
+    const agentKey = agentId || "unknown";
     if (!this._state.agents[agentKey]) {
       this._state.agents[agentKey] = { totalTokens: 0, model: model, entries: 0 };
     }
@@ -159,9 +159,10 @@ class CostController extends EventEmitter {
       };
     }
 
-    const consumed = projectId && this._state.projects[projectId]
-      ? this._state.projects[projectId].totalTokens
-      : this._state.totalTokens;
+    const consumed =
+      projectId && this._state.projects[projectId]
+        ? this._state.projects[projectId].totalTokens
+        : this._state.totalTokens;
 
     const max = this._budgetConfig.maxTokens;
     const percentage = max > 0 ? Math.round((consumed / max) * 100) : 0;
@@ -175,7 +176,7 @@ class CostController extends EventEmitter {
       if (percentage >= thresholds[i]) {
         alerts.push({
           threshold: thresholds[i],
-          message: 'Token usage at ' + percentage + '% (threshold: ' + thresholds[i] + '%)',
+          message: "Token usage at " + percentage + "% (threshold: " + thresholds[i] + "%)",
         });
       }
     }
@@ -191,22 +192,22 @@ class CostController extends EventEmitter {
     // Emit alert events for newly triggered thresholds
     const thresholds = this._budgetConfig.alerts;
     for (let i = 0; i < thresholds.length; i++) {
-      const key = (projectId || 'global') + ':' + thresholds[i];
+      const key = (projectId || "global") + ":" + thresholds[i];
       if (budget.percentage >= thresholds[i] && !this._triggeredAlerts.has(key)) {
         this._triggeredAlerts.add(key);
 
         if (this._state.history.length > MAX_STATE_ENTRIES) {
-      this._state.history.splice(0, this._state.history.length - MAX_STATE_ENTRIES);
-    }
-    this._state.history.push({
-          type: 'alert',
+          this._state.history.splice(0, this._state.history.length - MAX_STATE_ENTRIES);
+        }
+        this._state.history.push({
+          type: "alert",
           threshold: thresholds[i],
           percentage: budget.percentage,
-          projectId: projectId || 'global',
+          projectId: projectId || "global",
           timestamp: new Date().toISOString(),
         });
 
-        this.emit('alert', {
+        this.emit("alert", {
           threshold: thresholds[i],
           percentage: budget.percentage,
           projectId: projectId,
@@ -216,25 +217,25 @@ class CostController extends EventEmitter {
     }
 
     // Kill switch (per-project: each project emits shutdown at most once)
-    const shutdownKey = projectId || 'global';
+    const shutdownKey = projectId || "global";
     if (budget.exceeded && !this._shutdownEmittedProjects.has(shutdownKey)) {
-      if (this._budgetConfig.onExceed === 'shutdown') {
+      if (this._budgetConfig.onExceed === "shutdown") {
         this._shutdownEmittedProjects.add(shutdownKey);
 
         if (this._state.history.length > MAX_STATE_ENTRIES) {
-      this._state.history.splice(0, this._state.history.length - MAX_STATE_ENTRIES);
-    }
-    this._state.history.push({
-          type: 'shutdown',
-          reason: 'Budget exceeded',
+          this._state.history.splice(0, this._state.history.length - MAX_STATE_ENTRIES);
+        }
+        this._state.history.push({
+          type: "shutdown",
+          reason: "Budget exceeded",
           percentage: budget.percentage,
-          projectId: projectId || 'global',
+          projectId: projectId || "global",
           timestamp: new Date().toISOString(),
         });
 
         this._saveState();
-        this.emit('shutdown', {
-          reason: 'Token budget exceeded',
+        this.emit("shutdown", {
+          reason: "Token budget exceeded",
           projectId: projectId,
           percentage: budget.percentage,
           consumed: this._state.totalTokens,

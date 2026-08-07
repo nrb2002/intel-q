@@ -31,14 +31,14 @@ onto Trailmark code graphs as annotations and subgraphs.
 
 ## Rationalizations to Reject
 
-| Rationalization | Why It's Wrong | Required Action |
-|-----------------|----------------|-----------------|
+| Rationalization                                      | Why It's Wrong                                                                      | Required Action                                     |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------- |
 | "The user only asked about SARIF, skip pre-analysis" | Without pre-analysis, you can't cross-reference findings with blast radius or taint | Always run `engine.preanalysis()` before augmenting |
-| "Unmatched findings don't matter" | Unmatched findings may indicate parsing gaps or out-of-scope files | Report unmatched count and investigate if high |
-| "One severity subgraph is enough" | Different severities need different triage workflows | Query all severity subgraphs, not just `error` |
-| "SARIF results speak for themselves" | Findings without graph context lack blast radius and taint reachability | Cross-reference with pre-analysis subgraphs |
-| "weAudit and SARIF overlap, pick one" | Human auditors and tools find different things | Import both when available |
-| "Tool isn't installed, I'll do it manually" | Manual analysis misses what tooling catches | Install trailmark first |
+| "Unmatched findings don't matter"                    | Unmatched findings may indicate parsing gaps or out-of-scope files                  | Report unmatched count and investigate if high      |
+| "One severity subgraph is enough"                    | Different severities need different triage workflows                                | Query all severity subgraphs, not just `error`      |
+| "SARIF results speak for themselves"                 | Findings without graph context lack blast radius and taint reachability             | Cross-reference with pre-analysis subgraphs         |
+| "weAudit and SARIF overlap, pick one"                | Human auditors and tools find different things                                      | Import both when available                          |
+| "Tool isn't installed, I'll do it manually"          | Manual analysis misses what tooling catches                                         | Install trailmark first                             |
 
 ---
 
@@ -119,6 +119,7 @@ If auto-detection is wrong for the target, rerun with an explicit language or
 comma-separated list such as `python,rust`.
 
 **Step 2:** Locate input files:
+
 - **SARIF**: Usually output by tools like `semgrep --sarif -o results.sarif`
   or `codeql database analyze --format=sarif-latest`
 - **weAudit**: Stored in `.vscode/<username>.weaudit` within the workspace
@@ -131,6 +132,7 @@ are findings whose file/line locations didn't overlap any parsed code unit.
 annotated nodes. Use `engine.subgraph_names()` to see available subgraphs.
 
 **Step 5:** Cross-reference with pre-analysis data to prioritize:
+
 - Findings on tainted nodes: overlap `sarif:error` with `tainted` subgraph
 - Findings on high blast radius nodes: overlap with `high_blast_radius`
 - Findings on privilege boundaries: overlap with `privilege_boundary`
@@ -146,17 +148,17 @@ Findings are stored as standard Trailmark annotations:
 
 ## Subgraphs Created
 
-| Subgraph | Contents |
-|----------|----------|
-| `sarif:error` | Nodes with SARIF error-level findings |
-| `sarif:warning` | Nodes with SARIF warning-level findings |
-| `sarif:note` | Nodes with SARIF note-level findings |
-| `sarif:<tool>` | Nodes flagged by a specific tool |
-| `weaudit:high` | Nodes with high-severity weAudit findings |
-| `weaudit:medium` | Nodes with medium-severity weAudit findings |
-| `weaudit:low` | Nodes with low-severity weAudit findings |
-| `weaudit:findings` | All weAudit findings (entryType=0) |
-| `weaudit:notes` | All weAudit notes (entryType=1) |
+| Subgraph           | Contents                                    |
+| ------------------ | ------------------------------------------- |
+| `sarif:error`      | Nodes with SARIF error-level findings       |
+| `sarif:warning`    | Nodes with SARIF warning-level findings     |
+| `sarif:note`       | Nodes with SARIF note-level findings        |
+| `sarif:<tool>`     | Nodes flagged by a specific tool            |
+| `weaudit:high`     | Nodes with high-severity weAudit findings   |
+| `weaudit:medium`   | Nodes with medium-severity weAudit findings |
+| `weaudit:low`      | Nodes with low-severity weAudit findings    |
+| `weaudit:findings` | All weAudit findings (entryType=0)          |
+| `weaudit:notes`    | All weAudit notes (entryType=1)             |
 
 ## How Matching Works
 

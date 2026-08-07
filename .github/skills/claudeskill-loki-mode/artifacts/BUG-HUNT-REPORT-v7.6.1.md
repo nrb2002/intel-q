@@ -5,12 +5,12 @@
 
 ## Summary
 
-| Category | Count |
-|---|---|
-| REAL bugs FIXED in v7.6.1 (this session) | 3 |
-| REAL bugs deferred to v7.6.2 (need bigger refactor) | 5 |
-| FABRICATIONS retracted (test-script errors) | 4 |
-| BY-DESIGN (clarify docs, not a bug) | 1 |
+| Category                                            | Count |
+| --------------------------------------------------- | ----- |
+| REAL bugs FIXED in v7.6.1 (this session)            | 3     |
+| REAL bugs deferred to v7.6.2 (need bigger refactor) | 5     |
+| FABRICATIONS retracted (test-script errors)         | 4     |
+| BY-DESIGN (clarify docs, not a bug)                 | 1     |
 
 ## REAL bugs FIXED in v7.6.1
 
@@ -76,12 +76,12 @@ This is a substantive data-flow refactor. Episode writer needs to capture action
 
 ## FABRICATIONS retracted
 
-| ID | Original claim | Why fabrication | Reality |
-|---|---|---|---|
-| B-4 | `loki nonexistent-cmd` exits 0 | Test script used `${PIPESTATUS[0]}` after command substitution, which doesn't capture pipeline status | Loki returns exit 1 correctly |
-| B-6 | `loki start ./nonexistent.md` exits 0 | Same test-script bug -- `echo "exit: $?"` after a pipeline/pkill chain captured the wrong exit code | Loki returns exit 1 correctly |
-| B-8 | `loki provider set foobar` exits 0 | Same test-script bug | Loki returns exit 1 correctly |
-| (untagged) | Dashboard system-status showed "v73.31" instead of "v7.5.31" | Visual misread of a lower-resolution screenshot | Dashboard displays "v7.6.1" correctly; never had a display bug |
+| ID         | Original claim                                               | Why fabrication                                                                                       | Reality                                                        |
+| ---------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| B-4        | `loki nonexistent-cmd` exits 0                               | Test script used `${PIPESTATUS[0]}` after command substitution, which doesn't capture pipeline status | Loki returns exit 1 correctly                                  |
+| B-6        | `loki start ./nonexistent.md` exits 0                        | Same test-script bug -- `echo "exit: $?"` after a pipeline/pkill chain captured the wrong exit code   | Loki returns exit 1 correctly                                  |
+| B-8        | `loki provider set foobar` exits 0                           | Same test-script bug                                                                                  | Loki returns exit 1 correctly                                  |
+| (untagged) | Dashboard system-status showed "v73.31" instead of "v7.5.31" | Visual misread of a lower-resolution screenshot                                                       | Dashboard displays "v7.6.1" correctly; never had a display bug |
 
 ## BY DESIGN (not bugs, but worth documenting)
 
@@ -93,19 +93,19 @@ This is a substantive data-flow refactor. Episode writer needs to capture action
 
 ## Bugs to-do todo list (ordered by severity)
 
-| ID | Severity | Status | Notes |
-|---|---|---|---|
-| B-1 | CRITICAL | FIXED v7.6.0 | 22 dead Purple Lab routes |
-| B-7 | HIGH | FIXED v7.6.1 | learning/metrics 500 |
-| B-10 | HIGH | FIXED v7.6.1 | dashboard catch-all serves HTML for missing /api/* |
-| B-2 | MEDIUM | FIXED v7.6.0 | memory PYTHONPATH |
-| B-9 | MEDIUM | FIXED v7.6.1 | doctor --json missing version |
-| B-3a..d | MEDIUM | DEFERRED v7.6.2 | memory enrichment pipeline disconnect |
-| B-11 | MEDIUM | DEFERRED v7.6.2 | loki quick --help hangs |
-| B-12 | MEDIUM | DEFERRED v7.6.2 | loki serve --help starts dashboard |
-| B-13 | LOW | DEFERRED v7.6.2 | 7 subcommands ignore --help |
-| B-14 | LOW | TODO | audit mcp/server.py for catch-all class |
-| B-5 | DOC | DEFERRED | document LOKI_PROVIDER precedence |
+| ID      | Severity | Status          | Notes                                              |
+| ------- | -------- | --------------- | -------------------------------------------------- |
+| B-1     | CRITICAL | FIXED v7.6.0    | 22 dead Purple Lab routes                          |
+| B-7     | HIGH     | FIXED v7.6.1    | learning/metrics 500                               |
+| B-10    | HIGH     | FIXED v7.6.1    | dashboard catch-all serves HTML for missing /api/* |
+| B-2     | MEDIUM   | FIXED v7.6.0    | memory PYTHONPATH                                  |
+| B-9     | MEDIUM   | FIXED v7.6.1    | doctor --json missing version                      |
+| B-3a..d | MEDIUM   | DEFERRED v7.6.2 | memory enrichment pipeline disconnect              |
+| B-11    | MEDIUM   | DEFERRED v7.6.2 | loki quick --help hangs                            |
+| B-12    | MEDIUM   | DEFERRED v7.6.2 | loki serve --help starts dashboard                 |
+| B-13    | LOW      | DEFERRED v7.6.2 | 7 subcommands ignore --help                        |
+| B-14    | LOW      | TODO            | audit mcp/server.py for catch-all class            |
+| B-5     | DOC      | DEFERRED        | document LOKI_PROVIDER precedence                  |
 
 ## What this hunt validated as honest
 

@@ -9,15 +9,15 @@
  * <loki-council-dashboard api-url="http://localhost:57374" theme="dark"></loki-council-dashboard>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Array<{id: string, label: string}>} Council dashboard tab definitions */
 const COUNCIL_TABS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'decisions', label: 'Decision Log' },
-  { id: 'convergence', label: 'Convergence' },
-  { id: 'agents', label: 'Agents' },
+  { id: "overview", label: "Overview" },
+  { id: "decisions", label: "Decision Log" },
+  { id: "convergence", label: "Convergence" },
+  { id: "agents", label: "Agents" },
 ];
 
 /**
@@ -29,7 +29,7 @@ const COUNCIL_TABS = [
  */
 export class LokiCouncilDashboard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -37,7 +37,7 @@ export class LokiCouncilDashboard extends LokiElement {
     this._loading = false;
     this._error = null;
     this._api = null;
-    this._activeTab = 'overview';
+    this._activeTab = "overview";
     this._pollInterval = null;
 
     // Data
@@ -63,17 +63,17 @@ export class LokiCouncilDashboard extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -92,7 +92,7 @@ export class LokiCouncilDashboard extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -101,7 +101,7 @@ export class LokiCouncilDashboard extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
     if (this._pendingRaf) {
@@ -113,20 +113,20 @@ export class LokiCouncilDashboard extends LokiElement {
   async _loadData() {
     try {
       const [councilState, verdicts, convergence, agents] = await Promise.allSettled([
-        this._api._get('/api/council/state'),
-        this._api._get('/api/council/verdicts'),
-        this._api._get('/api/council/convergence'),
-        this._api._get('/api/agents'),
+        this._api._get("/api/council/state"),
+        this._api._get("/api/council/verdicts"),
+        this._api._get("/api/council/convergence"),
+        this._api._get("/api/agents"),
       ]);
 
-      if (councilState.status === 'fulfilled') this._councilState = councilState.value;
-      if (verdicts.status === 'fulfilled') {
+      if (councilState.status === "fulfilled") this._councilState = councilState.value;
+      if (verdicts.status === "fulfilled") {
         this._verdicts = verdicts.value.verdicts || [];
       }
-      if (convergence.status === 'fulfilled') {
+      if (convergence.status === "fulfilled") {
         this._convergence = convergence.value.dataPoints || [];
       }
-      if (agents.status === 'fulfilled') {
+      if (agents.status === "fulfilled") {
         this._agents = Array.isArray(agents.value) ? agents.value : [];
       }
 
@@ -151,11 +151,13 @@ export class LokiCouncilDashboard extends LokiElement {
 
   async _forceReview() {
     try {
-      await this._api._post('/api/council/force-review');
-      this.dispatchEvent(new CustomEvent('council-action', {
-        detail: { action: 'force-review' },
-        bubbles: true,
-      }));
+      await this._api._post("/api/council/force-review");
+      this.dispatchEvent(
+        new CustomEvent("council-action", {
+          detail: { action: "force-review" },
+          bubbles: true,
+        }),
+      );
     } catch (err) {
       this._error = `Failed to force review: ${err.message}`;
       this.render();
@@ -166,10 +168,12 @@ export class LokiCouncilDashboard extends LokiElement {
     if (!confirm(`Kill agent ${agentId}?`)) return;
     try {
       await this._api._post(`/api/agents/${agentId}/kill`);
-      this.dispatchEvent(new CustomEvent('council-action', {
-        detail: { action: 'kill-agent', agentId },
-        bubbles: true,
-      }));
+      this.dispatchEvent(
+        new CustomEvent("council-action", {
+          detail: { action: "kill-agent", agentId },
+          bubbles: true,
+        }),
+      );
       await this._loadData();
     } catch (err) {
       this._error = `Failed to kill agent: ${err.message}`;
@@ -223,9 +227,10 @@ export class LokiCouncilDashboard extends LokiElement {
         <div class="council-header">
           <div class="header-left">
             <h2 class="title">Completion Council</h2>
-            ${this._councilState?.enabled !== false
-              ? `<span class="badge badge-active">Active</span>`
-              : `<span class="badge badge-inactive">Disabled</span>`
+            ${
+              this._councilState?.enabled !== false
+                ? `<span class="badge badge-active">Active</span>`
+                : `<span class="badge badge-inactive">Disabled</span>`
             }
           </div>
           <button class="btn btn-primary" id="force-review-btn">
@@ -234,19 +239,21 @@ export class LokiCouncilDashboard extends LokiElement {
         </div>
 
         <div class="tabs">
-          ${COUNCIL_TABS.map(tab => `
+          ${COUNCIL_TABS.map(
+            (tab) => `
             <button
-              class="tab ${this._activeTab === tab.id ? 'active' : ''}"
+              class="tab ${this._activeTab === tab.id ? "active" : ""}"
               data-tab="${tab.id}"
             >${tab.label}</button>
-          `).join('')}
+          `,
+          ).join("")}
         </div>
 
         <div class="tab-content">
           ${this._renderTabContent()}
         </div>
 
-        ${this._error ? `<div class="error-banner">${this._error}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._error}</div>` : ""}
       </div>
     `;
 
@@ -258,14 +265,14 @@ export class LokiCouncilDashboard extends LokiElement {
     if (!s) return;
 
     // Force Review button
-    const forceBtn = s.getElementById('force-review-btn');
+    const forceBtn = s.getElementById("force-review-btn");
     if (forceBtn) {
-      forceBtn.addEventListener('click', () => this._forceReview());
+      forceBtn.addEventListener("click", () => this._forceReview());
     }
 
     // Tab buttons
-    s.querySelectorAll('.tab[data-tab]').forEach(tab => {
-      tab.addEventListener('click', () => this._setTab(tab.dataset.tab));
+    s.querySelectorAll(".tab[data-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => this._setTab(tab.dataset.tab));
     });
 
     // Agent cards (bound in _renderAgents via deferred rAF)
@@ -273,11 +280,16 @@ export class LokiCouncilDashboard extends LokiElement {
 
   _renderTabContent() {
     switch (this._activeTab) {
-      case 'overview': return this._renderOverview();
-      case 'decisions': return this._renderDecisions();
-      case 'convergence': return this._renderConvergence();
-      case 'agents': return this._renderAgents();
-      default: return '';
+      case "overview":
+        return this._renderOverview();
+      case "decisions":
+        return this._renderDecisions();
+      case "convergence":
+        return this._renderConvergence();
+      case "agents":
+        return this._renderAgents();
+      default:
+        return "";
     }
   }
 
@@ -287,15 +299,16 @@ export class LokiCouncilDashboard extends LokiElement {
     const doneSignals = state.done_signals || 0;
     const totalVotes = state.total_votes || 0;
     const approveVotes = state.approve_votes || 0;
-    const lastVerdict = this._verdicts.length > 0 ? this._verdicts[this._verdicts.length - 1] : null;
-    const agentCount = this._agents.filter(a => a.alive).length;
+    const lastVerdict =
+      this._verdicts.length > 0 ? this._verdicts[this._verdicts.length - 1] : null;
+    const agentCount = this._agents.filter((a) => a.alive).length;
 
     return `
       <div class="overview-grid">
         <div class="stat-card">
           <div class="stat-label">Council Status</div>
-          <div class="stat-value ${state.enabled !== false ? 'text-green' : 'text-muted'}">
-            ${state.enabled !== false ? 'Monitoring' : 'Disabled'}
+          <div class="stat-value ${state.enabled !== false ? "text-green" : "text-muted"}">
+            ${state.enabled !== false ? "Monitoring" : "Disabled"}
           </div>
         </div>
         <div class="stat-card">
@@ -305,12 +318,12 @@ export class LokiCouncilDashboard extends LokiElement {
         </div>
         <div class="stat-card">
           <div class="stat-label">Stagnation Streak</div>
-          <div class="stat-value ${noChange >= 3 ? 'text-warn' : ''}">${noChange}</div>
+          <div class="stat-value ${noChange >= 3 ? "text-warn" : ""}">${noChange}</div>
           <div class="stat-sub">consecutive no-change</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Done Signals</div>
-          <div class="stat-value ${doneSignals >= 2 ? 'text-green' : ''}">${doneSignals}</div>
+          <div class="stat-value ${doneSignals >= 2 ? "text-green" : ""}">${doneSignals}</div>
           <div class="stat-sub">from agent output</div>
         </div>
         <div class="stat-card">
@@ -320,21 +333,25 @@ export class LokiCouncilDashboard extends LokiElement {
         </div>
         <div class="stat-card">
           <div class="stat-label">Last Verdict</div>
-          <div class="stat-value ${lastVerdict?.result === 'APPROVED' ? 'text-green' : 'text-muted'}">
-            ${lastVerdict ? lastVerdict.result : 'None'}
+          <div class="stat-value ${lastVerdict?.result === "APPROVED" ? "text-green" : "text-muted"}">
+            ${lastVerdict ? lastVerdict.result : "None"}
           </div>
-          ${lastVerdict ? `<div class="stat-sub">iteration ${lastVerdict.iteration}</div>` : ''}
+          ${lastVerdict ? `<div class="stat-sub">iteration ${lastVerdict.iteration}</div>` : ""}
         </div>
       </div>
 
-      ${this._convergence.length > 0 ? `
+      ${
+        this._convergence.length > 0
+          ? `
         <div class="section">
           <h3 class="section-title">Convergence Trend</h3>
           <div class="convergence-mini">
             ${this._renderConvergenceBar()}
           </div>
         </div>
-      ` : ''}
+      `
+          : ""
+      }
     `;
   }
 
@@ -342,19 +359,21 @@ export class LokiCouncilDashboard extends LokiElement {
     const points = this._convergence.slice(-20);
     if (points.length === 0) return '<span class="text-muted">No data</span>';
 
-    const maxFiles = Math.max(...points.map(p => p.files_changed), 1);
+    const maxFiles = Math.max(...points.map((p) => p.files_changed), 1);
     return `
       <div class="bar-chart">
-        ${points.map(p => {
-          const height = Math.max(4, (p.files_changed / maxFiles) * 60);
-          const isStagnant = p.no_change_streak > 0;
-          return `
+        ${points
+          .map((p) => {
+            const height = Math.max(4, (p.files_changed / maxFiles) * 60);
+            const isStagnant = p.no_change_streak > 0;
+            return `
             <div class="bar-wrapper" title="Iter ${p.iteration}: ${p.files_changed} files changed">
-              <div class="bar ${isStagnant ? 'bar-stagnant' : 'bar-active'}" style="height: ${height}px"></div>
+              <div class="bar ${isStagnant ? "bar-stagnant" : "bar-active"}" style="height: ${height}px"></div>
               <div class="bar-label">${p.iteration}</div>
             </div>
           `;
-        }).join('')}
+          })
+          .join("")}
       </div>
     `;
   }
@@ -366,10 +385,14 @@ export class LokiCouncilDashboard extends LokiElement {
 
     return `
       <div class="decision-list">
-        ${this._verdicts.slice().reverse().map(v => `
-          <div class="decision-card ${v.result === 'APPROVED' ? 'decision-approved' : 'decision-rejected'}">
+        ${this._verdicts
+          .slice()
+          .reverse()
+          .map(
+            (v) => `
+          <div class="decision-card ${v.result === "APPROVED" ? "decision-approved" : "decision-rejected"}">
             <div class="decision-header">
-              <span class="decision-result ${v.result === 'APPROVED' ? 'text-green' : 'text-warn'}">
+              <span class="decision-result ${v.result === "APPROVED" ? "text-green" : "text-warn"}">
                 ${v.result}
               </span>
               <span class="decision-iter">Iteration ${v.iteration}</span>
@@ -380,7 +403,9 @@ export class LokiCouncilDashboard extends LokiElement {
               <span class="vote-reject">${v.reject} Reject</span>
             </div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
   }
@@ -411,14 +436,20 @@ export class LokiCouncilDashboard extends LokiElement {
               </tr>
             </thead>
             <tbody>
-              ${this._convergence.slice().reverse().map(p => `
-                <tr class="${p.no_change_streak >= 3 ? 'row-warn' : ''}">
+              ${this._convergence
+                .slice()
+                .reverse()
+                .map(
+                  (p) => `
+                <tr class="${p.no_change_streak >= 3 ? "row-warn" : ""}">
                   <td>${p.iteration}</td>
                   <td>${p.files_changed}</td>
                   <td>${p.no_change_streak}</td>
                   <td>${p.done_signals}</td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -433,38 +464,50 @@ export class LokiCouncilDashboard extends LokiElement {
 
     const html = `
       <div class="agents-list">
-        ${this._agents.map((agent, idx) => `
-          <div class="agent-card ${this._selectedAgent?.id === agent.id ? 'agent-selected' : ''}"
+        ${this._agents
+          .map(
+            (agent, idx) => `
+          <div class="agent-card ${this._selectedAgent?.id === agent.id ? "agent-selected" : ""}"
                data-agent-index="${idx}">
             <div class="agent-header">
-              <span class="agent-name">${agent.name || agent.id || 'Unknown'}</span>
-              <span class="agent-status ${agent.alive ? 'status-alive' : 'status-dead'}">
-                ${agent.alive ? 'Running' : 'Stopped'}
+              <span class="agent-name">${agent.name || agent.id || "Unknown"}</span>
+              <span class="agent-status ${agent.alive ? "status-alive" : "status-dead"}">
+                ${agent.alive ? "Running" : "Stopped"}
               </span>
             </div>
             <div class="agent-meta">
-              ${agent.type ? `<span class="agent-type">${agent.type}</span>` : ''}
-              ${agent.pid ? `<span class="agent-pid">PID: ${agent.pid}</span>` : ''}
-              ${agent.task ? `<span class="agent-task">Task: ${agent.task}</span>` : ''}
+              ${agent.type ? `<span class="agent-type">${agent.type}</span>` : ""}
+              ${agent.pid ? `<span class="agent-pid">PID: ${agent.pid}</span>` : ""}
+              ${agent.task ? `<span class="agent-task">Task: ${agent.task}</span>` : ""}
             </div>
-            ${this._selectedAgent?.id === agent.id ? `
+            ${
+              this._selectedAgent?.id === agent.id
+                ? `
               <div class="agent-actions">
-                ${agent.alive ? `
+                ${
+                  agent.alive
+                    ? `
                   <button class="btn btn-sm btn-warn" data-action="pause" data-agent-id="${agent.id || agent.name}">
                     Pause
                   </button>
                   <button class="btn btn-sm btn-danger" data-action="kill" data-agent-id="${agent.id || agent.name}">
                     Kill
                   </button>
-                ` : `
+                `
+                    : `
                   <button class="btn btn-sm btn-primary" data-action="resume" data-agent-id="${agent.id || agent.name}">
                     Resume
                   </button>
-                `}
+                `
+                }
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
 
@@ -474,19 +517,19 @@ export class LokiCouncilDashboard extends LokiElement {
       this._pendingRaf = null;
       const s = this.shadowRoot;
       if (!s) return;
-      s.querySelectorAll('.agent-card[data-agent-index]').forEach(card => {
+      s.querySelectorAll(".agent-card[data-agent-index]").forEach((card) => {
         const idx = parseInt(card.dataset.agentIndex, 10);
         const agent = this._agents[idx];
         if (!agent) return;
-        card.addEventListener('click', () => this._selectAgent(agent));
-        card.querySelectorAll('[data-action]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+        card.addEventListener("click", () => this._selectAgent(agent));
+        card.querySelectorAll("[data-action]").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
             e.stopPropagation();
             const action = btn.dataset.action;
             const agentId = btn.dataset.agentId;
-            if (action === 'pause') this._pauseAgent(agentId);
-            else if (action === 'kill') this._killAgent(agentId);
-            else if (action === 'resume') this._resumeAgent(agentId);
+            if (action === "pause") this._pauseAgent(agentId);
+            else if (action === "kill") this._killAgent(agentId);
+            else if (action === "resume") this._resumeAgent(agentId);
           });
         });
       });
@@ -496,10 +539,10 @@ export class LokiCouncilDashboard extends LokiElement {
   }
 
   _formatTime(timestamp) {
-    if (!timestamp) return '';
+    if (!timestamp) return "";
     try {
       const d = new Date(timestamp);
-      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     } catch {
       return timestamp;
     }
@@ -930,6 +973,6 @@ export class LokiCouncilDashboard extends LokiElement {
 }
 
 // Register the custom element
-if (!customElements.get('loki-council-dashboard')) {
-  customElements.define('loki-council-dashboard', LokiCouncilDashboard);
+if (!customElements.get("loki-council-dashboard")) {
+  customElements.define("loki-council-dashboard", LokiCouncilDashboard);
 }

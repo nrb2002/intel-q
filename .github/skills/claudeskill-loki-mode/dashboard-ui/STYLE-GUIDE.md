@@ -5,7 +5,7 @@ Comprehensive styling reference for Loki Mode dashboard components. Ensures cons
 ## Quick Start
 
 ```javascript
-import { UnifiedThemeManager, BASE_STYLES, THEMES } from './core/loki-unified-styles.js';
+import { UnifiedThemeManager, BASE_STYLES, THEMES } from "./core/loki-unified-styles.js";
 
 // Initialize theme system
 UnifiedThemeManager.init();
@@ -18,13 +18,13 @@ const css = UnifiedThemeManager.generateCSS();
 
 ### Available Themes
 
-| Theme | Context | Description |
-|-------|---------|-------------|
-| `light` | Browser/CLI | Anthropic design language - light cream background |
-| `dark` | Browser/CLI | Dark mode with warm grays |
-| `high-contrast` | Accessibility | Maximum contrast for visibility |
-| `vscode-light` | VS Code | Maps to VS Code light theme variables |
-| `vscode-dark` | VS Code | Maps to VS Code dark theme variables |
+| Theme           | Context       | Description                                        |
+| --------------- | ------------- | -------------------------------------------------- |
+| `light`         | Browser/CLI   | Anthropic design language - light cream background |
+| `dark`          | Browser/CLI   | Dark mode with warm grays                          |
+| `high-contrast` | Accessibility | Maximum contrast for visibility                    |
+| `vscode-light`  | VS Code       | Maps to VS Code light theme variables              |
+| `vscode-dark`   | VS Code       | Maps to VS Code dark theme variables               |
 
 ### Theme Detection
 
@@ -43,15 +43,15 @@ const context = UnifiedThemeManager.detectContext();
 
 ```javascript
 // Set theme explicitly
-UnifiedThemeManager.setTheme('dark');
+UnifiedThemeManager.setTheme("dark");
 
 // Toggle between light/dark
 const newTheme = UnifiedThemeManager.toggle();
 
 // Listen for theme changes
-window.addEventListener('loki-theme-change', (e) => {
-  console.log('New theme:', e.detail.theme);
-  console.log('Context:', e.detail.context);
+window.addEventListener("loki-theme-change", (e) => {
+  console.log("New theme:", e.detail.theme);
+  console.log("Context:", e.detail.context);
 });
 ```
 
@@ -138,26 +138,26 @@ window.addEventListener('loki-theme-change', (e) => {
 
 ### Spacing Scale
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--loki-space-xs` | 4px | Tight spacing, icon gaps |
-| `--loki-space-sm` | 8px | Small padding, list gaps |
-| `--loki-space-md` | 12px | Default padding |
-| `--loki-space-lg` | 16px | Card padding, section gaps |
-| `--loki-space-xl` | 24px | Large sections |
-| `--loki-space-2xl` | 32px | Page sections |
-| `--loki-space-3xl` | 48px | Hero sections |
+| Token              | Value | Usage                      |
+| ------------------ | ----- | -------------------------- |
+| `--loki-space-xs`  | 4px   | Tight spacing, icon gaps   |
+| `--loki-space-sm`  | 8px   | Small padding, list gaps   |
+| `--loki-space-md`  | 12px  | Default padding            |
+| `--loki-space-lg`  | 16px  | Card padding, section gaps |
+| `--loki-space-xl`  | 24px  | Large sections             |
+| `--loki-space-2xl` | 32px  | Page sections              |
+| `--loki-space-3xl` | 48px  | Hero sections              |
 
 ### Border Radius
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--loki-radius-none` | 0 | No radius |
-| `--loki-radius-sm` | 4px | Small elements |
-| `--loki-radius-md` | 6px | Buttons, inputs |
-| `--loki-radius-lg` | 8px | Cards |
-| `--loki-radius-xl` | 10px | Large cards |
-| `--loki-radius-full` | 9999px | Pills, circles |
+| Token                | Value  | Usage           |
+| -------------------- | ------ | --------------- |
+| `--loki-radius-none` | 0      | No radius       |
+| `--loki-radius-sm`   | 4px    | Small elements  |
+| `--loki-radius-md`   | 6px    | Buttons, inputs |
+| `--loki-radius-lg`   | 8px    | Cards           |
+| `--loki-radius-xl`   | 10px   | Large cards     |
+| `--loki-radius-full` | 9999px | Pills, circles  |
 
 ### Typography
 
@@ -192,14 +192,14 @@ window.addEventListener('loki-theme-change', (e) => {
 
 ### Z-Index Scale
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--loki-z-dropdown` | 100 | Dropdown menus |
-| `--loki-z-sticky` | 200 | Sticky headers |
-| `--loki-z-modal` | 300 | Modal dialogs |
-| `--loki-z-popover` | 400 | Popovers |
-| `--loki-z-tooltip` | 500 | Tooltips |
-| `--loki-z-toast` | 600 | Toast notifications |
+| Token               | Value | Usage               |
+| ------------------- | ----- | ------------------- |
+| `--loki-z-dropdown` | 100   | Dropdown menus      |
+| `--loki-z-sticky`   | 200   | Sticky headers      |
+| `--loki-z-modal`    | 300   | Modal dialogs       |
+| `--loki-z-popover`  | 400   | Popovers            |
+| `--loki-z-tooltip`  | 500   | Tooltips            |
+| `--loki-z-toast`    | 600   | Toast notifications |
 
 ## Component Classes
 
@@ -230,20 +230,16 @@ window.addEventListener('loki-theme-change', (e) => {
 
 ```html
 <!-- Basic card -->
-<div class="card">
-  Card content
-</div>
+<div class="card">Card content</div>
 
 <!-- Interactive card -->
-<div class="card card-interactive" tabindex="0">
-  Clickable card
-</div>
+<div class="card card-interactive" tabindex="0">Clickable card</div>
 ```
 
 ### Inputs
 
 ```html
-<input type="text" class="input" placeholder="Enter text...">
+<input type="text" class="input" placeholder="Enter text..." />
 ```
 
 ### Badges
@@ -259,20 +255,24 @@ window.addEventListener('loki-theme-change', (e) => {
 ### Status Indicators
 
 ```html
-<span class="status-dot active"></span>  <!-- Green, pulsing -->
-<span class="status-dot idle"></span>    <!-- Gray -->
-<span class="status-dot paused"></span>  <!-- Yellow -->
-<span class="status-dot stopped"></span> <!-- Red -->
-<span class="status-dot error"></span>   <!-- Red -->
-<span class="status-dot offline"></span> <!-- Gray -->
+<span class="status-dot active"></span>
+<!-- Green, pulsing -->
+<span class="status-dot idle"></span>
+<!-- Gray -->
+<span class="status-dot paused"></span>
+<!-- Yellow -->
+<span class="status-dot stopped"></span>
+<!-- Red -->
+<span class="status-dot error"></span>
+<!-- Red -->
+<span class="status-dot offline"></span>
+<!-- Gray -->
 ```
 
 ### Empty State
 
 ```html
-<div class="empty-state">
-  No items to display
-</div>
+<div class="empty-state">No items to display</div>
 ```
 
 ### Loading Spinner
@@ -287,29 +287,29 @@ window.addEventListener('loki-theme-change', (e) => {
 
 All components support consistent keyboard navigation:
 
-| Shortcut | Action |
-|----------|--------|
-| `ArrowDown` / `ArrowUp` | Navigate items |
-| `Tab` / `Shift+Tab` | Navigate sections |
-| `Enter` | Confirm/activate |
-| `Escape` | Cancel/close |
-| `Cmd+R` | Refresh |
-| `Cmd+K` | Search |
-| `Cmd+Shift+D` | Toggle theme |
+| Shortcut                | Action            |
+| ----------------------- | ----------------- |
+| `ArrowDown` / `ArrowUp` | Navigate items    |
+| `Tab` / `Shift+Tab`     | Navigate sections |
+| `Enter`                 | Confirm/activate  |
+| `Escape`                | Cancel/close      |
+| `Cmd+R`                 | Refresh           |
+| `Cmd+K`                 | Search            |
+| `Cmd+Shift+D`           | Toggle theme      |
 
 ### Implementation
 
 ```javascript
-import { KeyboardHandler, KEYBOARD_SHORTCUTS } from './core/loki-unified-styles.js';
+import { KeyboardHandler, KEYBOARD_SHORTCUTS } from "./core/loki-unified-styles.js";
 
 const keyboard = new KeyboardHandler();
 
 // Register handlers
-keyboard.register('action.refresh', () => {
-  console.log('Refresh triggered');
+keyboard.register("action.refresh", () => {
+  console.log("Refresh triggered");
 });
 
-keyboard.register('theme.toggle', () => {
+keyboard.register("theme.toggle", () => {
   UnifiedThemeManager.toggle();
 });
 
@@ -367,13 +367,9 @@ import { ARIA_PATTERNS } from './core/loki-unified-styles.js';
 <span class="sr-only">Additional context for screen readers</span>
 
 <!-- Live regions for dynamic content -->
-<div role="status" aria-live="polite">
-  Task completed
-</div>
+<div role="status" aria-live="polite">Task completed</div>
 
-<div role="alert" aria-live="assertive">
-  Error: Connection lost
-</div>
+<div role="alert" aria-live="assertive">Error: Connection lost</div>
 ```
 
 ## VS Code Integration
@@ -381,6 +377,7 @@ import { ARIA_PATTERNS } from './core/loki-unified-styles.js';
 ### Theme Detection
 
 VS Code themes are automatically detected via:
+
 1. Body class: `vscode-dark`, `vscode-light`, `vscode-high-contrast`
 2. CSS variables: `--vscode-*`
 
@@ -400,6 +397,7 @@ VS Code variables are mapped to Loki variables:
 ### High Contrast Support
 
 High contrast mode provides:
+
 - Pure black background (#000000)
 - High contrast borders (white)
 - No shadows (replaced with outlines)
@@ -409,13 +407,13 @@ High contrast mode provides:
 
 ### Breakpoints
 
-| Breakpoint | Width | Typical Device |
-|------------|-------|----------------|
-| `sm` | 640px | Mobile landscape |
-| `md` | 768px | Tablet |
-| `lg` | 1024px | Desktop |
-| `xl` | 1280px | Large desktop |
-| `2xl` | 1536px | Wide screens |
+| Breakpoint | Width  | Typical Device   |
+| ---------- | ------ | ---------------- |
+| `sm`       | 640px  | Mobile landscape |
+| `md`       | 768px  | Tablet           |
+| `lg`       | 1024px | Desktop          |
+| `xl`       | 1280px | Large desktop    |
+| `2xl`      | 1536px | Wide screens     |
 
 ### Utility Classes
 
@@ -447,17 +445,19 @@ High contrast mode provides:
 The unified styles system is backwards compatible. To migrate:
 
 1. Update imports:
+
 ```javascript
 // Old
-import { LokiTheme, LokiElement } from './core/loki-theme.js';
+import { LokiTheme, LokiElement } from "./core/loki-theme.js";
 
 // New
-import { UnifiedThemeManager, LokiElement } from './core/loki-unified-styles.js';
+import { UnifiedThemeManager, LokiElement } from "./core/loki-unified-styles.js";
 // Or for full compatibility:
-import { LokiTheme, LokiElement } from './core/loki-theme.js'; // Still works
+import { LokiTheme, LokiElement } from "./core/loki-theme.js"; // Still works
 ```
 
 2. Theme methods map directly:
+
 - `LokiTheme.getTheme()` -> `UnifiedThemeManager.getTheme()`
 - `LokiTheme.setTheme()` -> `UnifiedThemeManager.setTheme()`
 - `LokiTheme.toggle()` -> `UnifiedThemeManager.toggle()`
@@ -479,7 +479,7 @@ npm run test:visual
 
 ```javascript
 // Test all themes
-import { THEMES } from './core/loki-unified-styles.js';
+import { THEMES } from "./core/loki-unified-styles.js";
 
 for (const themeName of Object.keys(THEMES)) {
   UnifiedThemeManager.setTheme(themeName);
@@ -491,8 +491,8 @@ for (const themeName of Object.keys(THEMES)) {
 
 ```javascript
 // Check ARIA attributes
-expect(element.getAttribute('role')).toBe('button');
-expect(element.getAttribute('aria-label')).toBeTruthy();
+expect(element.getAttribute("role")).toBe("button");
+expect(element.getAttribute("aria-label")).toBeTruthy();
 
 // Check focus management
 element.focus();

@@ -8,6 +8,7 @@ This example demonstrates a complete micro-analysis following the Per-Function M
 
 **Purpose:**
 Enables users to swap one token for another through a liquidity pool. Core trading operation in a DEX that:
+
 - Calculates output amount using constant product formula (x * y = k)
 - Deducts 0.3% protocol fee from input amount
 - Enforces user-specified slippage protection
@@ -20,27 +21,31 @@ This is a critical financial primitive affecting pool solvency, user fund safety
 
 **Inputs & Assumptions:**
 
-*Parameters:*
+_Parameters:_
+
 - `tokenIn` (address): Source token to swap from. Assumed untrusted (could be malicious ERC20).
 - `tokenOut` (address): Destination token to receive. Assumed untrusted.
 - `amountIn` (uint256): Amount of tokenIn to swap. User-specified, untrusted input.
 - `minAmountOut` (uint256): Minimum acceptable output. User-specified slippage tolerance.
 - `deadline` (uint256): Unix timestamp. Transaction must execute before this or revert.
 
-*Implicit Inputs:*
+_Implicit Inputs:_
+
 - `msg.sender`: Transaction initiator. Assumed to have approved Router to spend amountIn of tokenIn.
 - `pairs[tokenIn][tokenOut]`: Storage mapping to pool address. Assumed populated during pool creation.
 - `reserves[pair]`: Pool's current token reserves. Assumed synchronized with actual pool balances.
 - `block.timestamp`: Current block time. Assumed honest (no validator manipulation considered here).
 
-*Preconditions:*
+_Preconditions:_
+
 - Pool exists for tokenIn/tokenOut pair (pairs[tokenIn][tokenOut] != address(0))
 - msg.sender has approved Router for at least amountIn of tokenIn
 - msg.sender balance of tokenIn >= amountIn
 - Pool has sufficient liquidity to output at least minAmountOut
 - block.timestamp <= deadline
 
-*Trust Assumptions:*
+_Trust Assumptions:_
+
 - Pool contract correctly maintains reserves
 - ERC20 tokens follow standard behavior (return true on success, revert on failure)
 - No reentrancy from tokenIn/tokenOut during transfers (or handled by nonReentrant modifier)
@@ -49,21 +54,26 @@ This is a critical financial primitive affecting pool solvency, user fund safety
 
 **Outputs & Effects:**
 
-*Returns:*
+_Returns:_
+
 - Implicit: amountOut (not returned, but emitted in event)
 
-*State Writes:*
+_State Writes:_
+
 - `reserves[pair].reserve0` and `reserves[pair].reserve1`: Updated to reflect post-swap balances
 - Pool token balances: Physical token transfers change actual balances
 
-*External Interactions:*
+_External Interactions:_
+
 - `IERC20(tokenIn).transferFrom(msg.sender, pair, amountIn)`: Pulls tokenIn from user to pool
 - `IERC20(tokenOut).transfer(msg.sender, amountOut)`: Sends tokenOut from pool to user
 
-*Events Emitted:*
+_Events Emitted:_
+
 - `Swap(msg.sender, tokenIn, tokenOut, amountIn, amountOut, block.timestamp)`
 
-*Postconditions:*
+_Postconditions:_
+
 - `amountOut >= minAmountOut` (slippage protection enforced)
 - Pool reserves updated: `reserve0 * reserve1 >= k_before` (constant product maintained with fee)
 - User received exactly amountOut of tokenOut
@@ -81,6 +91,7 @@ modifier ensure(uint256 deadline) {
     _;
 }
 ```
+
 - **What:** Checks transaction hasn't expired based on user-provided deadline
 - **Why here:** First line of defense; fail fast before any state reads or computation
 - **Assumption:** `block.timestamp` is sufficiently honest (no 900-second manipulation considered)
@@ -101,6 +112,7 @@ require(amountIn > 0, "Invalid input amount");
 require(minAmountOut > 0, "Invalid minimum output");
 require(tokenIn != tokenOut, "Identical tokens");
 ```
+
 - **What:** Validates basic input sanity (non-zero amounts, different tokens)
 - **Why here:** Second line of defense; cheap checks before expensive operations
 - **Assumption:** Zero amounts indicate user error, not intentional probe
@@ -120,6 +132,7 @@ require(tokenIn != tokenOut, "Identical tokens");
 address pair = pairs[tokenIn][tokenOut];
 require(pair != address(0), "Pool does not exist");
 ```
+
 - **What:** Looks up liquidity pool address for token pair, validates existence
 - **Why here:** Must identify pool before reading reserves or executing transfers
 - **Assumption:** `pairs` mapping is correctly populated during pool creation; no race conditions
@@ -134,6 +147,7 @@ require(pair != address(0), "Pool does not exist");
 (uint112 reserveIn, uint112 reserveOut) = getReserves(pair, tokenIn, tokenOut);
 require(reserveIn > 0 && reserveOut > 0, "Insufficient liquidity");
 ```
+
 - **What:** Reads current pool reserves for tokenIn and tokenOut, validates pool has liquidity
 - **Why here:** Need current reserves to calculate output amount; must confirm pool is operational
 - **Assumption:** `reserves[pair]` storage is synchronized with actual pool token balances
@@ -153,6 +167,7 @@ require(reserveIn > 0 && reserveOut > 0, "Insufficient liquidity");
 uint256 amountInWithFee = amountIn * 997;
 uint256 numerator = amountInWithFee * reserveOut;
 ```
+
 - **What:** Applies 0.3% protocol fee by multiplying amountIn by 997 (instead of deducting 3)
 - **Why here:** Fee must be applied before price calculation to affect output amount
 - **Assumption:** 997/1000 = 0.997 = (1 - 0.003) represents 0.3% fee deduction
@@ -172,6 +187,7 @@ uint256 numerator = amountInWithFee * reserveOut;
 uint256 denominator = (reserveIn * 1000) + amountInWithFee;
 uint256 amountOut = numerator / denominator;
 ```
+
 - **What:** Calculates output amount using AMM constant product formula: `Δy = (x * Δx_fee) / (y + Δx_fee)`
 - **Why here:** After fee application; core pricing logic of the AMM
 - **Assumption:** `k = reserveIn * reserveOut` is the invariant to maintain (with fee adding to k)
@@ -198,6 +214,7 @@ uint256 amountOut = numerator / denominator;
 // L115: Slippage protection enforcement
 require(amountOut >= minAmountOut, "Slippage exceeded");
 ```
+
 - **What:** Validates calculated output meets user's minimum acceptable amount
 - **Why here:** After calculation, before any state changes or transfers (fail fast if insufficient)
 - **Assumption:** User calculated minAmountOut correctly based on acceptable slippage tolerance
@@ -221,6 +238,7 @@ require(amountOut >= minAmountOut, "Slippage exceeded");
 // L118: Input token transfer (pull pattern)
 IERC20(tokenIn).transferFrom(msg.sender, pair, amountIn);
 ```
+
 - **What:** Pulls tokenIn from user to liquidity pool
 - **Why here:** After all validations pass; begins state-changing operations (point of no return)
 - **Assumption:** User has approved Router for at least amountIn; tokenIn is standard ERC20
@@ -244,6 +262,7 @@ IERC20(tokenIn).transferFrom(msg.sender, pair, amountIn);
 // L122: Output token transfer (push pattern)
 IERC20(tokenOut).transfer(msg.sender, amountOut);
 ```
+
 - **What:** Sends calculated amountOut of tokenOut from pool to user
 - **Why here:** After input transfer succeeds; completes the swap atomically
 - **Assumption:** Pool has at least amountOut of tokenOut; tokenOut is standard ERC20
@@ -270,6 +289,7 @@ IERC20(tokenOut).transfer(msg.sender, amountOut);
 reserves[pair].reserve0 = uint112(reserveIn + amountIn);
 reserves[pair].reserve1 = uint112(reserveOut - amountOut);
 ```
+
 - **What:** Updates stored reserves to reflect post-swap balances
 - **Why here:** After transfers complete; brings storage in sync with actual balances
 - **Assumption:** No other operations have modified pool balances since reserves were read
@@ -294,6 +314,7 @@ reserves[pair].reserve1 = uint112(reserveOut - amountOut);
 // L130: Event emission
 emit Swap(msg.sender, tokenIn, tokenOut, amountIn, amountOut, block.timestamp);
 ```
+
 - **What:** Emits event logging swap details for off-chain indexing
 - **Why here:** After all state changes finalized; last operation before return
 - **Assumption:** Event watchers (subgraphs, dex aggregators) rely on this for tracking trades
@@ -314,12 +335,14 @@ emit Swap(msg.sender, tokenIn, tokenOut, amountIn, amountOut, block.timestamp);
 
 **Cross-Function Dependencies:**
 
-*Internal Calls:*
+_Internal Calls:_
+
 - `getReserves(pair, tokenIn, tokenOut)`: Helper to read and order reserves based on token addresses
   - Depends on: `reserves[pair]` storage being synchronized
   - Returns: (reserveIn, reserveOut) in correct order for tokenIn/tokenOut
 
-*External Calls (Outbound):*
+_External Calls (Outbound):_
+
 - `IERC20(tokenIn).transferFrom(msg.sender, pair, amountIn)`: ERC20 standard call
   - Assumes: tokenIn implements ERC20, user has approved Router
   - Reentrancy risk: If tokenIn is malicious, could callback
@@ -329,18 +352,21 @@ emit Swap(msg.sender, tokenIn, tokenOut, amountIn, amountOut, block.timestamp);
   - Reentrancy risk: If tokenOut has hooks
   - Failure: Reverts entire transaction
 
-*Called By:*
+_Called By:_
+
 - Users directly (external call)
 - Aggregators/routers (external call)
 - Multi-hop swap functions (internal call from same contract)
 
-*Shares State With:*
+_Shares State With:_
+
 - `addLiquidity()`: Modifies same reserves[pair], must maintain k invariant
 - `removeLiquidity()`: Modifies same reserves[pair]
 - `sync()`: Emergency function to force reserves sync with balances
 - `skim()`: Removes excess tokens beyond reserves
 
-*Invariant Coupling:*
+_Invariant Coupling:_
+
 - **Global invariant:** `sum(all reserves[pair].reserve0 for all pairs) <= sum(all token balances in pools)`
 - **Per-pool invariant:** `reserves[pair].reserve0 * reserves[pair].reserve1 >= k_initial * (1.003^n)` where n = number of swaps
   - Each swap increases k by 0.3% due to fee
@@ -348,7 +374,8 @@ emit Swap(msg.sender, tokenIn, tokenOut, amountIn, amountOut, block.timestamp);
   - swap() cannot be re-entered while executing
   - addLiquidity/removeLiquidity also cannot execute during swap
 
-*Assumptions Propagated to Callers:*
+_Assumptions Propagated to Callers:_
+
 - Caller must have approved Router to spend amountIn of tokenIn
 - Caller must set reasonable deadline (e.g., block.timestamp + 300 seconds)
 - Caller must calculate minAmountOut based on acceptable slippage (e.g., expectedOutput * 0.99 for 1%)

@@ -18,12 +18,14 @@ Kanban-style task board with drag-and-drop support.
 ```
 
 **Attributes:**
+
 - `api-url` - API base URL (default: http://localhost:57374)
 - `project-id` - Filter tasks by project ID
 - `theme` - 'light' or 'dark' (default: auto-detect)
 - `readonly` - Disable drag-drop and editing
 
 **Events:**
+
 - `task-moved` - Fired when a task is moved between columns
 - `add-task` - Fired when add task button is clicked
 - `task-click` - Fired when a task card is clicked
@@ -33,19 +35,17 @@ Kanban-style task board with drag-and-drop support.
 Control panel for Loki Mode session with start/stop/pause buttons.
 
 ```html
-<loki-session-control
-  api-url="http://localhost:57374"
-  theme="dark"
-  compact
-></loki-session-control>
+<loki-session-control api-url="http://localhost:57374" theme="dark" compact></loki-session-control>
 ```
 
 **Attributes:**
+
 - `api-url` - API base URL (default: http://localhost:57374)
 - `theme` - 'light' or 'dark' (default: auto-detect)
 - `compact` - Show compact version
 
 **Events:**
+
 - `session-start` - Fired when start is clicked
 - `session-pause` - Fired when pause is clicked
 - `session-resume` - Fired when resume is clicked
@@ -65,6 +65,7 @@ Real-time log display with filtering and auto-scroll.
 ```
 
 **Attributes:**
+
 - `api-url` - API base URL (default: http://localhost:57374)
 - `max-lines` - Maximum number of log lines to keep (default: 500)
 - `auto-scroll` - Enable auto-scroll to bottom
@@ -72,10 +73,12 @@ Real-time log display with filtering and auto-scroll.
 - `log-file` - Path to log file (for file-based updates)
 
 **Events:**
+
 - `log-received` - Fired when a new log message is received
 - `logs-cleared` - Fired when logs are cleared
 
 **Public API:**
+
 - `addLog(message, level)` - Add a log entry programmatically
 - `clear()` - Clear all logs
 
@@ -92,11 +95,13 @@ Browser for the Loki Mode memory system.
 ```
 
 **Attributes:**
+
 - `api-url` - API base URL (default: http://localhost:57374)
 - `theme` - 'light' or 'dark' (default: auto-detect)
 - `tab` - Initial tab ('summary' | 'episodes' | 'patterns' | 'skills')
 
 **Events:**
+
 - `episode-select` - Fired when an episode is selected
 - `pattern-select` - Fired when a pattern is selected
 - `skill-select` - Fired when a skill is selected
@@ -108,7 +113,7 @@ Browser for the Loki Mode memory system.
 Multi-context theme management with support for browser, VS Code, and CLI contexts.
 
 ```javascript
-import { UnifiedThemeManager, THEMES } from './dashboard-ui/index.js';
+import { UnifiedThemeManager, THEMES } from "./dashboard-ui/index.js";
 
 // Initialize with context auto-detection
 UnifiedThemeManager.init();
@@ -122,20 +127,21 @@ const context = UnifiedThemeManager.detectContext();
 // Returns: 'browser' | 'vscode' | 'cli'
 
 // Set theme explicitly
-UnifiedThemeManager.setTheme('dark');
-UnifiedThemeManager.setTheme('high-contrast'); // High contrast mode
-UnifiedThemeManager.setTheme('vscode-dark');   // VS Code dark
+UnifiedThemeManager.setTheme("dark");
+UnifiedThemeManager.setTheme("high-contrast"); // High contrast mode
+UnifiedThemeManager.setTheme("vscode-dark"); // VS Code dark
 
 // Toggle between light/dark
 const newTheme = UnifiedThemeManager.toggle();
 
 // Listen for theme changes
-window.addEventListener('loki-theme-change', (e) => {
-  console.log('Theme:', e.detail.theme, 'Context:', e.detail.context);
+window.addEventListener("loki-theme-change", (e) => {
+  console.log("Theme:", e.detail.theme, "Context:", e.detail.context);
 });
 ```
 
 **Available Themes:**
+
 - `light` - Standard light theme (Anthropic design language)
 - `dark` - Standard dark theme
 - `high-contrast` - Accessibility-focused high contrast
@@ -147,7 +153,7 @@ window.addEventListener('loki-theme-change', (e) => {
 Backwards-compatible theme management. Now delegates to UnifiedThemeManager.
 
 ```javascript
-import { LokiTheme } from './core/loki-theme.js';
+import { LokiTheme } from "./core/loki-theme.js";
 
 // Initialize theme (detects system preference)
 LokiTheme.init();
@@ -156,13 +162,13 @@ LokiTheme.init();
 const theme = LokiTheme.getTheme();
 
 // Set theme (now supports all unified themes)
-LokiTheme.setTheme('dark');
+LokiTheme.setTheme("dark");
 
 // Toggle theme
 LokiTheme.toggle();
 
 // Get CSS variables for theme
-const vars = LokiTheme.getVariables('dark');
+const vars = LokiTheme.getVariables("dark");
 ```
 
 ### LokiApiClient
@@ -170,16 +176,16 @@ const vars = LokiTheme.getVariables('dark');
 Unified API client for Loki Mode.
 
 ```javascript
-import { getApiClient, ApiEvents } from './core/loki-api-client.js';
+import { getApiClient, ApiEvents } from "./core/loki-api-client.js";
 
-const api = getApiClient({ baseUrl: 'http://localhost:57374' });
+const api = getApiClient({ baseUrl: "http://localhost:57374" });
 
 // Connect to WebSocket for real-time updates
 await api.connect();
 
 // Listen for events
 api.addEventListener(ApiEvents.TASK_UPDATED, (e) => {
-  console.log('Task updated:', e.detail);
+  console.log("Task updated:", e.detail);
 });
 
 // REST API calls
@@ -189,7 +195,7 @@ const memory = await api.getMemorySummary();
 
 // Polling mode (fallback when WebSocket unavailable)
 api.startPolling((status) => {
-  console.log('Status update:', status);
+  console.log("Status update:", status);
 });
 ```
 
@@ -198,26 +204,26 @@ api.startPolling((status) => {
 Client-side state management with localStorage persistence.
 
 ```javascript
-import { getState, createStore } from './core/loki-state.js';
+import { getState, createStore } from "./core/loki-state.js";
 
 const state = getState();
 
 // Get/set state
-state.set('ui.theme', 'dark');
-const theme = state.get('ui.theme');
+state.set("ui.theme", "dark");
+const theme = state.get("ui.theme");
 
 // Subscribe to changes
-const unsubscribe = state.subscribe('ui.theme', (value, oldValue) => {
-  console.log('Theme changed:', value);
+const unsubscribe = state.subscribe("ui.theme", (value, oldValue) => {
+  console.log("Theme changed:", value);
 });
 
 // Local tasks
-state.addLocalTask({ title: 'My task', status: 'pending' });
-state.moveLocalTask('local-123', 'in_progress');
+state.addLocalTask({ title: "My task", status: "pending" });
+state.moveLocalTask("local-123", "in_progress");
 
 // Create a store bound to a specific path
-const themeStore = createStore('ui.theme');
-themeStore.set('dark');
+const themeStore = createStore("ui.theme");
+themeStore.set("dark");
 themeStore.subscribe(console.log);
 ```
 
@@ -227,9 +233,9 @@ themeStore.subscribe(console.log);
 
 ```html
 <script type="module">
-  import { LokiTheme } from './dashboard-ui/core/loki-theme.js';
-  import './dashboard-ui/components/loki-task-board.js';
-  import './dashboard-ui/components/loki-session-control.js';
+  import { LokiTheme } from "./dashboard-ui/core/loki-theme.js";
+  import "./dashboard-ui/components/loki-task-board.js";
+  import "./dashboard-ui/components/loki-session-control.js";
 
   LokiTheme.init();
 </script>
@@ -249,7 +255,7 @@ import {
   LokiSessionControl,
   LokiLogStream,
   LokiMemoryBrowser,
-} from './dashboard-ui/index.js';
+} from "./dashboard-ui/index.js";
 ```
 
 ## Design Language
@@ -268,24 +274,24 @@ For comprehensive documentation, see [STYLE-GUIDE.md](./STYLE-GUIDE.md).
 
 All components support consistent keyboard navigation:
 
-| Shortcut | Action |
-|----------|--------|
-| ArrowDown/Up | Navigate items |
+| Shortcut      | Action            |
+| ------------- | ----------------- |
+| ArrowDown/Up  | Navigate items    |
 | Tab/Shift+Tab | Navigate sections |
-| Enter | Confirm/activate |
-| Escape | Cancel/close |
-| Cmd+R | Refresh |
-| Cmd+Shift+D | Toggle theme |
+| Enter         | Confirm/activate  |
+| Escape        | Cancel/close      |
+| Cmd+R         | Refresh           |
+| Cmd+Shift+D   | Toggle theme      |
 
 ### Accessibility (ARIA)
 
 Components include proper ARIA patterns:
 
 ```javascript
-import { ARIA_PATTERNS } from './dashboard-ui/index.js';
+import { ARIA_PATTERNS } from "./dashboard-ui/index.js";
 
 // Apply to custom elements
-element.setAttribute('role', ARIA_PATTERNS.button.role);
+element.setAttribute("role", ARIA_PATTERNS.button.role);
 ```
 
 ### VS Code Integration
@@ -295,7 +301,7 @@ Components auto-detect VS Code context and apply appropriate themes:
 ```javascript
 // Automatic detection
 const context = UnifiedThemeManager.detectContext();
-if (context === 'vscode') {
+if (context === "vscode") {
   // VS Code theme variables are mapped automatically
 }
 ```
@@ -329,6 +335,7 @@ npm run test:visual
 ```
 
 Tests cover:
+
 - All 5 theme variants (light, dark, high-contrast, vscode-light, vscode-dark)
 - All component states (buttons, cards, badges, status indicators)
 - Theme variable completeness

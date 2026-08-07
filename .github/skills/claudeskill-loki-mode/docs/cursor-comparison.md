@@ -7,16 +7,16 @@
 
 ## Executive Summary
 
-| Dimension | Cursor | Loki Mode | Winner |
-|-----------|--------|-----------|--------|
-| **Proven Scale** | 1M+ LoC, large agent count | Benchmarks only | Cursor |
-| **Research Foundation** | Empirical iteration | 25+ academic citations | Loki Mode |
-| **Quality Assurance** | Workers self-manage | 11-gate system + anti-sycophancy | Loki Mode |
-| **Anti-Sycophancy** | Not mentioned | CONSENSAGENT blind review | Loki Mode |
-| **Velocity-Quality Balance** | Not mentioned | arXiv-backed metrics | Loki Mode |
-| **Full SDLC Coverage** | Code generation focus | Spec (PRD/issue/YAML) to production + growth | Loki Mode |
-| **Memory Systems** | Not detailed | Episodic/semantic/procedural | Loki Mode |
-| **Scale Patterns** | Battle-tested | Now incorporated (v3.3.0) | Tie |
+| Dimension                    | Cursor                     | Loki Mode                                    | Winner    |
+| ---------------------------- | -------------------------- | -------------------------------------------- | --------- |
+| **Proven Scale**             | 1M+ LoC, large agent count | Benchmarks only                              | Cursor    |
+| **Research Foundation**      | Empirical iteration        | 25+ academic citations                       | Loki Mode |
+| **Quality Assurance**        | Workers self-manage        | 11-gate system + anti-sycophancy             | Loki Mode |
+| **Anti-Sycophancy**          | Not mentioned              | CONSENSAGENT blind review                    | Loki Mode |
+| **Velocity-Quality Balance** | Not mentioned              | arXiv-backed metrics                         | Loki Mode |
+| **Full SDLC Coverage**       | Code generation focus      | Spec (PRD/issue/YAML) to production + growth | Loki Mode |
+| **Memory Systems**           | Not detailed               | Episodic/semantic/procedural                 | Loki Mode |
+| **Scale Patterns**           | Battle-tested              | Now incorporated (v3.3.0)                    | Tie       |
 
 ---
 
@@ -27,6 +27,7 @@
 **The Problem:** AI agents tend to agree with each other, reinforcing mistakes rather than catching them.
 
 **Loki Mode Solution:**
+
 ```
 3 Blind Parallel Reviewers (cannot see each other's findings)
         |
@@ -48,6 +49,7 @@ Aggregated findings with independent verification
 **The Problem:** AI-generated code shows +281% velocity but +30% static warnings, +41% complexity. At 3.28x complexity, velocity gains are completely negated.
 
 **Loki Mode Solution:**
+
 ```yaml
 velocity_quality_balance:
   before_commit:
@@ -56,7 +58,7 @@ velocity_quality_balance:
     - test_coverage: "Must not decrease"
 
   thresholds:
-    max_new_warnings: 0  # Zero tolerance
+    max_new_warnings: 0 # Zero tolerance
     min_coverage: 80%
 ```
 
@@ -69,6 +71,7 @@ velocity_quality_balance:
 ### 3. 11-Gate Quality System
 
 **Loki Mode's Gates:**
+
 1. Input Guardrails - Validate scope, detect injection (OpenAI SDK pattern)
 2. Static Analysis - CodeQL, ESLint, type checking
 3. Blind Review System - 3 parallel reviewers
@@ -86,6 +89,7 @@ velocity_quality_balance:
 ### 4. Constitutional AI Self-Critique
 
 **Loki Mode Pattern:**
+
 ```
 Generate -> Critique against principles -> Revise -> Re-critique -> Final
 ```
@@ -99,6 +103,7 @@ Generate -> Critique against principles -> Revise -> Re-critique -> Final
 ### 5. Memory Architecture
 
 **Loki Mode:**
+
 ```
 .loki/memory/
   episodic/    # Specific interaction traces
@@ -107,6 +112,7 @@ Generate -> Critique against principles -> Revise -> Re-critique -> Final
 ```
 
 **Research Basis:**
+
 - [A-Mem: Agentic Memory System](https://arxiv.org/html/2502.12110v11)
 - [MIRIX Memory Architecture](https://arxiv.org/abs/2502.12110)
 
@@ -117,12 +123,14 @@ Generate -> Critique against principles -> Revise -> Re-critique -> Final
 ### 6. Full SDLC Coverage
 
 **Loki Mode Phases:**
+
 ```
 BOOTSTRAP -> DISCOVERY -> ARCHITECTURE -> INFRASTRUCTURE
      -> DEVELOPMENT -> QA -> DEPLOYMENT -> GROWTH (continuous)
 ```
 
 **41 Specialized Agent Types across 8 swarms:**
+
 - Engineering (8 types)
 - Operations (8 types)
 - Business (8 types)
@@ -139,6 +147,7 @@ BOOTSTRAP -> DISCOVERY -> ARCHITECTURE -> INFRASTRUCTURE
 ### 7. Debate-Based Verification
 
 **Loki Mode Pattern:**
+
 ```
 For critical changes:
   1. Agent A proposes solution
@@ -156,6 +165,7 @@ For critical changes:
 ## Where Cursor is Better
 
 ### 1. Proven Scale
+
 - 1.6M LoC Excel implementation
 - 1.2M LoC Windows 7 emulator
 - "Trillions of tokens" deployed
@@ -164,7 +174,9 @@ For critical changes:
 **Loki Mode:** Benchmarks only (SWE-bench, HumanEval). No 1M+ LoC projects demonstrated.
 
 ### 2. Empirical Iteration
+
 Cursor learned through failure:
+
 - Flat coordination failed -> Moved to hierarchical
 - File locking created deadlocks -> Moved to optimistic concurrency
 - Integrators created bottlenecks -> Removed them
@@ -172,6 +184,7 @@ Cursor learned through failure:
 **Loki Mode:** Research-based design. Not yet validated at Cursor's scale.
 
 ### 3. Simplicity Principle
+
 > "A surprising amount of the system's behavior comes down to how we prompt the agents. The harness and models matter, but the prompts matter more."
 
 **Loki Mode:** More elaborate infrastructure (11 gates, 41 agent types, memory systems). May be over-engineered for some use cases.
@@ -192,6 +205,7 @@ We incorporated Cursor's proven patterns:
 ## Conclusion
 
 **Loki Mode is scientifically better in:**
+
 - Quality assurance (research-backed 11-gate system)
 - Anti-sycophancy (CONSENSAGENT blind review)
 - Velocity-quality balance (arXiv metrics)
@@ -199,6 +213,7 @@ We incorporated Cursor's proven patterns:
 - Memory architecture (episodic/semantic/procedural)
 
 **Cursor is operationally better in:**
+
 - Proven scale (1M+ LoC projects)
 - Empirical learning (iteration through failure)
 - Simplicity at scale (removed bottlenecks)
@@ -210,6 +225,7 @@ We incorporated Cursor's proven patterns:
 ## References
 
 ### Loki Mode Research Foundation
+
 - [CONSENSAGENT](https://aclanthology.org/2025.findings-acl.1141/) - Anti-sycophancy
 - [arXiv 2511.04427v2](https://arxiv.org/abs/2511.04427) - Velocity-quality balance
 - [Anthropic Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)
@@ -218,6 +234,7 @@ We incorporated Cursor's proven patterns:
 - [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/)
 
 ### Cursor Source
+
 - [Cursor Blog - Scaling Agents](https://cursor.com/blog/scaling-agents)
 
 ---

@@ -31,6 +31,7 @@ artifact_generation:
 ## Artifact Types
 
 ### Verification Report
+
 ```yaml
 format: "markdown"
 contents:
@@ -42,6 +43,7 @@ contents:
 ```
 
 ### Architecture Diff
+
 ```yaml
 format: "mermaid diagram"
 contents:
@@ -51,6 +53,7 @@ contents:
 ```
 
 ### Screenshot Gallery
+
 ```yaml
 format: "png + markdown index"
 capture:
@@ -60,6 +63,7 @@ capture:
 ```
 
 **Why artifacts matter for autonomous operation:**
+
 - Creates audit trail without human during execution
 - Enables async human review if needed later
 - Proves work quality through outcomes, not code inspection
@@ -78,8 +82,7 @@ transformation_agent:
 
   workflows:
     language_upgrade:
-      steps:
-        1. Analyze current version and dependencies
+      steps: 1. Analyze current version and dependencies
         2. Identify deprecated APIs and breaking changes
         3. Generate migration plan with risk assessment
         4. Apply transformations incrementally
@@ -91,8 +94,7 @@ transformation_agent:
         - "Node 16 to Node 22"
 
     database_migration:
-      steps:
-        1. Schema diff analysis (source vs target)
+      steps: 1. Schema diff analysis (source vs target)
         2. SQL dialect conversion rules
         3. Data type mapping
         4. Generate migration scripts
@@ -104,8 +106,7 @@ transformation_agent:
         - "MongoDB to PostgreSQL"
 
     framework_modernization:
-      steps:
-        1. Dependency audit and compatibility matrix
+      steps: 1. Dependency audit and compatibility matrix
         2. Breaking change detection
         3. Code pattern updates (deprecated -> modern)
         4. Test suite adaptation
@@ -123,6 +124,7 @@ transformation_agent:
 ```
 
 **Why this fits autonomous operation:**
+
 - Narrow scope with clear boundaries
 - Deterministic success criteria (tests pass, benchmarks met)
 - No subjective judgment required

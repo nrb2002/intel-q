@@ -24,45 +24,45 @@ Creates a new experiment. Starts in `Draft` status by default.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `name` | string | Yes | Human-readable name |
-| `experiment_spec` | ExperimentSpec | Yes | Experiment definition (see below) |
-| `skip_draft` | boolean | No (default false) | Bypass Draft, go straight to WaitingForConfirmation |
-| `auto_accept_quote` | boolean | No (default false) | Auto-accept quote and create invoice |
-| `webhook_url` | string/null | No | URL for status-change POST notifications |
+| Field               | Type           | Required           | Description                                         |
+| ------------------- | -------------- | ------------------ | --------------------------------------------------- |
+| `name`              | string         | Yes                | Human-readable name                                 |
+| `experiment_spec`   | ExperimentSpec | Yes                | Experiment definition (see below)                   |
+| `skip_draft`        | boolean        | No (default false) | Bypass Draft, go straight to WaitingForConfirmation |
+| `auto_accept_quote` | boolean        | No (default false) | Auto-accept quote and create invoice                |
+| `webhook_url`       | string/null    | No                 | URL for status-change POST notifications            |
 
 **ExperimentSpec:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `experiment_type` | string | Yes | `affinity`, `screening`, `thermostability`, `fluorescence`, or `expression` |
-| `method` | string | Required for binding types | `bli` or `spr` |
-| `target_id` | uuid | Required for binding types | Target UUID from catalog |
-| `sequences` | object | Yes | Map of name → amino acid string or rich object |
-| `n_replicates` | integer | Recommended (default 3) | Technical replicates (min 1) |
-| `antigen_concentrations` | number[] | No (affinity only) | Defaults to `[1000.0, 316.2, 100.0, 31.6, 0.0]` nM |
-| `parameters` | object | No | Experiment-specific settings |
+| Field                    | Type     | Required                   | Description                                                                 |
+| ------------------------ | -------- | -------------------------- | --------------------------------------------------------------------------- |
+| `experiment_type`        | string   | Yes                        | `affinity`, `screening`, `thermostability`, `fluorescence`, or `expression` |
+| `method`                 | string   | Required for binding types | `bli` or `spr`                                                              |
+| `target_id`              | uuid     | Required for binding types | Target UUID from catalog                                                    |
+| `sequences`              | object   | Yes                        | Map of name → amino acid string or rich object                              |
+| `n_replicates`           | integer  | Recommended (default 3)    | Technical replicates (min 1)                                                |
+| `antigen_concentrations` | number[] | No (affinity only)         | Defaults to `[1000.0, 316.2, 100.0, 31.6, 0.0]` nM                          |
+| `parameters`             | object   | No                         | Experiment-specific settings                                                |
 
 **Field requirements by experiment type:**
 
-| Field | Affinity | Screening | Thermostability | Fluorescence | Expression |
-|---|---|---|---|---|---|
-| `experiment_type` | required | required | required | required | required |
-| `method` | required | required | — | — | — |
-| `target_id` | required | required | — | — | — |
-| `sequences` | required | required | required | required | required |
-| `n_replicates` | recommended | recommended | optional | optional | optional |
-| `antigen_concentrations` | optional | — | — | — | — |
+| Field                    | Affinity    | Screening   | Thermostability | Fluorescence | Expression |
+| ------------------------ | ----------- | ----------- | --------------- | ------------ | ---------- |
+| `experiment_type`        | required    | required    | required        | required     | required   |
+| `method`                 | required    | required    | —               | —            | —          |
+| `target_id`              | required    | required    | —               | —            | —          |
+| `sequences`              | required    | required    | required        | required     | required   |
+| `n_replicates`           | recommended | recommended | optional        | optional     | optional   |
+| `antigen_concentrations` | optional    | —           | —               | —            | —          |
 
 **Response (201):**
 
-| Field | Type | Description |
-|---|---|---|
-| `experiment_id` | string | UUID of new experiment |
-| `error` | string/null | Error message if validation fails |
+| Field                       | Type        | Description                                         |
+| --------------------------- | ----------- | --------------------------------------------------- |
+| `experiment_id`             | string      | UUID of new experiment                              |
+| `error`                     | string/null | Error message if validation fails                   |
 | `stripe_hosted_invoice_url` | string/null | Present when `auto_accept_quote` created an invoice |
-| `stripe_invoice_id` | string/null | Stripe invoice ID |
+| `stripe_invoice_id`         | string/null | Stripe invoice ID                                   |
 
 **Status codes:** 201, 400, 401, 403, 404
 
@@ -76,18 +76,18 @@ Lists experiments accessible to caller, sorted by creation date (newest first).
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Unique identifier |
-| `code` | string | e.g., "EXP-2024-001" |
-| `name` | string/null | Human-readable name |
-| `status` | ExperimentStatus | Current lifecycle status |
-| `experiment_type` | ExperimentType | affinity/screening/thermostability/fluorescence/expression |
-| `results_status` | ResultsStatus | none/partial/all |
-| `created_at` | datetime | ISO 8601 |
-| `experiment_url` | string | URL to Foundry portal |
-| `stripe_invoice_url` | string/null | Invoice URL |
-| `stripe_quote_url` | string/null | Quote URL |
+| Field                | Type             | Description                                                |
+| -------------------- | ---------------- | ---------------------------------------------------------- |
+| `id`                 | uuid             | Unique identifier                                          |
+| `code`               | string           | e.g., "EXP-2024-001"                                       |
+| `name`               | string/null      | Human-readable name                                        |
+| `status`             | ExperimentStatus | Current lifecycle status                                   |
+| `experiment_type`    | ExperimentType   | affinity/screening/thermostability/fluorescence/expression |
+| `results_status`     | ResultsStatus    | none/partial/all                                           |
+| `created_at`         | datetime         | ISO 8601                                                   |
+| `experiment_url`     | string           | URL to Foundry portal                                      |
+| `stripe_invoice_url` | string/null      | Invoice URL                                                |
+| `stripe_quote_url`   | string/null      | Quote URL                                                  |
 
 **Status codes:** 200, 401
 
@@ -101,16 +101,16 @@ Returns full metadata for a single experiment.
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Unique identifier |
-| `code` | string | Experiment code |
-| `status` | ExperimentStatus | Current status |
-| `experiment_spec` | ExperimentSpec | Full experiment definition |
-| `results_status` | ResultsStatus | none/partial/all |
-| `created_at` | datetime | ISO 8601 |
-| `experiment_url` | string | Portal URL |
-| `costs` | object | Cost breakdown |
+| Field             | Type             | Description                |
+| ----------------- | ---------------- | -------------------------- |
+| `id`              | uuid             | Unique identifier          |
+| `code`            | string           | Experiment code            |
+| `status`          | ExperimentStatus | Current status             |
+| `experiment_spec` | ExperimentSpec   | Full experiment definition |
+| `results_status`  | ResultsStatus    | none/partial/all           |
+| `created_at`      | datetime         | ISO 8601                   |
+| `experiment_url`  | string           | Portal URL                 |
+| `costs`           | object           | Cost breakdown             |
 
 **Status codes:** 200, 401, 404, 500
 
@@ -136,8 +136,8 @@ Submits a draft experiment for review. Advances from `Draft` to `WaitingForConfi
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
+| Field           | Type   | Description     |
+| --------------- | ------ | --------------- |
 | `experiment_id` | string | Experiment UUID |
 
 **Status codes:** 200, 401, 403, 404, 409, 500
@@ -149,13 +149,14 @@ Submits a draft experiment for review. Advances from `Draft` to `WaitingForConfi
 Calculates cost without creating an experiment.
 
 **Request body:**
+
 ```json
 {
   "experiment_spec": {
     "experiment_type": "screening",
     "method": "bli",
     "target_id": "...",
-    "sequences": {"seq1": "MKTL..."},
+    "sequences": { "seq1": "MKTL..." },
     "n_replicates": 3
   }
 }
@@ -163,12 +164,12 @@ Calculates cost without creating an experiment.
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `pricing_version` | string | e.g., "v1_2026-01-20" |
-| `assay` | object | Per-type costs with base and replicate pricing |
-| `materials` | object | Target material costs (binding experiments) |
-| `total_cents` | integer | Sum in USD cents |
+| Field             | Type    | Description                                    |
+| ----------------- | ------- | ---------------------------------------------- |
+| `pricing_version` | string  | e.g., "v1_2026-01-20"                          |
+| `assay`           | object  | Per-type costs with base and replicate pricing |
+| `materials`       | object  | Target material costs (binding experiments)    |
+| `total_cents`     | integer | Sum in USD cents                               |
 
 All prices exclude VAT; taxes calculated at invoicing. Targets without self-service pricing return incomplete estimates.
 
@@ -184,15 +185,15 @@ Returns quote metadata (totals, currency, status, expiration).
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `experiment_id` | string | Experiment UUID |
-| `stripe_quote_url` | string | Stripe quote URL |
-| `amount_total` | int64 | Total in smallest currency unit |
-| `amount_subtotal` | int64 | Subtotal |
-| `currency` | string | ISO currency code (e.g., "usd") |
-| `status` | string | Quote status |
-| `expires_at` | datetime/null | Expiration time |
+| Field              | Type          | Description                     |
+| ------------------ | ------------- | ------------------------------- |
+| `experiment_id`    | string        | Experiment UUID                 |
+| `stripe_quote_url` | string        | Stripe quote URL                |
+| `amount_total`     | int64         | Total in smallest currency unit |
+| `amount_subtotal`  | int64         | Subtotal                        |
+| `currency`         | string        | ISO currency code (e.g., "usd") |
+| `status`           | string        | Quote status                    |
+| `expires_at`       | datetime/null | Expiration time                 |
 
 **Status codes:** 200, 401, 403, 404, 500
 
@@ -216,19 +217,19 @@ Accepts Stripe quote, creates draft invoice, transitions to `WaitingForMaterials
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `purchase_order_number` | string/null | No | PO number for your records |
-| `notes` | string/null | No | Reserved |
+| Field                   | Type        | Required | Description                |
+| ----------------------- | ----------- | -------- | -------------------------- |
+| `purchase_order_number` | string/null | No       | PO number for your records |
+| `notes`                 | string/null | No       | Reserved                   |
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Quote ID |
-| `status` | StripeQuoteStatus | New status |
-| `hosted_invoice_url` | string/null | Stripe payment URL |
-| `invoice_id` | string/null | Generated invoice ID |
+| Field                | Type              | Description          |
+| -------------------- | ----------------- | -------------------- |
+| `id`                 | string            | Quote ID             |
+| `status`             | StripeQuoteStatus | New status           |
+| `hosted_invoice_url` | string/null       | Stripe payment URL   |
+| `invoice_id`         | string/null       | Generated invoice ID |
 
 **Status codes:** 200, 401, 403, 404, 409
 
@@ -287,16 +288,16 @@ Returns sequences from all experiments, sorted newest first.
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Unique identifier |
-| `name` | string/null | Optional name |
-| `aa_preview` | string/null | Truncated preview (first 50 chars) |
-| `length` | int32 | Sequence length in amino acids |
-| `experiment_id` | uuid | Parent experiment |
-| `experiment_code` | string | Human-readable experiment code |
-| `is_control` | boolean | Whether this is a control |
-| `created_at` | datetime | Creation timestamp |
+| Field             | Type        | Description                        |
+| ----------------- | ----------- | ---------------------------------- |
+| `id`              | uuid        | Unique identifier                  |
+| `name`            | string/null | Optional name                      |
+| `aa_preview`      | string/null | Truncated preview (first 50 chars) |
+| `length`          | int32       | Sequence length in amino acids     |
+| `experiment_id`   | uuid        | Parent experiment                  |
+| `experiment_code` | string      | Human-readable experiment code     |
+| `is_control`      | boolean     | Whether this is a control          |
+| `created_at`      | datetime    | Creation timestamp                 |
 
 **Status codes:** 200, 401
 
@@ -310,15 +311,15 @@ Returns full details including complete amino acid string.
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Unique identifier |
-| `aa_string` | string/null | Complete amino acid sequence |
-| `length` | int32 | Length in amino acids |
-| `is_control` | boolean | Control flag |
-| `metadata` | object | Sequence-level annotations |
-| `experiment` | object | Parent experiment reference |
-| `created_at` | datetime | Creation timestamp |
+| Field        | Type        | Description                  |
+| ------------ | ----------- | ---------------------------- |
+| `id`         | uuid        | Unique identifier            |
+| `aa_string`  | string/null | Complete amino acid sequence |
+| `length`     | int32       | Length in amino acids        |
+| `is_control` | boolean     | Control flag                 |
+| `metadata`   | object      | Sequence-level annotations   |
+| `experiment` | object      | Parent experiment reference  |
+| `created_at` | datetime    | Creation timestamp           |
 
 **Status codes:** 200, 401, 403, 404, 500
 
@@ -330,28 +331,28 @@ Appends sequences to a **Draft** experiment identified by its human-readable cod
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `experiment_code` | string | Yes | e.g., "PROJ-001" |
-| `sequences` | array | Yes | Array of sequence entries |
+| Field             | Type   | Required | Description               |
+| ----------------- | ------ | -------- | ------------------------- |
+| `experiment_code` | string | Yes      | e.g., "PROJ-001"          |
+| `sequences`       | array  | Yes      | Array of sequence entries |
 
 **Each sequence entry:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `aa_string` | string | Yes | Amino acid sequence |
-| `name` | string | No | Human-readable name |
-| `control` | boolean | No | Whether this is a control |
-| `metadata` | object | No | Annotations |
+| Field       | Type    | Required | Description               |
+| ----------- | ------- | -------- | ------------------------- |
+| `aa_string` | string  | Yes      | Amino acid sequence       |
+| `name`      | string  | No       | Human-readable name       |
+| `control`   | boolean | No       | Whether this is a control |
+| `metadata`  | object  | No       | Annotations               |
 
 **Response (201):**
 
-| Field | Type | Description |
-|---|---|---|
-| `added_count` | int32 | Number of sequences added |
-| `experiment_id` | string | Experiment UUID |
-| `experiment_code` | string | Experiment code |
-| `sequence_ids` | array | IDs of added sequences |
+| Field             | Type   | Description               |
+| ----------------- | ------ | ------------------------- |
+| `added_count`     | int32  | Number of sequences added |
+| `experiment_id`   | string | Experiment UUID           |
+| `experiment_code` | string | Experiment code           |
+| `sequence_ids`    | array  | IDs of added sequences    |
 
 **Status codes:** 201, 400, 404, 409 (experiment not in Draft), 500
 
@@ -367,16 +368,16 @@ Lists completed analysis results, sorted newest first. Results appear when `resu
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Result identifier |
-| `title` | string | Human-readable title |
-| `experiment_id` | uuid | Associated experiment |
-| `result_type` | string | e.g., "affinity", "thermostability" |
-| `summary` | array | Key results (type-specific, see below) |
-| `metadata` | object | Extended metadata (e.g., instrument info) |
-| `data_package_url` | string/null | Download URL for raw data package |
-| `created_at` | datetime | When result was generated |
+| Field              | Type        | Description                               |
+| ------------------ | ----------- | ----------------------------------------- |
+| `id`               | uuid        | Result identifier                         |
+| `title`            | string      | Human-readable title                      |
+| `experiment_id`    | uuid        | Associated experiment                     |
+| `result_type`      | string      | e.g., "affinity", "thermostability"       |
+| `summary`          | array       | Key results (type-specific, see below)    |
+| `metadata`         | object      | Extended metadata (e.g., instrument info) |
+| `data_package_url` | string/null | Download URL for raw data package         |
+| `created_at`       | datetime    | When result was generated                 |
 
 **AffinityResult summary fields:** `kd_mean`, `kd_std`, `kon_mean`, `kon_log_std`, `koff_mean`, `koff_std`, `replicates` (array with per-replicate `kd`, `kon`, `koff`, `binding_strength`, `kon_method`, `koff_method`, `replicate` index), `sequence`, `target_id`
 
@@ -404,27 +405,27 @@ Lists validated antigens available for experiments.
 
 **Query params:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `limit` | int | Max items (1-100, default 50) |
-| `offset` | int | Skip count |
-| `search` | string | Free-text search on product name |
-| `sort` | string | Sort expression |
-| `selfservice_only` | boolean | Only targets with self-service pricing |
-| `show_conjugated` | boolean | Include conjugated targets (default: unconjugated only) |
-| `detailed` | boolean | Populate `details` block with enrichment data |
+| Parameter          | Type    | Description                                             |
+| ------------------ | ------- | ------------------------------------------------------- |
+| `limit`            | int     | Max items (1-100, default 50)                           |
+| `offset`           | int     | Skip count                                              |
+| `search`           | string  | Free-text search on product name                        |
+| `sort`             | string  | Sort expression                                         |
+| `selfservice_only` | boolean | Only targets with self-service pricing                  |
+| `show_conjugated`  | boolean | Include conjugated targets (default: unconjugated only) |
+| `detailed`         | boolean | Populate `details` block with enrichment data           |
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Target UUID (use as `experiment_spec.target_id`) |
-| `name` | string | Target name |
-| `vendor_name` | string | Vendor name |
-| `catalog_number` | string | Vendor catalog/SKU number |
-| `url` | string | Target URL |
-| `pricing` | object/null | Self-service pricing (null = custom quote required) |
-| `details` | object/null | Enrichment data (gene names, structures, sequence, bioactivity) |
+| Field            | Type        | Description                                                     |
+| ---------------- | ----------- | --------------------------------------------------------------- |
+| `id`             | uuid        | Target UUID (use as `experiment_spec.target_id`)                |
+| `name`           | string      | Target name                                                     |
+| `vendor_name`    | string      | Vendor name                                                     |
+| `catalog_number` | string      | Vendor catalog/SKU number                                       |
+| `url`            | string      | Target URL                                                      |
+| `pricing`        | object/null | Self-service pricing (null = custom quote required)             |
+| `details`        | object/null | Enrichment data (gene names, structures, sequence, bioactivity) |
 
 **Status codes:** 200, 401
 
@@ -446,15 +447,15 @@ Submit a new custom target for staff review. At least one of `sequence` or `pdb_
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `name` | string | Yes | Display name |
-| `product_id` | string | Yes | Must be unique within organization |
-| `sequence` | string/null | At least one | Amino acid sequence |
-| `pdb_id` | string/null | At least one | PDB identifier |
-| `pdb_file` | string/null | No | PDB file content |
-| `molecular_weight` | number/null | No | Weight in kDa |
-| `note` | string/null | No | Additional notes |
+| Field              | Type        | Required     | Description                        |
+| ------------------ | ----------- | ------------ | ---------------------------------- |
+| `name`             | string      | Yes          | Display name                       |
+| `product_id`       | string      | Yes          | Must be unique within organization |
+| `sequence`         | string/null | At least one | Amino acid sequence                |
+| `pdb_id`           | string/null | At least one | PDB identifier                     |
+| `pdb_file`         | string/null | No           | PDB file content                   |
+| `molecular_weight` | number/null | No           | Weight in kDa                      |
+| `note`             | string/null | No           | Additional notes                   |
 
 **Status codes:** 201, 400, 401, 403, 500
 
@@ -476,17 +477,17 @@ Filter example: `filter=eq(status,pending_review)`
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | uuid | Request identifier |
-| `name` | string | Target name |
-| `product_id` | string | Your product ID |
-| `status` | string | e.g., "pending_review" |
-| `material_id` | string/null | Linked catalog ID if approved |
-| `molecular_weight` | number/null | Weight in kDa |
-| `note` | string/null | User notes |
-| `created_at` | datetime | Created |
-| `updated_at` | datetime | Last updated |
+| Field              | Type        | Description                   |
+| ------------------ | ----------- | ----------------------------- |
+| `id`               | uuid        | Request identifier            |
+| `name`             | string      | Target name                   |
+| `product_id`       | string      | Your product ID               |
+| `status`           | string      | e.g., "pending_review"        |
+| `material_id`      | string/null | Linked catalog ID if approved |
+| `molecular_weight` | number/null | Weight in kDa                 |
+| `note`             | string/null | User notes                    |
+| `created_at`       | datetime    | Created                       |
+| `updated_at`       | datetime    | Last updated                  |
 
 **Status codes:** 200, 401, 403, 404, 500
 
@@ -502,16 +503,16 @@ Returns all quotes for caller's organization.
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Quote identifier |
-| `quote_number` | string | Human-readable quote number |
-| `organization_id` | uuid | Organization |
-| `amount_cents` | int | Amount in cents |
-| `currency` | string | ISO 4217 code |
-| `status` | StripeQuoteStatus | Quote status |
-| `valid_until` | datetime | Expiration |
-| `created_at` | datetime | Creation timestamp |
+| Field             | Type              | Description                 |
+| ----------------- | ----------------- | --------------------------- |
+| `id`              | string            | Quote identifier            |
+| `quote_number`    | string            | Human-readable quote number |
+| `organization_id` | uuid              | Organization                |
+| `amount_cents`    | int               | Amount in cents             |
+| `currency`        | string            | ISO 4217 code               |
+| `status`          | StripeQuoteStatus | Quote status                |
+| `valid_until`     | datetime          | Expiration                  |
+| `created_at`      | datetime          | Creation timestamp          |
 
 ---
 
@@ -523,23 +524,23 @@ Returns full quote document with itemized pricing.
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Quote identifier |
-| `quote_number` | string | Reference number |
-| `organization_id` | uuid | Organization |
-| `organization_name` | string | Organization name |
-| `line_items` | array | Itemized pricing |
-| `subtotal_cents` | int | Subtotal in cents |
-| `tax_cents` | int | Tax in cents |
-| `total_cents` | int | Total in cents |
-| `currency` | string | ISO 4217 |
-| `status` | StripeQuoteStatus | Current status |
-| `valid_until` | datetime | Expiration |
-| `notes` | string | Special pricing info |
-| `terms_and_conditions` | string | Terms |
-| `stripe_quote_url` | string | Stripe URL |
-| `created_at` | datetime | Created |
+| Field                  | Type              | Description          |
+| ---------------------- | ----------------- | -------------------- |
+| `id`                   | string            | Quote identifier     |
+| `quote_number`         | string            | Reference number     |
+| `organization_id`      | uuid              | Organization         |
+| `organization_name`    | string            | Organization name    |
+| `line_items`           | array             | Itemized pricing     |
+| `subtotal_cents`       | int               | Subtotal in cents    |
+| `tax_cents`            | int               | Tax in cents         |
+| `total_cents`          | int               | Total in cents       |
+| `currency`             | string            | ISO 4217             |
+| `status`               | StripeQuoteStatus | Current status       |
+| `valid_until`          | datetime          | Expiration           |
+| `notes`                | string            | Special pricing info |
+| `terms_and_conditions` | string            | Terms                |
+| `stripe_quote_url`     | string            | Stripe URL           |
+| `created_at`           | datetime          | Created              |
 
 **Status codes:** 200, 401, 403, 404, 500
 
@@ -553,10 +554,10 @@ Finalizes quote, creates draft invoice, advances experiment to `WaitingForMateri
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `purchase_order_number` | string/null | No | PO number |
-| `notes` | string/null | No | Reserved |
+| Field                   | Type        | Required | Description |
+| ----------------------- | ----------- | -------- | ----------- |
+| `purchase_order_number` | string/null | No       | PO number   |
+| `notes`                 | string/null | No       | Reserved    |
 
 **Response:** `id`, `status`, `hosted_invoice_url`, `invoice_id`
 
@@ -572,10 +573,10 @@ Cancels quote; linked experiment reverts to `Draft`.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `reason` | QuoteRejectionReason | Yes | Primary reason |
-| `feedback` | string/null | No | Additional feedback |
+| Field      | Type                 | Required | Description         |
+| ---------- | -------------------- | -------- | ------------------- |
+| `reason`   | QuoteRejectionReason | Yes      | Primary reason      |
+| `feedback` | string/null          | No       | Additional feedback |
 
 **Response:** `id`, `status` (canceled)
 
@@ -593,17 +594,17 @@ Returns all tokens (root and attenuated) the caller owns.
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Token identifier |
-| `name` | string | Human-readable label |
-| `kind` | string | "root" or "attenuated" |
-| `created_at` | datetime | Created |
-| `expires_at` | datetime/null | Expiration (null = no expiry) |
-| `revoked_at` | datetime/null | Revocation timestamp |
-| `parent_token_id` | string/null | Parent (null for root) |
-| `root_token_id` | string/null | Root of derivation tree |
-| `attenuation_spec` | object/null | Restrictions (null for root) |
+| Field              | Type          | Description                   |
+| ------------------ | ------------- | ----------------------------- |
+| `id`               | string        | Token identifier              |
+| `name`             | string        | Human-readable label          |
+| `kind`             | string        | "root" or "attenuated"        |
+| `created_at`       | datetime      | Created                       |
+| `expires_at`       | datetime/null | Expiration (null = no expiry) |
+| `revoked_at`       | datetime/null | Revocation timestamp          |
+| `parent_token_id`  | string/null   | Parent (null for root)        |
+| `root_token_id`    | string/null   | Root of derivation tree       |
+| `attenuation_spec` | object/null   | Restrictions (null for root)  |
 
 ---
 
@@ -613,12 +614,12 @@ Creates a restricted version of an existing token using Biscuit cryptographic at
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `token` | string | Yes | Existing token (`abs0_{slug}{biscuit_base64}`) |
-| `attenuation` | AttenuationSpec | Yes | Restrictions to apply |
-| `name` | string | Yes | Human-readable label |
-| `attenuated_parent_token_id` | uuid/null | No | Parent ID for chained attenuation |
+| Field                        | Type            | Required | Description                                    |
+| ---------------------------- | --------------- | -------- | ---------------------------------------------- |
+| `token`                      | string          | Yes      | Existing token (`abs0_{slug}{biscuit_base64}`) |
+| `attenuation`                | AttenuationSpec | Yes      | Restrictions to apply                          |
+| `name`                       | string          | Yes      | Human-readable label                           |
+| `attenuated_parent_token_id` | uuid/null       | No       | Parent ID for chained attenuation              |
 
 **Restriction types:** Organization, Resource (experiments/results), Action (read/create/update), Expiry
 
@@ -634,11 +635,11 @@ Revokes the calling token's root and all attenuated descendants. Idempotent.
 
 **Response:**
 
-| Field | Type | Description |
-|---|---|---|
-| `token_id` | string | Root token ID revoked |
-| `revoked_at` | datetime | Revocation timestamp |
-| `children_revoked` | int64 | Child tokens newly revoked |
+| Field              | Type     | Description                |
+| ------------------ | -------- | -------------------------- |
+| `token_id`         | string   | Root token ID revoked      |
+| `revoked_at`       | datetime | Revocation timestamp       |
+| `children_revoked` | int64    | Child tokens newly revoked |
 
 **Status codes:** 200, 403, 404
 
@@ -653,19 +654,20 @@ Returns the experiment update feed (newest first): status changes, progress, err
 **Query params:** `limit`, `offset`, `filter`, `sort`
 
 **Filter examples:**
+
 - `filter=eq(experiment_id,<uuid>)`
 - `filter=in(experiment_id,uuid1,uuid2)`
 - `filter=eq(type,status_change)`
 
 **Response item:**
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | string | Update identifier |
-| `experiment_id` | uuid | Associated experiment |
-| `experiment_code` | string | Human-readable code |
-| `name` | string | Update description |
-| `timestamp` | datetime | When the update occurred |
+| Field             | Type     | Description              |
+| ----------------- | -------- | ------------------------ |
+| `id`              | string   | Update identifier        |
+| `experiment_id`   | uuid     | Associated experiment    |
+| `experiment_code` | string   | Human-readable code      |
+| `name`            | string   | Update description       |
+| `timestamp`       | datetime | When the update occurred |
 
 ---
 
@@ -677,13 +679,13 @@ For bug reports, feature requests, or general feedback.
 
 **Request body:**
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `request_uuid` | uuid | Yes | UUID from the problematic API request |
-| `feedback_type` | FeedbackType | Yes | `feature_request`, `feedback`, or `bug_report` |
-| `title` | string/null | No | Short title |
-| `json_body` | object/null | At least one | Structured error details |
-| `human_note` | string/null | At least one | Free-form description |
+| Field           | Type         | Required     | Description                                    |
+| --------------- | ------------ | ------------ | ---------------------------------------------- |
+| `request_uuid`  | uuid         | Yes          | UUID from the problematic API request          |
+| `feedback_type` | FeedbackType | Yes          | `feature_request`, `feedback`, or `bug_report` |
+| `title`         | string/null  | No           | Short title                                    |
+| `json_body`     | object/null  | At least one | Structured error details                       |
+| `human_note`    | string/null  | At least one | Free-form description                          |
 
 **Response (201):** `reference` (feedback reference), `message` (confirmation)
 

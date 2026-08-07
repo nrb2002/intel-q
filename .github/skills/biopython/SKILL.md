@@ -75,6 +75,7 @@ This skill provides comprehensive documentation organized by functionality area.
 **Reference:** `references/sequence_io.md`
 
 Use for:
+
 - Creating and manipulating biological sequences
 - Reading and writing sequence files (FASTA, GenBank, FASTQ, etc.)
 - Converting between file formats
@@ -83,6 +84,7 @@ Use for:
 - Working with SeqRecord objects
 
 **Quick example:**
+
 ```python
 from Bio import SeqIO
 
@@ -99,6 +101,7 @@ SeqIO.convert("input.gb", "genbank", "output.fasta", "fasta")
 **Reference:** `references/alignment.md`
 
 Use for:
+
 - Pairwise sequence alignment (global and local)
 - Reading and writing multiple sequence alignments
 - Using substitution matrices (BLOSUM, PAM)
@@ -106,6 +109,7 @@ Use for:
 - Customizing alignment parameters
 
 **Quick example:**
+
 ```python
 from Bio import Align
 
@@ -121,6 +125,7 @@ print(alignments[0])
 **Reference:** `references/databases.md`
 
 Use for:
+
 - Searching NCBI databases (PubMed, GenBank, Protein, Gene, etc.)
 - Downloading sequences and records
 - Fetching publication information
@@ -128,6 +133,7 @@ Use for:
 - Batch downloading with proper rate limiting
 
 **Quick example:**
+
 ```python
 from Bio import Entrez
 Entrez.email = "your.email@example.com"
@@ -144,6 +150,7 @@ print(f"Found {results['Count']} results")
 **Reference:** `references/blast.md`
 
 Use for:
+
 - Running BLAST searches via NCBI web services
 - Running local BLAST searches
 - Parsing BLAST XML output
@@ -151,6 +158,7 @@ Use for:
 - Extracting hit sequences
 
 **Quick example:**
+
 ```python
 from Bio.Blast import NCBIWWW, NCBIXML
 
@@ -168,6 +176,7 @@ for alignment in blast_record.alignments[:5]:
 **Reference:** `references/structure.md`
 
 Use for:
+
 - Parsing PDB and mmCIF structure files
 - Navigating protein structure hierarchy (SMCRA: Structure/Model/Chain/Residue/Atom)
 - Calculating distances, angles, and dihedrals
@@ -176,6 +185,7 @@ Use for:
 - Extracting sequences from structures
 
 **Quick example:**
+
 ```python
 from Bio.PDB import PDBParser
 
@@ -194,6 +204,7 @@ print(f"Distance: {distance:.2f} Å")
 **Reference:** `references/phylogenetics.md`
 
 Use for:
+
 - Reading and writing phylogenetic trees (Newick, NEXUS, phyloXML)
 - Building trees from distance matrices or alignments
 - Tree manipulation (pruning, rerooting, ladderizing)
@@ -202,6 +213,7 @@ Use for:
 - Visualizing trees
 
 **Quick example:**
+
 ```python
 from Bio import Phylo
 
@@ -219,6 +231,7 @@ print(f"Distance: {distance:.3f}")
 **Reference:** `references/advanced.md`
 
 Use for:
+
 - **Sequence motifs** (Bio.motifs) - Finding and analyzing motif patterns
 - **Population genetics** (Bio.PopGen) - GenePop files, Fst calculations, Hardy-Weinberg tests
 - **Sequence utilities** (Bio.SeqUtils) - GC content, melting temperature, molecular weight, protein analysis
@@ -227,6 +240,7 @@ Use for:
 - **Genome diagrams** (GenomeDiagram) - Visualizing genomic features
 
 **Quick example:**
+
 ```python
 from Bio.SeqUtils import gc_fraction, molecular_weight
 from Bio.Seq import Seq
@@ -248,6 +262,7 @@ When a user asks about a specific Biopython task:
 4. **Combine multiple modules** when the task requires it
 
 Example search patterns for reference files:
+
 ```bash
 # Find information about specific functions
 rg -n "SeqIO.parse" references/sequence_io.md
@@ -264,12 +279,14 @@ rg -n "alignment" references/alignment.md
 Follow these principles when writing Biopython code:
 
 1. **Import modules explicitly**
+
    ```python
    from Bio import SeqIO, Entrez
    from Bio.Seq import Seq
    ```
 
 2. **Set Entrez email** when using NCBI databases; load only `NCBI_API_KEY` from the environment if present
+
    ```python
    import os
    from Bio import Entrez
@@ -281,17 +298,20 @@ Follow these principles when writing Biopython code:
    ```
 
 3. **Use appropriate file formats** - Check which format best suits the task
+
    ```python
    # Common formats: "fasta", "genbank", "fastq", "clustal", "phylip"
    ```
 
 4. **Handle files properly** - Close handles after use or use context managers
+
    ```python
    with open("file.fasta") as handle:
        records = SeqIO.parse(handle, "fasta")
    ```
 
 5. **Use iterators for large files** - Avoid loading everything into memory
+
    ```python
    for record in SeqIO.parse("large_file.fasta", "fasta"):
        # Process one record at a time
@@ -402,27 +422,35 @@ Phylo.draw_ascii(tree)
 ## Troubleshooting Common Issues
 
 ### Issue: "No handlers could be found for logger 'Bio.Entrez'"
+
 **Solution:** This is just a warning. Set Entrez.email to suppress it.
 
 ### Issue: "HTTP Error 400" from NCBI
+
 **Solution:** Check that IDs/accessions are valid and properly formatted.
 
 ### Issue: "ValueError: EOF" when parsing files
+
 **Solution:** Verify file format matches the specified format string.
 
 ### Issue: Alignment fails with "sequences are not the same length"
+
 **Solution:** Ensure sequences are aligned before using AlignIO or MultipleSeqAlignment.
 
 ### Issue: BLAST searches are slow
+
 **Solution:** Use local BLAST for large-scale searches, or cache results.
 
 ### Issue: PDB parser warnings
+
 **Solution:** Use `PDBParser(QUIET=True)` to suppress warnings, or investigate structure quality.
 
 ### Issue: ImportError for Bio.HMM, Bio.MarkovModel, or Bio.Application
+
 **Solution:** These modules were removed in Biopython 1.86. Use [hmmlearn](https://pypi.org/project/hmmlearn/) for HMMs and the standard library `subprocess` module instead of `Bio.Application` CLI wrappers.
 
 ### Issue: PairwiseAligner returns fewer alignments after upgrading to 1.86+
+
 **Solution:** The default gap score changed from 0 to -1 in 1.86, eliminating trivial tie alignments. Set `aligner.gap_score = 0` to restore the old behavior if needed (see `references/alignment.md`).
 
 ## Additional Resources
@@ -461,4 +489,3 @@ Biopython provides comprehensive tools for computational molecular biology. When
 5. **Follow best practices** for file handling, error checking, and data management
 
 The modular reference documentation ensures detailed, searchable information for every major Biopython capability.
-

@@ -36,14 +36,14 @@ this exact directory for per-run cost history.
 R4 mines the SAME directory for the trust signals already present in each
 proof.json:
 
-| Trust signal            | proof.json path                          | Notes |
-|-------------------------|------------------------------------------|-------|
-| council pass (per run)  | `council.final_verdict`                  | APPROVE/APPROVED/COMPLETE => pass |
-| council ratio (per run) | `council.reviewers[].vote` (APPROVE/...) | secondary signal when verdict absent |
-| gate pass-rate (per run)| `quality_gates.passed` / `.total`        | already aggregated by generator |
-| iterations (per run)    | `iterations` (int or {count})            | iterations-to-completion |
-| files changed (per run) | `files_changed.count`                    | context, not a trust axis |
-| timestamp               | `generated_at` (ISO 8601)                | ordering axis |
+| Trust signal             | proof.json path                          | Notes                                |
+| ------------------------ | ---------------------------------------- | ------------------------------------ |
+| council pass (per run)   | `council.final_verdict`                  | APPROVE/APPROVED/COMPLETE => pass    |
+| council ratio (per run)  | `council.reviewers[].vote` (APPROVE/...) | secondary signal when verdict absent |
+| gate pass-rate (per run) | `quality_gates.passed` / `.total`        | already aggregated by generator      |
+| iterations (per run)     | `iterations` (int or {count})            | iterations-to-completion             |
+| files changed (per run)  | `files_changed.count`                    | context, not a trust axis            |
+| timestamp                | `generated_at` (ISO 8601)                | ordering axis                        |
 
 Human interventions: there is no per-run intervention counter persisted in
 proof.json today. Rather than fabricate one or add new instrumentation in this

@@ -46,11 +46,11 @@ architecture, and adversarial review -- complementing Loki Mode's autonomous exe
 
 ## Recommended Phased Approach
 
-| Phase | Epic | Priority | Risk |
-|-------|-------|----------|------|
-| P0 | BMAD Artifact Pipeline (parse, score, load) | Must-have | Low |
-| P1 | BMAD Engine Embedding (agent YAML parser, step processor) | Should-have | Medium |
-| P2 | Voice Agent Layer (structured dialogue, BMAD-to-voice) | Nice-to-have | High |
+| Phase | Epic                                                      | Priority     | Risk   |
+| ----- | --------------------------------------------------------- | ------------ | ------ |
+| P0    | BMAD Artifact Pipeline (parse, score, load)               | Must-have    | Low    |
+| P1    | BMAD Engine Embedding (agent YAML parser, step processor) | Should-have  | Medium |
+| P2    | Voice Agent Layer (structured dialogue, BMAD-to-voice)    | Nice-to-have | High   |
 
 ## Key Constraints
 

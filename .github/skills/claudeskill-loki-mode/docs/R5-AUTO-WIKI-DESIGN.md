@@ -13,22 +13,22 @@ the codebase has not changed (reuses the R1 codebase-signature idea).
 
 ## What already exists (verified against source, 2026-06-03)
 
-| Asset | File | Reused? |
-|---|---|---|
-| `loki docs generate` (LLM-written README/ARCHITECTURE/...) | `autonomy/loki:20577` (`cmd_docs`) | Patterns reused: `_docs_scan_project`, `_docs_build_context`, `_docs_invoke_provider`, `_docs_write_manifest`. Not the command itself -- docs has no citations and no Q&A. |
-| Proof-of-run generator (Python core, thin CLI readers) | `autonomy/lib/proof-generator.py`, bash `cmd_proof`, `loki-ts/src/commands/proof.ts` | Architecture precedent reused exactly: Python core does the heavy work; bash + Bun are thin readers; dashboard exposes read APIs. |
-| PII redaction | `autonomy/lib/proof_redact.py` (`redact_tree`, `_redact_paths`) | Reused: wiki output is normalized to repo-relative paths and passed through the redactor so no `/Users/<name>/...` leaks. |
-| Org knowledge graph | `memory/knowledge_graph.py` (`OrganizationKnowledgeGraph`) | Token-overlap scoring idea reused (`_tokenize` / `query_patterns`). NOT a codebase index -- it aggregates `.loki/memory/semantic/*.json` patterns across projects, keyed on `~/.loki/knowledge`. See "Honest reuse" below. |
-| Memory retrieval | `memory/retrieval.py` (`MemoryRetrieval`) | Inspected. It retrieves memory entries (episodic/semantic/procedural), NOT source code. Not a code indexer. Not reused for code retrieval. |
-| Dashboard read-API + traversal-safety | `dashboard/server.py:7191` (`_safe_proof_run_dir`) | Pattern reused for the wiki section/path param (`_safe_wiki_section`). |
-| Dashboard web components | `dashboard-ui/components/*.js` (Web Components) | New `loki-wiki-browser.js` follows the same `LokiElement` convention; registered in `index.js`. |
+| Asset                                                      | File                                                                                 | Reused?                                                                                                                                                                                                                    |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `loki docs generate` (LLM-written README/ARCHITECTURE/...) | `autonomy/loki:20577` (`cmd_docs`)                                                   | Patterns reused: `_docs_scan_project`, `_docs_build_context`, `_docs_invoke_provider`, `_docs_write_manifest`. Not the command itself -- docs has no citations and no Q&A.                                                 |
+| Proof-of-run generator (Python core, thin CLI readers)     | `autonomy/lib/proof-generator.py`, bash `cmd_proof`, `loki-ts/src/commands/proof.ts` | Architecture precedent reused exactly: Python core does the heavy work; bash + Bun are thin readers; dashboard exposes read APIs.                                                                                          |
+| PII redaction                                              | `autonomy/lib/proof_redact.py` (`redact_tree`, `_redact_paths`)                      | Reused: wiki output is normalized to repo-relative paths and passed through the redactor so no `/Users/<name>/...` leaks.                                                                                                  |
+| Org knowledge graph                                        | `memory/knowledge_graph.py` (`OrganizationKnowledgeGraph`)                           | Token-overlap scoring idea reused (`_tokenize` / `query_patterns`). NOT a codebase index -- it aggregates `.loki/memory/semantic/*.json` patterns across projects, keyed on `~/.loki/knowledge`. See "Honest reuse" below. |
+| Memory retrieval                                           | `memory/retrieval.py` (`MemoryRetrieval`)                                            | Inspected. It retrieves memory entries (episodic/semantic/procedural), NOT source code. Not a code indexer. Not reused for code retrieval.                                                                                 |
+| Dashboard read-API + traversal-safety                      | `dashboard/server.py:7191` (`_safe_proof_run_dir`)                                   | Pattern reused for the wiki section/path param (`_safe_wiki_section`).                                                                                                                                                     |
+| Dashboard web components                                   | `dashboard-ui/components/*.js` (Web Components)                                      | New `loki-wiki-browser.js` follows the same `LokiElement` convention; registered in `index.js`.                                                                                                                            |
 
 ### Honest reuse statement
 
 The task says "reuse memory/knowledge_graph.py and memory/retrieval.py." Both were
-read. Neither is a *codebase* index: `knowledge_graph.py` aggregates cross-project
-*memory patterns* (`.loki/memory/semantic`), and `retrieval.py` retrieves *memory
-entries*, not source files. There was no existing per-file code index to query for
+read. Neither is a _codebase_ index: `knowledge_graph.py` aggregates cross-project
+_memory patterns_ (`.loki/memory/semantic`), and `retrieval.py` retrieves _memory
+entries_, not source files. There was no existing per-file code index to query for
 grounded citations. So R5 adds a new lightweight, dependency-free code index
 (`autonomy/lib/wiki_index.py`) and reuses the parts that genuinely fit: the
 token-overlap retrieval scoring (ported from `knowledge_graph._tokenize` /
@@ -67,6 +67,7 @@ in any path.
 ## Mocking the LLM in CI
 
 The Python core reads `LOKI_WIKI_LLM_STUB`:
+
 - unset -> call the real provider via the same path `_docs_invoke_provider` uses
   (`claude -p` etc.), OR fall back to extractive/template if no provider on PATH.
 - set to a file path -> read the stubbed completion from that file.

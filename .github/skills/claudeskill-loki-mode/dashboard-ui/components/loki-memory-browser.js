@@ -8,16 +8,20 @@
  * <loki-memory-browser api-url="http://localhost:57374" theme="dark" tab="summary"></loki-memory-browser>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Array<{id: string, label: string, icon: string}>} Tab definitions with SVG path data */
 const TABS = [
-  { id: 'summary', label: 'Summary', icon: 'M4 6h16M4 12h16M4 18h16' },
-  { id: 'search', label: 'Search', icon: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' },
-  { id: 'episodes', label: 'Episodes', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { id: 'patterns', label: 'Patterns', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-  { id: 'skills', label: 'Skills', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+  { id: "summary", label: "Summary", icon: "M4 6h16M4 12h16M4 18h16" },
+  { id: "search", label: "Search", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
+  { id: "episodes", label: "Episodes", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
+  {
+    id: "patterns",
+    label: "Patterns",
+    icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+  },
+  { id: "skills", label: "Skills", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
 ];
 
 /**
@@ -32,12 +36,12 @@ const TABS = [
  */
 export class LokiMemoryBrowser extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme', 'tab'];
+    return ["api-url", "theme", "tab"];
   }
 
   constructor() {
     super();
-    this._activeTab = 'summary';
+    this._activeTab = "summary";
     this._loading = false;
     this._error = null;
     this._api = null;
@@ -53,8 +57,8 @@ export class LokiMemoryBrowser extends LokiElement {
     this._lastFocusedElement = null;
 
     // Search state
-    this._searchQuery = '';
-    this._searchCollection = 'all';
+    this._searchQuery = "";
+    this._searchCollection = "all";
     this._searchResults = [];
     this._searchLoading = false;
     this._searchError = null;
@@ -62,7 +66,7 @@ export class LokiMemoryBrowser extends LokiElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._activeTab = this.getAttribute('tab') || 'summary';
+    this._activeTab = this.getAttribute("tab") || "summary";
     this._setupApi();
     this._loadData();
   }
@@ -71,23 +75,23 @@ export class LokiMemoryBrowser extends LokiElement {
     if (oldValue === newValue) return;
 
     switch (name) {
-      case 'api-url':
+      case "api-url":
         if (this._api) {
           this._api.baseUrl = newValue;
           this._loadData();
         }
         break;
-      case 'theme':
+      case "theme":
         this._applyTheme();
         break;
-      case 'tab':
+      case "tab":
         this._setTab(newValue);
         break;
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -103,14 +107,14 @@ export class LokiMemoryBrowser extends LokiElement {
         this._api.getTokenEconomics(),
         this._api.getMemoryStats(),
       ]);
-      this._summary = summary.status === 'fulfilled' ? summary.value : null;
-      this._tokenEconomics = economics.status === 'fulfilled' ? economics.value : null;
-      this._stats = stats.status === 'fulfilled' ? stats.value : null;
+      this._summary = summary.status === "fulfilled" ? summary.value : null;
+      this._tokenEconomics = economics.status === "fulfilled" ? economics.value : null;
+      this._stats = stats.status === "fulfilled" ? stats.value : null;
 
       // Load tab-specific data
       await this._loadTabData();
     } catch (error) {
-      this._error = error.message || 'Failed to load memory data';
+      this._error = error.message || "Failed to load memory data";
     }
 
     this._loading = false;
@@ -119,13 +123,13 @@ export class LokiMemoryBrowser extends LokiElement {
 
   async _loadTabData() {
     switch (this._activeTab) {
-      case 'episodes':
+      case "episodes":
         this._episodes = await this._api.listEpisodes({ limit: 50 }).catch(() => []);
         break;
-      case 'patterns':
+      case "patterns":
         this._patterns = await this._api.listPatterns().catch(() => []);
         break;
-      case 'skills':
+      case "skills":
         this._skills = await this._api.listSkills().catch(() => []);
         break;
     }
@@ -143,11 +147,11 @@ export class LokiMemoryBrowser extends LokiElement {
     try {
       this._lastFocusedElement = this.shadowRoot.activeElement;
       this._selectedItem = await this._api.getEpisode(episodeId);
-      this.dispatchEvent(new CustomEvent('episode-select', { detail: this._selectedItem }));
+      this.dispatchEvent(new CustomEvent("episode-select", { detail: this._selectedItem }));
       this.render();
       this._focusDetailPanel();
     } catch (error) {
-      console.error('Failed to load episode:', error);
+      console.error("Failed to load episode:", error);
     }
   }
 
@@ -155,11 +159,11 @@ export class LokiMemoryBrowser extends LokiElement {
     try {
       this._lastFocusedElement = this.shadowRoot.activeElement;
       this._selectedItem = await this._api.getPattern(patternId);
-      this.dispatchEvent(new CustomEvent('pattern-select', { detail: this._selectedItem }));
+      this.dispatchEvent(new CustomEvent("pattern-select", { detail: this._selectedItem }));
       this.render();
       this._focusDetailPanel();
     } catch (error) {
-      console.error('Failed to load pattern:', error);
+      console.error("Failed to load pattern:", error);
     }
   }
 
@@ -167,17 +171,17 @@ export class LokiMemoryBrowser extends LokiElement {
     try {
       this._lastFocusedElement = this.shadowRoot.activeElement;
       this._selectedItem = await this._api.getSkill(skillId);
-      this.dispatchEvent(new CustomEvent('skill-select', { detail: this._selectedItem }));
+      this.dispatchEvent(new CustomEvent("skill-select", { detail: this._selectedItem }));
       this.render();
       this._focusDetailPanel();
     } catch (error) {
-      console.error('Failed to load skill:', error);
+      console.error("Failed to load skill:", error);
     }
   }
 
   _focusDetailPanel() {
     requestAnimationFrame(() => {
-      const closeBtn = this.shadowRoot.getElementById('close-detail');
+      const closeBtn = this.shadowRoot.getElementById("close-detail");
       if (closeBtn) {
         closeBtn.focus();
       }
@@ -199,10 +203,12 @@ export class LokiMemoryBrowser extends LokiElement {
   async _triggerConsolidation() {
     try {
       const result = await this._api.consolidateMemory(24);
-      alert(`Consolidation complete:\n- Patterns created: ${result.patternsCreated}\n- Patterns merged: ${result.patternsMerged}\n- Episodes processed: ${result.episodesProcessed}`);
+      alert(
+        `Consolidation complete:\n- Patterns created: ${result.patternsCreated}\n- Patterns merged: ${result.patternsMerged}\n- Episodes processed: ${result.episodesProcessed}`,
+      );
       this._loadData();
     } catch (error) {
-      alert('Consolidation failed: ' + error.message);
+      alert("Consolidation failed: " + error.message);
     }
   }
 
@@ -218,7 +224,7 @@ export class LokiMemoryBrowser extends LokiElement {
       const result = await this._api.searchMemory(query, this._searchCollection, 20);
       this._searchResults = result.results || [];
     } catch (error) {
-      this._searchError = error.message || 'Search failed';
+      this._searchError = error.message || "Search failed";
       this._searchResults = [];
     }
 
@@ -226,13 +232,13 @@ export class LokiMemoryBrowser extends LokiElement {
     this.render();
     // Re-focus the search input after render
     requestAnimationFrame(() => {
-      const input = this.shadowRoot.getElementById('memory-search-input');
+      const input = this.shadowRoot.getElementById("memory-search-input");
       if (input) input.focus();
     });
   }
 
   _renderSearch() {
-    const collectionOptions = ['all', 'episodes', 'patterns', 'skills'];
+    const collectionOptions = ["all", "episodes", "patterns", "skills"];
     return `
       <div class="search-panel">
         <div class="search-bar">
@@ -241,36 +247,46 @@ export class LokiMemoryBrowser extends LokiElement {
                  value="${this._escapeHtml(this._searchQuery)}"
                  aria-label="Search memory">
           <select id="memory-search-collection" class="search-select" aria-label="Collection filter">
-            ${collectionOptions.map(c => `<option value="${c}" ${this._searchCollection === c ? 'selected' : ''}>${c}</option>`).join('')}
+            ${collectionOptions.map((c) => `<option value="${c}" ${this._searchCollection === c ? "selected" : ""}>${c}</option>`).join("")}
           </select>
-          <button class="btn btn-primary" id="search-btn" ${this._searchLoading ? 'disabled' : ''}>
-            ${this._searchLoading ? 'Searching...' : 'Search'}
+          <button class="btn btn-primary" id="search-btn" ${this._searchLoading ? "disabled" : ""}>
+            ${this._searchLoading ? "Searching..." : "Search"}
           </button>
         </div>
-        ${this._searchError ? `<div class="search-error">Error: ${this._escapeHtml(this._searchError)}</div>` : ''}
-        ${this._searchResults.length > 0 ? `
+        ${this._searchError ? `<div class="search-error">Error: ${this._escapeHtml(this._searchError)}</div>` : ""}
+        ${
+          this._searchResults.length > 0
+            ? `
           <div class="search-results-header">
-            <span>${this._searchResults.length} result${this._searchResults.length !== 1 ? 's' : ''} for "${this._escapeHtml(this._searchQuery)}"</span>
+            <span>${this._searchResults.length} result${this._searchResults.length !== 1 ? "s" : ""} for "${this._escapeHtml(this._searchQuery)}"</span>
           </div>
           <div class="item-list" role="list" aria-label="Search results">
-            ${this._searchResults.map(r => `
+            ${this._searchResults
+              .map(
+                (r) => `
               <div class="item-card search-result" tabindex="0" role="listitem"
-                   aria-label="${this._escapeHtml(r.collection || 'unknown')}: ${this._escapeHtml(r.snippet || r.id)}">
+                   aria-label="${this._escapeHtml(r.collection || "unknown")}: ${this._escapeHtml(r.snippet || r.id)}">
                 <div class="item-header">
-                  <span class="item-category">${this._escapeHtml(r.collection || 'unknown')}</span>
-                  <span class="item-id mono">${this._escapeHtml(r.id || '')}</span>
+                  <span class="item-category">${this._escapeHtml(r.collection || "unknown")}</span>
+                  <span class="item-id mono">${this._escapeHtml(r.id || "")}</span>
                 </div>
-                <div class="item-title">${this._escapeHtml(r.snippet || r.id || '')}</div>
+                <div class="item-title">${this._escapeHtml(r.snippet || r.id || "")}</div>
                 <div class="item-meta">
-                  ${r.rank != null ? `<span>Rank: ${r.rank}</span>` : ''}
-                  ${r.category ? `<span>${this._escapeHtml(r.category)}</span>` : ''}
-                  ${r.timestamp ? `<span>${new Date(r.timestamp).toLocaleString()}</span>` : ''}
+                  ${r.rank != null ? `<span>Rank: ${r.rank}</span>` : ""}
+                  ${r.category ? `<span>${this._escapeHtml(r.category)}</span>` : ""}
+                  ${r.timestamp ? `<span>${new Date(r.timestamp).toLocaleString()}</span>` : ""}
                 </div>
               </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </div>
-        ` : (!this._searchLoading && this._searchQuery ? '<div class="empty-state">No results found</div>' : '')}
-        ${!this._searchQuery ? '<div class="empty-state">Enter a query to search across all memory layers using full-text search</div>' : ''}
+        `
+            : !this._searchLoading && this._searchQuery
+              ? '<div class="empty-state">No results found</div>'
+              : ""
+        }
+        ${!this._searchQuery ? '<div class="empty-state">Enter a query to search across all memory layers using full-text search</div>' : ""}
       </div>
     `;
   }
@@ -292,9 +308,9 @@ export class LokiMemoryBrowser extends LokiElement {
           <div class="summary-card-detail">
             Specific interaction traces and outcomes
           </div>
-          ${episodic?.latestDate ? `<div class="summary-card-meta">Latest: ${new Date(episodic.latestDate).toLocaleDateString()}</div>` : ''}
+          ${episodic?.latestDate ? `<div class="summary-card-meta">Latest: ${new Date(episodic.latestDate).toLocaleDateString()}</div>` : ""}
           <div class="memory-bar">
-            <div class="memory-bar-fill episodic" style="width: ${Math.min((episodic?.count || 0) / 100 * 100, 100)}%"></div>
+            <div class="memory-bar-fill episodic" style="width: ${Math.min(((episodic?.count || 0) / 100) * 100, 100)}%"></div>
           </div>
         </div>
 
@@ -308,7 +324,7 @@ export class LokiMemoryBrowser extends LokiElement {
           </div>
           <div class="summary-card-meta">Anti-patterns: ${semantic?.antiPatterns || 0}</div>
           <div class="memory-bar">
-            <div class="memory-bar-fill semantic" style="width: ${Math.min((semantic?.patterns || 0) / 100 * 100, 100)}%"></div>
+            <div class="memory-bar-fill semantic" style="width: ${Math.min(((semantic?.patterns || 0) / 100) * 100, 100)}%"></div>
           </div>
         </div>
 
@@ -321,11 +337,13 @@ export class LokiMemoryBrowser extends LokiElement {
             Learned skills and procedures
           </div>
           <div class="memory-bar">
-            <div class="memory-bar-fill procedural" style="width: ${Math.min((procedural?.skills || 0) / 100 * 100, 100)}%"></div>
+            <div class="memory-bar-fill procedural" style="width: ${Math.min(((procedural?.skills || 0) / 100) * 100, 100)}%"></div>
           </div>
         </div>
 
-        ${this._tokenEconomics ? `
+        ${
+          this._tokenEconomics
+            ? `
           <div class="summary-card token-economics">
             <div class="summary-card-header">
               <span class="summary-card-title">Token Economics</span>
@@ -345,56 +363,86 @@ export class LokiMemoryBrowser extends LokiElement {
               </div>
             </div>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
 
-      ${this._stats ? `
+      ${
+        this._stats
+          ? `
         <div class="stats-section">
           <div class="stats-header">Storage Backend</div>
           <div class="stats-grid">
             <div class="stats-item">
               <span class="stats-label">Backend</span>
-              <span class="stats-value mono">${this._escapeHtml(this._stats.backend || this._stats.storage_type || 'unknown')}</span>
+              <span class="stats-value mono">${this._escapeHtml(this._stats.backend || this._stats.storage_type || "unknown")}</span>
             </div>
-            ${this._stats.total_entries != null ? `
+            ${
+              this._stats.total_entries != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">Total Entries</span>
                 <span class="stats-value mono">${(this._stats.total_entries ?? 0).toLocaleString()}</span>
               </div>
-            ` : ''}
-            ${this._stats.db_size_bytes != null ? `
+            `
+                : ""
+            }
+            ${
+              this._stats.db_size_bytes != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">DB Size</span>
                 <span class="stats-value mono">${(this._stats.db_size_bytes / 1024).toFixed(1)} KB</span>
               </div>
-            ` : ''}
-            ${this._stats.fts_enabled != null ? `
+            `
+                : ""
+            }
+            ${
+              this._stats.fts_enabled != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">FTS5 Search</span>
-                <span class="stats-value ${this._stats.fts_enabled ? 'enabled' : 'disabled'}">${this._stats.fts_enabled ? 'Enabled' : 'Disabled'}</span>
+                <span class="stats-value ${this._stats.fts_enabled ? "enabled" : "disabled"}">${this._stats.fts_enabled ? "Enabled" : "Disabled"}</span>
               </div>
-            ` : ''}
-            ${this._stats.episodes_count != null ? `
+            `
+                : ""
+            }
+            ${
+              this._stats.episodes_count != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">Episodes</span>
                 <span class="stats-value mono">${this._stats.episodes_count}</span>
               </div>
-            ` : ''}
-            ${this._stats.patterns_count != null ? `
+            `
+                : ""
+            }
+            ${
+              this._stats.patterns_count != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">Patterns</span>
                 <span class="stats-value mono">${this._stats.patterns_count}</span>
               </div>
-            ` : ''}
-            ${this._stats.skills_count != null ? `
+            `
+                : ""
+            }
+            ${
+              this._stats.skills_count != null
+                ? `
               <div class="stats-item">
                 <span class="stats-label">Skills</span>
                 <span class="stats-value mono">${this._stats.skills_count}</span>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <div class="summary-actions">
         <button class="btn btn-secondary" id="consolidate-btn">
@@ -423,20 +471,24 @@ export class LokiMemoryBrowser extends LokiElement {
 
     return `
       <div class="item-list" role="list" aria-label="Episodes list">
-        ${this._episodes.map(ep => `
-          <div class="item-card" data-id="${ep.id}" data-type="episode" tabindex="0" role="listitem" aria-label="Episode ${ep.id}: ${this._escapeHtml(ep.taskId || 'Task')}, outcome ${ep.outcome || 'unknown'}">
+        ${this._episodes
+          .map(
+            (ep) => `
+          <div class="item-card" data-id="${ep.id}" data-type="episode" tabindex="0" role="listitem" aria-label="Episode ${ep.id}: ${this._escapeHtml(ep.taskId || "Task")}, outcome ${ep.outcome || "unknown"}">
             <div class="item-header">
               <span class="item-id mono">${ep.id}</span>
-              <span class="item-outcome ${ep.outcome?.toLowerCase()}">${ep.outcome || 'unknown'}</span>
+              <span class="item-outcome ${ep.outcome?.toLowerCase()}">${ep.outcome || "unknown"}</span>
             </div>
-            <div class="item-title">${this._escapeHtml(ep.taskId || 'Task')}</div>
+            <div class="item-title">${this._escapeHtml(ep.taskId || "Task")}</div>
             <div class="item-meta">
-              <span>${ep.agent || 'unknown agent'}</span>
-              <span>${ep.phase || 'unknown phase'}</span>
+              <span>${ep.agent || "unknown agent"}</span>
+              <span>${ep.phase || "unknown phase"}</span>
               <span>${new Date(ep.timestamp).toLocaleString()}</span>
             </div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
   }
@@ -448,10 +500,12 @@ export class LokiMemoryBrowser extends LokiElement {
 
     return `
       <div class="item-list" role="list" aria-label="Patterns list">
-        ${this._patterns.map(pat => `
+        ${this._patterns
+          .map(
+            (pat) => `
           <div class="item-card" data-id="${pat.id}" data-type="pattern" tabindex="0" role="listitem" aria-label="Pattern: ${this._escapeHtml(pat.pattern)}, ${(pat.confidence * 100).toFixed(0)} percent confidence">
             <div class="item-header">
-              <span class="item-category">${pat.category || 'general'}</span>
+              <span class="item-category">${pat.category || "general"}</span>
               <span class="confidence-badge">${(pat.confidence * 100).toFixed(0)}%</span>
             </div>
             <div class="item-title">${this._escapeHtml(pat.pattern)}</div>
@@ -459,7 +513,9 @@ export class LokiMemoryBrowser extends LokiElement {
               <span>Used ${pat.usageCount || 0} times</span>
             </div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
   }
@@ -471,21 +527,25 @@ export class LokiMemoryBrowser extends LokiElement {
 
     return `
       <div class="item-list" role="list" aria-label="Skills list">
-        ${this._skills.map(skill => `
+        ${this._skills
+          .map(
+            (skill) => `
           <div class="item-card" data-id="${skill.id}" data-type="skill" tabindex="0" role="listitem" aria-label="Skill: ${this._escapeHtml(skill.name)}">
             <div class="item-header">
               <span class="item-id mono">${skill.id}</span>
             </div>
             <div class="item-title">${this._escapeHtml(skill.name)}</div>
-            <div class="item-description">${this._escapeHtml(skill.description || '')}</div>
+            <div class="item-description">${this._escapeHtml(skill.description || "")}</div>
           </div>
-        `).join('')}
+        `,
+          )
+          .join("")}
       </div>
     `;
   }
 
   _renderDetail() {
-    if (!this._selectedItem) return '';
+    if (!this._selectedItem) return "";
 
     const item = this._selectedItem;
 
@@ -501,19 +561,19 @@ export class LokiMemoryBrowser extends LokiElement {
           <div class="detail-body">
             <div class="detail-row">
               <span class="detail-label">Task</span>
-              <span class="detail-value">${item.taskId || '--'}</span>
+              <span class="detail-value">${item.taskId || "--"}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Agent</span>
-              <span class="detail-value">${item.agent || '--'}</span>
+              <span class="detail-value">${item.agent || "--"}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Phase</span>
-              <span class="detail-value">${item.phase || '--'}</span>
+              <span class="detail-value">${item.phase || "--"}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Outcome</span>
-              <span class="detail-value outcome ${item.outcome?.toLowerCase()}">${item.outcome || '--'}</span>
+              <span class="detail-value outcome ${item.outcome?.toLowerCase()}">${item.outcome || "--"}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Duration</span>
@@ -523,26 +583,38 @@ export class LokiMemoryBrowser extends LokiElement {
               <span class="detail-label">Tokens Used</span>
               <span class="detail-value">${item.tokensUsed?.toLocaleString() || 0}</span>
             </div>
-            ${item.goal ? `
+            ${
+              item.goal
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Goal</div>
                 <div class="detail-content">${this._escapeHtml(item.goal)}</div>
               </div>
-            ` : ''}
-            ${item.actionLog?.length ? `
+            `
+                : ""
+            }
+            ${
+              item.actionLog?.length
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Action Log (${item.actionLog.length})</div>
                 <div class="action-log">
-                  ${item.actionLog.map(a => `
+                  ${item.actionLog
+                    .map(
+                      (a) => `
                     <div class="action-entry">
                       <span class="action-time">+${a.t}s</span>
                       <span class="action-type">${a.action}</span>
                       <span class="action-target">${this._escapeHtml(a.target)}</span>
                     </div>
-                  `).join('')}
+                  `,
+                    )
+                    .join("")}
                 </div>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         </div>
       `;
@@ -557,7 +629,7 @@ export class LokiMemoryBrowser extends LokiElement {
           <div class="detail-body">
             <div class="detail-row">
               <span class="detail-label">Category</span>
-              <span class="detail-value">${item.category || 'general'}</span>
+              <span class="detail-value">${item.category || "general"}</span>
             </div>
             <div class="detail-row">
               <span class="detail-label">Confidence</span>
@@ -571,26 +643,38 @@ export class LokiMemoryBrowser extends LokiElement {
               <div class="detail-label">Pattern</div>
               <div class="detail-content">${this._escapeHtml(item.pattern)}</div>
             </div>
-            ${item.conditions?.length ? `
+            ${
+              item.conditions?.length
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Conditions</div>
                 <ul class="detail-list">
-                  ${item.conditions.map(c => `<li>${this._escapeHtml(c)}</li>`).join('')}
+                  ${item.conditions.map((c) => `<li>${this._escapeHtml(c)}</li>`).join("")}
                 </ul>
               </div>
-            ` : ''}
-            ${item.correctApproach ? `
+            `
+                : ""
+            }
+            ${
+              item.correctApproach
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Correct Approach</div>
                 <div class="detail-content success">${this._escapeHtml(item.correctApproach)}</div>
               </div>
-            ` : ''}
-            ${item.incorrectApproach ? `
+            `
+                : ""
+            }
+            ${
+              item.incorrectApproach
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Incorrect Approach</div>
                 <div class="detail-content error">${this._escapeHtml(item.incorrectApproach)}</div>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         </div>
       `;
@@ -607,41 +691,53 @@ export class LokiMemoryBrowser extends LokiElement {
               <div class="detail-label">Description</div>
               <div class="detail-content">${this._escapeHtml(item.description)}</div>
             </div>
-            ${item.prerequisites?.length ? `
+            ${
+              item.prerequisites?.length
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Prerequisites</div>
                 <ul class="detail-list">
-                  ${item.prerequisites.map(p => `<li>${this._escapeHtml(p)}</li>`).join('')}
+                  ${item.prerequisites.map((p) => `<li>${this._escapeHtml(p)}</li>`).join("")}
                 </ul>
               </div>
-            ` : ''}
-            ${item.steps?.length ? `
+            `
+                : ""
+            }
+            ${
+              item.steps?.length
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Steps</div>
                 <ol class="detail-list numbered">
-                  ${item.steps.map(s => `<li>${this._escapeHtml(s)}</li>`).join('')}
+                  ${item.steps.map((s) => `<li>${this._escapeHtml(s)}</li>`).join("")}
                 </ol>
               </div>
-            ` : ''}
-            ${item.exitCriteria?.length ? `
+            `
+                : ""
+            }
+            ${
+              item.exitCriteria?.length
+                ? `
               <div class="detail-section">
                 <div class="detail-label">Exit Criteria</div>
                 <ul class="detail-list">
-                  ${item.exitCriteria.map(e => `<li>${this._escapeHtml(e)}</li>`).join('')}
+                  ${item.exitCriteria.map((e) => `<li>${this._escapeHtml(e)}</li>`).join("")}
                 </ul>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         </div>
       `;
     }
 
-    return '';
+    return "";
   }
 
   _escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
+    if (!text) return "";
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
@@ -1166,19 +1262,19 @@ export class LokiMemoryBrowser extends LokiElement {
     } else {
       let tabContent;
       switch (this._activeTab) {
-        case 'summary':
+        case "summary":
           tabContent = this._renderSummary();
           break;
-        case 'search':
+        case "search":
           tabContent = this._renderSearch();
           break;
-        case 'episodes':
+        case "episodes":
           tabContent = this._renderEpisodes();
           break;
-        case 'patterns':
+        case "patterns":
           tabContent = this._renderPatterns();
           break;
-        case 'skills':
+        case "skills":
           tabContent = this._renderSkills();
           break;
         default:
@@ -1198,18 +1294,20 @@ export class LokiMemoryBrowser extends LokiElement {
           <span class="browser-title">Memory System</span>
         </div>
         <div class="tabs" role="tablist" aria-label="Memory browser sections">
-          ${TABS.map((tab, index) => `
-            <button class="tab ${this._activeTab === tab.id ? 'active' : ''}"
+          ${TABS.map(
+            (tab, index) => `
+            <button class="tab ${this._activeTab === tab.id ? "active" : ""}"
                     data-tab="${tab.id}"
                     role="tab"
                     id="tab-${tab.id}"
                     aria-selected="${this._activeTab === tab.id}"
                     aria-controls="tabpanel-${tab.id}"
-                    tabindex="${this._activeTab === tab.id ? '0' : '-1'}">
+                    tabindex="${this._activeTab === tab.id ? "0" : "-1"}">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${tab.icon}"/></svg>
               ${tab.label}
             </button>
-          `).join('')}
+          `,
+          ).join("")}
         </div>
         <div class="browser-content" role="tabpanel" id="tabpanel-${this._activeTab}" aria-labelledby="tab-${this._activeTab}">
           ${content}
@@ -1222,16 +1320,17 @@ export class LokiMemoryBrowser extends LokiElement {
 
   _attachEventListeners() {
     // Tab buttons with keyboard navigation
-    const tabs = this.shadowRoot.querySelectorAll('.tab');
+    const tabs = this.shadowRoot.querySelectorAll(".tab");
     tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => this._setTab(tab.dataset.tab));
-      tab.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      tab.addEventListener("click", () => this._setTab(tab.dataset.tab));
+      tab.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
           e.preventDefault();
           const tabsArray = Array.from(tabs);
-          const targetIndex = e.key === 'ArrowRight'
-            ? (index + 1) % tabsArray.length
-            : (index - 1 + tabsArray.length) % tabsArray.length;
+          const targetIndex =
+            e.key === "ArrowRight"
+              ? (index + 1) % tabsArray.length
+              : (index - 1 + tabsArray.length) % tabsArray.length;
           tabsArray[targetIndex].focus();
           this._setTab(tabsArray[targetIndex].dataset.tab);
         }
@@ -1239,65 +1338,65 @@ export class LokiMemoryBrowser extends LokiElement {
     });
 
     // Item cards with keyboard navigation
-    this.shadowRoot.querySelectorAll('.item-card').forEach(card => {
-      card.addEventListener('click', () => this._handleItemClick(card));
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+    this.shadowRoot.querySelectorAll(".item-card").forEach((card) => {
+      card.addEventListener("click", () => this._handleItemClick(card));
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           this._handleItemClick(card);
-        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
           e.preventDefault();
-          this._navigateItemCards(card, e.key === 'ArrowDown' ? 'next' : 'prev');
+          this._navigateItemCards(card, e.key === "ArrowDown" ? "next" : "prev");
         }
       });
     });
 
     // Close detail button
-    const closeBtn = this.shadowRoot.getElementById('close-detail');
+    const closeBtn = this.shadowRoot.getElementById("close-detail");
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => this._closeDetail());
+      closeBtn.addEventListener("click", () => this._closeDetail());
     }
 
     // Consolidate button
-    const consolidateBtn = this.shadowRoot.getElementById('consolidate-btn');
+    const consolidateBtn = this.shadowRoot.getElementById("consolidate-btn");
     if (consolidateBtn) {
-      consolidateBtn.addEventListener('click', () => this._triggerConsolidation());
+      consolidateBtn.addEventListener("click", () => this._triggerConsolidation());
     }
 
     // Refresh button
-    const refreshBtn = this.shadowRoot.getElementById('refresh-btn');
+    const refreshBtn = this.shadowRoot.getElementById("refresh-btn");
     if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => this._loadData());
+      refreshBtn.addEventListener("click", () => this._loadData());
     }
 
     // Search controls
-    const searchInput = this.shadowRoot.getElementById('memory-search-input');
-    const searchBtn = this.shadowRoot.getElementById('search-btn');
-    const searchSelect = this.shadowRoot.getElementById('memory-search-collection');
+    const searchInput = this.shadowRoot.getElementById("memory-search-input");
+    const searchBtn = this.shadowRoot.getElementById("search-btn");
+    const searchSelect = this.shadowRoot.getElementById("memory-search-collection");
 
     if (searchInput) {
-      searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
           e.preventDefault();
           this._searchQuery = searchInput.value;
           this._executeSearch();
         }
       });
-      searchInput.addEventListener('input', (e) => {
+      searchInput.addEventListener("input", (e) => {
         this._searchQuery = e.target.value;
       });
     }
 
     if (searchBtn) {
-      searchBtn.addEventListener('click', () => {
-        const input = this.shadowRoot.getElementById('memory-search-input');
+      searchBtn.addEventListener("click", () => {
+        const input = this.shadowRoot.getElementById("memory-search-input");
         if (input) this._searchQuery = input.value;
         this._executeSearch();
       });
     }
 
     if (searchSelect) {
-      searchSelect.addEventListener('change', (e) => {
+      searchSelect.addEventListener("change", (e) => {
         this._searchCollection = e.target.value;
       });
     }
@@ -1308,24 +1407,24 @@ export class LokiMemoryBrowser extends LokiElement {
     const type = card.dataset.type;
 
     switch (type) {
-      case 'episode':
+      case "episode":
         this._selectEpisode(id);
         break;
-      case 'pattern':
+      case "pattern":
         this._selectPattern(id);
         break;
-      case 'skill':
+      case "skill":
         this._selectSkill(id);
         break;
     }
   }
 
   _navigateItemCards(currentCard, direction) {
-    const cards = Array.from(this.shadowRoot.querySelectorAll('.item-card'));
+    const cards = Array.from(this.shadowRoot.querySelectorAll(".item-card"));
     const currentIndex = cards.indexOf(currentCard);
     if (currentIndex === -1) return;
 
-    const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    const targetIndex = direction === "next" ? currentIndex + 1 : currentIndex - 1;
     if (targetIndex >= 0 && targetIndex < cards.length) {
       cards[targetIndex].focus();
     }
@@ -1333,8 +1432,8 @@ export class LokiMemoryBrowser extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-memory-browser')) {
-  customElements.define('loki-memory-browser', LokiMemoryBrowser);
+if (!customElements.get("loki-memory-browser")) {
+  customElements.define("loki-memory-browser", LokiMemoryBrowser);
 }
 
 export default LokiMemoryBrowser;

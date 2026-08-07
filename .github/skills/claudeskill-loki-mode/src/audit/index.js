@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode Audit Trail - Public API
@@ -15,9 +15,9 @@
  *   var allowed = audit.checkProvider('anthropic', 'us');
  */
 
-var { AuditLog } = require('./log');
-var compliance = require('./compliance');
-var { ResidencyController } = require('./residency');
+var { AuditLog } = require("./log");
+var compliance = require("./compliance");
+var { ResidencyController } = require("./residency");
 
 var _log = null;
 var _residency = null;
@@ -63,14 +63,14 @@ function generateReport(type, opts) {
   if (!_initialized) init();
   var entries = _log.readEntries();
   switch (type) {
-    case 'soc2':
+    case "soc2":
       return compliance.generateSoc2Report(entries, opts);
-    case 'iso27001':
+    case "iso27001":
       return compliance.generateIso27001Report(entries, opts);
-    case 'gdpr':
+    case "gdpr":
       return compliance.generateGdprReport(entries, opts);
     default:
-      throw new Error('Unknown report type: ' + type + '. Supported: soc2, iso27001, gdpr');
+      throw new Error("Unknown report type: " + type + ". Supported: soc2, iso27001, gdpr");
   }
 }
 

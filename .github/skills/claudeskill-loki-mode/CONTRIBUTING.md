@@ -136,7 +136,7 @@ In all other cases, the maintainer either merges the PR directly or rolls the ch
 - **No emojis.** Not in code, comments, commit messages, documentation, or UI text. This is a hard rule with zero exceptions.
 - **Follow existing patterns.** Look at surrounding code and match the style.
 - **Shell scripts** must pass `bash -n` syntax validation.
-- **Comments** should be minimal and meaningful -- explain *why*, not *what*.
+- **Comments** should be minimal and meaningful -- explain _why_, not _what_.
 - **Commit messages** should be concise and use conventional prefixes: `fix:`, `update:`, `release:`, `refactor:`, `docs:`, `test:`.
 
 ## Project Structure

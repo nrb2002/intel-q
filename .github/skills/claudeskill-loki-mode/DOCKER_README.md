@@ -30,16 +30,16 @@ docker run -it \
 
 ## Image Details
 
-| Property | Value |
-|----------|-------|
-| Base | Ubuntu 24.04 |
-| User | `loki` (UID 1000, non-root) |
-| Workdir | `/workspace` |
-| CMD | `loki help` |
-| Exposed Port | `57374` (Dashboard/API) |
-| Node.js | 20 LTS |
-| Python | 3.x (for dashboard server) |
-| GitHub CLI | v2.65.0 |
+| Property     | Value                       |
+| ------------ | --------------------------- |
+| Base         | Ubuntu 24.04                |
+| User         | `loki` (UID 1000, non-root) |
+| Workdir      | `/workspace`                |
+| CMD          | `loki help`                 |
+| Exposed Port | `57374` (Dashboard/API)     |
+| Node.js      | 20 LTS                      |
+| Python       | 3.x (for dashboard server)  |
+| GitHub CLI   | v2.65.0                     |
 
 ## Usage Examples
 
@@ -98,11 +98,11 @@ docker run -it \
 
 ## Volume Mounts
 
-| Host Path | Container Path | Mode | Purpose |
-|-----------|---------------|------|---------|
-| Project dir | `/workspace` | `rw` | Source code and PRD files |
-| `~/.gitconfig` | `/home/loki/.gitconfig` | `ro` | Git configuration |
-| `~/.ssh` | `/home/loki/.ssh` | `ro` | Git SSH authentication |
+| Host Path      | Container Path          | Mode | Purpose                   |
+| -------------- | ----------------------- | ---- | ------------------------- |
+| Project dir    | `/workspace`            | `rw` | Source code and PRD files |
+| `~/.gitconfig` | `/home/loki/.gitconfig` | `ro` | Git configuration         |
+| `~/.ssh`       | `/home/loki/.ssh`       | `ro` | Git SSH authentication    |
 | `~/.config/gh` | `/home/loki/.config/gh` | `ro` | GitHub CLI authentication |
 
 ```bash
@@ -124,45 +124,45 @@ docker run -it \
 
 ### Credentials
 
-| Variable | Description |
-|----------|-------------|
+| Variable            | Description                                      |
+| ------------------- | ------------------------------------------------ |
 | `ANTHROPIC_API_KEY` | Anthropic API key (required for Claude provider) |
-| `OPENAI_API_KEY` | OpenAI API key (required for Codex provider) |
-| `GOOGLE_API_KEY` | Google API key (required for Gemini provider) |
-| `GITHUB_TOKEN` | GitHub personal access token |
+| `OPENAI_API_KEY`    | OpenAI API key (required for Codex provider)     |
+| `GOOGLE_API_KEY`    | Google API key (required for Gemini provider)    |
+| `GITHUB_TOKEN`      | GitHub personal access token                     |
 
 ### Core Configuration
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOKI_PROVIDER` | AI provider: `claude`, `codex`, `gemini` | `claude` |
-| `LOKI_MAX_ITERATIONS` | Max autonomous iteration cycles | `1000` |
-| `LOKI_MAX_RETRIES` | Max retry attempts per iteration | `50` |
-| `LOKI_DASHBOARD` | Enable dashboard server | `true` |
-| `LOKI_DASHBOARD_PORT` | Dashboard/API port | `57374` |
-| `LOKI_BUDGET_LIMIT` | Max USD spend before auto-pause (e.g. `50.00`) | unset |
-| `LOKI_NOTIFICATIONS` | Desktop notifications | `false` |
+| Variable              | Description                                    | Default  |
+| --------------------- | ---------------------------------------------- | -------- |
+| `LOKI_PROVIDER`       | AI provider: `claude`, `codex`, `gemini`       | `claude` |
+| `LOKI_MAX_ITERATIONS` | Max autonomous iteration cycles                | `1000`   |
+| `LOKI_MAX_RETRIES`    | Max retry attempts per iteration               | `50`     |
+| `LOKI_DASHBOARD`      | Enable dashboard server                        | `true`   |
+| `LOKI_DASHBOARD_PORT` | Dashboard/API port                             | `57374`  |
+| `LOKI_BUDGET_LIMIT`   | Max USD spend before auto-pause (e.g. `50.00`) | unset    |
+| `LOKI_NOTIFICATIONS`  | Desktop notifications                          | `false`  |
 
 ### Execution Control
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOKI_AUTONOMY_MODE` | `perpetual`, `checkpoint`, or `supervised` | `perpetual` |
-| `LOKI_COMPLETION_PROMISE` | Stop condition text (AI outputs this to halt) | unset |
-| `LOKI_PARALLEL_MODE` | Enable git worktree parallelism | `false` |
-| `LOKI_MAX_PARALLEL_AGENTS` | Limit concurrent sub-agents | `10` |
-| `LOKI_SKIP_MEMORY` | Skip loading memory context | `false` |
-| `LOKI_SKIP_PREREQS` | Skip prerequisite checks | `false` |
+| Variable                   | Description                                   | Default     |
+| -------------------------- | --------------------------------------------- | ----------- |
+| `LOKI_AUTONOMY_MODE`       | `perpetual`, `checkpoint`, or `supervised`    | `perpetual` |
+| `LOKI_COMPLETION_PROMISE`  | Stop condition text (AI outputs this to halt) | unset       |
+| `LOKI_PARALLEL_MODE`       | Enable git worktree parallelism               | `false`     |
+| `LOKI_MAX_PARALLEL_AGENTS` | Limit concurrent sub-agents                   | `10`        |
+| `LOKI_SKIP_MEMORY`         | Skip loading memory context                   | `false`     |
+| `LOKI_SKIP_PREREQS`        | Skip prerequisite checks                      | `false`     |
 
 ### Security (Enterprise)
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOKI_STAGED_AUTONOMY` | Require approval before each action | `false` |
-| `LOKI_AUDIT_LOG` | Enable audit logging | `true` |
-| `LOKI_ALLOWED_PATHS` | Comma-separated writable paths | all |
+| Variable                | Description                            | Default    |
+| ----------------------- | -------------------------------------- | ---------- |
+| `LOKI_STAGED_AUTONOMY`  | Require approval before each action    | `false`    |
+| `LOKI_AUDIT_LOG`        | Enable audit logging                   | `true`     |
+| `LOKI_ALLOWED_PATHS`    | Comma-separated writable paths         | all        |
 | `LOKI_BLOCKED_COMMANDS` | Comma-separated blocked shell commands | `rm -rf /` |
-| `LOKI_SANDBOX_MODE` | Run in Docker-in-Docker sandbox | `false` |
+| `LOKI_SANDBOX_MODE`     | Run in Docker-in-Docker sandbox        | `false`    |
 
 ### SDLC Phases (all enabled by default, set to `false` to skip)
 
@@ -170,41 +170,41 @@ docker run -it \
 
 ### Completion Council
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOKI_COUNCIL_ENABLED` | Multi-agent verification council | `true` |
-| `LOKI_COUNCIL_SIZE` | Number of council members | `3` |
-| `LOKI_COUNCIL_THRESHOLD` | Votes required to pass | `2` |
+| Variable                 | Description                      | Default |
+| ------------------------ | -------------------------------- | ------- |
+| `LOKI_COUNCIL_ENABLED`   | Multi-agent verification council | `true`  |
+| `LOKI_COUNCIL_SIZE`      | Number of council members        | `3`     |
+| `LOKI_COUNCIL_THRESHOLD` | Votes required to pass           | `2`     |
 
 ### TLS/HTTPS (Dashboard)
 
-| Variable | Description |
-|----------|-------------|
+| Variable        | Description             |
+| --------------- | ----------------------- |
 | `LOKI_TLS_CERT` | Path to PEM certificate |
-| `LOKI_TLS_KEY` | Path to PEM private key |
+| `LOKI_TLS_KEY`  | Path to PEM private key |
 
 ## CLI Commands
 
-| Command | Description |
-|---------|-------------|
-| `start [PRD]` | Start autonomous execution |
-| `quick "task"` | Quick single-task mode (max 3 iterations) |
-| `stop` | Stop execution |
-| `pause` / `resume` | Pause/resume execution |
-| `status [--json]` | Show current status |
-| `logs` | Show recent log output |
-| `init` | Build PRD interactively from templates |
-| `issue <url\|num>` | Generate PRD from GitHub issue |
-| `dashboard <cmd>` | Dashboard server: start, stop, status, url, open |
-| `provider <cmd>` | Manage provider: show, set, list, info |
-| `memory <cmd>` | Cross-project learnings |
-| `council <cmd>` | Completion council status |
-| `config <cmd>` | Configuration: show, init, edit, path |
-| `sandbox <cmd>` | Docker sandbox: start, stop, status, logs, shell |
-| `remote [PRD]` | Start remote session (connect from phone/browser, Claude Pro/Max) |
-| `cleanup` | Kill orphaned processes |
-| `version` | Show version |
-| `help` | Show help |
+| Command            | Description                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| `start [PRD]`      | Start autonomous execution                                        |
+| `quick "task"`     | Quick single-task mode (max 3 iterations)                         |
+| `stop`             | Stop execution                                                    |
+| `pause` / `resume` | Pause/resume execution                                            |
+| `status [--json]`  | Show current status                                               |
+| `logs`             | Show recent log output                                            |
+| `init`             | Build PRD interactively from templates                            |
+| `issue <url\|num>` | Generate PRD from GitHub issue                                    |
+| `dashboard <cmd>`  | Dashboard server: start, stop, status, url, open                  |
+| `provider <cmd>`   | Manage provider: show, set, list, info                            |
+| `memory <cmd>`     | Cross-project learnings                                           |
+| `council <cmd>`    | Completion council status                                         |
+| `config <cmd>`     | Configuration: show, init, edit, path                             |
+| `sandbox <cmd>`    | Docker sandbox: start, stop, status, logs, shell                  |
+| `remote [PRD]`     | Start remote session (connect from phone/browser, Claude Pro/Max) |
+| `cleanup`          | Kill orphaned processes                                           |
+| `version`          | Show version                                                      |
+| `help`             | Show help                                                         |
 
 ### Start Options
 
@@ -281,10 +281,10 @@ docker inspect --format='{{.State.Health.Status}}' <container-id>
 
 ## Tags
 
-| Tag | Description |
-|-----|-------------|
-| `latest` | Latest stable release |
-| `7.x.x` | Specific version (e.g. `7.5.11`) |
+| Tag       | Description                           |
+| --------- | ------------------------------------- |
+| `latest`  | Latest stable release                 |
+| `7.x.x`   | Specific version (e.g. `7.5.11`)      |
 | `sandbox` | Security-hardened image (Debian slim) |
 
 ## Links

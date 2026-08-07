@@ -8,19 +8,19 @@
  * <loki-cost-dashboard api-url="http://localhost:57374" theme="dark"></loki-cost-dashboard>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
 
 // Static fallback pricing per million tokens (USD) - updated 2026-02-07
 // At runtime, these are overridden by /api/pricing (which reads .loki/pricing.json)
 /** @type {Object<string, {input: number, output: number, label: string, provider: string}>} Fallback pricing per million tokens (USD) */
 const DEFAULT_PRICING = {
   // Claude (Anthropic)
-  opus:   { input: 5.00,   output: 25.00,  label: 'Opus 4.6',       provider: 'claude' },
-  sonnet: { input: 3.00,   output: 15.00,  label: 'Sonnet 4.5',     provider: 'claude' },
-  haiku:  { input: 1.00,   output: 5.00,   label: 'Haiku 4.5',      provider: 'claude' },
+  opus: { input: 5.0, output: 25.0, label: "Opus 4.6", provider: "claude" },
+  sonnet: { input: 3.0, output: 15.0, label: "Sonnet 4.5", provider: "claude" },
+  haiku: { input: 1.0, output: 5.0, label: "Haiku 4.5", provider: "claude" },
   // OpenAI Codex
-  'gpt-5.3-codex': { input: 1.50, output: 12.00, label: 'GPT-5.3 Codex', provider: 'codex' },
+  "gpt-5.3-codex": { input: 1.5, output: 12.0, label: "GPT-5.3 Codex", provider: "codex" },
 };
 
 /**
@@ -31,7 +31,7 @@ const DEFAULT_PRICING = {
  */
 export class LokiCostDashboard extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -68,17 +68,17 @@ export class LokiCostDashboard extends LokiElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
 
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadCost();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -92,13 +92,13 @@ export class LokiCostDashboard extends LokiElement {
             input: m.input,
             output: m.output,
             label: m.label || key,
-            provider: m.provider || 'unknown',
+            provider: m.provider || "unknown",
           };
         }
         this._modelPricing = updated;
-        this._pricingSource = pricing.source || 'api';
-        this._pricingDate = pricing.updated || '';
-        this._activeProvider = pricing.provider || 'claude';
+        this._pricingSource = pricing.source || "api";
+        this._pricingDate = pricing.updated || "";
+        this._activeProvider = pricing.provider || "claude";
         this.render();
       }
     } catch {
@@ -166,7 +166,7 @@ export class LokiCostDashboard extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -175,22 +175,22 @@ export class LokiCostDashboard extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
 
   _formatTokens(count) {
-    if (!count || count === 0) return '0';
-    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + 'M';
-    if (count >= 1_000) return (count / 1_000).toFixed(1) + 'K';
+    if (!count || count === 0) return "0";
+    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + "M";
+    if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
     return String(count);
   }
 
   _formatUSD(amount) {
-    if (!amount || amount === 0) return '$0.00';
-    if (amount < 0.01) return '<$0.01';
-    return '$' + amount.toFixed(2);
+    if (!amount || amount === 0) return "$0.00";
+    if (amount < 0.01) return "<$0.01";
+    return "$" + amount.toFixed(2);
   }
 
   _getBudgetPercent() {
@@ -200,9 +200,9 @@ export class LokiCostDashboard extends LokiElement {
 
   _getBudgetStatusClass() {
     const pct = this._getBudgetPercent();
-    if (pct >= 90) return 'critical';
-    if (pct >= 70) return 'warning';
-    return 'ok';
+    if (pct >= 90) return "critical";
+    if (pct >= 70) return "warning";
+    return "ok";
   }
 
   _renderPhaseRows() {
@@ -211,11 +211,12 @@ export class LokiCostDashboard extends LokiElement {
       return '<tr><td colspan="4" class="empty-cell">No phase data yet</td></tr>';
     }
 
-    return Object.entries(phases).map(([phase, data]) => {
-      const input = data.input_tokens || 0;
-      const output = data.output_tokens || 0;
-      const cost = data.cost_usd || 0;
-      return `
+    return Object.entries(phases)
+      .map(([phase, data]) => {
+        const input = data.input_tokens || 0;
+        const output = data.output_tokens || 0;
+        const cost = data.cost_usd || 0;
+        return `
         <tr>
           <td class="phase-name">${this._escapeHTML(phase)}</td>
           <td class="mono-cell">${this._formatTokens(input)}</td>
@@ -223,7 +224,8 @@ export class LokiCostDashboard extends LokiElement {
           <td class="mono-cell cost-cell">${this._formatUSD(cost)}</td>
         </tr>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   _renderModelRows() {
@@ -232,11 +234,12 @@ export class LokiCostDashboard extends LokiElement {
       return '<tr><td colspan="4" class="empty-cell">No model data yet</td></tr>';
     }
 
-    return Object.entries(models).map(([model, data]) => {
-      const input = data.input_tokens || 0;
-      const output = data.output_tokens || 0;
-      const cost = data.cost_usd || 0;
-      return `
+    return Object.entries(models)
+      .map(([model, data]) => {
+        const input = data.input_tokens || 0;
+        const output = data.output_tokens || 0;
+        const cost = data.cost_usd || 0;
+        return `
         <tr>
           <td class="model-name">${this._escapeHTML(model)}</td>
           <td class="mono-cell">${this._formatTokens(input)}</td>
@@ -244,7 +247,8 @@ export class LokiCostDashboard extends LokiElement {
           <td class="mono-cell cost-cell">${this._formatUSD(cost)}</td>
         </tr>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   _renderBudgetSection() {
@@ -264,9 +268,10 @@ export class LokiCostDashboard extends LokiElement {
 
     const pct = this._getBudgetPercent();
     const statusClass = this._getBudgetStatusClass();
-    const remaining = this._data.budget_remaining != null
-      ? this._formatUSD(this._data.budget_remaining)
-      : this._formatUSD(this._data.budget_limit - this._data.budget_used);
+    const remaining =
+      this._data.budget_remaining != null
+        ? this._formatUSD(this._data.budget_remaining)
+        : this._formatUSD(this._data.budget_limit - this._data.budget_used);
 
     return `
       <div class="budget-section">
@@ -296,39 +301,45 @@ export class LokiCostDashboard extends LokiElement {
     if (iteration == null) return null;
     const step = iteration % 4;
     switch (step) {
-      case 0: return 'opus';
-      case 1: return 'sonnet';
-      case 2: return 'sonnet';
-      case 3: return 'haiku';
-      default: return 'sonnet';
+      case 0:
+        return "opus";
+      case 1:
+        return "sonnet";
+      case 2:
+        return "sonnet";
+      case 3:
+        return "haiku";
+      default:
+        return "sonnet";
     }
   }
 
   _getPricingColorClass(key, model) {
     // Use explicit tier from API if available (actual RARV mapping)
-    if (model.tier === 'planning') return 'opus';
-    if (model.tier === 'development') return 'sonnet';
-    if (model.tier === 'fast') return 'haiku';
+    if (model.tier === "planning") return "opus";
+    if (model.tier === "development") return "sonnet";
+    if (model.tier === "fast") return "haiku";
     // Use iteration-based RARV mapping if available
     if (model.iteration != null) {
-      return this._getRARVTier(model.iteration) || '';
+      return this._getRARVTier(model.iteration) || "";
     }
     // Fallback: match model name patterns
-    const lower = (key || '').toLowerCase();
-    if (lower.includes('opus')) return 'opus';
-    if (lower.includes('sonnet')) return 'sonnet';
-    if (lower.includes('haiku')) return 'haiku';
-    if (model.provider === 'codex' || lower.includes('gpt') || lower.includes('codex')) return 'codex';
-    return '';
+    const lower = (key || "").toLowerCase();
+    if (lower.includes("opus")) return "opus";
+    if (lower.includes("sonnet")) return "sonnet";
+    if (lower.includes("haiku")) return "haiku";
+    if (model.provider === "codex" || lower.includes("gpt") || lower.includes("codex"))
+      return "codex";
+    return "";
   }
 
   _escapeHTML(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   render() {
@@ -600,9 +611,13 @@ export class LokiCostDashboard extends LokiElement {
       </style>
 
       <div class="cost-container">
-        ${!this._data.connected ? `
+        ${
+          !this._data.connected
+            ? `
           <div class="offline-notice">Connecting to cost API...</div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <!-- Summary Cards -->
         <div class="summary-grid">
@@ -684,14 +699,18 @@ export class LokiCostDashboard extends LokiElement {
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
             <span class="section-title">API Pricing Reference (per 1M tokens)</span>
-            ${this._pricingDate ? `<span class="pricing-meta">Updated: ${this._escapeHTML(this._pricingDate)}</span>` : ''}
+            ${this._pricingDate ? `<span class="pricing-meta">Updated: ${this._escapeHTML(this._pricingDate)}</span>` : ""}
           </div>
           <div class="pricing-grid">
-            ${Object.entries(this._modelPricing).map(([key, m]) => `
+            ${Object.entries(this._modelPricing)
+              .map(
+                ([key, m]) => `
             <div class="pricing-item">
               <div class="pricing-model ${this._getPricingColorClass(key, m)}">${m.label || key}</div>
               <div class="pricing-rates">In: $${Number(m.input ?? 0).toFixed(2)} / Out: $${Number(m.output ?? 0).toFixed(2)}</div>
-            </div>`).join('')}
+            </div>`,
+              )
+              .join("")}
           </div>
         </div>
       </div>
@@ -700,8 +719,8 @@ export class LokiCostDashboard extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-cost-dashboard')) {
-  customElements.define('loki-cost-dashboard', LokiCostDashboard);
+if (!customElements.get("loki-cost-dashboard")) {
+  customElements.define("loki-cost-dashboard", LokiCostDashboard);
 }
 
 export default LokiCostDashboard;

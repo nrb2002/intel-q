@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var { AgentCard } = require('./agent-card');
-var { TaskManager } = require('./task-manager');
-var { SSEStream } = require('./streaming');
-var { createArtifact, validateArtifact, VALID_TYPES } = require('./artifacts');
-var { A2AClient } = require('./client');
+var { AgentCard } = require("./agent-card");
+var { TaskManager } = require("./task-manager");
+var { SSEStream } = require("./streaming");
+var { createArtifact, validateArtifact, VALID_TYPES } = require("./artifacts");
+var { A2AClient } = require("./client");
 
 /**
  * Create an A2A server configuration.

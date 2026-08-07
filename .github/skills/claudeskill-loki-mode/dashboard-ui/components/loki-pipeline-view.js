@@ -9,24 +9,40 @@
  * <loki-pipeline-view api-url="http://localhost:57374" theme="dark"></loki-pipeline-view>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Array<{id: string, label: string, icon: string}>} */
 const PIPELINE_STAGES = [
-  { id: 'planning',       label: 'Planning',       icon: 'P' },
-  { id: 'scaffolding',    label: 'Scaffolding',    icon: 'S' },
-  { id: 'implementation', label: 'Implementation', icon: 'I' },
-  { id: 'testing',        label: 'Testing',        icon: 'T' },
-  { id: 'review',         label: 'Review',         icon: 'R' },
-  { id: 'deploy',         label: 'Deploy',         icon: 'D' },
+  { id: "planning", label: "Planning", icon: "P" },
+  { id: "scaffolding", label: "Scaffolding", icon: "S" },
+  { id: "implementation", label: "Implementation", icon: "I" },
+  { id: "testing", label: "Testing", icon: "T" },
+  { id: "review", label: "Review", icon: "R" },
+  { id: "deploy", label: "Deploy", icon: "D" },
 ];
 
 const STAGE_STATUS = {
-  waiting:  { color: 'var(--loki-text-muted, #939084)',  bgColor: 'var(--loki-bg-tertiary, #ECEAE3)', label: 'Waiting' },
-  active:   { color: 'var(--loki-accent, #553DE9)',      bgColor: 'var(--loki-accent-muted, rgba(85, 61, 233, 0.10))', label: 'Active' },
-  complete: { color: 'var(--loki-green, #1FC5A8)',       bgColor: 'var(--loki-green-muted, rgba(31, 197, 168, 0.12))', label: 'Complete' },
-  failed:   { color: 'var(--loki-red, #C45B5B)',         bgColor: 'var(--loki-red-muted, rgba(196, 91, 91, 0.12))', label: 'Failed' },
+  waiting: {
+    color: "var(--loki-text-muted, #939084)",
+    bgColor: "var(--loki-bg-tertiary, #ECEAE3)",
+    label: "Waiting",
+  },
+  active: {
+    color: "var(--loki-accent, #553DE9)",
+    bgColor: "var(--loki-accent-muted, rgba(85, 61, 233, 0.10))",
+    label: "Active",
+  },
+  complete: {
+    color: "var(--loki-green, #1FC5A8)",
+    bgColor: "var(--loki-green-muted, rgba(31, 197, 168, 0.12))",
+    label: "Complete",
+  },
+  failed: {
+    color: "var(--loki-red, #C45B5B)",
+    bgColor: "var(--loki-red-muted, rgba(196, 91, 91, 0.12))",
+    label: "Failed",
+  },
 };
 
 /**
@@ -37,7 +53,7 @@ const STAGE_STATUS = {
  */
 export class LokiPipelineView extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -61,17 +77,17 @@ export class LokiPipelineView extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -88,7 +104,7 @@ export class LokiPipelineView extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/pipeline/status');
+      const data = await this._api._get("/api/v2/pipeline/status");
       this._stages = data.stages || [];
     } catch {
       // Use demo data if API unavailable
@@ -101,27 +117,29 @@ export class LokiPipelineView extends LokiElement {
 
   _getDemoData() {
     return [
-      { id: 'planning',       status: 'complete', errors: 0, duration_ms: 12500 },
-      { id: 'scaffolding',    status: 'complete', errors: 0, duration_ms: 8300 },
-      { id: 'implementation', status: 'active',   errors: 0, duration_ms: 45000 },
-      { id: 'testing',        status: 'waiting',  errors: 0, duration_ms: null },
-      { id: 'review',         status: 'waiting',  errors: 0, duration_ms: null },
-      { id: 'deploy',         status: 'waiting',  errors: 0, duration_ms: null },
+      { id: "planning", status: "complete", errors: 0, duration_ms: 12500 },
+      { id: "scaffolding", status: "complete", errors: 0, duration_ms: 8300 },
+      { id: "implementation", status: "active", errors: 0, duration_ms: 45000 },
+      { id: "testing", status: "waiting", errors: 0, duration_ms: null },
+      { id: "review", status: "waiting", errors: 0, duration_ms: null },
+      { id: "deploy", status: "waiting", errors: 0, duration_ms: null },
     ];
   }
 
   _getStageData(stageId) {
-    return this._stages.find(s => s.id === stageId) || { id: stageId, status: 'waiting', errors: 0 };
+    return (
+      this._stages.find((s) => s.id === stageId) || { id: stageId, status: "waiting", errors: 0 }
+    );
   }
 
   _formatDuration(ms) {
-    if (ms == null || ms < 0) return '';
-    if (ms < 1000) return ms + 'ms';
+    if (ms == null || ms < 0) return "";
+    if (ms < 1000) return ms + "ms";
     const sec = Math.floor(ms / 1000);
-    if (sec < 60) return sec + 's';
+    if (sec < 60) return sec + "s";
     const min = Math.floor(sec / 60);
     const remainSec = sec % 60;
-    return min + 'm ' + remainSec + 's';
+    return min + "m " + remainSec + "s";
   }
 
   _getStyles() {
@@ -298,23 +316,25 @@ export class LokiPipelineView extends LokiElement {
     const stageNodes = PIPELINE_STAGES.map((stage, idx) => {
       const data = this._getStageData(stage.id);
       const statusCfg = STAGE_STATUS[data.status] || STAGE_STATUS.waiting;
-      const isComplete = data.status === 'complete';
-      const isActive = data.status === 'active';
-      const isFailed = data.status === 'failed';
+      const isComplete = data.status === "complete";
+      const isActive = data.status === "active";
+      const isFailed = data.status === "failed";
 
       const circleContent = isComplete
         ? '<span class="stage-check">&#10003;</span>'
-        : (isFailed ? '<span class="stage-check">&#10007;</span>' : stage.icon);
+        : isFailed
+          ? '<span class="stage-check">&#10007;</span>'
+          : stage.icon;
 
       const stageHtml = `
         <div class="stage-node">
-          <div class="stage-circle ${isActive ? 'active' : ''}"
+          <div class="stage-circle ${isActive ? "active" : ""}"
                style="background: ${statusCfg.bgColor}; color: ${statusCfg.color}; border: 2px solid ${statusCfg.color};">
             ${circleContent}
           </div>
           <span class="stage-label">${stage.label}</span>
-          ${data.duration_ms ? `<span class="stage-duration">${this._formatDuration(data.duration_ms)}</span>` : ''}
-          ${data.errors > 0 ? `<span class="stage-error-count">${data.errors} error${data.errors > 1 ? 's' : ''}</span>` : ''}
+          ${data.duration_ms ? `<span class="stage-duration">${this._formatDuration(data.duration_ms)}</span>` : ""}
+          ${data.errors > 0 ? `<span class="stage-error-count">${data.errors} error${data.errors > 1 ? "s" : ""}</span>` : ""}
         </div>
       `;
 
@@ -322,28 +342,35 @@ export class LokiPipelineView extends LokiElement {
       if (idx < PIPELINE_STAGES.length - 1) {
         const nextData = this._getStageData(PIPELINE_STAGES[idx + 1].id);
         const isConnectorCompleted = isComplete;
-        const isConnectorActive = isActive || (isComplete && (nextData.status === 'active' || nextData.status === 'waiting'));
+        const isConnectorActive =
+          isActive ||
+          (isComplete && (nextData.status === "active" || nextData.status === "waiting"));
 
-        const connectorClass = isConnectorCompleted ? 'completed' : (isActive ? 'active' : 'pending');
-        const flowDot = isActive ? '<div class="flow-dot"></div>' : '';
+        const connectorClass = isConnectorCompleted ? "completed" : isActive ? "active" : "pending";
+        const flowDot = isActive ? '<div class="flow-dot"></div>' : "";
 
-        return stageHtml + `
+        return (
+          stageHtml +
+          `
           <div class="connector">
             <div class="connector-line ${connectorClass}"></div>
             ${flowDot}
           </div>
-        `;
+        `
+        );
       }
 
       return stageHtml;
-    }).join('');
+    }).join("");
 
-    const legendItems = Object.entries(STAGE_STATUS).map(([key, cfg]) => {
-      return `<div class="legend-item">
+    const legendItems = Object.entries(STAGE_STATUS)
+      .map(([key, cfg]) => {
+        return `<div class="legend-item">
         <div class="legend-dot" style="background: ${cfg.color};"></div>
         <span>${cfg.label}</span>
       </div>`;
-    }).join('');
+      })
+      .join("");
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -362,8 +389,8 @@ export class LokiPipelineView extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-pipeline-view')) {
-  customElements.define('loki-pipeline-view', LokiPipelineView);
+if (!customElements.get("loki-pipeline-view")) {
+  customElements.define("loki-pipeline-view", LokiPipelineView);
 }
 
 export default LokiPipelineView;

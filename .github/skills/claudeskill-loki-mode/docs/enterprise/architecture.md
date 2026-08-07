@@ -85,27 +85,27 @@ The observability layer implements OpenTelemetry (OTEL) trace and metric export 
 
 The span system (`src/observability/spans.js`) provides typed constructors that build W3C Trace Context-compatible span hierarchies:
 
-| Span Type | Function | Attributes |
-|-----------|----------|------------|
-| Project | `startProjectSpan(projectId)` | `loki.project.id` |
-| Task | `startTaskSpan(parent, taskId)` | `loki.task.id` |
-| RARV Phase | `startRARVSpan(parent, phase)` | `loki.rarv.phase` (REASON/ACT/REFLECT/VERIFY) |
-| Quality Gate | `startQualityGateSpan(parent, name, result)` | `loki.quality_gate.name`, `.result`, `.passed` |
-| Agent | `startAgentSpan(parent, type, action)` | `loki.agent.type`, `.action` (spawn/work/complete/fail) |
-| Council | `startCouncilSpan(parent, reviewer, verdict)` | `loki.council.reviewer`, `.verdict`, `.approved` |
+| Span Type    | Function                                      | Attributes                                              |
+| ------------ | --------------------------------------------- | ------------------------------------------------------- |
+| Project      | `startProjectSpan(projectId)`                 | `loki.project.id`                                       |
+| Task         | `startTaskSpan(parent, taskId)`               | `loki.task.id`                                          |
+| RARV Phase   | `startRARVSpan(parent, phase)`                | `loki.rarv.phase` (REASON/ACT/REFLECT/VERIFY)           |
+| Quality Gate | `startQualityGateSpan(parent, name, result)`  | `loki.quality_gate.name`, `.result`, `.passed`          |
+| Agent        | `startAgentSpan(parent, type, action)`        | `loki.agent.type`, `.action` (spawn/work/complete/fail) |
+| Council      | `startCouncilSpan(parent, reviewer, verdict)` | `loki.council.reviewer`, `.verdict`, `.approved`        |
 
 **Metrics:**
 
 Defined in `src/observability/metrics.js`, all metrics follow Prometheus naming conventions:
 
-| Metric | Type | Description |
-|--------|------|-------------|
-| `loki_task_duration_seconds` | Histogram | Task execution duration |
-| `loki_quality_gate_pass_total` | Counter | Quality gate passes by gate name |
-| `loki_quality_gate_fail_total` | Counter | Quality gate failures by gate name |
-| `loki_agent_active` | Gauge | Currently active agents |
-| `loki_tokens_consumed_total` | Counter | Token consumption by model and agent type |
-| `loki_council_approval_rate` | Gauge | Council approval rate (0.0-1.0) |
+| Metric                         | Type      | Description                               |
+| ------------------------------ | --------- | ----------------------------------------- |
+| `loki_task_duration_seconds`   | Histogram | Task execution duration                   |
+| `loki_quality_gate_pass_total` | Counter   | Quality gate passes by gate name          |
+| `loki_quality_gate_fail_total` | Counter   | Quality gate failures by gate name        |
+| `loki_agent_active`            | Gauge     | Currently active agents                   |
+| `loki_tokens_consumed_total`   | Counter   | Token consumption by model and agent type |
+| `loki_council_approval_rate`   | Gauge     | Council approval rate (0.0-1.0)           |
 
 **Export:**
 
@@ -119,12 +119,12 @@ The policy engine provides governance-as-code through declarative policy files. 
 
 **Enforcement Points:**
 
-| Point | Purpose | Context Fields |
-|-------|---------|----------------|
-| `pre_execution` | Before agent actions | `file_path`, `project_dir`, `active_agents` |
-| `pre_deployment` | Before deployment | `passed_gates` (array of gate names) |
-| `resource` | Token/provider constraints | `provider`, `tokens_consumed` |
-| `data` | Secret/PII scanning | `content` (string to scan) |
+| Point            | Purpose                    | Context Fields                              |
+| ---------------- | -------------------------- | ------------------------------------------- |
+| `pre_execution`  | Before agent actions       | `file_path`, `project_dir`, `active_agents` |
+| `pre_deployment` | Before deployment          | `passed_gates` (array of gate names)        |
+| `resource`       | Token/provider constraints | `provider`, `tokens_consumed`               |
+| `data`           | Secret/PII scanning        | `content` (string to scan)                  |
 
 **Decision Types:**
 
@@ -142,6 +142,7 @@ Decision.REQUIRE_APPROVAL -- Action requires human approval before proceeding
 **Data Scanning:**
 
 Built-in patterns detect:
+
 - Secrets: API keys, tokens, passwords, AWS keys, private keys, GitHub PATs, OpenAI keys, Slack tokens
 - PII: Email addresses, SSNs, phone numbers, credit card numbers
 
@@ -195,6 +196,7 @@ The `AuditLog` class writes hash-chained JSONL entries to `.loki/audit/audit.jso
 ```
 
 Key methods:
+
 - `AuditLog.record({ who, what, where, why, metadata })` -- Write an audit entry
 - `AuditLog.verifyChain()` -- Verify hash chain integrity, returns `{ valid, entries, brokenAt, error }`
 - `AuditLog.readEntries(filter)` -- Query entries with `who`, `what`, `since`, `until` filters
@@ -216,6 +218,7 @@ The dashboard audit module writes hash-chained JSONL to `~/.loki/dashboard/audit
 **Base Class:** `src/integrations/adapter.js`
 
 All integrations extend `IntegrationAdapter`, which provides:
+
 - Retry logic with exponential backoff (`maxRetries`, `baseDelay`, `maxDelay`)
 - Event emission for sync lifecycle (`retry`, `success`, `failure`)
 - Abstract methods: `importProject()`, `syncStatus()`, `postComment()`, `createSubtasks()`, `getWebhookHandler()`
@@ -268,6 +271,7 @@ The event bus enables cross-process, cross-language communication through file-b
 ```
 
 **Design Properties:**
+
 - Cross-language compatibility (Python, TypeScript, Bash all read/write the same format)
 - Persistence (events survive process crashes)
 - Replay capability (archived events can be re-processed for debugging)
@@ -282,6 +286,7 @@ The event bus enables cross-process, cross-language communication through file-b
 The main orchestrator (`run.sh`) manages background enterprise processes during execution. Enterprise subscribers (OTEL, policies, audit, integrations) are launched as background processes when their respective env vars are set, and cleaned up on session termination.
 
 Process lifecycle:
+
 1. Check env vars for enterprise features
 2. Start background subscribers (OTEL flush timer, policy file watcher, audit syslog forwarder)
 3. Execute RARV cycle with enforcement point checks
@@ -301,24 +306,24 @@ All enterprise features follow these design rules:
 
 ## File Reference
 
-| Component | Primary Files |
-|-----------|--------------|
-| OTEL Bridge | `src/observability/otel.js`, `src/observability/index.js` |
-| Span Helpers | `src/observability/spans.js` |
-| Metric Definitions | `src/observability/metrics.js` |
-| Policy Engine | `src/policies/engine.js`, `src/policies/index.js` |
-| Policy Types | `src/policies/types.js` |
-| Cost Controller | `src/policies/cost.js` |
-| Approval Gates | `src/policies/approval.js` |
-| Audit Log (JS) | `src/audit/log.js`, `src/audit/index.js` |
-| Audit Log (Python) | `dashboard/audit.py` |
-| Compliance Reports | `src/audit/compliance.js` |
-| Data Residency | `src/audit/residency.js` |
-| Integration Adapter | `src/integrations/adapter.js` |
-| Jira Integration | `src/integrations/jira/` |
-| Linear Integration | `src/integrations/linear/` |
-| GitHub Integration | `src/integrations/github/` |
-| Event Bus (Python) | `events/bus.py` |
-| Event Bus (TypeScript) | `events/bus.ts` |
-| Event Bus (Bash) | `events/emit.sh` |
-| Process Manager | `autonomy/run.sh` |
+| Component              | Primary Files                                             |
+| ---------------------- | --------------------------------------------------------- |
+| OTEL Bridge            | `src/observability/otel.js`, `src/observability/index.js` |
+| Span Helpers           | `src/observability/spans.js`                              |
+| Metric Definitions     | `src/observability/metrics.js`                            |
+| Policy Engine          | `src/policies/engine.js`, `src/policies/index.js`         |
+| Policy Types           | `src/policies/types.js`                                   |
+| Cost Controller        | `src/policies/cost.js`                                    |
+| Approval Gates         | `src/policies/approval.js`                                |
+| Audit Log (JS)         | `src/audit/log.js`, `src/audit/index.js`                  |
+| Audit Log (Python)     | `dashboard/audit.py`                                      |
+| Compliance Reports     | `src/audit/compliance.js`                                 |
+| Data Residency         | `src/audit/residency.js`                                  |
+| Integration Adapter    | `src/integrations/adapter.js`                             |
+| Jira Integration       | `src/integrations/jira/`                                  |
+| Linear Integration     | `src/integrations/linear/`                                |
+| GitHub Integration     | `src/integrations/github/`                                |
+| Event Bus (Python)     | `events/bus.py`                                           |
+| Event Bus (TypeScript) | `events/bus.ts`                                           |
+| Event Bus (Bash)       | `events/emit.sh`                                          |
+| Process Manager        | `autonomy/run.sh`                                         |

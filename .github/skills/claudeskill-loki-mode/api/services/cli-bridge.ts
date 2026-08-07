@@ -32,8 +32,8 @@ class CLIBridge {
 
   constructor() {
     // Determine loki script location
-    this.lokiDir = Deno.env.get("LOKI_DIR") ||
-      new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
+    this.lokiDir =
+      Deno.env.get("LOKI_DIR") || new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
     this.lokiPath = `${this.lokiDir}/autonomy/run.sh`;
     // Initialize StateManager for state file access
     this.stateManager = new StateManager({
@@ -49,7 +49,7 @@ class CLIBridge {
   async startSession(
     prdPath?: string,
     provider: "claude" | "codex" | "gemini" = "claude",
-    options: { dryRun?: boolean; verbose?: boolean } = {}
+    options: { dryRun?: boolean; verbose?: boolean } = {},
   ): Promise<Session> {
     const sessionId = `session_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`;
 
@@ -269,7 +269,7 @@ class CLIBridge {
    */
   async executeCommand(
     args: string[],
-    timeout = 30000
+    timeout = 30000,
   ): Promise<{ stdout: string; stderr: string; code: number }> {
     const command = new Deno.Command(this.lokiPath, {
       args,
@@ -299,10 +299,7 @@ class CLIBridge {
   /**
    * Stream process output and emit events
    */
-  private async streamOutput(
-    sessionId: string,
-    process: Deno.ChildProcess
-  ): Promise<void> {
+  private async streamOutput(sessionId: string, process: Deno.ChildProcess): Promise<void> {
     const session = this.sessions.get(sessionId);
 
     // Stream stdout
@@ -311,7 +308,7 @@ class CLIBridge {
 
     const processStream = async (
       reader: ReadableStreamDefaultReader<Uint8Array>,
-      isError: boolean
+      isError: boolean,
     ) => {
       const decoder = new TextDecoder();
       let buffer = "";
@@ -339,40 +336,31 @@ class CLIBridge {
     };
 
     // Process both streams concurrently
-    Promise.all([
-      processStream(stdoutReader, false),
-      processStream(stderrReader, true),
-    ]).then(async () => {
-      // Wait for process to complete
-      const status = await process.status;
+    Promise.all([processStream(stdoutReader, false), processStream(stderrReader, true)]).then(
+      async () => {
+        // Wait for process to complete
+        const status = await process.status;
 
-      if (session) {
-        session.status = status.success ? "completed" : "failed";
-        session.updatedAt = new Date().toISOString();
-      }
+        if (session) {
+          session.status = status.success ? "completed" : "failed";
+          session.updatedAt = new Date().toISOString();
+        }
 
-      this.runningProcesses.delete(sessionId);
+        this.runningProcesses.delete(sessionId);
 
-      emitSessionEvent(
-        status.success ? "session:completed" : "session:failed",
-        sessionId,
-        {
+        emitSessionEvent(status.success ? "session:completed" : "session:failed", sessionId, {
           status: status.success ? "completed" : "failed",
           exitCode: status.code,
           message: status.success ? "Session completed successfully" : "Session failed",
-        }
-      );
-    });
+        });
+      },
+    );
   }
 
   /**
    * Process a single line of output and emit appropriate events
    */
-  private processOutputLine(
-    sessionId: string,
-    line: string,
-    isError: boolean
-  ): void {
+  private processOutputLine(sessionId: string, line: string, isError: boolean): void {
     // Try to parse as JSON event
     if (line.startsWith("{") && line.endsWith("}")) {
       try {
@@ -390,12 +378,7 @@ class CLIBridge {
     if (logMatch) {
       const [, level, source, message] = logMatch;
       const logLevel = level.toLowerCase() as "info" | "warn" | "error" | "debug";
-      emitLogEvent(
-        isError ? "error" : logLevel,
-        sessionId,
-        message,
-        source
-      );
+      emitLogEvent(isError ? "error" : logLevel, sessionId, message, source);
       return;
     }
 
@@ -429,44 +412,45 @@ class CLIBridge {
     }
 
     // Default: emit as log
-    emitLogEvent(
-      isError ? "error" : "info",
-      sessionId,
-      line
-    );
+    emitLogEvent(isError ? "error" : "info", sessionId, line);
   }
 
   /**
    * Process structured JSON events from the CLI
    */
-  private processJsonEvent(
-    sessionId: string,
-    event: Record<string, unknown>
-  ): void {
+  private processJsonEvent(sessionId: string, event: Record<string, unknown>): void {
     const type = event.type as string;
     const data = event.data || event;
 
     switch (type) {
       case "phase":
-        emitPhaseEvent("phase:started", sessionId, data as {
-          phase: string;
-          previousPhase?: string;
-        });
+        emitPhaseEvent(
+          "phase:started",
+          sessionId,
+          data as {
+            phase: string;
+            previousPhase?: string;
+          },
+        );
         break;
 
       case "task":
         emitTaskEvent(
           `task:${(data as { status: string }).status === "completed" ? "completed" : "started"}`,
           sessionId,
-          data as { taskId: string; title: string; status: string }
+          data as { taskId: string; title: string; status: string },
         );
         break;
 
       case "agent":
-        emitAgentEvent("agent:spawned", sessionId, data as {
-          agentId: string;
-          type: string;
-        });
+        emitAgentEvent(
+          "agent:spawned",
+          sessionId,
+          data as {
+            agentId: string;
+            type: string;
+          },
+        );
         break;
 
       default:
@@ -496,7 +480,7 @@ class CLIBridge {
       pending: "pending",
       queued: "queued",
       "in progress": "running",
-      "in_progress": "running",
+      in_progress: "running",
       running: "running",
       done: "completed",
       completed: "completed",

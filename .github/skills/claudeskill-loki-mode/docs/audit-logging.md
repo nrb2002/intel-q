@@ -24,82 +24,82 @@ The legacy variable `LOKI_ENTERPRISE_AUDIT=true` still works and will force audi
 # .loki/config.yaml
 enterprise:
   audit:
-    enabled: true              # Audit logging enabled (default)
-    level: info                # Minimum level: debug, info, warning, error
-    retention_days: 90         # Days to keep logs
-    max_file_size: 100         # MB per file before rotation
-    compress: true             # Compress rotated files
-    integrity_check: true      # Enable SHA-256 chain hashing (v5.38.0)
-    syslog_enabled: false      # Forward to external syslog
-    exclude_events:            # Events to exclude
+    enabled: true # Audit logging enabled (default)
+    level: info # Minimum level: debug, info, warning, error
+    retention_days: 90 # Days to keep logs
+    max_file_size: 100 # MB per file before rotation
+    compress: true # Compress rotated files
+    integrity_check: true # Enable SHA-256 chain hashing (v5.38.0)
+    syslog_enabled: false # Forward to external syslog
+    exclude_events: # Events to exclude
       - api.request
-    include_metadata:          # Additional metadata fields
+    include_metadata: # Additional metadata fields
       - environment
       - deployment_id
 ```
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_AUDIT_DISABLED` | `false` | Set to `true` to disable audit logging |
-| `LOKI_ENTERPRISE_AUDIT` | `false` | Force audit on (legacy, audit is now on by default) |
-| `LOKI_AUDIT_LEVEL` | `info` | Minimum log level: debug, info, warning, error |
-| `LOKI_AUDIT_RETENTION` | `90` | Retention period in days |
-| `LOKI_AUDIT_SYSLOG_HOST` | - | Syslog server hostname for forwarding |
-| `LOKI_AUDIT_SYSLOG_PORT` | `514` | Syslog server port |
-| `LOKI_AUDIT_SYSLOG_PROTO` | `udp` | Syslog protocol: `udp` or `tcp` |
-| `LOKI_AUDIT_NO_INTEGRITY` | `false` | Disable SHA-256 chain hashing |
+| Variable                  | Default | Description                                         |
+| ------------------------- | ------- | --------------------------------------------------- |
+| `LOKI_AUDIT_DISABLED`     | `false` | Set to `true` to disable audit logging              |
+| `LOKI_ENTERPRISE_AUDIT`   | `false` | Force audit on (legacy, audit is now on by default) |
+| `LOKI_AUDIT_LEVEL`        | `info`  | Minimum log level: debug, info, warning, error      |
+| `LOKI_AUDIT_RETENTION`    | `90`    | Retention period in days                            |
+| `LOKI_AUDIT_SYSLOG_HOST`  | -       | Syslog server hostname for forwarding               |
+| `LOKI_AUDIT_SYSLOG_PORT`  | `514`   | Syslog server port                                  |
+| `LOKI_AUDIT_SYSLOG_PROTO` | `udp`   | Syslog protocol: `udp` or `tcp`                     |
+| `LOKI_AUDIT_NO_INTEGRITY` | `false` | Disable SHA-256 chain hashing                       |
 
 ## Logged Events
 
 ### Session Events
 
-| Event | Description |
-|-------|-------------|
-| `session.start` | Session started with PRD |
-| `session.stop` | Session stopped (manual or automatic) |
-| `session.pause` | Session paused |
-| `session.resume` | Session resumed |
-| `session.complete` | Session completed successfully |
-| `session.fail` | Session failed with error |
+| Event              | Description                           |
+| ------------------ | ------------------------------------- |
+| `session.start`    | Session started with PRD              |
+| `session.stop`     | Session stopped (manual or automatic) |
+| `session.pause`    | Session paused                        |
+| `session.resume`   | Session resumed                       |
+| `session.complete` | Session completed successfully        |
+| `session.fail`     | Session failed with error             |
 
 ### API Events
 
-| Event | Description |
-|-------|-------------|
-| `api.request` | API request received |
-| `api.response` | API response sent |
-| `api.error` | API error occurred |
+| Event          | Description          |
+| -------------- | -------------------- |
+| `api.request`  | API request received |
+| `api.response` | API response sent    |
+| `api.error`    | API error occurred   |
 
 ### Authentication Events
 
-| Event | Description |
-|-------|-------------|
-| `auth.token.create` | Token created |
-| `auth.token.use` | Token used for authentication |
-| `auth.token.revoke` | Token revoked |
-| `auth.fail` | Authentication failed |
+| Event               | Description                   |
+| ------------------- | ----------------------------- |
+| `auth.token.create` | Token created                 |
+| `auth.token.use`    | Token used for authentication |
+| `auth.token.revoke` | Token revoked                 |
+| `auth.fail`         | Authentication failed         |
 | `auth.oidc.success` | OIDC authentication succeeded |
-| `auth.oidc.fail` | OIDC authentication failed |
+| `auth.oidc.fail`    | OIDC authentication failed    |
 
 ### Task Events
 
-| Event | Description |
-|-------|-------------|
-| `task.create` | Task created in queue |
-| `task.start` | Task started by agent |
+| Event           | Description                 |
+| --------------- | --------------------------- |
+| `task.create`   | Task created in queue       |
+| `task.start`    | Task started by agent       |
 | `task.complete` | Task completed successfully |
-| `task.fail` | Task failed with error |
+| `task.fail`     | Task failed with error      |
 
 ### Agent Events
 
-| Event | Description |
-|-------|-------------|
-| `agent.spawn` | Agent spawned |
-| `agent.action` | Agent performed action |
-| `agent.complete` | Agent completed work |
-| `agent.fail` | Agent encountered error |
+| Event            | Description             |
+| ---------------- | ----------------------- |
+| `agent.spawn`    | Agent spawned           |
+| `agent.action`   | Agent performed action  |
+| `agent.complete` | Agent completed work    |
+| `agent.fail`     | Agent encountered error |
 
 ## Log Format
 
@@ -128,16 +128,16 @@ Audit logs use JSON Lines format (one JSON object per line):
 
 ### Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `timestamp` | ISO 8601 | Event timestamp in UTC |
-| `event` | string | Event type (e.g., `session.start`) |
-| `level` | string | Log level: debug, info, warning, error |
-| `actor` | string | Who performed the action (user, token:name, agent:type) |
-| `resource` | string | Resource affected (optional) |
-| `details` | object | Event-specific details |
-| `metadata` | object | System metadata (hostname, PID, version) |
-| `chain_hash` | string | SHA-256 chain hash for integrity (v5.38.0) |
+| Field        | Type     | Description                                             |
+| ------------ | -------- | ------------------------------------------------------- |
+| `timestamp`  | ISO 8601 | Event timestamp in UTC                                  |
+| `event`      | string   | Event type (e.g., `session.start`)                      |
+| `level`      | string   | Log level: debug, info, warning, error                  |
+| `actor`      | string   | Who performed the action (user, token:name, agent:type) |
+| `resource`   | string   | Resource affected (optional)                            |
+| `details`    | object   | Event-specific details                                  |
+| `metadata`   | object   | System metadata (hostname, PID, version)                |
+| `chain_hash` | string   | SHA-256 chain hash for integrity (v5.38.0)              |
 
 ## Log Location
 
@@ -248,15 +248,15 @@ curl "http://localhost:57374/api/audit?start=2026-02-01&end=2026-02-15"
 
 ### Query Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `start` | ISO date | Start timestamp |
-| `end` | ISO date | End timestamp |
-| `event` | string | Filter by event type |
-| `level` | string | Filter by level (debug, info, warning, error) |
-| `actor` | string | Filter by actor |
-| `limit` | number | Max results (default: 100) |
-| `offset` | number | Pagination offset |
+| Parameter | Type     | Description                                   |
+| --------- | -------- | --------------------------------------------- |
+| `start`   | ISO date | Start timestamp                               |
+| `end`     | ISO date | End timestamp                                 |
+| `event`   | string   | Filter by event type                          |
+| `level`   | string   | Filter by level (debug, info, warning, error) |
+| `actor`   | string   | Filter by actor                               |
+| `limit`   | number   | Max results (default: 100)                    |
+| `offset`  | number   | Pagination offset                             |
 
 ### Get Summary
 
@@ -330,6 +330,7 @@ export LOKI_AUDIT_SYSLOG_PROTO=udp
 ```
 
 Details:
+
 - Uses Python stdlib `logging.handlers.SysLogHandler`
 - Facility: `LOG_LOCAL0`
 - Security actions forwarded at `WARNING` level
@@ -394,14 +395,14 @@ In addition to dashboard audit logs, agent actions are tracked separately.
 
 ### Tracked Actions
 
-| Action | Description |
-|--------|-------------|
-| `cli_invoke` | CLI command executed by agent |
-| `git_commit` | Git commit performed by agent |
-| `file_write` | File write operation |
-| `file_delete` | File delete operation |
-| `session_start` | Agent session started |
-| `session_stop` | Agent session stopped |
+| Action          | Description                   |
+| --------------- | ----------------------------- |
+| `cli_invoke`    | CLI command executed by agent |
+| `git_commit`    | Git commit performed by agent |
+| `file_write`    | File write operation          |
+| `file_delete`   | File delete operation         |
+| `session_start` | Agent session started         |
+| `session_stop`  | Agent session stopped         |
 
 ### Entry Format
 
@@ -452,7 +453,7 @@ Configuration:
 enterprise:
   audit:
     enabled: true
-    retention_days: 365  # 1 year minimum for SOC2
+    retention_days: 365 # 1 year minimum for SOC2
     integrity_check: true
     syslog_enabled: true
 ```
@@ -472,7 +473,7 @@ Configuration:
 enterprise:
   audit:
     enabled: true
-    retention_days: 2190  # 6 years
+    retention_days: 2190 # 6 years
     encrypt: true
     integrity_check: true
     syslog_enabled: true

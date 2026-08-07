@@ -44,6 +44,7 @@ The AI coding agent market has fragmented into four distinct segments: enterpris
 Emergence AI operates in two modes:
 
 **Agent-E (Open Source):** A web automation agent built on the AG2 framework (formerly AutoGen). It translates natural language commands into browser actions using a skills-based architecture. Core capabilities:
+
 - Web form automation (not PDF forms)
 - E-commerce navigation and product search
 - Content location across websites
@@ -52,6 +53,7 @@ Emergence AI operates in two modes:
 - Web search and information gathering
 
 **Emergence Platform (Enterprise):** An enterprise agentic platform with broader ambitions:
+
 - Goal-to-Agent Translation (ACA) -- automatically creates agents from business goals
 - Multi-agent orchestration engine with async execution, retries, and dependency management
 - Persistent shared memory and state across tasks
@@ -62,10 +64,12 @@ Emergence AI operates in two modes:
 #### Architecture
 
 Agent-E uses a two-agent model:
+
 - **User Proxy Agent:** Executes skills on behalf of the user
 - **Browser Navigation Agent:** Contains all web interaction skills
 
 Skills are divided into:
+
 - **Sensing Skills:** `geturl`, `get_dom_with_content_type` -- understand webpage state
 - **Action Skills:** `click`, `enter text`, `open url` -- interact with the web
 
@@ -104,6 +108,7 @@ Enterprise teams needing web workflow automation and data pipeline orchestration
 Rork is an AI-powered no-code platform specifically for building mobile applications. Users describe app ideas in natural language, and Rork generates production-ready mobile apps using React Native and Expo.
 
 Core capabilities:
+
 - Natural language to mobile app generation (iOS + Android + Web)
 - Live preview via Expo Go with QR code scanning
 - Full code export (React Native source code)
@@ -121,11 +126,12 @@ Core capabilities:
 #### Pricing
 
 Credit-based subscription model (credits reset monthly, no rollover):
-| Plan | Price | Credits/Month | Key Features |
-|------|-------|--------------|--------------|
-| Free | $0 | 35 (5/day) | Basic prototyping |
-| Junior | $25/mo | ~250 | Idea validation, demos |
-| Senior | $100/mo | ~750 | Full MVP building and iteration |
+
+| Plan   | Price   | Credits/Month | Key Features                    |
+| ------ | ------- | ------------- | ------------------------------- |
+| Free   | $0      | 35 (5/day)    | Basic prototyping               |
+| Junior | $25/mo  | ~250          | Idea validation, demos          |
+| Senior | $100/mo | ~750          | Full MVP building and iteration |
 
 Each AI interaction consumes one credit. Complex or iterative builds can consume credits rapidly.
 
@@ -156,6 +162,7 @@ Non-technical entrepreneurs and product managers who want to prototype or build 
 Claude Code is Anthropic's agentic coding tool -- the most comprehensive developer coding assistant in the market as of March 2026. It operates across terminal, VS Code, JetBrains, a desktop app, and the web.
 
 Core capabilities:
+
 - Codebase understanding and multi-file editing
 - Command execution and shell integration
 - Git workflows (commits, branches, PRs)
@@ -185,13 +192,13 @@ Core capabilities:
 
 #### Pricing
 
-| Plan | Price | Usage Limit | Notes |
-|------|-------|-------------|-------|
-| Free | $0 | Basic | Limited |
-| Pro | $20/mo | 5x Free | 5-hour rolling window + 7-day cap |
-| Max 5x | $100/mo | 5x Pro | For moderate power users |
-| Max 20x | $200/mo | 20x Pro | For heavy usage |
-| API (BYOK) | Pay-per-token | Unlimited | Haiku: $1/$5, Sonnet: $3/$15, Opus: $5/$25 per 1M tokens |
+| Plan       | Price         | Usage Limit | Notes                                                    |
+| ---------- | ------------- | ----------- | -------------------------------------------------------- |
+| Free       | $0            | Basic       | Limited                                                  |
+| Pro        | $20/mo        | 5x Free     | 5-hour rolling window + 7-day cap                        |
+| Max 5x     | $100/mo       | 5x Pro      | For moderate power users                                 |
+| Max 20x    | $200/mo       | 20x Pro     | For heavy usage                                          |
+| API (BYOK) | Pay-per-token | Unlimited   | Haiku: $1/$5, Sonnet: $3/$15, Opus: $5/$25 per 1M tokens |
 
 Prompt caching provides 90% input cost reduction. Batch API offers 50% discount for async processing.
 
@@ -223,6 +230,7 @@ Professional developers and engineering teams who want an AI pair programmer for
 Codex CLI is OpenAI's open-source coding agent that runs locally in the terminal. Built in Rust for performance, it provides an interactive coding experience with strong safety controls.
 
 Core capabilities:
+
 - Interactive terminal UI with real-time action review
 - Non-interactive `exec` mode for scripting and automation
 - Conversation resumption (persistent sessions)
@@ -248,13 +256,13 @@ Core capabilities:
 
 #### Pricing
 
-| Access Method | Price | Notes |
-|--------------|-------|-------|
-| ChatGPT Go | $8/mo | Budget option, basic Codex access |
-| ChatGPT Plus | $20/mo | 30-150 messages per 5-hour window |
-| ChatGPT Pro | $200/mo | Highest limits |
-| API (BYOK) | $1.50/$6 per 1M tokens | codex-mini-latest, 75% cache discount |
-| Open Source (free) | $0 + API costs | Self-host, bring your own keys |
+| Access Method      | Price                  | Notes                                 |
+| ------------------ | ---------------------- | ------------------------------------- |
+| ChatGPT Go         | $8/mo                  | Budget option, basic Codex access     |
+| ChatGPT Plus       | $20/mo                 | 30-150 messages per 5-hour window     |
+| ChatGPT Pro        | $200/mo                | Highest limits                        |
+| API (BYOK)         | $1.50/$6 per 1M tokens | codex-mini-latest, 75% cache discount |
+| Open Source (free) | $0 + API costs         | Self-host, bring your own keys        |
 
 Open-source maintainers (1,000+ star projects) qualify for 6 months of free ChatGPT Pro access.
 
@@ -277,29 +285,29 @@ Developers who value open-source tooling, speed, and terminal-native workflows. 
 
 ## Feature Comparison Matrix
 
-| Feature | Emergence AI (Agent-E) | Rork | Claude Code CLI | Codex CLI | Loki Mode |
-|---------|:---------------------:|:----:|:--------------:|:---------:|:---------:|
-| **Primary Focus** | Web automation | Mobile apps | Coding assistant | Coding assistant | PRD-to-deploy |
-| **Open Source** | Partial (Agent-E only) | No | Source-available | Yes (Apache-2.0) | Yes |
-| **Multi-Provider** | Yes (OpenAI, Azure, Ollama) | Yes (Gemini, Claude) | Partial (Claude models via Bedrock/Vertex/Foundry) | No (GPT only) | Yes (5 providers, 3+ model families) |
-| **Multi-Agent** | Yes (2-agent model) | No | Yes (coordinated teams) | Yes (experimental) | Yes (41 agent types) |
-| **Autonomous Iteration** | No (task-level) | No | Partial (/loop, /schedule) | No (requires prompting) | Yes (RARV loop + completion council) |
-| **SDLC Pipeline** | No | No | No | No | Yes (9 phases) |
-| **Code Review** | No | No | Yes (single-pass) | Yes (single-pass) | Yes (3-reviewer blind) |
-| **Quality Gates** | No | No | No | No | Yes (10 gates) |
-| **Anti-Sycophancy** | No | No | No | No | Yes (devil's advocate) |
-| **Memory System** | Enterprise only | No | CLAUDE.md + auto-memory | Session resumption | Episodic/semantic/procedural |
-| **Self-Hosted** | Partial (Agent-E) | No | Partial (CLI local, but subscription or API required) | Yes (with API key) | Yes (fully, any provider API key) |
-| **CI/CD Integration** | No | No | Yes (GH Actions, GitLab) | Yes (GH Action) | Yes (built-in) |
-| **Complexity Detection** | No | No | No | No | Yes (auto-tier) |
-| **Budget Controls** | No | Credit system | Rate limits | Rate limits | Yes (circuit breaker) |
-| **Legacy System Healing** | No | No | No | No | Yes |
-| **Benchmark (SWE-bench)** | N/A | N/A | 80.9% (Opus 4.5) | 56.8% (Pro) | Configurable (uses any model) |
-| **CLI Interface** | No (Python API) | No (web UI) | Yes | Yes | Yes |
-| **IDE Integration** | No | No | Yes (VS Code, JetBrains) | No | Yes (VS Code extension) |
-| **MCP Support** | No | No | Yes | Yes | Yes (15 tools) |
-| **Cost (Heavy Use)** | Enterprise contract | $100/mo | $200/mo or API | $20-200/mo or API | $0 + API costs |
-| **Context Window** | Model-dependent | N/A | 200K tokens | Model-dependent | Model-dependent |
+| Feature                   |   Emergence AI (Agent-E)    |         Rork         |                    Claude Code CLI                    |        Codex CLI        |              Loki Mode               |
+| ------------------------- | :-------------------------: | :------------------: | :---------------------------------------------------: | :---------------------: | :----------------------------------: |
+| **Primary Focus**         |       Web automation        |     Mobile apps      |                   Coding assistant                    |    Coding assistant     |            PRD-to-deploy             |
+| **Open Source**           |   Partial (Agent-E only)    |          No          |                   Source-available                    |    Yes (Apache-2.0)     |                 Yes                  |
+| **Multi-Provider**        | Yes (OpenAI, Azure, Ollama) | Yes (Gemini, Claude) |  Partial (Claude models via Bedrock/Vertex/Foundry)   |      No (GPT only)      | Yes (5 providers, 3+ model families) |
+| **Multi-Agent**           |     Yes (2-agent model)     |          No          |                Yes (coordinated teams)                |   Yes (experimental)    |         Yes (41 agent types)         |
+| **Autonomous Iteration**  |       No (task-level)       |          No          |              Partial (/loop, /schedule)               | No (requires prompting) | Yes (RARV loop + completion council) |
+| **SDLC Pipeline**         |             No              |          No          |                          No                           |           No            |            Yes (9 phases)            |
+| **Code Review**           |             No              |          No          |                   Yes (single-pass)                   |    Yes (single-pass)    |        Yes (3-reviewer blind)        |
+| **Quality Gates**         |             No              |          No          |                          No                           |           No            |            Yes (10 gates)            |
+| **Anti-Sycophancy**       |             No              |          No          |                          No                           |           No            |        Yes (devil's advocate)        |
+| **Memory System**         |       Enterprise only       |          No          |                CLAUDE.md + auto-memory                |   Session resumption    |     Episodic/semantic/procedural     |
+| **Self-Hosted**           |      Partial (Agent-E)      |          No          | Partial (CLI local, but subscription or API required) |   Yes (with API key)    |  Yes (fully, any provider API key)   |
+| **CI/CD Integration**     |             No              |          No          |               Yes (GH Actions, GitLab)                |     Yes (GH Action)     |            Yes (built-in)            |
+| **Complexity Detection**  |             No              |          No          |                          No                           |           No            |           Yes (auto-tier)            |
+| **Budget Controls**       |             No              |    Credit system     |                      Rate limits                      |       Rate limits       |        Yes (circuit breaker)         |
+| **Legacy System Healing** |             No              |          No          |                          No                           |           No            |                 Yes                  |
+| **Benchmark (SWE-bench)** |             N/A             |         N/A          |                   80.9% (Opus 4.5)                    |       56.8% (Pro)       |    Configurable (uses any model)     |
+| **CLI Interface**         |       No (Python API)       |     No (web UI)      |                          Yes                          |           Yes           |                 Yes                  |
+| **IDE Integration**       |             No              |          No          |               Yes (VS Code, JetBrains)                |           No            |       Yes (VS Code extension)        |
+| **MCP Support**           |             No              |          No          |                          Yes                          |           Yes           |            Yes (15 tools)            |
+| **Cost (Heavy Use)**      |     Enterprise contract     |       $100/mo        |                    $200/mo or API                     |    $20-200/mo or API    |            $0 + API costs            |
+| **Context Window**        |       Model-dependent       |         N/A          |                      200K tokens                      |     Model-dependent     |           Model-dependent            |
 
 ---
 
@@ -335,13 +343,13 @@ Developers who value open-source tooling, speed, and terminal-native workflows. 
 
 ### Segment Breakdown
 
-| Segment | Players | Target User | Price Range |
-|---------|---------|-------------|-------------|
-| **Autonomous SDLC** | Loki Mode | Engineering teams, solo developers, startups | $0 + API costs |
-| **Enterprise Automation** | Emergence AI Platform | Enterprise data/ops teams | $$$$ (custom) |
-| **Developer Coding Assistant** | Claude Code CLI, Codex CLI | Professional developers | $20-200/mo |
-| **No-Code App Builder** | Rork | Non-technical founders, PMs | $0-100/mo |
-| **Web Automation** | Agent-E (open source) | Automation engineers | $0 + API costs |
+| Segment                        | Players                    | Target User                                  | Price Range    |
+| ------------------------------ | -------------------------- | -------------------------------------------- | -------------- |
+| **Autonomous SDLC**            | Loki Mode                  | Engineering teams, solo developers, startups | $0 + API costs |
+| **Enterprise Automation**      | Emergence AI Platform      | Enterprise data/ops teams                    | $$$$ (custom)  |
+| **Developer Coding Assistant** | Claude Code CLI, Codex CLI | Professional developers                      | $20-200/mo     |
+| **No-Code App Builder**        | Rork                       | Non-technical founders, PMs                  | $0-100/mo      |
+| **Web Automation**             | Agent-E (open source)      | Automation engineers                         | $0 + API costs |
 
 ### Who Targets Whom
 
@@ -357,6 +365,7 @@ Developers who value open-source tooling, speed, and terminal-native workflows. 
 ### Gap 1: No Competitor Offers End-to-End Autonomous SDLC
 
 Claude Code and Codex CLI are powerful coding assistants, but they operate at the task level. Claude Code's `/loop` and `/schedule` commands provide task-level automation (repeat a prompt, run periodic checks), and its Agent Teams can coordinate sub-agents -- but these are building blocks, not a complete SDLC pipeline. No competitor provides:
+
 - Autonomous PRD parsing and task decomposition into phased work
 - Multi-phase SDLC execution (plan, implement, test, review, deploy) with phase gates
 - Continuous iteration loops with RARV cycle and model tier selection
@@ -368,6 +377,7 @@ Claude Code and Codex CLI are powerful coding assistants, but they operate at th
 ### Gap 2: No True Multi-Model-Family Flexibility
 
 Every competitor is locked to a single model family (even if hostable on multiple clouds):
+
 - Claude Code: Claude models only (hostable on Bedrock, Vertex AI, Foundry -- but still Claude)
 - Codex CLI: OpenAI models only
 - Emergence AI: Primarily OpenAI, some alternatives via LiteLLM
@@ -380,6 +390,7 @@ Every competitor is locked to a single model family (even if hostable on multipl
 ### Gap 3: No Structured Quality Assurance Pipeline
 
 Claude Code and Codex CLI offer single-pass code review. Neither provides:
+
 - 3-reviewer blind parallel review
 - Anti-sycophancy checks (devil's advocate on unanimous approval)
 - Severity-based blocking gates
@@ -400,6 +411,7 @@ Claude Code and Codex CLI offer single-pass code review. Neither provides:
 ### Gap 5: No Legacy System Healing
 
 No competitor addresses the challenge of modernizing legacy codebases:
+
 - No friction-as-semantics analysis
 - No failure-first learning
 - No institutional knowledge preservation
@@ -431,6 +443,7 @@ Rork generates mobile apps but cannot handle backends, APIs, or infrastructure. 
 **"The only autonomous system that takes a PRD to a deployed, tested, reviewed product -- using any AI provider you choose."**
 
 This positioning highlights three unique capabilities no competitor offers together:
+
 1. **Autonomous SDLC** (not just coding assistance)
 2. **Multi-provider** (not locked to one vendor)
 3. **Quality-assured** (10-gate system, 3-reviewer blind review)
@@ -438,45 +451,49 @@ This positioning highlights three unique capabilities no competitor offers toget
 ### Differentiation by Competitor
 
 #### vs. Claude Code CLI
-| Dimension | Claude Code | Loki Mode |
-|-----------|-------------|-----------|
-| Autonomy | Semi-autonomous (/loop, /schedule, but no SDLC orchestration) | Fully autonomous (RARV loop + completion council) |
-| Scope | Individual coding tasks, PR reviews | Full SDLC pipeline (9 phases) |
-| Providers | Claude models only (multi-cloud hosting) | 5 providers, 3+ model families |
-| Quality | Single-pass review, GitHub Action | 10-gate, 3-reviewer blind system, anti-sycophancy |
-| Memory | CLAUDE.md + auto-memory (session-scoped) | Episodic/semantic/procedural (cross-project) |
-| Cost model | Subscription with rate limits or API | Self-hosted, pay-per-token, any provider |
-| IDE/surface | Terminal, VS Code, JetBrains, Desktop, Web | Terminal, VS Code (via extension) |
-| **Loki Mode advantage:** | End-to-end SDLC autonomy, multi-model flexibility, structured quality |
+
+| Dimension                  | Claude Code                                                                             | Loki Mode                                         |
+| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Autonomy                   | Semi-autonomous (/loop, /schedule, but no SDLC orchestration)                           | Fully autonomous (RARV loop + completion council) |
+| Scope                      | Individual coding tasks, PR reviews                                                     | Full SDLC pipeline (9 phases)                     |
+| Providers                  | Claude models only (multi-cloud hosting)                                                | 5 providers, 3+ model families                    |
+| Quality                    | Single-pass review, GitHub Action                                                       | 10-gate, 3-reviewer blind system, anti-sycophancy |
+| Memory                     | CLAUDE.md + auto-memory (session-scoped)                                                | Episodic/semantic/procedural (cross-project)      |
+| Cost model                 | Subscription with rate limits or API                                                    | Self-hosted, pay-per-token, any provider          |
+| IDE/surface                | Terminal, VS Code, JetBrains, Desktop, Web                                              | Terminal, VS Code (via extension)                 |
+| **Loki Mode advantage:**   | End-to-end SDLC autonomy, multi-model flexibility, structured quality                   |
 | **Claude Code advantage:** | Broader surface coverage (IDE, desktop, web, mobile), stronger single-task capabilities |
 
 #### vs. Codex CLI
-| Dimension | Codex CLI | Loki Mode |
-|-----------|-----------|-----------|
-| Autonomy | Assisted (human prompts each task) | Fully autonomous |
-| Open source | Yes (Apache-2.0) | Yes |
-| Speed | 240+ tokens/sec | Depends on provider |
-| Providers | OpenAI only | 5 providers |
-| Multi-agent | Experimental (isolated) | 41 agent types, 8 swarms |
-| Quality | Single-pass review | 10-gate system |
+
+| Dimension                | Codex CLI                                               | Loki Mode                |
+| ------------------------ | ------------------------------------------------------- | ------------------------ |
+| Autonomy                 | Assisted (human prompts each task)                      | Fully autonomous         |
+| Open source              | Yes (Apache-2.0)                                        | Yes                      |
+| Speed                    | 240+ tokens/sec                                         | Depends on provider      |
+| Providers                | OpenAI only                                             | 5 providers              |
+| Multi-agent              | Experimental (isolated)                                 | 41 agent types, 8 swarms |
+| Quality                  | Single-pass review                                      | 10-gate system           |
 | **Loki Mode advantage:** | Autonomous pipeline, multi-provider, mature multi-agent |
 
 #### vs. Emergence AI
-| Dimension | Emergence AI | Loki Mode |
-|-----------|-------------|-----------|
-| Focus | Web/workflow automation | Software development |
-| Pricing | Enterprise contracts | Free + API costs |
-| Self-hosted | VPC option | Fully self-hosted |
-| Open source | Partial | Yes |
+
+| Dimension                | Emergence AI                                                | Loki Mode            |
+| ------------------------ | ----------------------------------------------------------- | -------------------- |
+| Focus                    | Web/workflow automation                                     | Software development |
+| Pricing                  | Enterprise contracts                                        | Free + API costs     |
+| Self-hosted              | VPC option                                                  | Fully self-hosted    |
+| Open source              | Partial                                                     | Yes                  |
 | **Loki Mode advantage:** | Purpose-built for software, open source, accessible pricing |
 
 #### vs. Rork
-| Dimension | Rork | Loki Mode |
-|-----------|------|-----------|
-| Focus | Mobile apps (no-code) | Full-stack software |
-| Target user | Non-technical | Developers + technical teams |
-| Quality | No testing/review | 10-gate quality system |
-| Output | Mobile app only | Any software type |
+
+| Dimension                | Rork                                         | Loki Mode                    |
+| ------------------------ | -------------------------------------------- | ---------------------------- |
+| Focus                    | Mobile apps (no-code)                        | Full-stack software          |
+| Target user              | Non-technical                                | Developers + technical teams |
+| Quality                  | No testing/review                            | 10-gate quality system       |
+| Output                   | Mobile app only                              | Any software type            |
 | **Loki Mode advantage:** | Developer-grade, full-stack, quality-assured |
 
 ### Messaging Framework
@@ -503,6 +520,7 @@ This avoids direct feature-by-feature competition on model quality (where Anthro
 ### 2. Publish Autonomous Benchmark Results
 
 Claude Code publishes SWE-bench scores. Codex CLI publishes Terminal-Bench scores. Loki Mode should publish "PRD-to-Deploy" benchmark results:
+
 - Time from PRD to working deployed product
 - Lines of code generated per PRD
 - Test coverage achieved autonomously
@@ -518,6 +536,7 @@ Loki Mode already supports 5 providers. Extend this to support any CLI agent as 
 ### 4. Target the "AI-Native Startup" Segment
 
 Solo founders and small teams using AI to build products overnight represent a growing segment that no competitor specifically targets:
+
 - Claude Code is for professional developers doing daily work
 - Codex CLI is for terminal-native developers
 - Rork is for non-technical mobile app builders
@@ -532,20 +551,21 @@ Rork demonstrates demand for AI-generated mobile apps, but with serious quality 
 ### 6. Enterprise Self-Hosted Narrative
 
 Emergence AI charges enterprise contract rates for VPC deployment. Loki Mode is already fully self-hosted and free. For regulated industries (finance, healthcare, government) that cannot use cloud-hosted AI tools, Loki Mode with BYOK API access is compelling:
+
 - No data leaves your infrastructure (beyond API calls)
 - Audit trail via `.loki/` state files
 - Configurable security controls (LOKI_SANDBOX_MODE, LOKI_BLOCKED_COMMANDS)
 
 ### 7. Watch List -- Emerging Threats
 
-| Threat | Severity | Timeline | Mitigation |
-|--------|----------|----------|------------|
-| Claude Code Agent SDK enables custom SDLC pipelines | HIGH | 3-6 months | Deepen multi-provider advantage (Agent SDK is Claude-only); publish PRD-to-Deploy benchmarks that prove the integrated pipeline |
-| Claude Code adds autonomous mode natively | HIGH | 6-12 months | Quality gates, memory system, and multi-provider flexibility are structural advantages that cannot be replicated by adding a single feature |
-| Codex CLI adds orchestration layer | MEDIUM | 6-12 months | Codex is OpenAI-only; emphasize 41 agent types, cross-project memory, healing |
-| New entrant builds "Rork for full-stack" | MEDIUM | 6-12 months | Add mobile PRD template; Loki Mode's quality gates differentiate from naive generation |
-| Open-source Auto-Claude gains traction | LOW | Ongoing | Already adopted key patterns (v3.4.0); maintain feature lead |
-| Enterprise CI/CD platforms (GitHub, GitLab) add native AI SDLC | HIGH | 12-18 months | Self-hosted, provider-agnostic positioning; these will be vendor-locked |
+| Threat                                                         | Severity | Timeline     | Mitigation                                                                                                                                  |
+| -------------------------------------------------------------- | -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code Agent SDK enables custom SDLC pipelines            | HIGH     | 3-6 months   | Deepen multi-provider advantage (Agent SDK is Claude-only); publish PRD-to-Deploy benchmarks that prove the integrated pipeline             |
+| Claude Code adds autonomous mode natively                      | HIGH     | 6-12 months  | Quality gates, memory system, and multi-provider flexibility are structural advantages that cannot be replicated by adding a single feature |
+| Codex CLI adds orchestration layer                             | MEDIUM   | 6-12 months  | Codex is OpenAI-only; emphasize 41 agent types, cross-project memory, healing                                                               |
+| New entrant builds "Rork for full-stack"                       | MEDIUM   | 6-12 months  | Add mobile PRD template; Loki Mode's quality gates differentiate from naive generation                                                      |
+| Open-source Auto-Claude gains traction                         | LOW      | Ongoing      | Already adopted key patterns (v3.4.0); maintain feature lead                                                                                |
+| Enterprise CI/CD platforms (GitHub, GitLab) add native AI SDLC | HIGH     | 12-18 months | Self-hosted, provider-agnostic positioning; these will be vendor-locked                                                                     |
 
 ### 8. Key Risk: Claude Code Agent SDK
 
@@ -556,6 +576,7 @@ The most significant near-term competitive threat is Anthropic's Agent SDK (http
 - It would benefit from Anthropic's ongoing model improvements
 
 **However, Loki Mode's structural advantages remain:**
+
 1. **Multi-provider:** Agent SDK is Claude-only. Loki Mode works with any provider.
 2. **Battle-tested pipeline:** 10 quality gates, completion council, healing, memory -- these took months to build and validate. A new Agent SDK project starts from zero.
 3. **Open source and self-hosted:** No dependency on Anthropic's platform decisions.
@@ -566,12 +587,14 @@ The most significant near-term competitive threat is Anthropic's Agent SDK (http
 ## Sources
 
 ### Emergence AI
+
 - [Emergence AI Platform](https://www.emergence.ai/platform)
 - [Agent-E GitHub Repository](https://github.com/EmergenceAI/Agent-E)
 - [Emergence AI SOTA Results on WebVoyager Benchmark](https://www.emergence.ai/blog/agent-e-sota)
 - [Emergence AI Multi-Agent Orchestrator](https://www.emergence.ai/blog/introducing-the-emergence-multi-agent-orchestrator)
 
 ### Rork
+
 - [Rork Official Site](https://rork.com)
 - [Rork AI Review 2026 -- Rapid Dev](https://www.rapidevelopers.com/blog/rork-ai-review)
 - [Rork AI Review 2026: Pricing, Features & Honest Verdict -- No Code MBA](https://www.nocode.mba/articles/rork-ai-review-2026)
@@ -579,6 +602,7 @@ The most significant near-term competitive threat is Anthropic's Agent SDK (http
 - [Rork on Product Hunt](https://www.producthunt.com/products/rork-app-for-ios)
 
 ### Claude Code CLI
+
 - [Claude Code Overview](https://code.claude.com/docs/en/overview)
 - [Claude Code GitHub](https://github.com/anthropics/claude-code)
 - [Claude Code on Amazon Bedrock](https://code.claude.com/docs/en/amazon-bedrock)
@@ -591,6 +615,7 @@ The most significant near-term competitive threat is Anthropic's Agent SDK (http
 - [Claude Code Loops and Scheduling -- Medium](https://medium.com/@richardhightower/put-claude-on-autopilot-scheduled-tasks-with-loop-and-schedule-built-in-skills-43f3be5ac1ec)
 
 ### Codex CLI
+
 - [Codex CLI Documentation](https://developers.openai.com/codex/cli)
 - [Codex CLI Features](https://developers.openai.com/codex/cli/features)
 - [Codex CLI GitHub](https://github.com/openai/codex)
@@ -598,6 +623,7 @@ The most significant near-term competitive threat is Anthropic's Agent SDK (http
 - [Codex for Open Source](https://developers.openai.com/codex/open-source)
 
 ### Comparative Analysis
+
 - [Codex vs Claude Code Benchmarks -- MorphLLM](https://www.morphllm.com/comparisons/codex-vs-claude-code)
 - [State of AI Coding Agents 2026 -- Medium](https://medium.com/@dave-patten/the-state-of-ai-coding-agents-2026-from-pair-programming-to-autonomous-ai-teams-b11f2b39232a)
 - [Best AI Coding Agents 2026 -- Codegen](https://codegen.com/blog/best-ai-coding-agents/)

@@ -2,22 +2,23 @@
 
 ## Common Issues & Solutions
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Agent stuck/no progress | Lost context | Read `.loki/CONTINUITY.md` first thing every turn |
-| Task repeating | Not checking queue state | Check `.loki/queue/*.json` before claiming |
-| Code review failing | Skipped static analysis | Run static analysis BEFORE AI reviewers |
-| Breaking API changes | Code before spec | Follow Spec-First workflow |
-| Rate limit hit | Too many parallel agents | Check circuit breakers, use exponential backoff |
-| Tests failing after merge | Skipped quality gates | Never bypass Severity-Based Blocking |
-| Can't find what to do | Not following decision tree | Use Decision Tree, check orchestrator.json |
-| Memory/context growing | Not using ledgers | Write to ledgers after completing tasks |
+| Issue                     | Cause                       | Solution                                          |
+| ------------------------- | --------------------------- | ------------------------------------------------- |
+| Agent stuck/no progress   | Lost context                | Read `.loki/CONTINUITY.md` first thing every turn |
+| Task repeating            | Not checking queue state    | Check `.loki/queue/*.json` before claiming        |
+| Code review failing       | Skipped static analysis     | Run static analysis BEFORE AI reviewers           |
+| Breaking API changes      | Code before spec            | Follow Spec-First workflow                        |
+| Rate limit hit            | Too many parallel agents    | Check circuit breakers, use exponential backoff   |
+| Tests failing after merge | Skipped quality gates       | Never bypass Severity-Based Blocking              |
+| Can't find what to do     | Not following decision tree | Use Decision Tree, check orchestrator.json        |
+| Memory/context growing    | Not using ledgers           | Write to ledgers after completing tasks           |
 
 ---
 
 ## Red Flags - Never Do These
 
 ### Implementation Anti-Patterns
+
 - **NEVER** skip code review between tasks
 - **NEVER** proceed with unfixed Critical/High/Medium issues
 - **NEVER** dispatch reviewers sequentially (always parallel - 3x faster)
@@ -25,17 +26,20 @@
 - **NEVER** implement without reading task requirements first
 
 ### Review Anti-Patterns
+
 - **NEVER** use opus for reviews (always sonnet for balanced quality/cost)
 - **NEVER** aggregate before all 3 reviewers complete
 - **NEVER** skip re-review after fixes
 
 ### System Anti-Patterns
+
 - **NEVER** delete .loki/state/ directory while running
 - **NEVER** manually edit queue files without file locking
 - **NEVER** skip checkpoints before major operations
 - **NEVER** ignore circuit breaker states
 
 ### Always Do These
+
 - **ALWAYS** launch all 3 reviewers in single message (3 Task calls)
 - **ALWAYS** specify model: "sonnet" for each reviewer
 - **ALWAYS** wait for all reviewers before aggregating
@@ -53,50 +57,55 @@ Agents rationalize failures to avoid acknowledging mistakes. This table provides
 
 ### Common Agent Rationalizations
 
-| Rationalization | Why It's Wrong | Required Action |
-|-----------------|----------------|-----------------|
-| "I'll refactor later" | Technical debt accumulates, later never comes | Refactor now or reduce scope |
-| "This is just an edge case" | Edge cases are features users encounter | Handle edge case or document limitation |
-| "The tests are flaky" | Flaky tests hide real bugs | Fix flaky test before proceeding |
-| "It works on my machine" | Only CI environment matters | Must pass CI |
-| "This is a temporary workaround" | Temporary becomes permanent | No workarounds without issue filed |
-| "The spec is unclear" | Unclear spec = ask for clarification | Block until spec clarified |
-| "This is out of scope" | Scope creep rationalization | Verify against `.loki/queue/` task definition |
-| "We can optimize later" | Performance issues compound over time | Implement acceptable performance OR document as known limitation |
-| "This is good enough" | Premature completion before verification | Run full test suite before claiming completion |
-| "The error is benign" | Dismissing errors without investigation | Investigate error, document root cause |
-| "I already verified this" | Claiming verification without evidence | Show command output or test results |
-| "The documentation is outdated" | Dismissing doc conflicts without checking | Verify claim, update docs if true, follow docs if false |
+| Rationalization                  | Why It's Wrong                                | Required Action                                                  |
+| -------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| "I'll refactor later"            | Technical debt accumulates, later never comes | Refactor now or reduce scope                                     |
+| "This is just an edge case"      | Edge cases are features users encounter       | Handle edge case or document limitation                          |
+| "The tests are flaky"            | Flaky tests hide real bugs                    | Fix flaky test before proceeding                                 |
+| "It works on my machine"         | Only CI environment matters                   | Must pass CI                                                     |
+| "This is a temporary workaround" | Temporary becomes permanent                   | No workarounds without issue filed                               |
+| "The spec is unclear"            | Unclear spec = ask for clarification          | Block until spec clarified                                       |
+| "This is out of scope"           | Scope creep rationalization                   | Verify against `.loki/queue/` task definition                    |
+| "We can optimize later"          | Performance issues compound over time         | Implement acceptable performance OR document as known limitation |
+| "This is good enough"            | Premature completion before verification      | Run full test suite before claiming completion                   |
+| "The error is benign"            | Dismissing errors without investigation       | Investigate error, document root cause                           |
+| "I already verified this"        | Claiming verification without evidence        | Show command output or test results                              |
+| "The documentation is outdated"  | Dismissing doc conflicts without checking     | Verify claim, update docs if true, follow docs if false          |
 
 ### Red Flag Detection Patterns
 
 Behaviors that indicate rationalization in progress:
 
 **Hedging Language**
+
 - "probably" - Replace with verified facts
 - "should be fine" - Replace with test results
 - "most likely" - Replace with confirmed behavior
 - "I think" - Replace with verified knowledge
 
 **Minimization Language**
+
 - "just a small change" - All changes require verification
 - "simple fix" - Complexity is determined by test results
 - "minor update" - Impact is determined by CI, not assumption
 - "quick tweak" - Speed claims require evidence
 
 **Scope Changes Mid-Task**
+
 - Expanding scope without explicit justification
 - Reducing scope without documenting limitations
 - Changing requirements interpretation silently
 - Adding "nice to have" features not in spec
 
 **Verification Skipping**
+
 - Moving to next task without running tests
 - Claiming success without evidence
 - Dismissing failed checks as irrelevant
 - "The other component handles this" - Verify integration, don't assume
 
 **Unverified Claims**
+
 - "I checked and it's fine" without showing output
 - Referencing tests that were not actually run
 - Claiming compatibility without testing
@@ -105,6 +114,7 @@ Behaviors that indicate rationalization in progress:
 ### Enforcement Protocol
 
 When rationalization is detected:
+
 1. **Stop** - Do not proceed with the rationalized action
 2. **Identify** - Name the specific rationalization from the table
 3. **Counter** - Apply the required action from the table
@@ -115,16 +125,19 @@ When rationalization is detected:
 ## Multi-Tiered Fallback System
 
 ### Model-Level Fallbacks
+
 ```
 Primary (opus) fails -> Try sonnet -> Try haiku -> Escalate
 ```
 
 ### Workflow-Level Fallbacks
+
 ```
 Complex approach fails -> Try simpler approach -> Try minimal approach -> Escalate
 ```
 
 ### Human Escalation Triggers
+
 - Confidence score below 0.40
 - 3+ consecutive failures on same task
 - Security-critical decisions
@@ -276,31 +289,35 @@ The circuit breaker prevents cascading failures by temporarily disabling operati
 
 #### State Behaviors
 
-| State | Behavior | Requests | Transitions |
-|-------|----------|----------|-------------|
-| **CLOSED** | Normal operation | All requests pass through | -> OPEN: 3+ failures in 60s window |
-| **OPEN** | Circuit tripped | All requests immediately rejected with cached error | -> HALF_OPEN: After 300s cooldown expires |
-| **HALF_OPEN** | Recovery testing | 1 request allowed per 10s interval | -> CLOSED: 3 consecutive successes |
-| | | | -> OPEN: Any single failure |
+| State         | Behavior         | Requests                                            | Transitions                               |
+| ------------- | ---------------- | --------------------------------------------------- | ----------------------------------------- |
+| **CLOSED**    | Normal operation | All requests pass through                           | -> OPEN: 3+ failures in 60s window        |
+| **OPEN**      | Circuit tripped  | All requests immediately rejected with cached error | -> HALF_OPEN: After 300s cooldown expires |
+| **HALF_OPEN** | Recovery testing | 1 request allowed per 10s interval                  | -> CLOSED: 3 consecutive successes        |
+|               |                  |                                                     | -> OPEN: Any single failure               |
 
 #### State Transition Rules
 
 **CLOSED -> OPEN**
+
 - Trigger: `failure_count >= 3` within 60-second `failure_window`
 - Action: Set `cooldown_until = now + 300s`
 - Effect: All requests return immediately with last error
 
 **OPEN -> HALF_OPEN**
+
 - Trigger: `current_time >= cooldown_until`
 - Action: Reset `failure_count = 0`, `success_count = 0`
 - Effect: One probe request allowed through
 
 **HALF_OPEN -> CLOSED**
+
 - Trigger: `success_count >= 3` (consecutive)
 - Action: Reset all counters, clear timestamps
 - Effect: Resume normal operation
 
 **HALF_OPEN -> OPEN**
+
 - Trigger: Any single failure
 - Action: Set new `cooldown_until = now + 300s`
 - Effect: Back to blocking all requests
@@ -310,11 +327,13 @@ The circuit breaker prevents cascading failures by temporarily disabling operati
 When a circuit breaker is OPEN:
 
 1. **Check State**
+
    ```bash
    cat .loki/state/circuit-breakers.json | jq '.["api/claude"]'
    ```
 
 2. **Calculate Wait Time**
+
    ```bash
    # Check cooldown_until timestamp
    # Wait until: cooldown_until - current_time
@@ -341,31 +360,34 @@ When a circuit breaker is OPEN:
 
 #### Configuration Tuning
 
-| Parameter | Default | Description | When to Adjust |
-|-----------|---------|-------------|----------------|
-| `threshold` | 3 | Failures to trip circuit | Increase for flaky networks |
-| `window` | 60s | Failure counting window | Increase for bursty errors |
-| `cooldown` | 300s | OPEN state duration | Decrease if errors resolve quickly |
-| `half_open_interval` | 10s | Time between probe requests | Increase for slow recovery APIs |
-| `recovery_threshold` | 3 | Successes to close circuit | Increase for critical paths |
+| Parameter            | Default | Description                 | When to Adjust                     |
+| -------------------- | ------- | --------------------------- | ---------------------------------- |
+| `threshold`          | 3       | Failures to trip circuit    | Increase for flaky networks        |
+| `window`             | 60s     | Failure counting window     | Increase for bursty errors         |
+| `cooldown`           | 300s    | OPEN state duration         | Decrease if errors resolve quickly |
+| `half_open_interval` | 10s     | Time between probe requests | Increase for slow recovery APIs    |
+| `recovery_threshold` | 3       | Successes to close circuit  | Increase for critical paths        |
 
 ---
 
 ## Recovery Procedures
 
 ### Context Loss Recovery
+
 1. Read `.loki/CONTINUITY.md`
 2. Check `.loki/state/orchestrator.json` for current phase
 3. Review `.loki/queue/in-progress.json` for interrupted tasks
 4. Resume from last checkpoint
 
 ### Rate Limit Recovery
+
 1. Check circuit breaker state
 2. Wait for cooldown period
 3. Reduce parallel agent count
 4. Resume with exponential backoff
 
 ### Test Failure Recovery
+
 1. Read test output carefully
 2. Check if test is flaky vs real failure
 3. Roll back to last passing commit if needed
@@ -425,11 +447,13 @@ Tasks that fail repeatedly (5+ attempts) are moved to the dead-letter queue for 
 ### Processing Protocol
 
 **Daily Review Schedule:**
+
 1. At session start, check if `metadata.last_reviewed` is >24h old
 2. If stale, process dead-letter queue before new work
 3. Update `last_reviewed` timestamp after processing
 
 **Review Process:**
+
 ```
 For each task in dead-letter.json:
   1. Analyze failure pattern across all attempts
@@ -442,35 +466,35 @@ For each task in dead-letter.json:
 
 A dead-letter task can be retried when:
 
-| Condition | Action |
-|-----------|--------|
+| Condition                | Action                                                                     |
+| ------------------------ | -------------------------------------------------------------------------- |
 | Dependency now available | Move back to pending queue with `recovery_strategy: "dependency_resolved"` |
-| New approach identified | Reset `failure_count` to 0, document new approach in attempts |
-| Simpler scope defined | Create new task with reduced scope, link to original |
-| Blocking bug fixed | Re-queue with reference to fix commit |
+| New approach identified  | Reset `failure_count` to 0, document new approach in attempts              |
+| Simpler scope defined    | Create new task with reduced scope, link to original                       |
+| Blocking bug fixed       | Re-queue with reference to fix commit                                      |
 
 ### Permanent Abandon Criteria
 
 A task should be permanently abandoned when:
 
-| Criteria | Justification |
-|----------|---------------|
-| 10+ total attempts | Diminishing returns, likely architectural issue |
+| Criteria                                 | Justification                                        |
+| ---------------------------------------- | ---------------------------------------------------- |
+| 10+ total attempts                       | Diminishing returns, likely architectural issue      |
 | Same error across 3 different approaches | Fundamental blocker, not solvable with current tools |
-| Dependency will never be available | External blocker with no workaround |
-| Scope no longer relevant | Project direction changed |
-| Human explicitly abandons | Documented decision to deprioritize |
+| Dependency will never be available       | External blocker with no workaround                  |
+| Scope no longer relevant                 | Project direction changed                            |
+| Human explicitly abandons                | Documented decision to deprioritize                  |
 
 When abandoning, move task to `.loki/queue/abandoned.json` with reason documented.
 
 ### Recovery Strategies
 
-| Strategy | When to Use | Agent Action |
-|----------|-------------|--------------|
-| `retry_with_simpler_approach` | Complex implementation failed multiple times | Break into smaller subtasks, reduce scope, use simpler patterns |
-| `dependency_blocked` | Task needs output from another task that failed | Wait for dependency resolution, check daily |
-| `requires_human_review` | Security decision, unclear spec, or irreversible action | Log to `.loki/escalations/` and notify, do not retry |
-| `permanent_abandon` | Met abandon criteria above | Move to `abandoned.json`, document reason, move on |
+| Strategy                      | When to Use                                             | Agent Action                                                    |
+| ----------------------------- | ------------------------------------------------------- | --------------------------------------------------------------- |
+| `retry_with_simpler_approach` | Complex implementation failed multiple times            | Break into smaller subtasks, reduce scope, use simpler patterns |
+| `dependency_blocked`          | Task needs output from another task that failed         | Wait for dependency resolution, check daily                     |
+| `requires_human_review`       | Security decision, unclear spec, or irreversible action | Log to `.loki/escalations/` and notify, do not retry            |
+| `permanent_abandon`           | Met abandon criteria above                              | Move to `abandoned.json`, document reason, move on              |
 
 ### Human Escalation Triggers
 
@@ -484,6 +508,7 @@ Automatically escalate to human review when:
 6. **Spec ambiguity detected** - Multiple valid interpretations, need human decision
 
 **Escalation Format:**
+
 ```
 File: .loki/escalations/{timestamp}-{task_id}.md
 
@@ -547,6 +572,7 @@ Signals are inter-process communication files in `.loki/signals/` that trigger a
 **Purpose:** Alerts when agent actions diverge from original task goal.
 
 **Schema:**
+
 ```json
 {
   "timestamp": "2026-01-25T10:30:00Z",
@@ -561,6 +587,7 @@ Signals are inter-process communication files in `.loki/signals/` that trigger a
 ```
 
 **Fields:**
+
 - `timestamp` - ISO 8601 timestamp of detection
 - `task_id` - Current task from queue
 - `planned_action` - What agent intended to do
@@ -572,15 +599,16 @@ Signals are inter-process communication files in `.loki/signals/` that trigger a
 
 **Processing Rules:**
 
-| Condition | Action |
-|-----------|--------|
-| Any drift detected | Return to REASON phase immediately |
-| 1 drift in task | Log warning, continue with corrected action |
-| 2 drifts in same task | Escalate to orchestrator for task review |
-| 3+ drifts accumulated | Escalate to orchestrator, consolidate state to CONTINUITY.md |
-| High/Critical severity | Pause task, dispatch opus reviewer |
+| Condition              | Action                                                       |
+| ---------------------- | ------------------------------------------------------------ |
+| Any drift detected     | Return to REASON phase immediately                           |
+| 1 drift in task        | Log warning, continue with corrected action                  |
+| 2 drifts in same task  | Escalate to orchestrator for task review                     |
+| 3+ drifts accumulated  | Escalate to orchestrator, consolidate state to CONTINUITY.md |
+| High/Critical severity | Pause task, dispatch opus reviewer                           |
 
 **Automated Responses:**
+
 ```yaml
 immediate:
   - Stop current action
@@ -596,6 +624,7 @@ accumulated_action:
 ```
 
 **How to Write:**
+
 ```bash
 # Agent-side: append to drift log
 cat >> .loki/signals/DRIFT_DETECTED << EOF
@@ -610,6 +639,7 @@ EOF
 **Purpose:** Escalate to human when autonomous action is inappropriate.
 
 **Schema:**
+
 ```json
 {
   "timestamp": "2026-01-25T10:30:00Z",
@@ -627,6 +657,7 @@ EOF
 ```
 
 **When to Create:**
+
 - Confidence score below 0.40 on critical decision
 - Security-critical operations (production credentials, key rotation)
 - Irreversible operations without clear rollback
@@ -635,6 +666,7 @@ EOF
 - Cost decisions above threshold (cloud resources > $100/hour)
 
 **Processing:**
+
 ```yaml
 immediate:
   - Stop current task (do not proceed)
@@ -646,9 +678,9 @@ human_action_required:
   - Review signal file
   - Make decision
   - Either:
-    - Create .loki/signals/HUMAN_APPROVED with decision
-    - Update task with clarification
-    - Cancel task
+      - Create .loki/signals/HUMAN_APPROVED with decision
+      - Update task with clarification
+      - Cancel task
 
 timeout: 24 hours
 timeout_action:
@@ -657,6 +689,7 @@ timeout_action:
 ```
 
 **How to Create:**
+
 ```bash
 cat > .loki/signals/HUMAN_REVIEW_NEEDED << EOF
 {
@@ -676,15 +709,16 @@ EOF
 
 These signals support legacy system healing workflows (see `skills/healing.md`):
 
-| Signal | Purpose | Creates | Consumes |
-|--------|---------|---------|----------|
-| `FRICTION_DETECTED` | New friction point found during archaeology | Healing agent | Orchestrator |
-| `BEHAVIOR_CHANGE_RISK` | Code change may alter legacy behavior | Code review | Healing agent |
-| `INSTITUTIONAL_KNOWLEDGE_FOUND` | Tribal knowledge extracted from code | Archaeology scan | Knowledge registry |
-| `HEALING_PHASE_COMPLETE` | Component completed a healing phase | Phase gate | Orchestrator |
-| `LEGACY_COMPATIBILITY_RISK` | Breaking change to legacy API detected | Adapter verification | Healing agent |
+| Signal                          | Purpose                                     | Creates              | Consumes           |
+| ------------------------------- | ------------------------------------------- | -------------------- | ------------------ |
+| `FRICTION_DETECTED`             | New friction point found during archaeology | Healing agent        | Orchestrator       |
+| `BEHAVIOR_CHANGE_RISK`          | Code change may alter legacy behavior       | Code review          | Healing agent      |
+| `INSTITUTIONAL_KNOWLEDGE_FOUND` | Tribal knowledge extracted from code        | Archaeology scan     | Knowledge registry |
+| `HEALING_PHASE_COMPLETE`        | Component completed a healing phase         | Phase gate           | Orchestrator       |
+| `LEGACY_COMPATIBILITY_RISK`     | Breaking change to legacy API detected      | Adapter verification | Healing agent      |
 
 **FRICTION_DETECTED Schema:**
+
 ```json
 {
   "timestamp": "2026-01-25T10:30:00Z",
@@ -697,6 +731,7 @@ These signals support legacy system healing workflows (see `skills/healing.md`):
 ```
 
 **Processing Rules:**
+
 - `FRICTION_DETECTED`: Add to friction-map.json, do NOT remove the friction until classified
 - `BEHAVIOR_CHANGE_RISK`: Pause modification, verify characterization tests exist
 - `INSTITUTIONAL_KNOWLEDGE_FOUND`: Append to institutional-knowledge.md
@@ -709,15 +744,15 @@ These signals support legacy system healing workflows (see `skills/healing.md`):
 
 These signals coordinate parallel worktrees (see `skills/parallel-workflows.md`):
 
-| Signal | Purpose | Creates | Consumes |
-|--------|---------|---------|----------|
-| `FEATURE_READY_{name}` | Feature ready for testing | Feature stream | Testing stream |
-| `TESTS_PASSED_{name}` | Tests green for feature | Testing stream | Merge stream |
-| `TESTS_FAILED_{name}` | Tests failed for feature | Testing stream | Feature stream |
-| `MERGE_REQUESTED_{branch}` | Request merge to main | Testing stream | Orchestrator |
-| `DOCS_NEEDED` | Documentation required | Any stream | Docs stream |
-| `BLOG_POST_QUEUED` | Significant change for blog | Docs stream | Blog stream |
-| `PLAN_APPROVED` | Human approved plan (plan-first mode) | Human | Orchestrator |
+| Signal                     | Purpose                               | Creates        | Consumes       |
+| -------------------------- | ------------------------------------- | -------------- | -------------- |
+| `FEATURE_READY_{name}`     | Feature ready for testing             | Feature stream | Testing stream |
+| `TESTS_PASSED_{name}`      | Tests green for feature               | Testing stream | Merge stream   |
+| `TESTS_FAILED_{name}`      | Tests failed for feature              | Testing stream | Feature stream |
+| `MERGE_REQUESTED_{branch}` | Request merge to main                 | Testing stream | Orchestrator   |
+| `DOCS_NEEDED`              | Documentation required                | Any stream     | Docs stream    |
+| `BLOG_POST_QUEUED`         | Significant change for blog           | Docs stream    | Blog stream    |
+| `PLAN_APPROVED`            | Human approved plan (plan-first mode) | Human          | Orchestrator   |
 
 ---
 

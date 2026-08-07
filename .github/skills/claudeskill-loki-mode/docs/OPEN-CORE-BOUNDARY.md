@@ -37,12 +37,12 @@ tier/license gate is a no-op that allows everything.
 These are the attachment points R9 reserves. None of them are live; none gate
 any free feature.
 
-| Capability | Seam (env / hook) | Status |
-|---|---|---|
-| Hosted proof publishing to a managed Loki URL (instead of a gist or self-hosted endpoint) | `LOKI_HOSTED_ENDPOINT` + `loki proof share --hosted` | Seam only. No official Loki endpoint exists. Operators can point it at their own. |
-| Tier / license entitlement | `LOKI_TIER` (default `oss`), `LOKI_LICENSE_KEY`, `loki_tier_gate` (bash) / `tierGate` (Bun) | Seam only. No verification backend. OSS = allow-all no-op. |
-| Managed team memory / cross-project sync | `LOKI_MANAGED_MEMORY` (pre-existing) | Pre-existing gated seam. |
-| Enterprise SSO / RBAC / audit retention | `LOKI_ENTERPRISE_AUTH`, `LOKI_OIDC_*` | Pre-existing env seams (free to self-configure). |
+| Capability                                                                                | Seam (env / hook)                                                                           | Status                                                                            |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Hosted proof publishing to a managed Loki URL (instead of a gist or self-hosted endpoint) | `LOKI_HOSTED_ENDPOINT` + `loki proof share --hosted`                                        | Seam only. No official Loki endpoint exists. Operators can point it at their own. |
+| Tier / license entitlement                                                                | `LOKI_TIER` (default `oss`), `LOKI_LICENSE_KEY`, `loki_tier_gate` (bash) / `tierGate` (Bun) | Seam only. No verification backend. OSS = allow-all no-op.                        |
+| Managed team memory / cross-project sync                                                  | `LOKI_MANAGED_MEMORY` (pre-existing)                                                        | Pre-existing gated seam.                                                          |
+| Enterprise SSO / RBAC / audit retention                                                   | `LOKI_ENTERPRISE_AUTH`, `LOKI_OIDC_*`                                                       | Pre-existing env seams (free to self-configure).                                  |
 
 A future hosted build would replace the honest stubs (no-op allow / "backend not
 available" messages) with real verification and a managed endpoint. Until then,

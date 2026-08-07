@@ -8,8 +8,8 @@
  * <loki-context-tracker api-url="http://localhost:57374" theme="dark"></loki-context-tracker>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * @class LokiContextTracker
@@ -19,14 +19,14 @@ import { getApiClient } from '../core/loki-api-client.js';
  */
 export class LokiContextTracker extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
     super();
     this._data = null;
     this._connected = false;
-    this._activeTab = 'gauge';
+    this._activeTab = "gauge";
     this._api = null;
     this._pollInterval = null;
   }
@@ -46,24 +46,24 @@ export class LokiContextTracker extends LokiElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
 
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadContext();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _loadContext() {
     try {
-      const apiUrl = this.getAttribute('api-url') || window.location.origin;
-      const resp = await fetch(apiUrl + '/api/context');
+      const apiUrl = this.getAttribute("api-url") || window.location.origin;
+      const resp = await fetch(apiUrl + "/api/context");
       if (resp.ok) {
         this._data = await resp.json();
         this._connected = true;
@@ -91,7 +91,7 @@ export class LokiContextTracker extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -100,7 +100,7 @@ export class LokiContextTracker extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -111,37 +111,37 @@ export class LokiContextTracker extends LokiElement {
   }
 
   _formatTokens(count) {
-    if (!count || count === 0) return '0';
-    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + 'M';
-    if (count >= 1_000) return (count / 1_000).toFixed(1) + 'K';
+    if (!count || count === 0) return "0";
+    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + "M";
+    if (count >= 1_000) return (count / 1_000).toFixed(1) + "K";
     return String(count);
   }
 
   _formatUSD(amount) {
-    if (!amount || amount === 0) return '$0.00';
-    if (amount < 0.01) return '<$0.01';
-    return '$' + amount.toFixed(2);
+    if (!amount || amount === 0) return "$0.00";
+    if (amount < 0.01) return "<$0.01";
+    return "$" + amount.toFixed(2);
   }
 
   _escapeHTML(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getGaugeColor(pct) {
-    if (pct > 80) return 'var(--loki-red)';
-    if (pct >= 60) return 'var(--loki-yellow)';
-    return 'var(--loki-green)';
+    if (pct > 80) return "var(--loki-red)";
+    if (pct >= 60) return "var(--loki-yellow)";
+    return "var(--loki-green)";
   }
 
   _getGaugeColorClass(pct) {
-    if (pct > 80) return 'gauge-red';
-    if (pct >= 60) return 'gauge-yellow';
-    return 'gauge-green';
+    if (pct > 80) return "gauge-red";
+    if (pct >= 60) return "gauge-yellow";
+    return "gauge-green";
   }
 
   _renderGaugeTab() {
@@ -244,15 +244,25 @@ export class LokiContextTracker extends LokiElement {
 
     // Find max tokens for bar scaling
     const maxTokens = Math.max(
-      ...iterations.map(it => (it.input_tokens || 0) + (it.output_tokens || 0) + (it.cache_read_tokens || 0) + (it.cache_creation_tokens || 0))
+      ...iterations.map(
+        (it) =>
+          (it.input_tokens || 0) +
+          (it.output_tokens || 0) +
+          (it.cache_read_tokens || 0) +
+          (it.cache_creation_tokens || 0),
+      ),
     );
 
     // Build a set of compaction iteration numbers for separator display
-    const compactionIterations = new Set(compactions.map(c => c.at_iteration));
+    const compactionIterations = new Set(compactions.map((c) => c.at_iteration));
 
-    let rows = '';
+    let rows = "";
     for (const it of iterations) {
-      const totalIt = (it.input_tokens || 0) + (it.output_tokens || 0) + (it.cache_read_tokens || 0) + (it.cache_creation_tokens || 0);
+      const totalIt =
+        (it.input_tokens || 0) +
+        (it.output_tokens || 0) +
+        (it.cache_read_tokens || 0) +
+        (it.cache_creation_tokens || 0);
       const widthPct = maxTokens > 0 ? (totalIt / maxTokens) * 100 : 0;
       const isCompacted = it.compacted === true;
 
@@ -268,7 +278,7 @@ export class LokiContextTracker extends LokiElement {
       }
 
       rows += `
-        <div class="timeline-row ${isCompacted ? 'compacted' : ''}">
+        <div class="timeline-row ${isCompacted ? "compacted" : ""}">
           <div class="timeline-iter">#${it.iteration}</div>
           <div class="timeline-bar-container">
             <div class="timeline-bar" style="width: ${widthPct.toFixed(1)}%"></div>
@@ -307,7 +317,13 @@ export class LokiContextTracker extends LokiElement {
 
     // Find max total for scaling
     const maxTokens = Math.max(
-      ...iterations.map(it => (it.input_tokens || 0) + (it.output_tokens || 0) + (it.cache_read_tokens || 0) + (it.cache_creation_tokens || 0))
+      ...iterations.map(
+        (it) =>
+          (it.input_tokens || 0) +
+          (it.output_tokens || 0) +
+          (it.cache_read_tokens || 0) +
+          (it.cache_creation_tokens || 0),
+      ),
     );
 
     const legend = `
@@ -319,7 +335,7 @@ export class LokiContextTracker extends LokiElement {
       </div>
     `;
 
-    let rows = '';
+    let rows = "";
     for (const it of iterations) {
       const input = it.input_tokens || 0;
       const output = it.output_tokens || 0;
@@ -363,11 +379,12 @@ export class LokiContextTracker extends LokiElement {
   }
 
   render() {
-    const tabContent = this._activeTab === 'gauge'
-      ? this._renderGaugeTab()
-      : this._activeTab === 'timeline'
-        ? this._renderTimelineTab()
-        : this._renderBreakdownTab();
+    const tabContent =
+      this._activeTab === "gauge"
+        ? this._renderGaugeTab()
+        : this._activeTab === "timeline"
+          ? this._renderTimelineTab()
+          : this._renderBreakdownTab();
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -743,14 +760,18 @@ export class LokiContextTracker extends LokiElement {
       </style>
 
       <div class="context-container">
-        ${!this._connected ? `
+        ${
+          !this._connected
+            ? `
           <div class="offline-notice">Connecting to context API...</div>
-        ` : ''}
+        `
+            : ""
+        }
 
         <div class="tabs">
-          <button class="tab ${this._activeTab === 'gauge' ? 'active' : ''}" data-tab="gauge">Gauge</button>
-          <button class="tab ${this._activeTab === 'timeline' ? 'active' : ''}" data-tab="timeline">Timeline</button>
-          <button class="tab ${this._activeTab === 'breakdown' ? 'active' : ''}" data-tab="breakdown">Breakdown</button>
+          <button class="tab ${this._activeTab === "gauge" ? "active" : ""}" data-tab="gauge">Gauge</button>
+          <button class="tab ${this._activeTab === "timeline" ? "active" : ""}" data-tab="timeline">Timeline</button>
+          <button class="tab ${this._activeTab === "breakdown" ? "active" : ""}" data-tab="breakdown">Breakdown</button>
         </div>
 
         ${tabContent}
@@ -758,8 +779,8 @@ export class LokiContextTracker extends LokiElement {
     `;
 
     // Attach tab click listeners
-    this.shadowRoot.querySelectorAll('.tab').forEach(btn => {
-      btn.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._setTab(btn.dataset.tab);
       });
     });
@@ -767,8 +788,8 @@ export class LokiContextTracker extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-context-tracker')) {
-  customElements.define('loki-context-tracker', LokiContextTracker);
+if (!customElements.get("loki-context-tracker")) {
+  customElements.define("loki-context-tracker", LokiContextTracker);
 }
 
 export default LokiContextTracker;

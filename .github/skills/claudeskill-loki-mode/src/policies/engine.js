@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode Policy Engine - Core Evaluation Engine
@@ -16,11 +16,19 @@
  * When no policy file exists: all evaluations return ALLOW with zero overhead.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { Decision, evaluateRule, scanContent, validatePreExecution,
-  validatePreDeployment, validateResource, validateData,
-  validateApprovalGate, RULE_EVALUATORS } = require('./types');
+const fs = require("fs");
+const path = require("path");
+const {
+  Decision,
+  evaluateRule,
+  scanContent,
+  validatePreExecution,
+  validatePreDeployment,
+  validateResource,
+  validateData,
+  validateApprovalGate,
+  RULE_EVALUATORS,
+} = require("./types");
 
 // -------------------------------------------------------------------
 // Minimal YAML parser for policy files
@@ -32,8 +40,8 @@ const { Decision, evaluateRule, scanContent, validatePreExecution,
  * Does NOT handle: multi-line strings, anchors/aliases, complex types.
  */
 function parseSimpleYaml(text) {
-  if (!text || typeof text !== 'string') return null;
-  const lines = text.split('\n');
+  if (!text || typeof text !== "string") return null;
+  const lines = text.split("\n");
   return _parseBlock(lines, 0, 0).value;
 }
 
@@ -46,7 +54,7 @@ function _parseBlock(lines, startIdx, baseIndent) {
     const trimmed = line.trimStart();
 
     // skip empty lines and comments
-    if (!trimmed || trimmed.startsWith('#')) {
+    if (!trimmed || trimmed.startsWith("#")) {
       i++;
       continue;
     }
@@ -56,7 +64,7 @@ function _parseBlock(lines, startIdx, baseIndent) {
     if (indent > baseIndent && i > startIdx) break; // deeper than expected
 
     // key: value
-    const colonIdx = trimmed.indexOf(':');
+    const colonIdx = trimmed.indexOf(":");
     if (colonIdx === -1) {
       i++;
       continue;
@@ -65,17 +73,17 @@ function _parseBlock(lines, startIdx, baseIndent) {
     const key = trimmed.substring(0, colonIdx).trim();
     const rawValue = trimmed.substring(colonIdx + 1).trim();
 
-    if (rawValue === '' || rawValue === '|' || rawValue === '>') {
+    if (rawValue === "" || rawValue === "|" || rawValue === ">") {
       // Could be nested object or array
       // Peek at next non-empty line to determine
       let nextIdx = i + 1;
-      while (nextIdx < lines.length && lines[nextIdx].trim() === '') nextIdx++;
+      while (nextIdx < lines.length && lines[nextIdx].trim() === "") nextIdx++;
 
       if (nextIdx < lines.length) {
         const nextTrimmed = lines[nextIdx].trimStart();
         const nextIndent = lines[nextIdx].length - nextTrimmed.length;
 
-        if (nextIndent > indent && nextTrimmed.startsWith('- ')) {
+        if (nextIndent > indent && nextTrimmed.startsWith("- ")) {
           // Array of items
           const arr = _parseArray(lines, nextIdx, nextIndent);
           result[key] = arr.value;
@@ -91,10 +99,10 @@ function _parseBlock(lines, startIdx, baseIndent) {
       }
       result[key] = rawValue || null;
       i++;
-    } else if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+    } else if (rawValue.startsWith("[") && rawValue.endsWith("]")) {
       // Inline array: [a, b, c]
       const inner = rawValue.substring(1, rawValue.length - 1);
-      result[key] = inner.split(',').map(function (s) {
+      result[key] = inner.split(",").map(function (s) {
         const v = s.trim();
         // Strip quotes
         if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
@@ -102,7 +110,7 @@ function _parseBlock(lines, startIdx, baseIndent) {
         }
         // Number?
         const n = Number(v);
-        if (!isNaN(n) && v !== '') return n;
+        if (!isNaN(n) && v !== "") return n;
         return v;
       });
       i++;
@@ -124,7 +132,7 @@ function _parseArray(lines, startIdx, baseIndent) {
     const line = lines[i];
     const trimmed = line.trimStart();
 
-    if (!trimmed || trimmed.startsWith('#')) {
+    if (!trimmed || trimmed.startsWith("#")) {
       i++;
       continue;
     }
@@ -132,12 +140,12 @@ function _parseArray(lines, startIdx, baseIndent) {
     const indent = line.length - trimmed.length;
     if (indent < baseIndent) break;
 
-    if (!trimmed.startsWith('- ')) {
+    if (!trimmed.startsWith("- ")) {
       break;
     }
 
     const itemContent = trimmed.substring(2).trim();
-    const colonIdx = itemContent.indexOf(':');
+    const colonIdx = itemContent.indexOf(":");
 
     if (colonIdx === -1) {
       // Simple scalar array item
@@ -148,15 +156,15 @@ function _parseArray(lines, startIdx, baseIndent) {
       const firstKey = itemContent.substring(0, colonIdx).trim();
       const firstVal = itemContent.substring(colonIdx + 1).trim();
       const obj = {};
-      if (firstVal.startsWith('[') && firstVal.endsWith(']')) {
+      if (firstVal.startsWith("[") && firstVal.endsWith("]")) {
         const inner = firstVal.substring(1, firstVal.length - 1);
-        obj[firstKey] = inner.split(',').map(function (s) {
+        obj[firstKey] = inner.split(",").map(function (s) {
           const v = s.trim();
           if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
             return v.substring(1, v.length - 1);
           }
           const n = Number(v);
-          if (!isNaN(n) && v !== '') return n;
+          if (!isNaN(n) && v !== "") return n;
           return v;
         });
       } else {
@@ -169,29 +177,29 @@ function _parseArray(lines, startIdx, baseIndent) {
       while (i < lines.length) {
         const subLine = lines[i];
         const subTrimmed = subLine.trimStart();
-        if (!subTrimmed || subTrimmed.startsWith('#')) {
+        if (!subTrimmed || subTrimmed.startsWith("#")) {
           i++;
           continue;
         }
         const subIndent = subLine.length - subTrimmed.length;
         if (subIndent < itemIndent) break;
 
-        const subColonIdx = subTrimmed.indexOf(':');
+        const subColonIdx = subTrimmed.indexOf(":");
         if (subColonIdx === -1) {
           i++;
           continue;
         }
         const subKey = subTrimmed.substring(0, subColonIdx).trim();
         const subVal = subTrimmed.substring(subColonIdx + 1).trim();
-        if (subVal.startsWith('[') && subVal.endsWith(']')) {
+        if (subVal.startsWith("[") && subVal.endsWith("]")) {
           const inner2 = subVal.substring(1, subVal.length - 1);
-          obj[subKey] = inner2.split(',').map(function (s) {
+          obj[subKey] = inner2.split(",").map(function (s) {
             const v = s.trim();
             if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
               return v.substring(1, v.length - 1);
             }
             const n = Number(v);
-            if (!isNaN(n) && v !== '') return n;
+            if (!isNaN(n) && v !== "") return n;
             return v;
           });
         } else {
@@ -207,15 +215,15 @@ function _parseArray(lines, startIdx, baseIndent) {
 }
 
 function _parseScalar(v) {
-  if (v === 'true') return true;
-  if (v === 'false') return false;
-  if (v === 'null' || v === '~') return null;
+  if (v === "true") return true;
+  if (v === "false") return false;
+  if (v === "null" || v === "~") return null;
   // Strip quotes
   if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
     return v.substring(1, v.length - 1);
   }
   const n = Number(v);
-  if (!isNaN(n) && v !== '') return n;
+  if (!isNaN(n) && v !== "") return n;
   return v;
 }
 
@@ -232,8 +240,8 @@ class PolicyEngine {
   constructor(projectDir, options) {
     this._projectDir = projectDir || process.cwd();
     this._options = options || {};
-    this._policies = null;       // parsed policy object (cached)
-    this._policyPath = null;     // resolved path to policy file
+    this._policies = null; // parsed policy object (cached)
+    this._policyPath = null; // resolved path to policy file
     this._loaded = false;
     this._watcher = null;
     this._validationErrors = [];
@@ -246,9 +254,9 @@ class PolicyEngine {
   // -----------------------------------------------------------------
 
   _init() {
-    const lokiDir = path.join(this._projectDir, '.loki');
-    const jsonPath = path.join(lokiDir, 'policies.json');
-    const yamlPath = path.join(lokiDir, 'policies.yaml');
+    const lokiDir = path.join(this._projectDir, ".loki");
+    const jsonPath = path.join(lokiDir, "policies.json");
+    const yamlPath = path.join(lokiDir, "policies.yaml");
 
     // Try JSON first, then YAML
     if (fs.existsSync(jsonPath)) {
@@ -273,10 +281,10 @@ class PolicyEngine {
     if (!this._policyPath) return;
 
     try {
-      const content = fs.readFileSync(this._policyPath, 'utf8');
+      const content = fs.readFileSync(this._policyPath, "utf8");
       let parsed;
 
-      if (this._policyPath.endsWith('.json')) {
+      if (this._policyPath.endsWith(".json")) {
         parsed = JSON.parse(content);
       } else {
         parsed = parseSimpleYaml(content);
@@ -290,7 +298,7 @@ class PolicyEngine {
       this._policies = parsed;
       this._loaded = true;
     } catch (err) {
-      this._validationErrors = ['Failed to load policy file: ' + err.message];
+      this._validationErrors = ["Failed to load policy file: " + err.message];
       this._policies = null;
       this._loaded = true;
     }
@@ -298,8 +306,8 @@ class PolicyEngine {
 
   _validatePolicies(parsed) {
     const errors = [];
-    if (!parsed || typeof parsed !== 'object') {
-      errors.push('Policy file must be a YAML/JSON object');
+    if (!parsed || typeof parsed !== "object") {
+      errors.push("Policy file must be a YAML/JSON object");
       return errors;
     }
 
@@ -310,17 +318,23 @@ class PolicyEngine {
       policies.pre_execution.forEach(function (entry, i) {
         const result = validatePreExecution(entry);
         if (!result.valid) {
-          errors.push('pre_execution[' + i + ']: ' + result.errors.join(', '));
+          errors.push("pre_execution[" + i + "]: " + result.errors.join(", "));
         }
         // Warn when rule string doesn't match any known evaluator (likely typo).
         // This is a warning (not a hard error) to preserve forward-compatibility
         // for future custom rule strings.
-        if (entry && typeof entry.rule === 'string') {
+        if (entry && typeof entry.rule === "string") {
           const recognized = knownRuleKeys.some(function (k) {
             return entry.rule === k || entry.rule.startsWith(k);
           });
           if (!recognized) {
-            errors.push('pre_execution[' + i + ']: warning: rule "' + entry.rule + '" is not recognized by any built-in evaluator and will always pass');
+            errors.push(
+              "pre_execution[" +
+                i +
+                ']: warning: rule "' +
+                entry.rule +
+                '" is not recognized by any built-in evaluator and will always pass',
+            );
           }
         }
       });
@@ -329,7 +343,7 @@ class PolicyEngine {
       policies.pre_deployment.forEach(function (entry, i) {
         const result = validatePreDeployment(entry);
         if (!result.valid) {
-          errors.push('pre_deployment[' + i + ']: ' + result.errors.join(', '));
+          errors.push("pre_deployment[" + i + "]: " + result.errors.join(", "));
         }
       });
     }
@@ -337,7 +351,7 @@ class PolicyEngine {
       policies.resource.forEach(function (entry, i) {
         const result = validateResource(entry);
         if (!result.valid) {
-          errors.push('resource[' + i + ']: ' + result.errors.join(', '));
+          errors.push("resource[" + i + "]: " + result.errors.join(", "));
         }
       });
     }
@@ -345,7 +359,7 @@ class PolicyEngine {
       policies.data.forEach(function (entry, i) {
         const result = validateData(entry);
         if (!result.valid) {
-          errors.push('data[' + i + ']: ' + result.errors.join(', '));
+          errors.push("data[" + i + "]: " + result.errors.join(", "));
         }
       });
     }
@@ -353,7 +367,7 @@ class PolicyEngine {
       policies.approval_gates.forEach(function (entry, i) {
         const result = validateApprovalGate(entry);
         if (!result.valid) {
-          errors.push('approval_gates[' + i + ']: ' + result.errors.join(', '));
+          errors.push("approval_gates[" + i + "]: " + result.errors.join(", "));
         }
       });
     }
@@ -388,7 +402,7 @@ class PolicyEngine {
       return {
         allowed: true,
         decision: Decision.ALLOW,
-        reason: 'No policies configured',
+        reason: "No policies configured",
         requiresApproval: false,
         violations: [],
       };
@@ -401,7 +415,7 @@ class PolicyEngine {
       return {
         allowed: true,
         decision: Decision.ALLOW,
-        reason: 'No policies defined for ' + enforcementPoint,
+        reason: "No policies defined for " + enforcementPoint,
         requiresApproval: false,
         violations: [],
       };
@@ -412,23 +426,23 @@ class PolicyEngine {
     let requiresApproval = false;
 
     switch (enforcementPoint) {
-      case 'pre_execution':
+      case "pre_execution":
         this._evaluatePreExecution(entries, ctx, violations);
         break;
-      case 'pre_deployment':
+      case "pre_deployment":
         this._evaluatePreDeployment(entries, ctx, violations);
         break;
-      case 'resource':
+      case "resource":
         this._evaluateResource(entries, ctx, violations);
         break;
-      case 'data':
+      case "data":
         this._evaluateData(entries, ctx, violations);
         break;
       default:
         return {
           allowed: true,
           decision: Decision.ALLOW,
-          reason: 'Unknown enforcement point: ' + enforcementPoint,
+          reason: "Unknown enforcement point: " + enforcementPoint,
           requiresApproval: false,
           violations: [],
         };
@@ -436,18 +450,24 @@ class PolicyEngine {
 
     // Check for approval requirements
     for (let i = 0; i < violations.length; i++) {
-      if (violations[i].action === 'require_approval') {
+      if (violations[i].action === "require_approval") {
         requiresApproval = true;
       }
     }
 
-    const denied = violations.some(function (v) { return v.action === 'deny'; });
+    const denied = violations.some(function (v) {
+      return v.action === "deny";
+    });
 
     if (denied) {
       return {
         allowed: false,
         decision: Decision.DENY,
-        reason: violations.map(function (v) { return v.name + ': ' + v.reason; }).join('; '),
+        reason: violations
+          .map(function (v) {
+            return v.name + ": " + v.reason;
+          })
+          .join("; "),
         requiresApproval: false,
         violations: violations,
       };
@@ -457,7 +477,11 @@ class PolicyEngine {
       return {
         allowed: false,
         decision: Decision.REQUIRE_APPROVAL,
-        reason: violations.map(function (v) { return v.name + ': ' + v.reason; }).join('; '),
+        reason: violations
+          .map(function (v) {
+            return v.name + ": " + v.reason;
+          })
+          .join("; "),
         requiresApproval: true,
         violations: violations,
       };
@@ -466,7 +490,7 @@ class PolicyEngine {
     return {
       allowed: true,
       decision: Decision.ALLOW,
-      reason: 'All policies passed',
+      reason: "All policies passed",
       requiresApproval: false,
       violations: [],
     };
@@ -484,8 +508,8 @@ class PolicyEngine {
       if (result === false) {
         violations.push({
           name: entry.name,
-          action: entry.action || 'deny',
-          reason: 'Rule violated: ' + entry.rule,
+          action: entry.action || "deny",
+          reason: "Rule violated: " + entry.rule,
         });
       }
     }
@@ -501,8 +525,8 @@ class PolicyEngine {
         if (passedGates.indexOf(entry.gates[g]) === -1) {
           violations.push({
             name: entry.name,
-            action: entry.action || 'deny',
-            reason: 'Required gate not passed: ' + entry.gates[g],
+            action: entry.action || "deny",
+            reason: "Required gate not passed: " + entry.gates[g],
           });
         }
       }
@@ -518,8 +542,12 @@ class PolicyEngine {
         if (context.provider && entry.providers.indexOf(context.provider) === -1) {
           violations.push({
             name: entry.name,
-            action: entry.action || 'deny',
-            reason: 'Provider "' + context.provider + '" not in approved list: ' + entry.providers.join(', '),
+            action: entry.action || "deny",
+            reason:
+              'Provider "' +
+              context.provider +
+              '" not in approved list: ' +
+              entry.providers.join(", "),
           });
         }
       }
@@ -529,8 +557,8 @@ class PolicyEngine {
         if (context.tokens_consumed >= entry.max_tokens) {
           violations.push({
             name: entry.name,
-            action: entry.on_exceed === 'require_approval' ? 'require_approval' : 'deny',
-            reason: 'Token budget exceeded: ' + context.tokens_consumed + ' >= ' + entry.max_tokens,
+            action: entry.on_exceed === "require_approval" ? "require_approval" : "deny",
+            reason: "Token budget exceeded: " + context.tokens_consumed + " >= " + entry.max_tokens,
           });
         }
       }
@@ -546,8 +574,8 @@ class PolicyEngine {
       if (findings.length > 0) {
         violations.push({
           name: entry.name,
-          action: entry.action || 'deny',
-          reason: entry.type + ' detected: ' + findings.length + ' finding(s)',
+          action: entry.action || "deny",
+          reason: entry.type + " detected: " + findings.length + " finding(s)",
           findings: findings,
         });
       }

@@ -9,18 +9,18 @@
  * <loki-session-timeline api-url="http://localhost:57374"></loki-session-timeline>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
 
 const PHASE_COLORS = {
-  planning: { color: 'var(--loki-blue)', bg: 'var(--loki-blue-muted)', label: 'Planning' },
-  building: { color: 'var(--loki-purple)', bg: 'var(--loki-purple-muted)', label: 'Building' },
-  coding: { color: 'var(--loki-purple)', bg: 'var(--loki-purple-muted)', label: 'Coding' },
-  testing: { color: 'var(--loki-green)', bg: 'var(--loki-green-muted)', label: 'Testing' },
-  reviewing: { color: 'var(--loki-yellow)', bg: 'var(--loki-yellow-muted)', label: 'Reviewing' },
-  review: { color: 'var(--loki-yellow)', bg: 'var(--loki-yellow-muted)', label: 'Review' },
-  deploying: { color: 'var(--loki-red)', bg: 'var(--loki-red-muted)', label: 'Deploying' },
-  idle: { color: 'var(--loki-text-muted)', bg: 'var(--loki-bg-tertiary)', label: 'Idle' },
+  planning: { color: "var(--loki-blue)", bg: "var(--loki-blue-muted)", label: "Planning" },
+  building: { color: "var(--loki-purple)", bg: "var(--loki-purple-muted)", label: "Building" },
+  coding: { color: "var(--loki-purple)", bg: "var(--loki-purple-muted)", label: "Coding" },
+  testing: { color: "var(--loki-green)", bg: "var(--loki-green-muted)", label: "Testing" },
+  reviewing: { color: "var(--loki-yellow)", bg: "var(--loki-yellow-muted)", label: "Reviewing" },
+  review: { color: "var(--loki-yellow)", bg: "var(--loki-yellow-muted)", label: "Review" },
+  deploying: { color: "var(--loki-red)", bg: "var(--loki-red-muted)", label: "Deploying" },
+  idle: { color: "var(--loki-text-muted)", bg: "var(--loki-bg-tertiary)", label: "Idle" },
 };
 
 /**
@@ -31,7 +31,7 @@ const PHASE_COLORS = {
  */
 export class LokiSessionTimeline extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'phases', 'theme'];
+    return ["api-url", "phases", "theme"];
   }
 
   constructor() {
@@ -57,23 +57,25 @@ export class LokiSessionTimeline extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'phases' && newValue) {
+    if (name === "phases" && newValue) {
       try {
         this._phases = JSON.parse(newValue);
         this.render();
-      } catch { /* ignore invalid JSON */ }
+      } catch {
+        /* ignore invalid JSON */
+      }
     }
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadTimeline();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -95,7 +97,7 @@ export class LokiSessionTimeline extends LokiElement {
   _buildPhasesFromStatus(status) {
     // Build a simple timeline from current status
     const uptime = status.uptime_seconds || 0;
-    const phase = (status.phase || 'idle').toLowerCase();
+    const phase = (status.phase || "idle").toLowerCase();
     const iteration = status.iteration || 0;
 
     if (uptime <= 0) {
@@ -120,7 +122,7 @@ export class LokiSessionTimeline extends LokiElement {
       });
     } else {
       // Simulate a multi-phase timeline based on iteration count
-      const phaseOrder = ['planning', 'building', 'testing', 'reviewing'];
+      const phaseOrder = ["planning", "building", "testing", "reviewing"];
       const segmentDuration = totalMs / Math.max(iteration * 2, 4);
 
       let currentTime = startMs;
@@ -160,10 +162,10 @@ export class LokiSessionTimeline extends LokiElement {
     this._sessionStart = new Date(now - 2 * hourMs);
 
     this._phases = [
-      { phase: 'planning', start: now - 2 * hourMs, end: now - 1.6 * hourMs, iteration: 1 },
-      { phase: 'building', start: now - 1.6 * hourMs, end: now - 0.8 * hourMs, iteration: 2 },
-      { phase: 'testing', start: now - 0.8 * hourMs, end: now - 0.3 * hourMs, iteration: 3 },
-      { phase: 'reviewing', start: now - 0.3 * hourMs, end: now, iteration: 4, current: true },
+      { phase: "planning", start: now - 2 * hourMs, end: now - 1.6 * hourMs, iteration: 1 },
+      { phase: "building", start: now - 1.6 * hourMs, end: now - 0.8 * hourMs, iteration: 2 },
+      { phase: "testing", start: now - 0.8 * hourMs, end: now - 0.3 * hourMs, iteration: 3 },
+      { phase: "reviewing", start: now - 0.3 * hourMs, end: now, iteration: 4, current: true },
     ];
   }
 
@@ -180,8 +182,8 @@ export class LokiSessionTimeline extends LokiElement {
 
   _formatTime(ms) {
     const d = new Date(ms);
-    const hours = d.getHours().toString().padStart(2, '0');
-    const minutes = d.getMinutes().toString().padStart(2, '0');
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   }
 
@@ -207,8 +209,8 @@ export class LokiSessionTimeline extends LokiElement {
       return;
     }
 
-    const totalStart = Math.min(...this._phases.map(p => p.start));
-    const totalEnd = Math.max(...this._phases.map(p => p.end));
+    const totalStart = Math.min(...this._phases.map((p) => p.start));
+    const totalEnd = Math.max(...this._phases.map((p) => p.end));
     const totalDuration = totalEnd - totalStart;
 
     // Build hour markers
@@ -238,7 +240,7 @@ export class LokiSessionTimeline extends LokiElement {
     }
 
     // Build legend from used phases
-    const usedPhases = [...new Set(this._phases.map(p => p.phase))];
+    const usedPhases = [...new Set(this._phases.map((p) => p.phase))];
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -442,53 +444,65 @@ export class LokiSessionTimeline extends LokiElement {
             Session Timeline
           </div>
           <div class="legend">
-            ${usedPhases.map(p => {
-              const config = PHASE_COLORS[p] || PHASE_COLORS.idle;
-              return `
+            ${usedPhases
+              .map((p) => {
+                const config = PHASE_COLORS[p] || PHASE_COLORS.idle;
+                return `
                 <div class="legend-item">
                   <span class="legend-dot" style="background: ${config.color}"></span>
                   ${config.label}
                 </div>
               `;
-            }).join('')}
+              })
+              .join("")}
           </div>
         </div>
 
         <div class="timeline-track">
-          ${this._phases.map((phase, i) => {
-            const config = PHASE_COLORS[phase.phase] || PHASE_COLORS.idle;
-            const leftPct = ((phase.start - totalStart) / totalDuration) * 100;
-            const widthPct = ((phase.end - phase.start) / totalDuration) * 100;
-            const duration = phase.end - phase.start;
-            const showLabel = widthPct > 8;
-            return `
-              <div class="phase-segment ${phase.current ? 'current' : ''}"
+          ${this._phases
+            .map((phase, i) => {
+              const config = PHASE_COLORS[phase.phase] || PHASE_COLORS.idle;
+              const leftPct = ((phase.start - totalStart) / totalDuration) * 100;
+              const widthPct = ((phase.end - phase.start) / totalDuration) * 100;
+              const duration = phase.end - phase.start;
+              const showLabel = widthPct > 8;
+              return `
+              <div class="phase-segment ${phase.current ? "current" : ""}"
                    style="left: ${leftPct}%; width: ${widthPct}%; background: ${config.color};"
                    data-index="${i}"
                    title="${config.label}: ${this._formatDuration(duration)}">
-                ${showLabel ? `<span class="phase-label">${config.label}</span>` : ''}
+                ${showLabel ? `<span class="phase-label">${config.label}</span>` : ""}
               </div>
             `;
-          }).join('')}
+            })
+            .join("")}
 
           ${(() => {
             const nowPct = ((Date.now() - totalStart) / totalDuration) * 100;
-            return nowPct <= 102 ? `<div class="now-marker" style="left: ${Math.min(nowPct, 100)}%"></div>` : '';
+            return nowPct <= 102
+              ? `<div class="now-marker" style="left: ${Math.min(nowPct, 100)}%"></div>`
+              : "";
           })()}
         </div>
 
         <div class="time-axis">
-          ${markers.map(m => `
+          ${markers
+            .map(
+              (m) => `
             <span class="time-marker" style="left: ${m.pct}%">${this._formatTime(m.time)}</span>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
 
-        ${this._selectedPhase !== null ? (() => {
-          const phase = this._phases[this._selectedPhase];
-          if (!phase) return '';
-          const config = PHASE_COLORS[phase.phase] || PHASE_COLORS.idle;
-          const duration = phase.end - phase.start;
-          return `
+        ${
+          this._selectedPhase !== null
+            ? (() => {
+                const phase = this._phases[this._selectedPhase];
+                if (!phase) return "";
+                const config = PHASE_COLORS[phase.phase] || PHASE_COLORS.idle;
+                const duration = phase.end - phase.start;
+                return `
             <div class="phase-detail">
               <div class="detail-item">
                 <span class="detail-label">Phase</span>
@@ -508,17 +522,19 @@ export class LokiSessionTimeline extends LokiElement {
               </div>
               <div class="detail-item">
                 <span class="detail-label">Iteration</span>
-                <span class="detail-value">#${phase.iteration || '--'}</span>
+                <span class="detail-value">#${phase.iteration || "--"}</span>
               </div>
             </div>
           `;
-        })() : ''}
+              })()
+            : ""
+        }
       </div>
     `;
 
     // Attach click handlers
-    this.shadowRoot.querySelectorAll('.phase-segment').forEach(seg => {
-      seg.addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll(".phase-segment").forEach((seg) => {
+      seg.addEventListener("click", () => {
         const idx = parseInt(seg.dataset.index);
         this._selectedPhase = this._selectedPhase === idx ? null : idx;
         this.render();
@@ -527,8 +543,8 @@ export class LokiSessionTimeline extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-session-timeline')) {
-  customElements.define('loki-session-timeline', LokiSessionTimeline);
+if (!customElements.get("loki-session-timeline")) {
+  customElements.define("loki-session-timeline", LokiSessionTimeline);
 }
 
 export default LokiSessionTimeline;

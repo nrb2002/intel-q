@@ -7,6 +7,7 @@ Minimal HTTP API implementations for loki-mode remote control.
 The production API server is at `dashboard/server.py` (FastAPI/Python).
 
 **Why FastAPI?**
+
 - Unified dashboard and API on a single port (57374)
 - Reads directly from `.loki/` flat files
 - SSE support for real-time updates
@@ -28,15 +29,15 @@ loki dashboard stop
 
 ## Comparison Matrix
 
-| Criteria | Bash | Node.js | Python | Deno |
-|----------|------|---------|--------|------|
-| Lines of code | ~100 | ~150 | ~180 | ~170 |
-| Dependencies | netcat | Node 14+ | Python 3.8+ | Deno 1.40+ |
-| Pre-installed | Yes | Often | Yes (macOS/Linux) | No |
-| SSE support | No | Yes | Limited | Yes |
-| Concurrent | No | Yes | Limited | Yes |
-| Testability | Hard | Easy | Easy | Easy |
-| Type safety | No | No | No | Yes |
+| Criteria      | Bash   | Node.js  | Python            | Deno       |
+| ------------- | ------ | -------- | ----------------- | ---------- |
+| Lines of code | ~100   | ~150     | ~180              | ~170       |
+| Dependencies  | netcat | Node 14+ | Python 3.8+       | Deno 1.40+ |
+| Pre-installed | Yes    | Often    | Yes (macOS/Linux) | No         |
+| SSE support   | No     | Yes      | Limited           | Yes        |
+| Concurrent    | No     | Yes      | Limited           | Yes        |
+| Testability   | Hard   | Easy     | Easy              | Easy       |
+| Type safety   | No     | No       | No                | Yes        |
 
 ## Quick Start
 
@@ -58,16 +59,16 @@ deno run --allow-all api-examples/deno-api.ts
 
 All implementations expose the same API:
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | /health | Health check |
-| GET | /status | Current session status |
-| GET | /events | SSE stream (Node/Deno only) |
-| GET | /logs?lines=50 | Recent log entries |
-| POST | /start | Start session (body: `{"provider":"claude","prd":"path"}`) |
-| POST | /stop | Stop session |
-| POST | /pause | Pause after current task |
-| POST | /resume | Resume paused session |
+| Method | Path           | Description                                                |
+| ------ | -------------- | ---------------------------------------------------------- |
+| GET    | /health        | Health check                                               |
+| GET    | /status        | Current session status                                     |
+| GET    | /events        | SSE stream (Node/Deno only)                                |
+| GET    | /logs?lines=50 | Recent log entries                                         |
+| POST   | /start         | Start session (body: `{"provider":"claude","prd":"path"}`) |
+| POST   | /stop          | Stop session                                               |
+| POST   | /pause         | Pause after current task                                   |
+| POST   | /resume        | Resume paused session                                      |
 
 ## Testing
 

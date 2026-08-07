@@ -60,6 +60,7 @@ if hasattr(client, 'pending_diagnostics'):
 The class `LSPClient` has no `pending_diagnostics` attribute and no notification-reader thread. `LSPClient.request()` reads messages in a busy loop until it sees the response with the matching `id`, dropping all notifications it sees along the way (including `textDocument/publishDiagnostics`). So `lsp_get_diagnostics` today always returns an empty diagnostics array on every call. **This is a latent bug that any broadcast implementation must fix as a prerequisite**, because the diagnostics the bus will broadcast come from those exact notifications.
 
 Required change to `LSPClient`:
+
 - Spawn a single notification-reader thread per client at end of `start()`.
 - The reader owns `proc.stdout`. `request()` no longer reads from stdout directly; instead it parks on a per-request `threading.Event` (or `Queue`) keyed by request id, and the reader thread routes responses by id and routes notifications by method.
 - `publishDiagnostics` notifications populate `self.pending_diagnostics: Dict[str, List[Diagnostic]]` keyed by URI, and also fire a registered callback (the broadcast hook, see section 5).
@@ -91,6 +92,7 @@ This is mostly a refactor of the existing send/receive code; no new dependencies
 ```
 
 Key points:
+
 - Each worktree still runs its own LSP processes (no pooling in v1).
 - Publishing target is a shared `.loki/events/lsp/` directory resolved at MCP startup. Resolution rule: walk up from CWD looking for a `.loki/parallel-root` marker file (written by `spawn-parallel.sh`); if found, use that directory's `.loki/events/lsp/`; else use local `.loki/events/lsp/` (single-worktree behavior degrades to a noop bus that still works).
 - Reuses `events/bus.py` semantics (file-based, processed-id dedup, lockfile-based atomic writes, cross-language compatible) but with a dedicated subdirectory so LSP events do not pollute the existing pending/archive flow that the dashboard consumes.
@@ -100,6 +102,7 @@ Key points:
 ### 5.1 New module: `mcp/lsp_broadcast.py`
 
 Responsibilities:
+
 1. Resolve the shared bus root.
 2. Publish diagnostic events from LSP notifications.
 3. Provide a subscriber MCP tool `lsp_subscribe_diagnostics` for agents.
@@ -219,7 +222,7 @@ key = (workspace_id, file_relpath, range.start.line, range.start.character, seve
 
 This is intentionally stable across LSP republishes of the same diagnostic on every keystroke. The publisher applies it: if the last event for the same key (within the same workspace_id) had identical `range.end` and `message`, the publish is suppressed. Implementation: a small per-publisher LRU keyed by `(file_relpath, key)` of size 256.
 
-Cross-workspace dedup is intentionally *not* applied. If both A and B independently produce the same diagnostic for the same file, both events ship; the subscriber decides whether to coalesce.
+Cross-workspace dedup is intentionally _not_ applied. If both A and B independently produce the same diagnostic for the same file, both events ship; the subscriber decides whether to coalesce.
 
 ### 6.2 Subscriber-side overlap detection
 
@@ -255,6 +258,7 @@ Symptom: `LSPClient.proc.poll() is not None` in `_get_or_spawn_client`. Today th
 ### 7.2 Broadcast channel backs up
 
 The JSONL grows unboundedly if no one consumes. Mitigations:
+
 - **Size-based rotation**: at 5 MB, rename to `diagnostics.jsonl.1`, shift 1 to 2, drop 3. Implemented in the publisher, guarded by a short-held lockfile (`diagnostics.jsonl.rotlock`) to prevent two publishers rotating simultaneously.
 - **Time-based GC**: on each publish, with probability 1/1000, scan `.loki/events/lsp/diagnostics.jsonl.*` and delete files older than 24 h.
 - **Per-publisher rate cap**: each `DiagnosticPublisher` enforces less than or equal to 50 events/second; excess gets batched with a 100 ms timer and a single coalesced event per (file, severity).
@@ -285,6 +289,7 @@ macOS case-insensitive default filesystems can produce different `file_relpath` 
 Default: **opt-in via env var `LOKI_LSP_BROADCAST=1` for v7.7.x, default-on starting v7.8.x**.
 
 Rationale:
+
 - Today's parallel-mode users do not expect cross-worktree diagnostic flow; turning it on by default could change behavior in ways they cannot diagnose (e.g., agent B's "why did you re-plan?" trace points to an event from a different worktree).
 - The opt-in flag is set by `spawn-parallel.sh` automatically when it provisions worktrees, so users running parallel mode via the documented entry point get it for free.
 - Single-worktree users see no change; the publisher is initialized only when the env var is set, and `lsp_subscribe_diagnostics` returns an empty list with a clean diagnostic message if broadcast is off.
@@ -300,6 +305,7 @@ Three layers, all runnable locally and in CI.
 ### 9.1 Unit tests: `tests/test_lsp_broadcast.py` (pytest)
 
 Coverage:
+
 - `DiagnosticPublisher.publish` dedup LRU: emit same diagnostic twice, assert one event line written.
 - Rotation: publish events until file exceeds 5 MB, assert `diagnostics.jsonl.1` exists and primary file is reset.
 - Cursor reset: subscriber with a cursor pointing into a rotated file gets `cursor_reset=True`.
@@ -311,6 +317,7 @@ These tests use a **fake LSPClient** that exposes a `inject_notification(method,
 ### 9.2 Subprocess harness: `tests/test-lsp-broadcast.sh` (bash)
 
 Coverage:
+
 - Spawns 5 background `python3 -m mcp.lsp_proxy` processes pointing at the same shared root (a temp dir).
 - Each fake-publishes diagnostics on a 100 ms interval for 5 s using a small helper script that imports `DiagnosticPublisher` directly.
 - A 6th process subscribes and asserts it sees events from all 5 workspace_ids.
@@ -345,7 +352,7 @@ Honest list of things this plan deliberately does not solve:
 
 4. **Worktree file-rename handling.** A diagnostic published as `src/foo.ts` from worktree-A is delivered as `src/foo.ts` to worktree-B even if B has renamed it to `src/bar.ts`. Documented limitation; the subscriber can detect "this file does not exist in my worktree" and discard.
 
-5. **The orphan `pending_diagnostics` code path.** Fixing it is a *prerequisite* (section 3), not a goal of this design. If it ships standalone as a patch before broadcast lands, that is strictly better than today's silent-empty-array behavior.
+5. **The orphan `pending_diagnostics` code path.** Fixing it is a _prerequisite_ (section 3), not a goal of this design. If it ships standalone as a patch before broadcast lands, that is strictly better than today's silent-empty-array behavior.
 
 6. **Replacing `events/bus.py` with a "real" event bus.** Tempting but out of scope. The existing bus is good enough for diagnostic events at the rates we expect (less than or equal to 50/s per publisher x less than or equal to 5 publishers = 250/s, well under what a JSONL append handles).
 
@@ -354,12 +361,14 @@ Honest list of things this plan deliberately does not solve:
 ## 11. File-level work breakdown
 
 New files:
+
 - `mcp/lsp_broadcast.py` -- publisher, subscriber MCP tools, shared-root resolver. ~250 LOC.
 - `tests/test_lsp_broadcast.py` -- unit tests with fake LSPClient. ~200 LOC.
 - `tests/test-lsp-broadcast.sh` -- 5-publisher subprocess harness. ~80 LOC.
 - `tests/manual/lsp-broadcast-real-agents.md` -- manual release test runbook. ~60 LOC.
 
 Modified files:
+
 - `mcp/lsp_proxy.py`:
   - Add notification-reader thread to `LSPClient` (~150 LOC delta).
   - Populate `self.pending_diagnostics` (fixes section 3 orphan).

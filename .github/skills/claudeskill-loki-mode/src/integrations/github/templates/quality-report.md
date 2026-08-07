@@ -4,9 +4,9 @@
 
 ### Quality Gates
 
-| Gate | Status | Details |
-|------|--------|---------|
-{{QUALITY_GATES_TABLE}}
+| Gate                    | Status | Details |
+| ----------------------- | ------ | ------- |
+| {{QUALITY_GATES_TABLE}} |
 
 ### Summary
 
@@ -15,4 +15,5 @@
 - Deployment: {{DEPLOYMENT_URL}}
 
 ---
+
 [View full run]({{RUN_URL}}) | Commit: `{{SHA}}`

@@ -52,9 +52,7 @@ export function streamEvents(req: Request): Response {
       };
 
       // Send comment to establish connection
-      controller.enqueue(
-        encoder.encode(`: connected to loki-mode event stream\n\n`)
-      );
+      controller.enqueue(encoder.encode(`: connected to loki-mode event stream\n\n`));
 
       // Replay historical events if requested
       if (historyCount > 0) {
@@ -62,9 +60,7 @@ export function streamEvents(req: Request): Response {
         for (const event of history) {
           sendEvent(event);
         }
-        controller.enqueue(
-          encoder.encode(`: replayed ${history.length} historical events\n\n`)
-        );
+        controller.enqueue(encoder.encode(`: replayed ${history.length} historical events\n\n`));
       }
 
       // Subscribe to new events
@@ -90,9 +86,7 @@ export function streamEvents(req: Request): Response {
       // Send periodic keep-alive comments
       const keepAliveInterval = setInterval(() => {
         try {
-          controller.enqueue(
-            encoder.encode(`: keep-alive ${Date.now()}\n\n`)
-          );
+          controller.enqueue(encoder.encode(`: keep-alive ${Date.now()}\n\n`));
         } catch {
           clearInterval(keepAliveInterval);
           eventBus.unsubscribe(subscriptionId);
@@ -110,7 +104,7 @@ export function streamEvents(req: Request): Response {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
+      Connection: "keep-alive",
       "X-Accel-Buffering": "no", // Disable nginx buffering
     },
   });
@@ -145,7 +139,7 @@ export function getEventHistory(req: Request): Response {
     }),
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -160,6 +154,6 @@ export function getEventStats(_req: Request): Response {
     }),
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }

@@ -63,9 +63,7 @@ async function getStatus(): Promise<Record<string, unknown>> {
 
 // Broadcast to SSE clients
 function broadcast(data: Record<string, unknown>) {
-  const message = new TextEncoder().encode(
-    `data: ${JSON.stringify(data)}\n\n`
-  );
+  const message = new TextEncoder().encode(`data: ${JSON.stringify(data)}\n\n`);
   for (const controller of sseClients) {
     try {
       controller.enqueue(message);
@@ -76,10 +74,7 @@ function broadcast(data: Record<string, unknown>) {
 }
 
 // JSON response helper
-function json(
-  data: Record<string, unknown>,
-  status = 200
-): Response {
+function json(data: Record<string, unknown>, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
@@ -123,17 +118,13 @@ async function handler(req: Request): Promise<Response> {
 
         // Send initial status
         const status = await getStatus();
-        controller.enqueue(
-          new TextEncoder().encode(`data: ${JSON.stringify(status)}\n\n`)
-        );
+        controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(status)}\n\n`));
 
         // Periodic updates
         const interval = setInterval(async () => {
           try {
             const status = await getStatus();
-            controller.enqueue(
-              new TextEncoder().encode(`data: ${JSON.stringify(status)}\n\n`)
-            );
+            controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(status)}\n\n`));
           } catch {
             clearInterval(interval);
             sseClients.delete(controller);
@@ -149,7 +140,7 @@ async function handler(req: Request): Promise<Response> {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
+        Connection: "keep-alive",
         "Access-Control-Allow-Origin": "*",
       },
     });

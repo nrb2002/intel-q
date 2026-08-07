@@ -1,9 +1,11 @@
 # PRD: Blog Platform with CMS
 
 ## Overview
+
 A blog platform called "Inkwell" with a markdown-based content management system, category organization, RSS feed, and a reading-friendly frontend. Authors write in markdown with a live preview editor; readers get a fast, clean experience.
 
 ## Target Users
+
 - Independent bloggers who prefer writing in markdown
 - Technical writers publishing tutorials and guides
 - Small teams running a company blog
@@ -11,6 +13,7 @@ A blog platform called "Inkwell" with a markdown-based content management system
 ## Features
 
 ### MVP Features
+
 1. **Markdown Editor** - Admin CMS with live preview, frontmatter support, image uploads
 2. **Blog Frontend** - Clean reading experience with typography-focused design
 3. **Categories and Tags** - Organize posts by category and tag, filter/browse by each
@@ -21,6 +24,7 @@ A blog platform called "Inkwell" with a markdown-based content management system
 8. **Author Profiles** - Multi-author support with bio and avatar
 
 ### User Flow (Author)
+
 1. Author logs into admin at /admin
 2. Clicks "New Post" -> markdown editor opens with live preview
 3. Writes post in markdown, adds frontmatter (title, category, tags, excerpt)
@@ -29,6 +33,7 @@ A blog platform called "Inkwell" with a markdown-based content management system
 6. Views dashboard: post list, view counts, draft vs published status
 
 ### User Flow (Reader)
+
 1. Visits blog homepage -> sees latest posts with excerpts
 2. Clicks a post -> full article with table of contents
 3. Browses by category or tag -> filtered post list
@@ -38,22 +43,26 @@ A blog platform called "Inkwell" with a markdown-based content management system
 ## Tech Stack
 
 ### Frontend / SSG
+
 - Framework: Next.js 14 (App Router) with static generation
 - Styling: TailwindCSS + @tailwindcss/typography for prose
 - Markdown: unified/remark/rehype pipeline (remark-gfm, rehype-highlight, rehype-slug)
 - Search: Fuse.js (client-side fuzzy search) or Pagefind (static search index)
 
 ### Admin CMS
+
 - Editor: CodeMirror 6 with markdown mode + live preview pane
 - Auth: Simple email/password with iron-session (no OAuth needed for admin)
 - Image upload: Local filesystem with /public/uploads/ path
 
 ### Backend
+
 - Next.js API Routes
 - Database: SQLite via better-sqlite3
 - RSS: hand-built XML generation from post data
 
 ### Structure
+
 ```
 /
 ├── src/
@@ -195,6 +204,7 @@ CREATE INDEX idx_posts_slug ON posts(slug);
 ## API Endpoints
 
 ### Posts
+
 - `GET /api/posts` - List posts (query: `?status=`, `?category=`, `?tag=`, `?search=`, `?page=`)
 - `GET /api/posts/:id` - Get single post
 - `POST /api/posts` - Create post (admin only)
@@ -203,24 +213,29 @@ CREATE INDEX idx_posts_slug ON posts(slug);
 - `POST /api/posts/:id/publish` - Publish a draft (admin only)
 
 ### Categories
+
 - `GET /api/categories` - List all categories with post counts
 - `POST /api/categories` - Create category (admin only)
 - `PUT /api/categories/:id` - Update category (admin only)
 - `DELETE /api/categories/:id` - Delete category (admin only)
 
 ### Upload
+
 - `POST /api/upload` - Upload image, returns URL (admin only)
 
 ### Auth
+
 - `POST /api/auth/login` - Admin login
 - `POST /api/auth/logout` - Admin logout
 - `GET /api/auth/me` - Get current session
 
 ### Feeds
+
 - `GET /feed.xml` - RSS 2.0 feed (latest 20 published posts)
 - `GET /sitemap.xml` - XML sitemap for all published posts
 
 ## Requirements
+
 - TypeScript throughout
 - Static generation for published posts (ISR with revalidation)
 - Markdown supports: GFM tables, code blocks with syntax highlighting, footnotes, task lists
@@ -235,12 +250,14 @@ CREATE INDEX idx_posts_slug ON posts(slug);
 - Responsive design (mobile reading experience is a priority)
 
 ## Testing
+
 - Unit tests: Markdown processing, slug generation, RSS XML output, reading time calculation (Vitest)
 - API tests: Post CRUD, auth flow, image upload (Vitest + supertest)
 - Component tests: PostCard rendering, search functionality
 - Manual testing: Write a complete blog post, verify rendering, check RSS in a feed reader
 
 ## Out of Scope
+
 - Comments system
 - Newsletter / email subscriptions
 - Social sharing buttons
@@ -252,6 +269,7 @@ CREATE INDEX idx_posts_slug ON posts(slug);
 - Deployment
 
 ## Success Criteria
+
 - Author can create, edit, preview, and publish posts via admin CMS
 - Markdown renders correctly with syntax highlighting and GFM extensions
 - Categories and tags filter posts correctly

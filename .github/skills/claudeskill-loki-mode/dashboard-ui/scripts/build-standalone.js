@@ -12,10 +12,10 @@
  *   dist/loki-dashboard-standalone.html
  */
 
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import esbuild from 'esbuild';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import esbuild from "esbuild";
 
 // Get script directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,16 +23,16 @@ const __dirname = dirname(__filename);
 
 // Parse arguments
 const args = process.argv.slice(2);
-const shouldMinify = args.includes('--minify') || !args.includes('--no-minify');
-const watchMode = args.includes('--watch');
+const shouldMinify = args.includes("--minify") || !args.includes("--no-minify");
+const watchMode = args.includes("--watch");
 
 /**
  * Build standalone HTML dashboard
  */
 async function buildStandalone() {
-  const distDir = join(__dirname, '..', 'dist');
-  const serverStaticDir = join(__dirname, '..', '..', 'dashboard', 'static');
-  const entryPoint = join(__dirname, '..', 'index.js');
+  const distDir = join(__dirname, "..", "dist");
+  const serverStaticDir = join(__dirname, "..", "..", "dashboard", "static");
+  const entryPoint = join(__dirname, "..", "index.js");
 
   // Ensure output directories exist
   for (const dir of [distDir, serverStaticDir]) {
@@ -41,18 +41,18 @@ async function buildStandalone() {
     }
   }
 
-  console.log('Building standalone dashboard...');
+  console.log("Building standalone dashboard...");
 
   // Build IIFE bundle in memory
   const result = await esbuild.build({
     entryPoints: [entryPoint],
     bundle: true,
-    format: 'iife',
-    globalName: 'LokiDashboard',
+    format: "iife",
+    globalName: "LokiDashboard",
     minify: shouldMinify,
     write: false,
-    target: ['es2020'],
-    logLevel: 'warning',
+    target: ["es2020"],
+    logLevel: "warning",
   });
 
   const bundleCode = result.outputFiles[0].text;
@@ -63,11 +63,11 @@ async function buildStandalone() {
 
   // Write to BOTH locations - no manual copy step needed
   // 1. dist/ - for dashboard-ui npm package exports and VSCode
-  const distPath = join(distDir, 'loki-dashboard-standalone.html');
+  const distPath = join(distDir, "loki-dashboard-standalone.html");
   writeFileSync(distPath, html);
 
   // 2. dashboard/static/ - served directly by the Python API server
-  const serverPath = join(serverStaticDir, 'index.html');
+  const serverPath = join(serverStaticDir, "index.html");
   writeFileSync(serverPath, html);
 
   console.log(`Built: dist/loki-dashboard-standalone.html (${bundleSize} KB)`);
@@ -1803,20 +1803,20 @@ document.addEventListener('DOMContentLoaded', function() {
  * Watch mode for development
  */
 async function watchBuild() {
-  console.log('Watch mode enabled...');
+  console.log("Watch mode enabled...");
 
-  const distDir = join(__dirname, '..', 'dist');
-  const entryPoint = join(__dirname, '..', 'index.js');
+  const distDir = join(__dirname, "..", "dist");
+  const entryPoint = join(__dirname, "..", "index.js");
 
   const ctx = await esbuild.context({
     entryPoints: [entryPoint],
     bundle: true,
-    format: 'iife',
-    globalName: 'LokiDashboard',
+    format: "iife",
+    globalName: "LokiDashboard",
     minify: false,
     write: false,
-    target: ['es2020'],
-    logLevel: 'warning',
+    target: ["es2020"],
+    logLevel: "warning",
   });
 
   // Initial build
@@ -1824,26 +1824,29 @@ async function watchBuild() {
 
   // Watch for changes
   const result = await ctx.rebuild();
-  console.log('Watching for changes... Press Ctrl+C to stop.');
+  console.log("Watching for changes... Press Ctrl+C to stop.");
 
   // Simple watch loop
-  const chokidar = await import('chokidar').catch(() => null);
+  const chokidar = await import("chokidar").catch(() => null);
   if (chokidar) {
-    const watcher = chokidar.watch([
-      join(__dirname, '..', 'index.js'),
-      join(__dirname, '..', 'core', '*.js'),
-      join(__dirname, '..', 'components', '*.js'),
-    ], {
-      ignoreInitial: true,
-    });
+    const watcher = chokidar.watch(
+      [
+        join(__dirname, "..", "index.js"),
+        join(__dirname, "..", "core", "*.js"),
+        join(__dirname, "..", "components", "*.js"),
+      ],
+      {
+        ignoreInitial: true,
+      },
+    );
 
-    watcher.on('change', async (path) => {
+    watcher.on("change", async (path) => {
       console.log(`File changed: ${path}`);
       await buildStandalone();
     });
   } else {
-    console.log('Note: Install chokidar for automatic rebuild on file changes');
-    console.log('  npm install --save-dev chokidar');
+    console.log("Note: Install chokidar for automatic rebuild on file changes");
+    console.log("  npm install --save-dev chokidar");
   }
 }
 
@@ -1860,7 +1863,7 @@ async function main() {
       console.log(`Build complete in ${elapsed}ms`);
     }
   } catch (error) {
-    console.error('Build failed:', error.message);
+    console.error("Build failed:", error.message);
     process.exit(1);
   }
 }

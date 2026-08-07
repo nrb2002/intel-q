@@ -34,6 +34,7 @@ loki doctor
 ```
 
 This verifies:
+
 - Node.js version
 - Required CLI tools (git, jq, etc.)
 - AI provider CLI availability
@@ -55,9 +56,11 @@ Create a file called `simple-prd.md` with the following content:
 # Simple Todo App
 
 ## Overview
+
 A command-line todo application written in Node.js.
 
 ## Requirements
+
 - Add a todo item with a title
 - List all todo items
 - Mark a todo item as complete
@@ -65,10 +68,12 @@ A command-line todo application written in Node.js.
 - Store todos in a local JSON file
 
 ## Tech Stack
+
 - Node.js
 - No external dependencies (use built-in fs module)
 
 ## Success Criteria
+
 - All CRUD operations work from the command line
 - Data persists between runs via JSON file
 - Unit tests pass with >80% coverage
