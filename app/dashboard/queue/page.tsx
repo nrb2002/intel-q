@@ -42,15 +42,11 @@ export default function QueuePage() {
 
   return (
     <section className="space-y-8">
-      {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#1E293B]">
-          Queue
-        </h1>
-
-        <p className="mt-2 text-[#64748B]">
-          Monitor and manage customer queue activity.
-        </p>
+        <h2 className="text-3xl font-bold text-[#1E293B]">
+          Queue Management
+        </h2>
+        <hr />
       </div>
 
       {/* Queue Statistics */}

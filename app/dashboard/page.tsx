@@ -1,28 +1,14 @@
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { QueueOverview } from "@/components/dashboard/QueueOverview";
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export default function DashboardPage() {
   return (
     <section className="space-y-8">
 
       {/* Dashboard Header */}
-      <div>
-        <h1 className="
-          text-3xl
-          font-bold
-          text-[#1E293B]
-        ">
-          Dashboard
-        </h1>
-
-        <p className="
-          mt-2
-          text-[#64748B]
-        ">
-          Monitor queue activity and manage Intel-Q operations.
-        </p>
-      </div>
+      <DashboardHeader />
 
 
       {/* Statistics */}
