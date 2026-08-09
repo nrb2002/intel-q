@@ -5,6 +5,7 @@ import { PasswordHasher } from "@/util"
 import NeonAdapter from "@auth/neon-adapter"
 import { Pool } from "@neondatabase/serverless"
 import { signInSchema } from "./lib/validation/signIn"
+import type { UserRole } from "@/src/generated/prisma"
 
 
 
@@ -44,8 +45,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
             throw new Error("Invalid email or password.");
           }
 
-          // return user object with their profile data
-          return user
+          // Strip the password hash before returning — anything returned
+          // here can be serialized into the JWT.
+          const { password: _password, ...safeUser } = user
+          return safeUser
         },
       }),
     ],
@@ -62,11 +65,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
         return isLoggedIn;
       },
       async jwt({ token, user }) {
-        if (user) token.id = user.id;
+        if (user) {
+          token.id = user.id;
+          if ("role" in user) token.role = user.role as UserRole;
+        }
         return token;
       },
       async session({ session, token }) {
-        if (session.user) session.user.id = token.id as string;
+        if (session.user) {
+          session.user.id = token.id as string;
+          session.user.role = token.role as UserRole;
+        }
         return session;
       },
     },
