@@ -6,6 +6,8 @@ import { PasswordHasher } from "@/util";
 // this will be moved to lib/zod folder
 import { object, string, enum as zEnum } from "zod";
 
+export type RegisterState = { error?: string; success?: string } | undefined;
+
 // Only non-privileged roles may be self-assigned at registration.
 const ALLOWED_ROLES = ["staff", "customer", "admin"] as const;
 
@@ -18,20 +20,22 @@ const registerSchema = object({
     role: zEnum(ALLOWED_ROLES),
 });
 
-export async function registerUser(formData: FormData) {
+export async function registerUser(
+    _prevState: RegisterState,
+    formData: FormData
+): Promise<RegisterState> {
     try {
         const parsed = registerSchema.safeParse({
             name: formData.get("name"),
             email: formData.get("email"),
             password: formData.get("password"),
-            role: formData.get("role"),
         });
 
         if (!parsed.success) {
             return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
         }
 
-        const { name, password, role } = parsed.data;
+const { name, password, role } = parsed.data;
         const email = parsed.data.email.toLowerCase();
 
         // Check if account already exists (use the same normalized email we store)
@@ -43,19 +47,27 @@ export async function registerUser(formData: FormData) {
         // Hash password using 12 salt rounds
         const hashedPassword = await PasswordHasher.hash(password);
 
-        // Create user record
-        await db.user.create({
+// Create user record. Role is hardcoded server-side — never trust the
+// client for privilege level. Elevated roles go through an admin action.
+await db.user.create({
+    data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: 'customer',
+    },
+});
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                role,
+                role: "customer",
             },
         });
 
         return { success: "Account created successfully!" };
-
     } catch (error) {
+        console.error("registerUser failed:", error);
         return { error: "An unexpected database runtime error occurred." };
     }
 }
