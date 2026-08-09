@@ -4,15 +4,15 @@ This document shows how all Loki Mode tools work together to create a unified au
 
 ## Tool Overview
 
-| Tool | Entry Point | Purpose | Communication |
-|------|-------------|---------|---------------|
-| **CLI** | `loki` | User interface for all operations | File-based state |
-| **API** | `loki serve` | Remote control, SSE events | HTTP/REST |
-| **VS Code** | Extension | IDE integration | API client |
-| **MCP** | Claude tools | Claude Code integration | STDIO/MCP protocol |
-| **SKILL** | SKILL.md | Autonomy rules and behavior | File reads |
-| **Memory** | `memory/` | Cross-session learning | File storage |
-| **Events** | `events/` | Cross-tool communication | File pub/sub |
+| Tool        | Entry Point  | Purpose                           | Communication      |
+| ----------- | ------------ | --------------------------------- | ------------------ |
+| **CLI**     | `loki`       | User interface for all operations | File-based state   |
+| **API**     | `loki serve` | Remote control, SSE events        | HTTP/REST          |
+| **VS Code** | Extension    | IDE integration                   | API client         |
+| **MCP**     | Claude tools | Claude Code integration           | STDIO/MCP protocol |
+| **SKILL**   | SKILL.md     | Autonomy rules and behavior       | File reads         |
+| **Memory**  | `memory/`    | Cross-session learning            | File storage       |
+| **Events**  | `events/`    | Cross-tool communication          | File pub/sub       |
 
 ## Data Flow Architecture
 
@@ -90,6 +90,7 @@ HTTP Request -> API Server -> State Files -> Response
 ```
 
 **Key Endpoints:**
+
 - `POST /api/sessions` - Start session (emits session:start event)
 - `GET /api/events` - SSE stream (subscribes to Event Bus)
 - `GET /api/memory/*` - Memory access (reads from Memory Engine)
@@ -101,13 +102,14 @@ VS Code Extension communicates via the API:
 
 ```typescript
 // extension.ts
-const response = await apiRequest('/api/sessions', 'POST', {
-    provider: 'claude',
-    prd: '/path/to/prd.md'
+const response = await apiRequest("/api/sessions", "POST", {
+  provider: "claude",
+  prd: "/path/to/prd.md",
 });
 ```
 
 **Features:**
+
 - Session tree view (polls `/api/sessions`)
 - Task list (polls `/api/tasks`)
 - Status bar (subscribes to `/api/events`)
@@ -131,6 +133,7 @@ async def loki_state_get() -> str:
 ```
 
 **Tools Available to Claude:**
+
 - `loki_memory_retrieve` - Search memories
 - `loki_task_queue_list` - View tasks
 - `loki_state_get` - Get current state
@@ -170,11 +173,13 @@ Tool Action -> Memory Store -> Pattern Consolidation -> Tool Query
 ```
 
 **Write Path:**
+
 - Hooks store episodes after each session
 - Consolidation creates semantic patterns
 - Skills are learned from repeated patterns
 
 **Read Path:**
+
 - SKILL.md loads memory context at start
 - MCP retrieves relevant memories
 - API provides memory endpoints
@@ -182,14 +187,14 @@ Tool Action -> Memory Store -> Pattern Consolidation -> Tool Query
 
 ## State File Ownership
 
-| File | Primary Writer | Readers |
-|------|---------------|---------|
-| `.loki/state/orchestrator.json` | run.sh | All |
-| `.loki/queue/*.json` | SKILL/run.sh | All |
-| `.loki/CONTINUITY.md` | SKILL | SKILL, MCP |
-| `.loki/memory/*` | Memory Engine | All |
-| `.loki/events/*` | Event Bus | All |
-| `.loki/autonomy-state.json` | run.sh | CLI, API |
+| File                            | Primary Writer | Readers    |
+| ------------------------------- | -------------- | ---------- |
+| `.loki/state/orchestrator.json` | run.sh         | All        |
+| `.loki/queue/*.json`            | SKILL/run.sh   | All        |
+| `.loki/CONTINUITY.md`           | SKILL          | SKILL, MCP |
+| `.loki/memory/*`                | Memory Engine  | All        |
+| `.loki/events/*`                | Event Bus      | All        |
+| `.loki/autonomy-state.json`     | run.sh         | CLI, API   |
 
 ## Synergy Examples
 
@@ -230,12 +235,12 @@ Tool Action -> Memory Store -> Pattern Consolidation -> Tool Query
 
 ## Configuration Files
 
-| File | Purpose | Used By |
-|------|---------|---------|
-| `.mcp.json` | MCP server config | Claude Code |
-| `.claude/settings.json` | Hook configuration | Claude Code |
-| `.loki/config/` | Provider settings | CLI, run.sh |
-| `vscode-extension/package.json` | Extension settings | VS Code |
+| File                            | Purpose            | Used By     |
+| ------------------------------- | ------------------ | ----------- |
+| `.mcp.json`                     | MCP server config  | Claude Code |
+| `.claude/settings.json`         | Hook configuration | Claude Code |
+| `.loki/config/`                 | Provider settings  | CLI, run.sh |
+| `vscode-extension/package.json` | Extension settings | VS Code     |
 
 ## Future Synergy (v5.26+)
 
@@ -248,5 +253,5 @@ Per SYNERGY-ROADMAP.md:
 
 ---
 
-*Document Version: 1.1*
-*Last Updated: 2026-02-06*
+_Document Version: 1.1_
+_Last Updated: 2026-02-06_

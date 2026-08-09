@@ -6,11 +6,7 @@
  */
 
 import * as path from "https://deno.land/std@0.208.0/path/mod.ts";
-import {
-  LokiApiError,
-  ErrorCodes,
-  successResponse,
-} from "../middleware/error.ts";
+import { LokiApiError, ErrorCodes, successResponse } from "../middleware/error.ts";
 
 // Default Loki directory
 const LOKI_DIR = Deno.env.get("LOKI_DIR") || ".loki";
@@ -53,7 +49,7 @@ async function readSignals(
   since: Date,
   signalType?: string,
   source?: string,
-  limit = 1000
+  limit = 1000,
 ): Promise<unknown[]> {
   const signalsDir = getSignalsDir();
   const signals: unknown[] = [];
@@ -163,12 +159,10 @@ function calculateStats(signals: unknown[]): {
     totalConfidence += s.confidence || 0;
 
     // Count outcomes
-    stats.outcomeBreakdown[s.outcome] =
-      (stats.outcomeBreakdown[s.outcome] || 0) + 1;
+    stats.outcomeBreakdown[s.outcome] = (stats.outcomeBreakdown[s.outcome] || 0) + 1;
   }
 
-  stats.avgConfidence =
-    signals.length > 0 ? totalConfidence / signals.length : 0;
+  stats.avgConfidence = signals.length > 0 ? totalConfidence / signals.length : 0;
 
   return stats;
 }
@@ -178,7 +172,7 @@ function calculateStats(signals: unknown[]): {
  */
 function generateTrends(
   signals: unknown[],
-  hours: number
+  hours: number,
 ): {
   dataPoints: { label: string; count: number; timestamp: string }[];
   maxValue: number;
@@ -326,7 +320,7 @@ export async function getLatestAggregation(_req: Request): Promise<Response> {
   if (!aggregation) {
     throw new LokiApiError(
       "No aggregation data available. Run aggregation first.",
-      ErrorCodes.NOT_FOUND
+      ErrorCodes.NOT_FOUND,
     );
   }
 
@@ -372,10 +366,7 @@ print(json.dumps(result.to_dict()))
 
     if (!output.success) {
       const stderr = new TextDecoder().decode(output.stderr);
-      throw new LokiApiError(
-        `Aggregation failed: ${stderr}`,
-        ErrorCodes.INTERNAL_ERROR
-      );
+      throw new LokiApiError(`Aggregation failed: ${stderr}`, ErrorCodes.INTERNAL_ERROR);
     }
 
     const stdout = new TextDecoder().decode(output.stdout);
@@ -396,10 +387,7 @@ print(json.dumps(result.to_dict()))
   } catch (error) {
     if (error instanceof LokiApiError) throw error;
 
-    throw new LokiApiError(
-      `Failed to run aggregation: ${error}`,
-      ErrorCodes.INTERNAL_ERROR
-    );
+    throw new LokiApiError(`Failed to run aggregation: ${error}`, ErrorCodes.INTERNAL_ERROR);
   }
 }
 
@@ -444,9 +432,7 @@ export async function getAggregatedErrors(req: Request): Promise<Response> {
 /**
  * GET /api/learning/success - Get aggregated success patterns
  */
-export async function getAggregatedSuccessPatterns(
-  req: Request
-): Promise<Response> {
+export async function getAggregatedSuccessPatterns(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const limit = parseInt(url.searchParams.get("limit") || "20", 10);
 

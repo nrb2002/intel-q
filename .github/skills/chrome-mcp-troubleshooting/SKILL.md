@@ -29,10 +29,10 @@ Use this skill when Claude in Chrome MCP tools fail to connect or work unreliabl
 
 ### Two Native Hosts, Two Socket Formats
 
-| Component | Native Host Binary | Socket Location |
-|-----------|-------------------|-----------------|
-| **Claude.app (Cowork)** | `/Applications/Claude.app/Contents/Helpers/chrome-native-host` | `/tmp/claude-mcp-browser-bridge-$USER/<PID>.sock` |
-| **Claude Code CLI** | `~/.local/share/claude/versions/<version> --chrome-native-host` | `$TMPDIR/claude-mcp-browser-bridge-$USER` (single file) |
+| Component               | Native Host Binary                                              | Socket Location                                         |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------- |
+| **Claude.app (Cowork)** | `/Applications/Claude.app/Contents/Helpers/chrome-native-host`  | `/tmp/claude-mcp-browser-bridge-$USER/<PID>.sock`       |
+| **Claude Code CLI**     | `~/.local/share/claude/versions/<version> --chrome-native-host` | `$TMPDIR/claude-mcp-browser-bridge-$USER` (single file) |
 
 ### Why They Conflict
 
@@ -179,6 +179,7 @@ Running multiple Claude Code instances can cause socket conflicts.
 The wrapper at `~/.claude/chrome/chrome-native-host` may have a hardcoded version that becomes stale after updates.
 
 **Diagnosis:**
+
 ```bash
 cat ~/.claude/chrome/chrome-native-host
 # Bad: exec "/Users/.../.local/share/claude/versions/2.0.76" --chrome-native-host
@@ -228,15 +229,15 @@ echo "Expected: $(getconf DARWIN_USER_TEMP_DIR)"
 
 ## File Reference
 
-| File | Purpose |
-|------|---------|
-| `~/.claude/chrome/chrome-native-host` | Custom wrapper script for Claude Code |
-| `/Applications/Claude.app/Contents/Helpers/chrome-native-host` | Claude.app (Cowork) native host |
-| `~/.local/share/claude/versions/<version>` | Claude Code binary (run with `--chrome-native-host`) |
-| `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.anthropic.claude_browser_extension.json` | Config for Claude.app native host |
-| `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.anthropic.claude_code_browser_extension.json` | Config for Claude Code native host |
-| `$TMPDIR/claude-mcp-browser-bridge-$USER` | Socket file (Claude Code) |
-| `/tmp/claude-mcp-browser-bridge-$USER/<PID>.sock` | Socket files (Claude.app) |
+| File                                                                                                                | Purpose                                              |
+| ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `~/.claude/chrome/chrome-native-host`                                                                               | Custom wrapper script for Claude Code                |
+| `/Applications/Claude.app/Contents/Helpers/chrome-native-host`                                                      | Claude.app (Cowork) native host                      |
+| `~/.local/share/claude/versions/<version>`                                                                          | Claude Code binary (run with `--chrome-native-host`) |
+| `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.anthropic.claude_browser_extension.json`      | Config for Claude.app native host                    |
+| `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.anthropic.claude_code_browser_extension.json` | Config for Claude Code native host                   |
+| `$TMPDIR/claude-mcp-browser-bridge-$USER`                                                                           | Socket file (Claude Code)                            |
+| `/tmp/claude-mcp-browser-bridge-$USER/<PID>.sock`                                                                   | Socket files (Claude.app)                            |
 
 ## Summary
 
@@ -248,4 +249,4 @@ echo "Expected: $(getconf DARWIN_USER_TEMP_DIR)"
 
 ---
 
-*Original skill by [@jeffzwang](https://github.com/jeffzwang) from [@ExaAILabs](https://github.com/ExaAILabs). Enhanced and updated for current versions of Claude Desktop and Claude Code.*
+_Original skill by [@jeffzwang](https://github.com/jeffzwang) from [@ExaAILabs](https://github.com/ExaAILabs). Enhanced and updated for current versions of Claude Desktop and Claude Code._

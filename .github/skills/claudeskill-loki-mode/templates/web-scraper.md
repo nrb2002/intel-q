@@ -1,14 +1,17 @@
 # PRD: Web Scraper Tool
 
 ## Overview
+
 A configurable web scraping tool that extracts structured data from websites, handles pagination, respects robots.txt, and exports results in multiple formats.
 
 ## Target Users
+
 - Data analysts collecting web data for research
 - Developers building data pipelines from web sources
 - Marketers monitoring competitor pricing or content
 
 ## Core Features
+
 1. **Configurable Extraction** - Define scraping targets with CSS selectors or XPath expressions in a config file
 2. **Pagination Handling** - Automatically follow next-page links or infinite scroll patterns
 3. **Rate Limiting** - Configurable request delays and concurrent connection limits to avoid blocking
@@ -18,6 +21,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 7. **Proxy Support** - Rotate through proxy list for distributed scraping
 
 ## Technical Requirements
+
 - Python 3.10+ with async/await
 - httpx for async HTTP requests
 - BeautifulSoup4 and lxml for HTML parsing
@@ -27,6 +31,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 - Structured logging
 
 ## Quality Gates
+
 - Unit tests for parser, config loader, and export functions
 - Integration tests with mock HTTP server
 - Robots.txt parser tested against edge cases
@@ -34,6 +39,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 - Export format validation for JSON, CSV, and SQLite
 
 ## Project Structure
+
 ```
 /
 ├── src/
@@ -61,6 +67,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 ```
 
 ## Out of Scope
+
 - JavaScript-rendered pages (Puppeteer, Playwright)
 - CAPTCHA solving or bypass
 - Login-required or session-based scraping
@@ -70,6 +77,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 - Cloud storage export (S3, GCS)
 
 ## Acceptance Criteria
+
 - YAML config defines target URL, CSS selectors, and field names
 - Scraper extracts all matching elements from a page
 - Pagination follows next-page links until no more pages remain
@@ -79,6 +87,7 @@ A configurable web scraping tool that extracts structured data from websites, ha
 - Failed requests retry with exponential backoff up to 3 times
 
 ## Success Metrics
+
 - Scraper extracts data matching CSS selector configuration
 - Pagination follows links and collects all pages
 - Rate limiting maintains configured request interval

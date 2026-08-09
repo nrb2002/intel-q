@@ -36,17 +36,8 @@ import {
   getActiveTasks,
   getQueuedTasks,
 } from "./routes/tasks.ts";
-import {
-  streamEvents,
-  getEventHistory,
-  getEventStats,
-} from "./routes/events.ts";
-import {
-  healthCheck,
-  readinessCheck,
-  livenessCheck,
-  detailedStatus,
-} from "./routes/health.ts";
+import { streamEvents, getEventHistory, getEventStats } from "./routes/events.ts";
+import { healthCheck, readinessCheck, livenessCheck, detailedStatus } from "./routes/health.ts";
 import {
   getMemorySummary,
   getMemoryIndex,
@@ -93,10 +84,7 @@ const defaultConfig: ServerConfig = {
 /**
  * Route handler type
  */
-type RouteHandler = (
-  req: Request,
-  ...params: string[]
-) => Promise<Response> | Response;
+type RouteHandler = (req: Request, ...params: string[]) => Promise<Response> | Response;
 
 /**
  * Route definition
@@ -264,10 +252,7 @@ async function routeRequest(req: Request): Promise<Response> {
   }
 
   // No route matched
-  throw new LokiApiError(
-    `No route found for ${method} ${path}`,
-    ErrorCodes.NOT_FOUND
-  );
+  throw new LokiApiError(`No route found for ${method} ${path}`, ErrorCodes.NOT_FOUND);
 }
 
 /**
@@ -434,7 +419,7 @@ async function main(): Promise<void> {
         console.log(`Ready to accept connections on ${hostname}:${port}`);
       },
     },
-    handler
+    handler,
   ).finished;
 }
 

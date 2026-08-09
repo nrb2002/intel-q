@@ -14,12 +14,12 @@ Step-by-step guides for connecting Loki Mode to external services. Each integrat
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOKI_SLACK_BOT_TOKEN` | Yes | Bot User OAuth Token (starts with `xoxb-`) |
-| `LOKI_SLACK_SIGNING_SECRET` | Yes | Used to verify inbound webhook requests |
-| `LOKI_SLACK_CHANNEL` | No | Default channel for notifications (e.g., `#loki-alerts`) |
-| `LOKI_SLACK_WEBHOOK_URL` | No | Incoming webhook URL for simple notifications |
+| Variable                    | Required | Description                                              |
+| --------------------------- | -------- | -------------------------------------------------------- |
+| `LOKI_SLACK_BOT_TOKEN`      | Yes      | Bot User OAuth Token (starts with `xoxb-`)               |
+| `LOKI_SLACK_SIGNING_SECRET` | Yes      | Used to verify inbound webhook requests                  |
+| `LOKI_SLACK_CHANNEL`        | No       | Default channel for notifications (e.g., `#loki-alerts`) |
+| `LOKI_SLACK_WEBHOOK_URL`    | No       | Incoming webhook URL for simple notifications            |
 
 ### Configuration
 
@@ -57,6 +57,7 @@ Step-by-step guides for connecting Loki Mode to external services. Each integrat
    - `/loki-approve` -- Approve a pending gate
 
    Set the Request URL to your Loki Mode dashboard endpoint:
+
    ```
    https://your-loki-host:57374/api/webhooks/slack
    ```
@@ -76,12 +77,12 @@ curl -X POST "$LOKI_SLACK_WEBHOOK_URL" \
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| `not_authed` error | Verify `LOKI_SLACK_BOT_TOKEN` is set and valid |
+| Issue                   | Solution                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| `not_authed` error      | Verify `LOKI_SLACK_BOT_TOKEN` is set and valid               |
 | Webhook signature fails | Check `LOKI_SLACK_SIGNING_SECRET` matches Slack app settings |
-| Messages not appearing | Ensure bot is invited to the target channel |
-| Slash command timeout | Check Loki Mode dashboard is accessible from Slack servers |
+| Messages not appearing  | Ensure bot is invited to the target channel                  |
+| Slash command timeout   | Check Loki Mode dashboard is accessible from Slack servers   |
 
 ---
 
@@ -95,10 +96,10 @@ curl -X POST "$LOKI_SLACK_WEBHOOK_URL" \
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOKI_TEAMS_WEBHOOK_URL` | Yes | Incoming Webhook URL from Teams connector |
-| `LOKI_TEAMS_WEBHOOK_SECRET` | No | Shared secret for HMAC verification of inbound requests |
+| Variable                    | Required | Description                                             |
+| --------------------------- | -------- | ------------------------------------------------------- |
+| `LOKI_TEAMS_WEBHOOK_URL`    | Yes      | Incoming Webhook URL from Teams connector               |
+| `LOKI_TEAMS_WEBHOOK_SECRET` | No       | Shared secret for HMAC verification of inbound requests |
 
 ### Configuration
 
@@ -151,11 +152,11 @@ curl -X POST "$LOKI_TEAMS_WEBHOOK_URL" \
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| HTTP 400 from webhook | Verify the Adaptive Card JSON is valid |
-| HTTP 403 from webhook | Webhook URL may have expired; recreate the connector |
-| No notifications | Check `LOKI_TEAMS_WEBHOOK_URL` is set |
+| Issue                   | Solution                                                 |
+| ----------------------- | -------------------------------------------------------- |
+| HTTP 400 from webhook   | Verify the Adaptive Card JSON is valid                   |
+| HTTP 403 from webhook   | Webhook URL may have expired; recreate the connector     |
+| No notifications        | Check `LOKI_TEAMS_WEBHOOK_URL` is set                    |
 | HMAC verification fails | Ensure `LOKI_TEAMS_WEBHOOK_SECRET` matches on both sides |
 
 ---
@@ -170,12 +171,12 @@ curl -X POST "$LOKI_TEAMS_WEBHOOK_URL" \
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOKI_JIRA_URL` | Yes | Jira Cloud base URL |
-| `LOKI_JIRA_EMAIL` | Yes | Jira user email for authentication |
-| `LOKI_JIRA_TOKEN` | Yes | Jira API token |
-| `LOKI_JIRA_PROJECT_KEY` | No | Default Jira project key |
+| Variable                | Required | Description                        |
+| ----------------------- | -------- | ---------------------------------- |
+| `LOKI_JIRA_URL`         | Yes      | Jira Cloud base URL                |
+| `LOKI_JIRA_EMAIL`       | Yes      | Jira user email for authentication |
+| `LOKI_JIRA_TOKEN`       | Yes      | Jira API token                     |
+| `LOKI_JIRA_PROJECT_KEY` | No       | Default Jira project key           |
 
 ### Configuration
 
@@ -197,8 +198,8 @@ curl -X POST "$LOKI_TEAMS_WEBHOOK_URL" \
    Import a Jira epic as a PRD:
 
    ```javascript
-   const { JiraApiClient } = require('./src/integrations/jira/api-client');
-   const { JiraSyncManager } = require('./src/integrations/jira/sync-manager');
+   const { JiraApiClient } = require("./src/integrations/jira/api-client");
+   const { JiraSyncManager } = require("./src/integrations/jira/sync-manager");
 
    const api = new JiraApiClient({
      baseUrl: process.env.LOKI_JIRA_URL,
@@ -206,16 +207,16 @@ curl -X POST "$LOKI_TEAMS_WEBHOOK_URL" \
      apiToken: process.env.LOKI_JIRA_TOKEN,
    });
 
-   const sync = new JiraSyncManager({ apiClient: api, projectKey: 'PROJ' });
+   const sync = new JiraSyncManager({ apiClient: api, projectKey: "PROJ" });
 
    // Import epic as PRD
-   const { prd, metadata } = await sync.syncFromJira('PROJ-123');
+   const { prd, metadata } = await sync.syncFromJira("PROJ-123");
 
    // Sync RARV status back to Jira
-   await sync.syncToJira('PROJ-123', {
-     phase: 'building',
+   await sync.syncToJira("PROJ-123", {
+     phase: "building",
      progress: 45,
-     details: 'Implementing authentication module',
+     details: "Implementing authentication module",
    });
    ```
 
@@ -224,24 +225,24 @@ curl -X POST "$LOKI_TEAMS_WEBHOOK_URL" \
    Loki Mode RARV phases map to Jira statuses:
 
    | Loki Phase | Jira Status |
-   |------------|-------------|
-   | planning | In Progress |
-   | building | In Progress |
-   | testing | In Review |
-   | reviewing | In Review |
-   | deployed | Done |
-   | completed | Done |
-   | failed | Blocked |
-   | blocked | Blocked |
+   | ---------- | ----------- |
+   | planning   | In Progress |
+   | building   | In Progress |
+   | testing    | In Review   |
+   | reviewing  | In Review   |
+   | deployed   | Done        |
+   | completed  | Done        |
+   | failed     | Blocked     |
+   | blocked    | Blocked     |
 
 5. **Sub-Task Creation:**
 
    Loki Mode can create Jira sub-tasks mirroring its internal task decomposition:
 
    ```javascript
-   const keys = await sync.createSubTasks('PROJ-123', [
-     { title: 'Set up database schema', description: 'Create tables for user model' },
-     { title: 'Implement API endpoints', description: 'REST endpoints for CRUD' },
+   const keys = await sync.createSubTasks("PROJ-123", [
+     { title: "Set up database schema", description: "Create tables for user model" },
+     { title: "Implement API endpoints", description: "REST endpoints for CRUD" },
    ]);
    // keys: ['PROJ-124', 'PROJ-125']
    ```
@@ -260,13 +261,13 @@ curl -u "$LOKI_JIRA_EMAIL:$LOKI_JIRA_TOKEN" \
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| HTTP 401 | Check email and API token are correct |
-| HTTP 403 | User lacks permission on the Jira project |
-| Epic children not found | Verify epic link field name in your Jira instance |
-| Status transition fails | Check available transitions with `getTransitions()` |
-| JQL injection error | Epic keys are validated against `^[A-Z][A-Z0-9_]+-\d+$` |
+| Issue                   | Solution                                                |
+| ----------------------- | ------------------------------------------------------- |
+| HTTP 401                | Check email and API token are correct                   |
+| HTTP 403                | User lacks permission on the Jira project               |
+| Epic children not found | Verify epic link field name in your Jira instance       |
+| Status transition fails | Check available transitions with `getTransitions()`     |
+| JQL injection error     | Epic keys are validated against `^[A-Z][A-Z0-9_]+-\d+$` |
 
 ---
 
@@ -280,11 +281,11 @@ curl -u "$LOKI_JIRA_EMAIL:$LOKI_JIRA_TOKEN" \
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOKI_LINEAR_API_KEY` | Yes | Linear personal API key |
-| `LOKI_LINEAR_TEAM_ID` | No | Default team ID for issue creation |
-| `LOKI_LINEAR_WEBHOOK_SECRET` | No | Webhook signing secret for inbound events |
+| Variable                     | Required | Description                               |
+| ---------------------------- | -------- | ----------------------------------------- |
+| `LOKI_LINEAR_API_KEY`        | Yes      | Linear personal API key                   |
+| `LOKI_LINEAR_TEAM_ID`        | No       | Default team ID for issue creation        |
+| `LOKI_LINEAR_WEBHOOK_SECRET` | No       | Webhook signing secret for inbound events |
 
 ### Configuration
 
@@ -302,21 +303,21 @@ curl -u "$LOKI_JIRA_EMAIL:$LOKI_JIRA_TOKEN" \
 3. **Project Sync:**
 
    ```javascript
-   const { LinearClient } = require('./src/integrations/linear/client');
+   const { LinearClient } = require("./src/integrations/linear/client");
 
    const client = new LinearClient(process.env.LOKI_LINEAR_API_KEY);
 
    // Fetch a project with all issues
-   const project = await client.getProject('project-id');
+   const project = await client.getProject("project-id");
 
    // Update issue status
-   await client.updateIssue('issue-id', { stateId: 'state-id' });
+   await client.updateIssue("issue-id", { stateId: "state-id" });
 
    // Create a sub-issue
-   await client.createSubIssue('parent-id', 'team-id', 'Task title', 'Description');
+   await client.createSubIssue("parent-id", "team-id", "Task title", "Description");
 
    // Post a comment
-   await client.createComment('issue-id', '**Loki Mode** completed testing phase.');
+   await client.createComment("issue-id", "**Loki Mode** completed testing phase.");
    ```
 
 4. **Status Mapping:**
@@ -352,12 +353,12 @@ curl -X POST https://api.linear.app/graphql \
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| `RateLimitError` | Wait for `retryAfterMs` before retrying |
-| `LinearApiError` HTTP 401 | Check API key is valid and not expired |
-| Team states not found | Verify `team_id` is correct |
-| Config not loading | Check `.loki/config.yaml` syntax |
+| Issue                     | Solution                                |
+| ------------------------- | --------------------------------------- |
+| `RateLimitError`          | Wait for `retryAfterMs` before retrying |
+| `LinearApiError` HTTP 401 | Check API key is valid and not expired  |
+| Team states not found     | Verify `team_id` is correct             |
+| Config not loading        | Check `.loki/config.yaml` syntax        |
 
 ---
 
@@ -371,13 +372,13 @@ curl -X POST https://api.linear.app/graphql \
 
 ### Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LOKI_GITHUB_SYNC` | No | Enable GitHub sync (`true`) |
-| `GITHUB_TOKEN` | Yes (in CI) | GitHub token for API access |
+| Variable            | Required     | Description                    |
+| ------------------- | ------------ | ------------------------------ |
+| `LOKI_GITHUB_SYNC`  | No           | Enable GitHub sync (`true`)    |
+| `GITHUB_TOKEN`      | Yes (in CI)  | GitHub token for API access    |
 | `GITHUB_REPOSITORY` | Auto (in CI) | Repository name (`owner/repo`) |
-| `GITHUB_SHA` | Auto (in CI) | Commit SHA for status checks |
-| `GITHUB_EVENT_NAME` | Auto (in CI) | Trigger event name |
+| `GITHUB_SHA`        | Auto (in CI) | Commit SHA for status checks   |
+| `GITHUB_EVENT_NAME` | Auto (in CI) | Trigger event name             |
 
 ### Configuration
 
@@ -425,6 +426,7 @@ curl -X POST https://api.linear.app/graphql \
 ### PR Comment Format
 
 The reporter uses markdown templates from `src/integrations/github/templates/`:
+
 - `quality-report.md` -- PR quality report template
 - `execution-summary.md` -- Issue execution summary template
 
@@ -455,12 +457,12 @@ node -e "
 
 ### Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| HTTP 401 from GitHub API | Check `GITHUB_TOKEN` is valid and has required scopes |
-| PR comment not posted | Ensure event is `pull_request_review` and PR number is in payload |
-| Status check not created | Ensure `GITHUB_SHA` is set |
-| Template not rendering | Check template files exist in `src/integrations/github/templates/` |
+| Issue                    | Solution                                                           |
+| ------------------------ | ------------------------------------------------------------------ |
+| HTTP 401 from GitHub API | Check `GITHUB_TOKEN` is valid and has required scopes              |
+| PR comment not posted    | Ensure event is `pull_request_review` and PR number is in payload  |
+| Status check not created | Ensure `GITHUB_SHA` is set                                         |
+| Template not rendering   | Check template files exist in `src/integrations/github/templates/` |
 
 ---
 
@@ -480,6 +482,7 @@ IntegrationAdapter (abstract base)
 ```
 
 Retry behavior:
+
 - Default: 3 retries with exponential backoff
 - Base delay: 1,000ms, max delay: 30,000ms
 - Events emitted: `retry`, `success`, `failure`

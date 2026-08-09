@@ -19,6 +19,7 @@ BGPT is a remote MCP server that searches a curated database of scientific paper
 ## When to Use This Skill
 
 Use this skill when:
+
 - Searching for scientific papers with specific experimental details
 - Conducting systematic or scoping literature reviews
 - Finding quantitative results, sample sizes, or effect sizes across studies
@@ -61,6 +62,7 @@ Search for papers about: "CRISPR gene editing efficiency in human cells"
 ```
 
 The server returns structured results including:
+
 - **Title, authors, journal, year, DOI**
 - **Methods**: Experimental techniques, models, protocols
 - **Results**: Key findings with quantitative data
@@ -72,4 +74,3 @@ The server returns structured results including:
 
 - **Free tier**: 50 searches per network, no API key required
 - **Paid**: $0.01 per result with an API key from [bgpt.pro/mcp](https://bgpt.pro/mcp)
-

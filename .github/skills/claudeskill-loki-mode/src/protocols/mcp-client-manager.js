@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var fs = require('fs');
-var path = require('path');
-var MCPClientModule = require('./mcp-client');
+var fs = require("fs");
+var path = require("path");
+var MCPClientModule = require("./mcp-client");
 var MCPClient = MCPClientModule.MCPClient;
-var CircuitBreakerModule = require('./mcp-circuit-breaker');
+var CircuitBreakerModule = require("./mcp-circuit-breaker");
 var CircuitBreaker = CircuitBreakerModule.CircuitBreaker;
 
 /**
@@ -20,7 +20,7 @@ var CircuitBreaker = CircuitBreakerModule.CircuitBreaker;
  *   - discoverTools() is idempotent.
  */
 
-var FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+var FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
 function validateConfigDir(configDir) {
   var root = process.cwd();
@@ -28,9 +28,14 @@ function validateConfigDir(configDir) {
   var rootSep = root.endsWith(path.sep) ? root : root + path.sep;
   if (resolved !== root && resolved.indexOf(rootSep) !== 0) {
     throw new Error(
-      'MCPClientManager: configDir "' + configDir + '" resolves to "' + resolved +
-      '" which is outside the project root "' + root + '". ' +
-      'Supply a path within the project directory.'
+      'MCPClientManager: configDir "' +
+        configDir +
+        '" resolves to "' +
+        resolved +
+        '" which is outside the project root "' +
+        root +
+        '". ' +
+        "Supply a path within the project directory.",
     );
   }
   return resolved;
@@ -39,7 +44,7 @@ function validateConfigDir(configDir) {
 class MCPClientManager {
   constructor(options) {
     var opts = options || {};
-    this._configDir = validateConfigDir(opts.configDir || '.loki');
+    this._configDir = validateConfigDir(opts.configDir || ".loki");
     this._timeout = opts.timeout || 30000;
     this._failureThreshold = opts.failureThreshold || 3;
     this._resetTimeout = opts.resetTimeout || 30000;
@@ -51,8 +56,12 @@ class MCPClientManager {
     this._initialized = false;
   }
 
-  get initialized() { return this._initialized; }
-  get serverCount() { return this._clients.size; }
+  get initialized() {
+    return this._initialized;
+  }
+  get serverCount() {
+    return this._clients.size;
+  }
 
   async discoverTools() {
     if (this._initialized) return this.getAllTools();
@@ -76,12 +85,12 @@ class MCPClientManager {
         url: serverConfig.url || null,
         auth: serverConfig.auth || null,
         token_env: serverConfig.token_env || null,
-        timeout: serverConfig.timeout || this._timeout
+        timeout: serverConfig.timeout || this._timeout,
       });
 
       var breaker = new CircuitBreaker({
         failureThreshold: this._failureThreshold,
-        resetTimeout: this._resetTimeout
+        resetTimeout: this._resetTimeout,
       });
 
       this._clients.set(serverConfig.name, client);
@@ -90,14 +99,21 @@ class MCPClientManager {
       try {
         var self = this;
         var serverName = serverConfig.name;
-        var tools = await breaker.execute(function() { return client.connect(); });
+        var tools = await breaker.execute(function () {
+          return client.connect();
+        });
         for (var j = 0; j < tools.length; j++) {
           var tool = tools[j];
           if (self._toolRouting.has(tool.name)) {
             var existing = self._toolRouting.get(tool.name);
             process.stderr.write(
-              '[mcp-manager] WARNING: tool "' + tool.name + '" from "' + serverName +
-              '" collides with "' + existing + '". Earlier registration kept.\n'
+              '[mcp-manager] WARNING: tool "' +
+                tool.name +
+                '" from "' +
+                serverName +
+                '" collides with "' +
+                existing +
+                '". Earlier registration kept.\n',
             );
           } else {
             self._toolRouting.set(tool.name, serverName);
@@ -107,7 +123,11 @@ class MCPClientManager {
         allTools.push.apply(allTools, tools);
       } catch (err) {
         process.stderr.write(
-          '[mcp-manager] Failed to connect to server "' + serverConfig.name + '": ' + err.message + '\n'
+          '[mcp-manager] Failed to connect to server "' +
+            serverConfig.name +
+            '": ' +
+            err.message +
+            "\n",
         );
       }
     }
@@ -124,21 +144,25 @@ class MCPClientManager {
 
   getAllTools() {
     var tools = [];
-    for (var schema of this._toolSchemas.values()) { tools.push(schema); }
+    for (var schema of this._toolSchemas.values()) {
+      tools.push(schema);
+    }
     return tools;
   }
 
   async callTool(toolName, args) {
     var serverName = this._toolRouting.get(toolName);
-    if (!serverName) throw new Error('No server found for tool: ' + toolName);
+    if (!serverName) throw new Error("No server found for tool: " + toolName);
 
     var client = this._clients.get(serverName);
-    if (!client) throw new Error('Client not found for server: ' + serverName);
+    if (!client) throw new Error("Client not found for server: " + serverName);
 
     var breaker = this._breakers.get(serverName);
-    if (!breaker) throw new Error('Circuit breaker not found for server: ' + serverName);
+    if (!breaker) throw new Error("Circuit breaker not found for server: " + serverName);
 
-    return breaker.execute(function() { return client.callTool(toolName, args); });
+    return breaker.execute(function () {
+      return client.callTool(toolName, args);
+    });
   }
 
   getServerState(serverName) {
@@ -148,9 +172,13 @@ class MCPClientManager {
 
   async shutdown() {
     var shutdowns = [];
-    for (var client of this._clients.values()) { shutdowns.push(client.shutdown()); }
+    for (var client of this._clients.values()) {
+      shutdowns.push(client.shutdown());
+    }
     await Promise.all(shutdowns);
-    for (var breaker of this._breakers.values()) { breaker.destroy(); }
+    for (var breaker of this._breakers.values()) {
+      breaker.destroy();
+    }
     this._clients.clear();
     this._breakers.clear();
     this._toolRouting.clear();
@@ -159,23 +187,23 @@ class MCPClientManager {
   }
 
   _loadConfig() {
-    var jsonPath = path.join(this._configDir, 'config.json');
-    var yamlPath = path.join(this._configDir, 'config.yaml');
+    var jsonPath = path.join(this._configDir, "config.json");
+    var yamlPath = path.join(this._configDir, "config.yaml");
 
     if (fs.existsSync(jsonPath)) {
       try {
-        return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        return JSON.parse(fs.readFileSync(jsonPath, "utf8"));
       } catch (err) {
-        process.stderr.write('[mcp-manager] Failed to parse config.json: ' + err.message + '\n');
+        process.stderr.write("[mcp-manager] Failed to parse config.json: " + err.message + "\n");
         return null;
       }
     }
 
     if (fs.existsSync(yamlPath)) {
       try {
-        return this._parseMinimalYaml(fs.readFileSync(yamlPath, 'utf8'));
+        return this._parseMinimalYaml(fs.readFileSync(yamlPath, "utf8"));
       } catch (err) {
-        process.stderr.write('[mcp-manager] Failed to parse config.yaml: ' + err.message + '\n');
+        process.stderr.write("[mcp-manager] Failed to parse config.yaml: " + err.message + "\n");
         return null;
       }
     }
@@ -189,13 +217,13 @@ class MCPClientManager {
    */
   _parseMinimalYaml(raw) {
     var result = {};
-    var lines = raw.split('\n');
+    var lines = raw.split("\n");
     var currentKey = null;
     var currentList = null;
     var currentItem = null;
 
     for (var i = 0; i < lines.length; i++) {
-      var trimmed = lines[i].replace(/\r$/, '');
+      var trimmed = lines[i].replace(/\r$/, "");
 
       if (/^\s*$/.test(trimmed) || /^\s*#/.test(trimmed)) continue;
 
@@ -211,7 +239,7 @@ class MCPClientManager {
       }
 
       var topValMatch = trimmed.match(/^(\w+):\s+(.+)$/);
-      if (topValMatch && !trimmed.startsWith(' ') && !trimmed.startsWith('\t')) {
+      if (topValMatch && !trimmed.startsWith(" ") && !trimmed.startsWith("\t")) {
         var kv = topValMatch[1];
         if (!FORBIDDEN_KEYS.has(kv)) result[kv] = this._parseYamlValue(topValMatch[2]);
         continue;
@@ -241,20 +269,23 @@ class MCPClientManager {
 
   _parseYamlValue(val) {
     val = val.trim();
-    var ci = val.indexOf(' #');
+    var ci = val.indexOf(" #");
     if (ci !== -1) val = val.slice(0, ci).trim();
 
-    if (val.startsWith('[') && val.endsWith(']')) {
-      try { return JSON.parse(val); } catch (_) { return val; }
+    if (val.startsWith("[") && val.endsWith("]")) {
+      try {
+        return JSON.parse(val);
+      } catch (_) {
+        return val;
+      }
     }
 
-    if ((val.startsWith('"') && val.endsWith('"')) ||
-        (val.startsWith("'") && val.endsWith("'"))) {
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
       return val.slice(1, -1);
     }
 
-    if (val === 'true') return true;
-    if (val === 'false') return false;
+    if (val === "true") return true;
+    if (val === "false") return false;
     if (/^-?\d+(\.\d+)?$/.test(val)) return Number(val);
 
     return val;

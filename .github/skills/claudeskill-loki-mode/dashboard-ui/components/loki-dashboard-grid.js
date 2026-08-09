@@ -14,7 +14,7 @@
  * </loki-dashboard-grid>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
+import { LokiElement } from "../core/loki-theme.js";
 
 /**
  * @class LokiDashboardGrid
@@ -23,7 +23,7 @@ import { LokiElement } from '../core/loki-theme.js';
  */
 export class LokiDashboardGrid extends LokiElement {
   static get observedAttributes() {
-    return ['columns', 'theme'];
+    return ["columns", "theme"];
   }
 
   constructor() {
@@ -46,7 +46,7 @@ export class LokiDashboardGrid extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
     this.render();
@@ -82,19 +82,19 @@ export class LokiDashboardGrid extends LokiElement {
     const children = Array.from(this.children);
     const snapshot = {
       timestamp: new Date().toISOString(),
-      dashboard: 'Loki Dashboard',
+      dashboard: "Loki Dashboard",
       widgets: children.map((child, i) => ({
         id: this._getWidgetId(child, i),
-        title: child.getAttribute('data-widget-title') || child.tagName.toLowerCase(),
+        title: child.getAttribute("data-widget-title") || child.tagName.toLowerCase(),
         tag: child.tagName.toLowerCase(),
         collapsed: this._collapsedWidgets.has(this._getWidgetId(child, i)),
       })),
       exportedAt: new Date().toISOString(),
     };
 
-    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `loki-dashboard-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
@@ -102,18 +102,22 @@ export class LokiDashboardGrid extends LokiElement {
   }
 
   _getWidgetId(el, index) {
-    return el.id || el.getAttribute('data-widget-id') || `widget-${index}`;
+    return el.id || el.getAttribute("data-widget-id") || `widget-${index}`;
   }
 
   render() {
-    const columns = parseInt(this.getAttribute('columns')) || 3;
+    const columns = parseInt(this.getAttribute("columns")) || 3;
     const children = Array.from(this.children);
 
     // Chevron icons
-    const chevronDown = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
-    const chevronUp = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
-    const maximizeIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
-    const minimizeIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+    const chevronDown =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+    const chevronUp =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
+    const maximizeIcon =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+    const minimizeIcon =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -287,7 +291,7 @@ export class LokiDashboardGrid extends LokiElement {
         }
       </style>
 
-      ${this._fullscreenWidget !== null ? '<div class="fullscreen-backdrop" id="fs-backdrop"></div>' : ''}
+      ${this._fullscreenWidget !== null ? '<div class="fullscreen-backdrop" id="fs-backdrop"></div>' : ""}
 
       <div class="grid-toolbar">
         <button class="export-btn" id="export-btn" aria-label="Export dashboard">
@@ -297,68 +301,72 @@ export class LokiDashboardGrid extends LokiElement {
       </div>
 
       <div class="dashboard-grid">
-        ${children.map((child, i) => {
-          const widgetId = this._getWidgetId(child, i);
-          const title = child.getAttribute('data-widget-title') || child.tagName.toLowerCase().replace('loki-', '').replace(/-/g, ' ');
-          const span = child.getAttribute('data-widget-span') || '1';
-          const isCollapsed = this._collapsedWidgets.has(widgetId);
-          const isFullscreen = this._fullscreenWidget === widgetId;
-          const spanClass = span === 'full' ? 'span-full' : span === '2' ? 'span-2' : '';
-          const fsClass = isFullscreen ? 'fullscreen' : '';
+        ${children
+          .map((child, i) => {
+            const widgetId = this._getWidgetId(child, i);
+            const title =
+              child.getAttribute("data-widget-title") ||
+              child.tagName.toLowerCase().replace("loki-", "").replace(/-/g, " ");
+            const span = child.getAttribute("data-widget-span") || "1";
+            const isCollapsed = this._collapsedWidgets.has(widgetId);
+            const isFullscreen = this._fullscreenWidget === widgetId;
+            const spanClass = span === "full" ? "span-full" : span === "2" ? "span-2" : "";
+            const fsClass = isFullscreen ? "fullscreen" : "";
 
-          return `
+            return `
             <div class="widget-wrapper ${spanClass} ${fsClass}" data-widget="${widgetId}">
               <div class="widget-header">
                 <div class="widget-header-left">
                   <span class="widget-title">${this._escapeHtml(title)}</span>
                 </div>
                 <div class="widget-actions">
-                  <button class="widget-btn collapse-btn" data-widget="${widgetId}" title="${isCollapsed ? 'Expand' : 'Collapse'}" aria-label="${isCollapsed ? 'Expand' : 'Collapse'} ${this._escapeHtml(title)}">
+                  <button class="widget-btn collapse-btn" data-widget="${widgetId}" title="${isCollapsed ? "Expand" : "Collapse"}" aria-label="${isCollapsed ? "Expand" : "Collapse"} ${this._escapeHtml(title)}">
                     ${isCollapsed ? chevronDown : chevronUp}
                   </button>
-                  <button class="widget-btn fullscreen-btn" data-widget="${widgetId}" title="${isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}" aria-label="${isFullscreen ? 'Exit fullscreen' : 'Fullscreen'} ${this._escapeHtml(title)}">
+                  <button class="widget-btn fullscreen-btn" data-widget="${widgetId}" title="${isFullscreen ? "Exit fullscreen" : "Fullscreen"}" aria-label="${isFullscreen ? "Exit fullscreen" : "Fullscreen"} ${this._escapeHtml(title)}">
                     ${isFullscreen ? minimizeIcon : maximizeIcon}
                   </button>
                 </div>
               </div>
-              <div class="widget-body ${isCollapsed ? 'collapsed' : ''}" id="body-${widgetId}">
+              <div class="widget-body ${isCollapsed ? "collapsed" : ""}" id="body-${widgetId}">
                 <slot name="widget-${i}"></slot>
               </div>
             </div>
           `;
-        }).join('')}
+          })
+          .join("")}
       </div>
     `;
 
     // Assign slots to children
     children.forEach((child, i) => {
-      child.setAttribute('slot', `widget-${i}`);
+      child.setAttribute("slot", `widget-${i}`);
     });
 
     // Attach event handlers
-    this.shadowRoot.querySelectorAll('.collapse-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    this.shadowRoot.querySelectorAll(".collapse-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleCollapse(btn.dataset.widget);
       });
     });
 
-    this.shadowRoot.querySelectorAll('.fullscreen-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    this.shadowRoot.querySelectorAll(".fullscreen-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleFullscreen(btn.dataset.widget);
       });
     });
 
     // Export button
-    const exportBtn = this.shadowRoot.getElementById('export-btn');
+    const exportBtn = this.shadowRoot.getElementById("export-btn");
     if (exportBtn) {
-      exportBtn.addEventListener('click', () => this.exportDashboard());
+      exportBtn.addEventListener("click", () => this.exportDashboard());
     }
 
-    const backdrop = this.shadowRoot.getElementById('fs-backdrop');
+    const backdrop = this.shadowRoot.getElementById("fs-backdrop");
     if (backdrop) {
-      backdrop.addEventListener('click', () => {
+      backdrop.addEventListener("click", () => {
         this._fullscreenWidget = null;
         this.render();
       });
@@ -367,24 +375,28 @@ export class LokiDashboardGrid extends LokiElement {
     // Escape key exits fullscreen
     if (this._fullscreenWidget !== null) {
       const escHandler = (e) => {
-        if (e.key === 'Escape') {
+        if (e.key === "Escape") {
           this._fullscreenWidget = null;
           this.render();
-          document.removeEventListener('keydown', escHandler);
+          document.removeEventListener("keydown", escHandler);
         }
       };
-      document.addEventListener('keydown', escHandler);
+      document.addEventListener("keydown", escHandler);
     }
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 }
 
-if (!customElements.get('loki-dashboard-grid')) {
-  customElements.define('loki-dashboard-grid', LokiDashboardGrid);
+if (!customElements.get("loki-dashboard-grid")) {
+  customElements.define("loki-dashboard-grid", LokiDashboardGrid);
 }
 
 export default LokiDashboardGrid;

@@ -93,8 +93,13 @@ while ((m = re.exec(html)) !== null) {
   } catch (e) {
     failures += 1;
     console.error(
-      "SYNTAX ERROR in inline <script> block #" + inlineCount +
-      " (overall tag #" + index + ") of " + file + ":"
+      "SYNTAX ERROR in inline <script> block #" +
+        inlineCount +
+        " (overall tag #" +
+        index +
+        ") of " +
+        file +
+        ":",
     );
     console.error("  " + e.message);
   }
@@ -105,8 +110,13 @@ if (inlineCount === 0) {
   // have nothing classic to parse-check. Only a file with no script blocks at
   // all (or no classic inline ones AND no modules) is suspicious.
   if (moduleSkipped > 0) {
-    console.log("no classic inline <script> blocks in " + file +
-      " (" + moduleSkipped + " module block(s) skipped)");
+    console.log(
+      "no classic inline <script> blocks in " +
+        file +
+        " (" +
+        moduleSkipped +
+        " module block(s) skipped)",
+    );
     process.exit(0);
   }
   console.error("no inline <script> blocks found in " + file + " (expected at least one)");

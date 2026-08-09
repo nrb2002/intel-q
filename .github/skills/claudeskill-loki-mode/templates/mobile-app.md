@@ -1,9 +1,11 @@
 # PRD: Habit Tracker Mobile App
 
 ## Overview
+
 A React Native mobile app called "Streaks" that helps users build daily habits through streak tracking, reminders, and progress visualization. Supports both iOS and Android with a clean, motivating interface.
 
 ## Target Users
+
 - People trying to build new habits (exercise, reading, meditation, etc.)
 - Self-improvement enthusiasts tracking multiple daily routines
 - Users who respond well to streak-based motivation
@@ -11,6 +13,7 @@ A React Native mobile app called "Streaks" that helps users build daily habits t
 ## Features
 
 ### MVP Features
+
 1. **Habit Management** - Create, edit, and delete daily habits with custom names and icons
 2. **Daily Check-in** - Tap to mark habits as done for today, undo if tapped by mistake
 3. **Streak Tracking** - Current streak count, longest streak, total completions per habit
@@ -21,6 +24,7 @@ A React Native mobile app called "Streaks" that helps users build daily habits t
 8. **Theme Support** - Light and dark mode
 
 ### User Flow
+
 1. User opens app for the first time -> onboarding with example habits
 2. Adds habits: "Exercise 30 min", "Read 20 pages", "Meditate 10 min"
 3. Sets reminders: Exercise at 7:00 AM, Read at 9:00 PM
@@ -30,6 +34,7 @@ A React Native mobile app called "Streaks" that helps users build daily habits t
 7. Checks stats to see weekly/monthly trends
 
 ## Tech Stack
+
 - Framework: React Native (Expo SDK 50+)
 - Navigation: React Navigation v6 (bottom tabs + stack)
 - State: Zustand for global state
@@ -41,6 +46,7 @@ A React Native mobile app called "Streaks" that helps users build daily habits t
 - Animations: react-native-reanimated
 
 ### Structure
+
 ```
 /
 ├── app/                          # Expo Router file-based routing
@@ -95,23 +101,24 @@ A React Native mobile app called "Streaks" that helps users build daily habits t
 ## Data Model
 
 ### Habit
+
 ```typescript
 interface Habit {
-  id: string;                    // UUID
-  name: string;                  // "Exercise 30 min"
-  icon: string;                  // MaterialCommunityIcons name
-  color: string;                 // Hex color for the habit
-  category: Category;            // Health, Productivity, etc.
-  reminderTime: string | null;   // "07:00" or null
-  reminderDays: number[];        // [0,1,2,3,4,5,6] (Sun-Sat)
-  createdAt: string;             // ISO date
-  archived: boolean;             // Soft delete
+  id: string; // UUID
+  name: string; // "Exercise 30 min"
+  icon: string; // MaterialCommunityIcons name
+  color: string; // Hex color for the habit
+  category: Category; // Health, Productivity, etc.
+  reminderTime: string | null; // "07:00" or null
+  reminderDays: number[]; // [0,1,2,3,4,5,6] (Sun-Sat)
+  createdAt: string; // ISO date
+  archived: boolean; // Soft delete
 }
 
 interface HabitCompletion {
   habitId: string;
-  date: string;                  // "2025-01-15" (YYYY-MM-DD)
-  completedAt: string;           // ISO datetime
+  date: string; // "2025-01-15" (YYYY-MM-DD)
+  completedAt: string; // ISO datetime
 }
 
 interface HabitStats {
@@ -119,8 +126,8 @@ interface HabitStats {
   currentStreak: number;
   longestStreak: number;
   totalCompletions: number;
-  completionRate7d: number;      // 0-1
-  completionRate30d: number;     // 0-1
+  completionRate7d: number; // 0-1
+  completionRate30d: number; // 0-1
 }
 
 type Category =
@@ -135,6 +142,7 @@ type Category =
 ```
 
 ### Storage Schema (AsyncStorage)
+
 ```
 @streaks/habits        -> Habit[]
 @streaks/completions   -> HabitCompletion[]
@@ -143,10 +151,11 @@ type Category =
 ```
 
 ### App Settings
+
 ```typescript
 interface AppSettings {
   theme: "light" | "dark" | "system";
-  weekStartsOn: 0 | 1;          // Sunday or Monday
+  weekStartsOn: 0 | 1; // Sunday or Monday
   showCompletedHabits: boolean;
   defaultReminderTime: string;
   hapticFeedback: boolean;
@@ -156,6 +165,7 @@ interface AppSettings {
 ## Screen Specifications
 
 ### Today Screen (Home Tab)
+
 - Header: date ("Wednesday, Jan 15") and overall progress ("3 of 5 done")
 - List of habits for today as cards
 - Each card shows: icon, name, streak count, tap-to-complete button
@@ -163,18 +173,21 @@ interface AppSettings {
 - Pull-to-refresh resets daily view
 
 ### Calendar Screen
+
 - Month calendar with dots/colors indicating completion level
 - Green: all habits done, Yellow: partial, Empty: none
 - Tap a day to see which habits were completed
 - Swipe left/right to change months
 
 ### Stats Screen
+
 - Overall completion rate (this week, this month)
 - Per-habit bar chart (last 7 days)
 - Best streak across all habits
 - Total habits tracked
 
 ### Settings Screen
+
 - Theme toggle (Light / Dark / System)
 - Week starts on (Sunday / Monday)
 - Export data (JSON)
@@ -182,6 +195,7 @@ interface AppSettings {
 - About / version info
 
 ## Requirements
+
 - TypeScript throughout
 - Expo managed workflow (no native module ejection)
 - Offline-first (all data stored locally, no server)
@@ -193,6 +207,7 @@ interface AppSettings {
 - Minimum supported: iOS 15+, Android API 24+
 
 ## Testing
+
 - Unit tests: Streak calculation logic, date utilities, store actions (Jest)
 - Component tests: HabitCard renders correctly, completion toggle works (React Native Testing Library)
 - Store tests: Zustand store state transitions
@@ -200,6 +215,7 @@ interface AppSettings {
 - Manual testing: Test on iOS Simulator and Android Emulator
 
 ## Out of Scope
+
 - Cloud sync or user accounts
 - Social features (sharing streaks, friends)
 - Widget (iOS/Android home screen)
@@ -209,6 +225,7 @@ interface AppSettings {
 - App Store / Play Store publishing
 
 ## Success Criteria
+
 - App runs on both iOS and Android via Expo Go
 - User can create, complete, and delete habits
 - Streaks calculated correctly (including break handling)

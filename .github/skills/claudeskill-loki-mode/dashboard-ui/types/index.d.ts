@@ -15,75 +15,70 @@
 /**
  * Available theme names
  */
-export type ThemeName =
-  | 'light'
-  | 'dark'
-  | 'high-contrast'
-  | 'vscode-light'
-  | 'vscode-dark';
+export type ThemeName = "light" | "dark" | "high-contrast" | "vscode-light" | "vscode-dark";
 
 /**
  * Detection context for theme auto-detection
  */
-export type ThemeContext = 'browser' | 'vscode' | 'cli';
+export type ThemeContext = "browser" | "vscode" | "cli";
 
 /**
  * CSS custom property names used in themes
  */
 export type CSSCustomProperty =
   // Background colors
-  | '--loki-bg-primary'
-  | '--loki-bg-secondary'
-  | '--loki-bg-tertiary'
-  | '--loki-bg-card'
-  | '--loki-bg-hover'
-  | '--loki-bg-active'
-  | '--loki-bg-overlay'
+  | "--loki-bg-primary"
+  | "--loki-bg-secondary"
+  | "--loki-bg-tertiary"
+  | "--loki-bg-card"
+  | "--loki-bg-hover"
+  | "--loki-bg-active"
+  | "--loki-bg-overlay"
   // Accent colors
-  | '--loki-accent'
-  | '--loki-accent-hover'
-  | '--loki-accent-active'
-  | '--loki-accent-light'
-  | '--loki-accent-muted'
+  | "--loki-accent"
+  | "--loki-accent-hover"
+  | "--loki-accent-active"
+  | "--loki-accent-light"
+  | "--loki-accent-muted"
   // Text colors
-  | '--loki-text-primary'
-  | '--loki-text-secondary'
-  | '--loki-text-muted'
-  | '--loki-text-disabled'
-  | '--loki-text-inverse'
+  | "--loki-text-primary"
+  | "--loki-text-secondary"
+  | "--loki-text-muted"
+  | "--loki-text-disabled"
+  | "--loki-text-inverse"
   // Border colors
-  | '--loki-border'
-  | '--loki-border-light'
-  | '--loki-border-focus'
+  | "--loki-border"
+  | "--loki-border-light"
+  | "--loki-border-focus"
   // Status colors
-  | '--loki-success'
-  | '--loki-success-muted'
-  | '--loki-warning'
-  | '--loki-warning-muted'
-  | '--loki-error'
-  | '--loki-error-muted'
-  | '--loki-info'
-  | '--loki-info-muted'
+  | "--loki-success"
+  | "--loki-success-muted"
+  | "--loki-warning"
+  | "--loki-warning-muted"
+  | "--loki-error"
+  | "--loki-error-muted"
+  | "--loki-info"
+  | "--loki-info-muted"
   // Legacy status colors
-  | '--loki-green'
-  | '--loki-green-muted'
-  | '--loki-yellow'
-  | '--loki-yellow-muted'
-  | '--loki-red'
-  | '--loki-red-muted'
-  | '--loki-blue'
-  | '--loki-blue-muted'
-  | '--loki-purple'
-  | '--loki-purple-muted'
+  | "--loki-green"
+  | "--loki-green-muted"
+  | "--loki-yellow"
+  | "--loki-yellow-muted"
+  | "--loki-red"
+  | "--loki-red-muted"
+  | "--loki-blue"
+  | "--loki-blue-muted"
+  | "--loki-purple"
+  | "--loki-purple-muted"
   // Model colors
-  | '--loki-opus'
-  | '--loki-sonnet'
-  | '--loki-haiku'
+  | "--loki-opus"
+  | "--loki-sonnet"
+  | "--loki-haiku"
   // Shadows
-  | '--loki-shadow-sm'
-  | '--loki-shadow-md'
-  | '--loki-shadow-lg'
-  | '--loki-shadow-focus';
+  | "--loki-shadow-sm"
+  | "--loki-shadow-md"
+  | "--loki-shadow-lg"
+  | "--loki-shadow-focus";
 
 /**
  * Theme definition with CSS custom properties
@@ -112,8 +107,8 @@ export interface SpacingScale {
   md: string;
   lg: string;
   xl: string;
-  '2xl': string;
-  '3xl': string;
+  "2xl": string;
+  "3xl": string;
 }
 
 /**
@@ -143,8 +138,8 @@ export interface TypographyConfig {
     md: string;
     lg: string;
     xl: string;
-    '2xl': string;
-    '3xl': string;
+    "2xl": string;
+    "3xl": string;
   };
   fontWeight: {
     normal: string;
@@ -185,7 +180,7 @@ export interface BreakpointsConfig {
   md: string;
   lg: string;
   xl: string;
-  '2xl': string;
+  "2xl": string;
 }
 
 /**
@@ -210,7 +205,7 @@ export interface ZIndexScale {
  */
 export interface KeyboardShortcut {
   key: string;
-  modifiers: Array<'Ctrl' | 'Meta' | 'Shift' | 'Alt'>;
+  modifiers: Array<"Ctrl" | "Meta" | "Shift" | "Alt">;
 }
 
 /**
@@ -218,25 +213,25 @@ export interface KeyboardShortcut {
  */
 export interface KeyboardShortcuts {
   // Navigation
-  'navigation.nextItem': KeyboardShortcut;
-  'navigation.prevItem': KeyboardShortcut;
-  'navigation.nextSection': KeyboardShortcut;
-  'navigation.prevSection': KeyboardShortcut;
-  'navigation.confirm': KeyboardShortcut;
-  'navigation.cancel': KeyboardShortcut;
+  "navigation.nextItem": KeyboardShortcut;
+  "navigation.prevItem": KeyboardShortcut;
+  "navigation.nextSection": KeyboardShortcut;
+  "navigation.prevSection": KeyboardShortcut;
+  "navigation.confirm": KeyboardShortcut;
+  "navigation.cancel": KeyboardShortcut;
   // Actions
-  'action.refresh': KeyboardShortcut;
-  'action.search': KeyboardShortcut;
-  'action.save': KeyboardShortcut;
-  'action.close': KeyboardShortcut;
+  "action.refresh": KeyboardShortcut;
+  "action.search": KeyboardShortcut;
+  "action.save": KeyboardShortcut;
+  "action.close": KeyboardShortcut;
   // Theme
-  'theme.toggle': KeyboardShortcut;
+  "theme.toggle": KeyboardShortcut;
   // Tasks
-  'task.create': KeyboardShortcut;
-  'task.complete': KeyboardShortcut;
+  "task.create": KeyboardShortcut;
+  "task.complete": KeyboardShortcut;
   // View
-  'view.toggleLogs': KeyboardShortcut;
-  'view.toggleMemory': KeyboardShortcut;
+  "view.toggleLogs": KeyboardShortcut;
+  "view.toggleMemory": KeyboardShortcut;
 }
 
 /**
@@ -255,7 +250,7 @@ export interface AriaPattern {
   role?: string;
   tabIndex?: number;
   ariaSelected?: boolean;
-  ariaLive?: 'polite' | 'assertive' | 'off';
+  ariaLive?: "polite" | "assertive" | "off";
   ariaAtomic?: boolean;
   ariaModal?: boolean;
   ariaRelevant?: string;
@@ -300,18 +295,18 @@ export interface ApiClientConfig {
  * API event types emitted by LokiApiClient
  */
 export interface ApiEventTypes {
-  CONNECTED: 'api:connected';
-  DISCONNECTED: 'api:disconnected';
-  ERROR: 'api:error';
-  STATUS_UPDATE: 'api:status-update';
-  TASK_CREATED: 'api:task-created';
-  TASK_UPDATED: 'api:task-updated';
-  TASK_DELETED: 'api:task-deleted';
-  PROJECT_CREATED: 'api:project-created';
-  PROJECT_UPDATED: 'api:project-updated';
-  AGENT_UPDATE: 'api:agent-update';
-  LOG_MESSAGE: 'api:log-message';
-  MEMORY_UPDATE: 'api:memory-update';
+  CONNECTED: "api:connected";
+  DISCONNECTED: "api:disconnected";
+  ERROR: "api:error";
+  STATUS_UPDATE: "api:status-update";
+  TASK_CREATED: "api:task-created";
+  TASK_UPDATED: "api:task-updated";
+  TASK_DELETED: "api:task-deleted";
+  PROJECT_CREATED: "api:project-created";
+  PROJECT_UPDATED: "api:project-updated";
+  AGENT_UPDATE: "api:agent-update";
+  LOG_MESSAGE: "api:log-message";
+  MEMORY_UPDATE: "api:memory-update";
 }
 
 /**
@@ -335,8 +330,8 @@ export interface Task {
   id: number | string;
   title: string;
   description?: string;
-  status: 'pending' | 'in_progress' | 'review' | 'done';
-  priority?: 'critical' | 'high' | 'medium' | 'low';
+  status: "pending" | "in_progress" | "review" | "done";
+  priority?: "critical" | "high" | "medium" | "low";
   type?: string;
   project_id?: number;
   assigned_agent_id?: number;
@@ -406,7 +401,7 @@ export interface Episode {
   taskId?: string;
   agent?: string;
   phase?: string;
-  outcome?: 'success' | 'failure' | 'partial';
+  outcome?: "success" | "failure" | "partial";
   timestamp: string;
   durationSeconds?: number;
   tokensUsed?: number;
@@ -448,7 +443,7 @@ export interface Skill {
  * Learning metrics query parameters
  */
 export interface LearningMetricsParams {
-  timeRange?: '1h' | '24h' | '7d' | '30d';
+  timeRange?: "1h" | "24h" | "7d" | "30d";
   signalType?: string;
   source?: string;
 }
@@ -543,7 +538,7 @@ export interface LearningSignal {
   type: string;
   action: string;
   source: string;
-  outcome: 'success' | 'failure' | 'partial' | 'unknown';
+  outcome: "success" | "failure" | "partial" | "unknown";
   timestamp: string;
   confidence?: number;
 }
@@ -707,11 +702,7 @@ export interface AppState {
 /**
  * State change callback function
  */
-export type StateChangeCallback = (
-  newValue: unknown,
-  oldValue: unknown,
-  path: string
-) => void;
+export type StateChangeCallback = (newValue: unknown, oldValue: unknown, path: string) => void;
 
 /**
  * State change event detail
@@ -780,7 +771,7 @@ export declare class UnifiedThemeManager {
   static CONTEXT_KEY: string;
 
   static detectContext(): ThemeContext;
-  static detectVSCodeTheme(): 'light' | 'dark' | 'high-contrast' | null;
+  static detectVSCodeTheme(): "light" | "dark" | "high-contrast" | null;
   static getTheme(): ThemeName;
   static setTheme(theme: ThemeName): void;
   static toggle(): ThemeName;
@@ -851,7 +842,7 @@ export interface SessionEventDetail {
 export interface LogEntry {
   id: number;
   timestamp: string;
-  level: 'info' | 'success' | 'warning' | 'error' | 'step' | 'agent' | 'debug';
+  level: "info" | "success" | "warning" | "error" | "step" | "agent" | "debug";
   message: string;
 }
 
@@ -879,7 +870,7 @@ export interface SkillSelectEventDetail extends Skill {}
  * Metric select event detail (learning dashboard)
  */
 export interface MetricSelectEventDetail {
-  type: 'preference' | 'error_pattern' | 'success_pattern' | 'tool_efficiency';
+  type: "preference" | "error_pattern" | "success_pattern" | "tool_efficiency";
   item: UserPreference | ErrorPattern | SuccessPattern | ToolEfficiency;
 }
 
@@ -938,24 +929,24 @@ export declare class LokiTaskBoard extends LokiElement {
 
   // Events (use addEventListener with these event types)
   addEventListener(
-    type: 'task-moved',
+    type: "task-moved",
     listener: (event: CustomEvent<TaskMovedEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'add-task',
+    type: "add-task",
     listener: (event: CustomEvent<AddTaskEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'task-click',
+    type: "task-click",
     listener: (event: CustomEvent<TaskClickEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 }
 
@@ -979,29 +970,29 @@ export declare class LokiSessionControl extends LokiElement {
   constructor();
 
   addEventListener(
-    type: 'session-start',
+    type: "session-start",
     listener: (event: CustomEvent<SessionEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'session-pause',
+    type: "session-pause",
     listener: (event: CustomEvent<SessionEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'session-resume',
+    type: "session-resume",
     listener: (event: CustomEvent<SessionEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'session-stop',
+    type: "session-stop",
     listener: (event: CustomEvent<SessionEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 }
 
@@ -1027,7 +1018,7 @@ export declare class LokiLogStream extends LokiElement {
   /**
    * Add a log entry programmatically
    */
-  addLog(message: string, level?: LogEntry['level']): void;
+  addLog(message: string, level?: LogEntry["level"]): void;
 
   /**
    * Clear all logs
@@ -1035,19 +1026,19 @@ export declare class LokiLogStream extends LokiElement {
   clear(): void;
 
   addEventListener(
-    type: 'log-received',
+    type: "log-received",
     listener: (event: CustomEvent<LogReceivedEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'logs-cleared',
+    type: "logs-cleared",
     listener: (event: CustomEvent<void>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 }
 
@@ -1070,24 +1061,24 @@ export declare class LokiMemoryBrowser extends LokiElement {
   constructor();
 
   addEventListener(
-    type: 'episode-select',
+    type: "episode-select",
     listener: (event: CustomEvent<EpisodeSelectEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'pattern-select',
+    type: "pattern-select",
     listener: (event: CustomEvent<PatternSelectEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'skill-select',
+    type: "skill-select",
     listener: (event: CustomEvent<SkillSelectEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 }
 
@@ -1111,19 +1102,19 @@ export declare class LokiLearningDashboard extends LokiElement {
   constructor();
 
   addEventListener(
-    type: 'metric-select',
+    type: "metric-select",
     listener: (event: CustomEvent<MetricSelectEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
-    type: 'filter-change',
+    type: "filter-change",
     listener: (event: CustomEvent<FilterChangeEventDetail>) => void,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 }
 
@@ -1222,7 +1213,7 @@ export declare function generateTokensCSS(): string;
 
 // Constants
 export declare const VERSION: string;
-export declare const STATE_CHANGE_EVENT: 'loki-state-change';
+export declare const STATE_CHANGE_EVENT: "loki-state-change";
 export declare const ApiEvents: ApiEventTypes;
 export declare const THEMES: ThemeDefinitions;
 export declare const SPACING: SpacingScale;
@@ -1241,15 +1232,15 @@ export declare const BASE_STYLES: string;
 
 declare global {
   interface HTMLElementTagNameMap {
-    'loki-task-board': LokiTaskBoard;
-    'loki-session-control': LokiSessionControl;
-    'loki-log-stream': LokiLogStream;
-    'loki-memory-browser': LokiMemoryBrowser;
-    'loki-learning-dashboard': LokiLearningDashboard;
+    "loki-task-board": LokiTaskBoard;
+    "loki-session-control": LokiSessionControl;
+    "loki-log-stream": LokiLogStream;
+    "loki-memory-browser": LokiMemoryBrowser;
+    "loki-learning-dashboard": LokiLearningDashboard;
   }
 
   interface HTMLElementEventMap {
-    'loki-theme-change': CustomEvent<ThemeChangeEventDetail>;
-    'loki-state-change': CustomEvent<StateChangeEventDetail>;
+    "loki-theme-change": CustomEvent<ThemeChangeEventDetail>;
+    "loki-state-change": CustomEvent<StateChangeEventDetail>;
   }
 }

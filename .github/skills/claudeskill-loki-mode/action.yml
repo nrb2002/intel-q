@@ -1,58 +1,58 @@
-name: 'Loki Mode Code Review'
-description: 'Multi-agent autonomous code review using loki-mode. Supports Claude, Codex, and Gemini providers.'
-author: 'asklokesh'
+name: "Loki Mode Code Review"
+description: "Multi-agent autonomous code review using loki-mode. Supports Claude, Codex, and Gemini providers."
+author: "asklokesh"
 
 branding:
-  icon: 'eye'
-  color: 'purple'
+  icon: "eye"
+  color: "purple"
 
 inputs:
   mode:
-    description: 'Review mode: review, fix, or test'
+    description: "Review mode: review, fix, or test"
     required: false
-    default: 'review'
+    default: "review"
   provider:
-    description: 'AI provider: claude, codex, or gemini'
+    description: "AI provider: claude, codex, or gemini"
     required: false
-    default: 'claude'
+    default: "claude"
   budget_limit:
-    description: 'Max cost in USD before stopping (maps to --budget CLI flag)'
+    description: "Max cost in USD before stopping (maps to --budget CLI flag)"
     required: false
-    default: '5.00'
+    default: "5.00"
   budget:
-    description: 'Alias for budget_limit (max cost in USD before stopping)'
+    description: "Alias for budget_limit (max cost in USD before stopping)"
     required: false
-    default: ''
+    default: ""
   github_token:
-    description: 'GitHub token for PR comments'
+    description: "GitHub token for PR comments"
     required: true
   max_iterations:
-    description: 'Maximum loki iterations (sets LOKI_MAX_ITERATIONS env var)'
+    description: "Maximum loki iterations (sets LOKI_MAX_ITERATIONS env var)"
     required: false
-    default: '3'
+    default: "3"
   node_version:
-    description: 'Node.js version to use'
+    description: "Node.js version to use"
     required: false
-    default: '20'
+    default: "20"
   prd_file:
-    description: 'Path to PRD file relative to repo root (optional, used as positional arg to loki start)'
+    description: "Path to PRD file relative to repo root (optional, used as positional arg to loki start)"
     required: false
-    default: ''
+    default: ""
   auto_confirm:
-    description: 'Skip confirmation prompts (auto-enabled in CI environments)'
+    description: "Skip confirmation prompts (auto-enabled in CI environments)"
     required: false
-    default: 'true'
+    default: "true"
   install_cli:
-    description: 'Automatically install the provider CLI if not present'
+    description: "Automatically install the provider CLI if not present"
     required: false
-    default: 'true'
+    default: "true"
   install_claude:
-    description: 'Deprecated: use install_cli instead. Kept for backward compatibility.'
+    description: "Deprecated: use install_cli instead. Kept for backward compatibility."
     required: false
-    default: ''
+    default: ""
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -260,11 +260,11 @@ runs:
       env:
         LOKI_PROVIDER: ${{ inputs.provider }}
         LOKI_MAX_ITERATIONS: ${{ inputs.max_iterations }}
-        LOKI_DASHBOARD: 'false'
-        LOKI_COMPLEXITY: 'simple'
+        LOKI_DASHBOARD: "false"
+        LOKI_COMPLEXITY: "simple"
         LOKI_BUDGET_LIMIT: ${{ inputs.budget || inputs.budget_limit }}
-        LOKI_COUNCIL_ENABLED: 'false'
-        LOKI_SKIP_PREREQS: 'true'
+        LOKI_COUNCIL_ENABLED: "false"
+        LOKI_SKIP_PREREQS: "true"
         LOKI_AUTO_CONFIRM: ${{ inputs.auto_confirm }}
       run: |
         PRD_FILE="${{ steps.review-prd.outputs.prd_file }}"
@@ -294,11 +294,11 @@ runs:
       env:
         LOKI_PROVIDER: ${{ inputs.provider }}
         LOKI_MAX_ITERATIONS: ${{ inputs.max_iterations }}
-        LOKI_DASHBOARD: 'false'
-        LOKI_COMPLEXITY: 'simple'
+        LOKI_DASHBOARD: "false"
+        LOKI_COMPLEXITY: "simple"
         LOKI_BUDGET_LIMIT: ${{ inputs.budget || inputs.budget_limit }}
-        LOKI_COUNCIL_ENABLED: 'false'
-        LOKI_SKIP_PREREQS: 'true'
+        LOKI_COUNCIL_ENABLED: "false"
+        LOKI_SKIP_PREREQS: "true"
         LOKI_AUTO_CONFIRM: ${{ inputs.auto_confirm }}
       run: |
         OUTPUT_FILE="${RUNNER_TEMP}/loki-fix-output.txt"
@@ -327,11 +327,11 @@ runs:
       env:
         LOKI_PROVIDER: ${{ inputs.provider }}
         LOKI_MAX_ITERATIONS: ${{ inputs.max_iterations }}
-        LOKI_DASHBOARD: 'false'
-        LOKI_COMPLEXITY: 'simple'
+        LOKI_DASHBOARD: "false"
+        LOKI_COMPLEXITY: "simple"
         LOKI_BUDGET_LIMIT: ${{ inputs.budget || inputs.budget_limit }}
-        LOKI_COUNCIL_ENABLED: 'false'
-        LOKI_SKIP_PREREQS: 'true'
+        LOKI_COUNCIL_ENABLED: "false"
+        LOKI_SKIP_PREREQS: "true"
         LOKI_AUTO_CONFIRM: ${{ inputs.auto_confirm }}
       run: |
         OUTPUT_FILE="${RUNNER_TEMP}/loki-test-output.txt"

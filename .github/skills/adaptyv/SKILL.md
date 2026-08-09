@@ -108,13 +108,13 @@ results = client.experiments.get_results(exp.experiment_id)
 
 ## Experiment Types
 
-| Type | Method | Measures | Requires Target |
-|---|---|---|---|
-| `affinity` | `bli` or `spr` | KD, kon, koff kinetics | Yes |
-| `screening` | `bli` or `spr` | Yes/no binding | Yes |
-| `thermostability` | — | Melting temperature (Tm) | No |
-| `expression` | — | Expression yield | No |
-| `fluorescence` | — | Fluorescence intensity | No |
+| Type              | Method         | Measures                 | Requires Target |
+| ----------------- | -------------- | ------------------------ | --------------- |
+| `affinity`        | `bli` or `spr` | KD, kon, koff kinetics   | Yes             |
+| `screening`       | `bli` or `spr` | Yes/no binding           | Yes             |
+| `thermostability` | —              | Melting temperature (Tm) | No              |
+| `expression`      | —              | Expression yield         | No              |
+| `fluorescence`    | —              | Fluorescence intensity   | No              |
 
 ## Experiment Lifecycle
 
@@ -122,18 +122,18 @@ results = client.experiments.get_results(exp.experiment_id)
 Draft → WaitingForConfirmation → QuoteSent → WaitingForMaterials → InQueue → InProduction → DataAnalysis → InReview → Done
 ```
 
-| Status | Who Acts | Description |
-|---|---|---|
-| `Draft` | You | Editable, no cost commitment |
-| `WaitingForConfirmation` | Adaptyv | Under review, quote being prepared |
-| `QuoteSent` | You | Review and confirm the quote |
-| `WaitingForMaterials` | Adaptyv | Gene fragments and target ordered |
-| `InQueue` | Adaptyv | Materials arrived, queued for lab |
-| `InProduction` | Adaptyv | Assay running |
-| `DataAnalysis` | Adaptyv | Raw data processing and QC |
-| `InReview` | Adaptyv | Final validation |
-| `Done` | You | Results available |
-| `Canceled` | Either | Experiment canceled |
+| Status                   | Who Acts | Description                        |
+| ------------------------ | -------- | ---------------------------------- |
+| `Draft`                  | You      | Editable, no cost commitment       |
+| `WaitingForConfirmation` | Adaptyv  | Under review, quote being prepared |
+| `QuoteSent`              | You      | Review and confirm the quote       |
+| `WaitingForMaterials`    | Adaptyv  | Gene fragments and target ordered  |
+| `InQueue`                | Adaptyv  | Materials arrived, queued for lab  |
+| `InProduction`           | Adaptyv  | Assay running                      |
+| `DataAnalysis`           | Adaptyv  | Raw data processing and QC         |
+| `InReview`               | Adaptyv  | Final validation                   |
+| `Done`                   | You      | Results available                  |
+| `Canceled`               | Either   | Experiment canceled                |
 
 The `results_status` field on an experiment tracks: `none`, `partial`, or `all`.
 
@@ -207,6 +207,7 @@ Pass `webhook_url` when creating an experiment. Adaptyv POSTs to that URL on eve
 All list endpoints support pagination (`limit` 1-100, default 50; `offset`), search (free-text on name fields), and sorting.
 
 **Filtering** uses s-expression syntax via the `filter` query parameter:
+
 - Comparison: `eq(field,value)`, `neq`, `gt`, `gte`, `lt`, `lte`, `contains(field,substring)`
 - Range/set: `between(field,lo,hi)`, `in(field,v1,v2,...)`
 - Logic: `and(expr1,expr2,...)`, `or(...)`, `not(expr)`
@@ -215,6 +216,7 @@ All list endpoints support pagination (`limit` 1-100, default 50; `offset`), sea
 - Cast: `float()`, `int()`, `text()`, `timestamp()`, `date()`
 
 **Sorting** uses `asc(field)` or `desc(field)`, comma-separated (max 8):
+
 ```
 sort=desc(created_at),asc(name)
 ```
@@ -224,12 +226,14 @@ sort=desc(created_at),asc(name)
 ## Error Handling
 
 All errors return:
+
 ```json
 {
   "error": "Human-readable description",
   "request_id": "req_019462a4-b1c2-7def-8901-23456789abcd"
 }
 ```
+
 The `request_id` is also in the `x-request-id` response header — include it when contacting support.
 
 ## Token Management

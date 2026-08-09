@@ -53,11 +53,11 @@ BOOTSTRAP --> DISCOVERY --> ARCHITECTURE --> DEEPEN_PLAN --> INFRASTRUCTURE
 
 Not all phases run for every project. Complexity tiers determine which phases execute:
 
-| Tier | Phases | When Used |
-|------|--------|-----------|
-| **simple** | 3 | 1-2 files, UI fixes, text changes |
-| **standard** | 6 | 3-10 files, features, bug fixes |
-| **complex** | 8 | 10+ files, microservices, external integrations |
+| Tier         | Phases | When Used                                       |
+| ------------ | ------ | ----------------------------------------------- |
+| **simple**   | 3      | 1-2 files, UI fixes, text changes               |
+| **standard** | 6      | 3-10 files, features, bug fixes                 |
+| **complex**  | 8      | 10+ files, microservices, external integrations |
 
 The tier is auto-detected from the PRD or can be forced with:
 
@@ -72,16 +72,16 @@ Or via the environment variable `LOKI_COMPLEXITY=simple|standard|complex`.
 
 Loki Mode defines **41 specialized agent types** organized into **8 swarms**:
 
-| Swarm | Agent Count | Examples |
-|-------|-------------|----------|
-| Engineering | 8 | frontend, backend, database, mobile, api, qa, perf, infra |
-| Operations | 8 | devops, sre, security, monitor, incident, release, cost, compliance |
-| Business | 8 | marketing, sales, finance, legal, support, hr, investor, partnerships |
-| Data | 3 | ml, eng, analytics |
-| Product | 3 | pm, design, techwriter |
-| Growth | 4 | hacker, community, success, lifecycle |
-| Review | 3 | code, business, security |
-| Orchestration | 4 | (internal system agents) |
+| Swarm         | Agent Count | Examples                                                              |
+| ------------- | ----------- | --------------------------------------------------------------------- |
+| Engineering   | 8           | frontend, backend, database, mobile, api, qa, perf, infra             |
+| Operations    | 8           | devops, sre, security, monitor, incident, release, cost, compliance   |
+| Business      | 8           | marketing, sales, finance, legal, support, hr, investor, partnerships |
+| Data          | 3           | ml, eng, analytics                                                    |
+| Product       | 3           | pm, design, techwriter                                                |
+| Growth        | 4           | hacker, community, success, lifecycle                                 |
+| Review        | 3           | code, business, security                                              |
+| Orchestration | 4           | (internal system agents)                                              |
 
 These agents are **roles defined through prompts**, not separate programs. They are implemented using the Claude Code Task tool with role-specific prompts:
 
@@ -107,17 +107,17 @@ Full agent type definitions are in `references/agent-types.md`.
 
 Loki Mode enforces a 9-gate quality system. Code must pass all applicable gates before moving forward:
 
-| Gate | Name | Purpose |
-|------|------|---------|
-| 1 | Input Guardrails | Validate scope, detect injection, check constraints |
-| 2 | Static Analysis | CodeQL, ESLint/Pylint, type checking |
-| 3 | Blind Review System | 3 specialist reviewers in parallel, blind to each other |
-| 4 | Anti-Sycophancy Check | If reviewers unanimously approve, run a Devil's Advocate reviewer |
-| 5 | Output Guardrails | Validate code quality, spec compliance, no secrets |
-| 6 | Severity-Based Blocking | Critical/High/Medium = BLOCK; Low/Cosmetic = TODO |
-| 7 | Test Coverage Gates | Unit: 100% pass, >80% coverage; Integration: 100% pass |
-| 8 | Mock Detector | Flags tests that mock internal modules instead of real code |
-| 9 | Test Mutation Detector | Detects assertion value changes alongside implementation changes |
+| Gate | Name                    | Purpose                                                           |
+| ---- | ----------------------- | ----------------------------------------------------------------- |
+| 1    | Input Guardrails        | Validate scope, detect injection, check constraints               |
+| 2    | Static Analysis         | CodeQL, ESLint/Pylint, type checking                              |
+| 3    | Blind Review System     | 3 specialist reviewers in parallel, blind to each other           |
+| 4    | Anti-Sycophancy Check   | If reviewers unanimously approve, run a Devil's Advocate reviewer |
+| 5    | Output Guardrails       | Validate code quality, spec compliance, no secrets                |
+| 6    | Severity-Based Blocking | Critical/High/Medium = BLOCK; Low/Cosmetic = TODO                 |
+| 7    | Test Coverage Gates     | Unit: 100% pass, >80% coverage; Integration: 100% pass            |
+| 8    | Mock Detector           | Flags tests that mock internal modules instead of real code       |
+| 9    | Test Mutation Detector  | Detects assertion value changes alongside implementation changes  |
 
 The blind review system (Gate 3) selects 3 reviewers from a pool of 5 named specialists:
 
@@ -141,11 +141,11 @@ The memory system uses progressive disclosure with three layers: index (lightwei
 
 Memory retrieval is task-aware, weighting different memory types based on the current activity:
 
-| Task Type | Episodic Weight | Semantic Weight | Skills Weight |
-|-----------|----------------|-----------------|---------------|
-| Exploration | 0.6 | 0.3 | 0.1 |
-| Implementation | 0.15 | 0.5 | 0.35 |
-| Debugging | 0.4 | 0.2 | 0.0 (+ 0.4 anti-patterns) |
+| Task Type      | Episodic Weight | Semantic Weight | Skills Weight             |
+| -------------- | --------------- | --------------- | ------------------------- |
+| Exploration    | 0.6             | 0.3             | 0.1                       |
+| Implementation | 0.15            | 0.5             | 0.35                      |
+| Debugging      | 0.4             | 0.2             | 0.0 (+ 0.4 anti-patterns) |
 
 The memory engine is implemented in Python (`memory/engine.py`, `memory/retrieval.py`, `memory/storage.py`).
 
@@ -153,12 +153,12 @@ The memory engine is implemented in Python (`memory/engine.py`, `memory/retrieva
 
 Loki Mode maps tasks to model tiers rather than specific model names:
 
-| Task Type | Tier | Claude | Codex | Gemini |
-|-----------|------|--------|-------|--------|
-| Architecture, system design | planning | opus | effort=xhigh | thinking=high |
-| Feature implementation, bugs | development | opus | effort=high | thinking=medium |
-| Code review | development | opus (sonnet for reviewers) | effort=high | thinking=medium |
-| Unit tests, linting, docs | fast | sonnet | effort=low | thinking=low |
+| Task Type                    | Tier        | Claude                      | Codex        | Gemini          |
+| ---------------------------- | ----------- | --------------------------- | ------------ | --------------- |
+| Architecture, system design  | planning    | opus                        | effort=xhigh | thinking=high   |
+| Feature implementation, bugs | development | opus                        | effort=high  | thinking=medium |
+| Code review                  | development | opus (sonnet for reviewers) | effort=high  | thinking=medium |
+| Unit tests, linting, docs    | fast        | sonnet                      | effort=low   | thinking=low    |
 
 Claude Code has full feature support: parallel agents (up to 10 simultaneous), the Task tool, and MCP integration. Codex and Gemini run in degraded mode: sequential execution only, no Task tool, no parallel agents.
 
@@ -166,16 +166,16 @@ Claude Code has full feature support: parallel agents (up to 10 simultaneous), t
 
 Every Loki Mode project uses these files in the `.loki/` directory:
 
-| File | Purpose |
-|------|---------|
-| `session.json` | Current session state (pid, start time, provider, status) |
-| `state/orchestrator.json` | Current phase, tasks completed/failed |
-| `queue/pending.json` | Tasks waiting to be executed |
-| `queue/current-task.json` | The task currently being worked on |
-| `queue/dead-letter.json` | Tasks that failed 5+ times |
-| `memory/index.json` | Lightweight memory index |
-| `memory/timeline.json` | Memory timeline for context retrieval |
-| `signals/` | Inter-process signals (PAUSE, STOP, DRIFT_DETECTED, etc.) |
+| File                      | Purpose                                                   |
+| ------------------------- | --------------------------------------------------------- |
+| `session.json`            | Current session state (pid, start time, provider, status) |
+| `state/orchestrator.json` | Current phase, tasks completed/failed                     |
+| `queue/pending.json`      | Tasks waiting to be executed                              |
+| `queue/current-task.json` | The task currently being worked on                        |
+| `queue/dead-letter.json`  | Tasks that failed 5+ times                                |
+| `memory/index.json`       | Lightweight memory index                                  |
+| `memory/timeline.json`    | Memory timeline for context retrieval                     |
+| `signals/`                | Inter-process signals (PAUSE, STOP, DRIFT_DETECTED, etc.) |
 
 ## Summary
 

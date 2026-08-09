@@ -10,26 +10,11 @@ import * as path from "path";
 
 // Event types
 export type EventType =
-  | "state"
-  | "memory"
-  | "task"
-  | "metric"
-  | "error"
-  | "session"
-  | "command"
-  | "user";
+  "state" | "memory" | "task" | "metric" | "error" | "session" | "command" | "user";
 
 // Event sources
 export type EventSource =
-  | "cli"
-  | "api"
-  | "vscode"
-  | "mcp"
-  | "skill"
-  | "hook"
-  | "dashboard"
-  | "memory"
-  | "runner";
+  "cli" | "api" | "vscode" | "mcp" | "skill" | "hook" | "dashboard" | "memory" | "runner";
 
 /**
  * Loki Mode Event
@@ -111,7 +96,9 @@ function writeFileWithLock(filepath: string, data: string): void {
 
   if (!acquired) {
     // Lock could not be acquired after retries -- skip write to avoid corruption
-    process.stderr.write(`[loki-events] WARNING: could not acquire lock for ${filepath}, skipping write\n`);
+    process.stderr.write(
+      `[loki-events] WARNING: could not acquire lock for ${filepath}, skipping write\n`,
+    );
     return;
   }
 
@@ -189,10 +176,7 @@ export class EventBus {
     }
 
     try {
-      writeFileWithLock(
-        this.processedFile,
-        JSON.stringify({ ids: Array.from(this.processedIds) })
-      );
+      writeFileWithLock(this.processedFile, JSON.stringify({ ids: Array.from(this.processedIds) }));
     } catch {
       // Ignore write errors
     }
@@ -230,7 +214,7 @@ export class EventBus {
     type: EventType,
     source: EventSource,
     action: string,
-    extra: Record<string, unknown> = {}
+    extra: Record<string, unknown> = {},
   ): string {
     return this.emit({
       type,
@@ -242,10 +226,7 @@ export class EventBus {
   /**
    * Get pending events
    */
-  getPendingEvents(
-    types?: EventType[],
-    since?: string
-  ): LokiEvent[] {
+  getPendingEvents(types?: EventType[], since?: string): LokiEvent[] {
     const events: LokiEvent[] = [];
 
     try {
@@ -430,7 +411,7 @@ export class EventBus {
 export function emitSessionEvent(
   source: EventSource,
   action: string,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): string {
   const bus = new EventBus();
   return bus.emitSimple("session", source, action, extra);
@@ -443,7 +424,7 @@ export function emitTaskEvent(
   source: EventSource,
   action: string,
   taskId: string,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): string {
   const bus = new EventBus();
   return bus.emitSimple("task", source, action, { taskId, ...extra });
@@ -455,7 +436,7 @@ export function emitTaskEvent(
 export function emitStateEvent(
   source: EventSource,
   action: string,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): string {
   const bus = new EventBus();
   return bus.emitSimple("state", source, action, extra);
@@ -467,7 +448,7 @@ export function emitStateEvent(
 export function emitErrorEvent(
   source: EventSource,
   error: string,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): string {
   const bus = new EventBus();
   return bus.emitSimple("error", source, "error", { error, ...extra });

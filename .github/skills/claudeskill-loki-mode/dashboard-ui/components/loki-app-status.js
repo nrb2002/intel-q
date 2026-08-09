@@ -8,19 +8,19 @@
  * <loki-app-status api-url="http://localhost:57374" theme="dark"></loki-app-status>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 const STATUS_CONFIG = {
-  not_initialized: { color: 'var(--loki-text-muted, #71717a)', label: 'Not Started', pulse: false },
-  starting:        { color: 'var(--loki-yellow, #ca8a04)',      label: 'Starting...',  pulse: true },
-  running:         { color: 'var(--loki-green, #16a34a)',       label: 'Running',      pulse: true },
-  stale:           { color: 'var(--loki-yellow, #ca8a04)',      label: 'Stale',        pulse: false },
-  completed:       { color: 'var(--loki-text-muted, #a1a1aa)',  label: 'Completed',    pulse: false },
-  failed:          { color: 'var(--loki-red, #dc2626)',         label: 'Failed',       pulse: false },
-  crashed:         { color: 'var(--loki-red, #dc2626)',         label: 'Crashed',      pulse: false },
-  stopped:         { color: 'var(--loki-text-muted, #a1a1aa)',  label: 'Stopped',      pulse: false },
-  unknown:         { color: 'var(--loki-text-muted, #71717a)',  label: 'Unknown',      pulse: false },
+  not_initialized: { color: "var(--loki-text-muted, #71717a)", label: "Not Started", pulse: false },
+  starting: { color: "var(--loki-yellow, #ca8a04)", label: "Starting...", pulse: true },
+  running: { color: "var(--loki-green, #16a34a)", label: "Running", pulse: true },
+  stale: { color: "var(--loki-yellow, #ca8a04)", label: "Stale", pulse: false },
+  completed: { color: "var(--loki-text-muted, #a1a1aa)", label: "Completed", pulse: false },
+  failed: { color: "var(--loki-red, #dc2626)", label: "Failed", pulse: false },
+  crashed: { color: "var(--loki-red, #dc2626)", label: "Crashed", pulse: false },
+  stopped: { color: "var(--loki-text-muted, #a1a1aa)", label: "Stopped", pulse: false },
+  unknown: { color: "var(--loki-text-muted, #71717a)", label: "Unknown", pulse: false },
 };
 
 /**
@@ -31,7 +31,7 @@ const STATUS_CONFIG = {
  */
 export class LokiAppStatus extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -60,17 +60,17 @@ export class LokiAppStatus extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -89,7 +89,7 @@ export class LokiAppStatus extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -98,7 +98,7 @@ export class LokiAppStatus extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -136,7 +136,7 @@ export class LokiAppStatus extends LokiElement {
   _scrollLogsToBottom() {
     const s = this.shadowRoot;
     if (!s) return;
-    const logArea = s.querySelector('.log-area');
+    const logArea = s.querySelector(".log-area");
     if (logArea) {
       logArea.scrollTop = logArea.scrollHeight;
     }
@@ -163,7 +163,7 @@ export class LokiAppStatus extends LokiElement {
   }
 
   _formatUptime(startedAt) {
-    if (!startedAt) return '--';
+    if (!startedAt) return "--";
     const start = new Date(startedAt);
     const now = new Date();
     const diffSec = Math.floor((now - start) / 1000);
@@ -178,7 +178,7 @@ export class LokiAppStatus extends LokiElement {
     if (!str) return false;
     try {
       const url = new URL(str);
-      return url.protocol === 'http:' || url.protocol === 'https:';
+      return url.protocol === "http:" || url.protocol === "https:";
     } catch {
       return false;
     }
@@ -354,7 +354,7 @@ export class LokiAppStatus extends LokiElement {
     if (!s) return;
 
     const st = this._status;
-    const isActive = st && st.status && st.status !== 'not_initialized';
+    const isActive = st && st.status && st.status !== "not_initialized";
 
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
@@ -364,12 +364,12 @@ export class LokiAppStatus extends LokiElement {
             <h2 class="title">App Runner</h2>
             ${this._renderStatusBadge(st)}
           </div>
-          ${isActive ? this._renderActions(st) : ''}
+          ${isActive ? this._renderActions(st) : ""}
         </div>
-        ${isActive ? this._renderStatusCard(st) : ''}
-        ${isActive && this._logs.length > 0 ? this._renderLogs() : ''}
-        ${!isActive ? this._renderEmpty() : ''}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${isActive ? this._renderStatusCard(st) : ""}
+        ${isActive && this._logs.length > 0 ? this._renderLogs() : ""}
+        ${!isActive ? this._renderEmpty() : ""}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -377,11 +377,11 @@ export class LokiAppStatus extends LokiElement {
   }
 
   _renderStatusBadge(st) {
-    const status = st?.status || 'not_initialized';
+    const status = st?.status || "not_initialized";
     const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.not_initialized;
     return `
       <span class="status-badge" style="background: color-mix(in srgb, ${cfg.color} 15%, transparent); color: ${cfg.color}">
-        <span class="status-dot ${cfg.pulse ? 'pulse' : ''}" style="background: ${cfg.color}"></span>
+        <span class="status-dot ${cfg.pulse ? "pulse" : ""}" style="background: ${cfg.color}"></span>
         ${this._escapeHtml(cfg.label)}
       </span>
     `;
@@ -391,17 +391,17 @@ export class LokiAppStatus extends LokiElement {
     const urlValid = this._isValidUrl(st.url);
     const urlHtml = urlValid
       ? `<a href="${this._escapeHtml(st.url)}" target="_blank" rel="noopener noreferrer">${this._escapeHtml(st.url)}</a>`
-      : this._escapeHtml(st.url || '--');
+      : this._escapeHtml(st.url || "--");
 
     return `
       <div class="status-card">
         <div class="status-row">
           <span class="status-label">Method</span>
-          <span class="status-value">${this._escapeHtml(st.method || '--')}</span>
+          <span class="status-value">${this._escapeHtml(st.method || "--")}</span>
         </div>
         <div class="status-row">
           <span class="status-label">Port</span>
-          <span class="status-value">${st.port ? this._escapeHtml(String(st.port)) : '--'}</span>
+          <span class="status-value">${st.port ? this._escapeHtml(String(st.port)) : "--"}</span>
         </div>
         <div class="status-row">
           <span class="status-label">URL</span>
@@ -409,18 +409,22 @@ export class LokiAppStatus extends LokiElement {
         </div>
         <div class="status-row">
           <span class="status-label">Restarts</span>
-          <span class="status-value">${st.restart_count != null ? st.restart_count : '--'}</span>
+          <span class="status-value">${st.restart_count != null ? st.restart_count : "--"}</span>
         </div>
         <div class="status-row">
           <span class="status-label">Uptime</span>
-          <span class="status-value">${st.status === 'running' || st.status === 'stale' ? this._formatUptime(st.started_at) : '--'}</span>
+          <span class="status-value">${st.status === "running" || st.status === "stale" ? this._formatUptime(st.started_at) : "--"}</span>
         </div>
-        ${st.status === 'crashed' && st.error ? `
+        ${
+          st.status === "crashed" && st.error
+            ? `
           <div class="status-row" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--loki-border, #e4e4e7);">
             <span class="status-label" style="color: var(--loki-red, #dc2626)">Error</span>
             <span class="status-value" style="color: var(--loki-red, #dc2626); max-width: 70%; text-align: right;">${this._escapeHtml(st.error)}</span>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
     `;
   }
@@ -430,21 +434,23 @@ export class LokiAppStatus extends LokiElement {
     return `
       <div class="log-section">
         <div class="log-header">Application Logs</div>
-        <div class="log-area">${last20.length > 0
-          ? last20.map(line => this._escapeHtml(line)).join('\n')
-          : '<span class="log-empty">No log output yet</span>'
+        <div class="log-area">${
+          last20.length > 0
+            ? last20.map((line) => this._escapeHtml(line)).join("\n")
+            : '<span class="log-empty">No log output yet</span>'
         }</div>
       </div>
     `;
   }
 
   _renderActions(st) {
-    const canRestart = st.status === 'running' || st.status === 'crashed' || st.status === 'stopped';
-    const canStop = st.status === 'running' || st.status === 'starting';
+    const canRestart =
+      st.status === "running" || st.status === "crashed" || st.status === "stopped";
+    const canStop = st.status === "running" || st.status === "starting";
     return `
       <div class="actions">
-        <button class="btn" data-action="restart" ${canRestart ? '' : 'disabled'}>Restart</button>
-        <button class="btn btn-danger" data-action="stop" ${canStop ? '' : 'disabled'}>Stop</button>
+        <button class="btn" data-action="restart" ${canRestart ? "" : "disabled"}>Restart</button>
+        <button class="btn btn-danger" data-action="stop" ${canStop ? "" : "disabled"}>Stop</button>
       </div>
     `;
   }
@@ -463,18 +469,18 @@ export class LokiAppStatus extends LokiElement {
     if (!s) return;
     const restartBtn = s.querySelector('[data-action="restart"]');
     const stopBtn = s.querySelector('[data-action="stop"]');
-    if (restartBtn) restartBtn.addEventListener('click', () => this._handleRestart());
-    if (stopBtn) stopBtn.addEventListener('click', () => this._handleStop());
+    if (restartBtn) restartBtn.addEventListener("click", () => this._handleRestart());
+    if (stopBtn) stopBtn.addEventListener("click", () => this._handleStop());
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 }
 
-customElements.define('loki-app-status', LokiAppStatus);
+customElements.define("loki-app-status", LokiAppStatus);

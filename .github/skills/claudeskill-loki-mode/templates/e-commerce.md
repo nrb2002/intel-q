@@ -1,9 +1,11 @@
 # PRD: E-Commerce Storefront
 
 ## Overview
+
 A simple e-commerce storefront called "ShopBase" with a product catalog, shopping cart, checkout flow, and Stripe payment processing. Designed as a single-vendor store selling physical or digital products.
 
 ## Target Users
+
 - Small business owners selling products online
 - Indie makers selling digital goods (templates, courses, ebooks)
 - Developers learning e-commerce patterns
@@ -11,6 +13,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 ## Features
 
 ### MVP Features
+
 1. **Product Catalog** - Browse products with images, prices, descriptions, and categories
 2. **Product Detail** - Full product page with image gallery and variants (size/color)
 3. **Shopping Cart** - Add/remove items, update quantities, persistent cart (survives refresh)
@@ -21,6 +24,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 8. **Search and Filter** - Search by name, filter by category and price range
 
 ### User Flow (Shopper)
+
 1. Visits homepage -> sees featured products and categories
 2. Browses category -> filters by price range
 3. Clicks product -> sees details, selects variant, adds to cart
@@ -30,6 +34,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 7. Can view order status in account page
 
 ### User Flow (Admin)
+
 1. Logs into /admin
 2. Adds new product with images, price, variants, and category
 3. Views orders list, updates order status (processing -> shipped -> delivered)
@@ -38,6 +43,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 ## Tech Stack
 
 ### Frontend
+
 - Next.js 14 (App Router)
 - TypeScript
 - TailwindCSS + shadcn/ui
@@ -45,6 +51,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 - React Hook Form + zod for checkout form
 
 ### Backend
+
 - Next.js API Routes
 - Prisma ORM
 - PostgreSQL (local via Docker for dev)
@@ -52,6 +59,7 @@ A simple e-commerce storefront called "ShopBase" with a product catalog, shoppin
 - Resend or Nodemailer for order confirmation emails
 
 ### Structure
+
 ```
 /
 ├── src/
@@ -259,6 +267,7 @@ enum OrderStatus {
 ## API Endpoints
 
 ### Products
+
 - `GET /api/products` - List products (query: `?category=`, `?search=`, `?minPrice=`, `?maxPrice=`, `?featured=`, `?page=`)
 - `GET /api/products/:slug` - Get product detail with variants
 - `POST /api/products` - Create product (admin only)
@@ -266,23 +275,28 @@ enum OrderStatus {
 - `DELETE /api/products/:id` - Delete product (admin only)
 
 ### Cart (client-side only)
+
 - Cart is managed entirely in Zustand store with localStorage persistence
 - No server-side cart API needed for MVP
 
 ### Checkout
+
 - `POST /api/checkout` - Create Stripe Checkout Session (receives cart items + shipping info)
 - `POST /api/webhooks/stripe` - Handle Stripe webhooks (checkout.session.completed, payment_intent.succeeded, charge.refunded)
 
 ### Orders
+
 - `GET /api/orders` - List orders for current user (or all for admin)
 - `GET /api/orders/:id` - Get order detail
 - `PATCH /api/orders/:id` - Update order status (admin only)
 
 ### Auth
+
 - NextAuth.js credentials provider (email/password)
 - `GET /api/auth/session` - Get current session
 
 ## Requirements
+
 - TypeScript throughout
 - All prices stored and calculated in cents (avoid floating point)
 - Currency display formatted with Intl.NumberFormat
@@ -296,6 +310,7 @@ enum OrderStatus {
 - Seed script creates 10+ sample products across 3-4 categories
 
 ## Testing
+
 - Unit tests: Cart store (add, remove, quantity, total calculation), price formatting (Vitest)
 - API tests: Product CRUD, checkout session creation, order status updates
 - Integration tests: Full checkout flow with Stripe test mode
@@ -303,6 +318,7 @@ enum OrderStatus {
 - Stripe: Use `stripe listen --forward-to localhost:3000/api/webhooks/stripe` for webhook testing
 
 ## Out of Scope
+
 - Inventory management (stock quantity tracking)
 - Tax calculation service (Stripe Tax or TaxJar)
 - Shipping rate calculation (flat rate only)
@@ -315,6 +331,7 @@ enum OrderStatus {
 - Production deployment
 
 ## Success Criteria
+
 - Product catalog displays with images, prices, and categories
 - Filtering by category and price range works
 - Cart add/remove/quantity update works and persists across page refresh

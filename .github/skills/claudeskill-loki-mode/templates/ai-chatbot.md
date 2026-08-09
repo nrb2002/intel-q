@@ -1,9 +1,11 @@
 # PRD: AI Chatbot with RAG
 
 ## Overview
+
 An AI-powered chatbot application called "AskBase" that lets users upload documents, then ask questions answered using retrieval-augmented generation (RAG). Combines document chunking, vector search, and LLM completion to provide accurate, source-cited answers from uploaded content.
 
 ## Target Users
+
 - Knowledge workers who need to query large document collections
 - Students researching across multiple papers or textbooks
 - Teams building internal knowledge bases from existing documentation
@@ -12,6 +14,7 @@ An AI-powered chatbot application called "AskBase" that lets users upload docume
 ## Features
 
 ### MVP Features
+
 1. **Document Upload** - Upload PDF, TXT, and Markdown files for indexing
 2. **Document Processing** - Automatic chunking, embedding generation, and vector storage
 3. **Chat Interface** - Conversational UI with streaming responses
@@ -22,6 +25,7 @@ An AI-powered chatbot application called "AskBase" that lets users upload docume
 8. **Settings** - Configure model, temperature, chunk size, and retrieval count
 
 ### How RAG Works (Architecture)
+
 ```
 User Question
     |
@@ -42,6 +46,7 @@ User Question
 ```
 
 ### User Flow
+
 1. User opens app -> sees empty chat with "Upload documents to get started"
 2. Clicks upload -> selects PDF files -> documents begin processing
 3. Progress bar shows: uploading -> chunking -> embedding -> indexed
@@ -53,6 +58,7 @@ User Question
 ## Tech Stack
 
 ### Frontend
+
 - Next.js 14 (App Router)
 - TypeScript
 - TailwindCSS + shadcn/ui
@@ -61,6 +67,7 @@ User Question
 - react-dropzone for file upload
 
 ### Backend
+
 - Next.js API Routes (Route Handlers)
 - OpenAI API (gpt-4o for completion, text-embedding-3-small for embeddings)
 - Vector store: ChromaDB (local, via chromadb npm package) or Pinecone
@@ -68,11 +75,13 @@ User Question
 - Text splitting: LangChain text splitter (RecursiveCharacterTextSplitter)
 
 ### Infrastructure
+
 - Database: SQLite via better-sqlite3 (conversations, documents metadata)
 - Vector store: ChromaDB running locally (Docker or embedded)
 - File storage: Local filesystem (/uploads directory)
 
 ### Structure
+
 ```
 /
 ├── src/
@@ -143,6 +152,7 @@ User Question
 ## Database Schema
 
 ### SQLite (Metadata)
+
 ```sql
 CREATE TABLE documents (
   id TEXT PRIMARY KEY,
@@ -176,6 +186,7 @@ CREATE INDEX idx_documents_status ON documents(status);
 ```
 
 ### Vector Store (ChromaDB)
+
 ```
 Collection: "documents"
   - id: chunk UUID
@@ -193,12 +204,14 @@ Collection: "documents"
 ## API Endpoints
 
 ### Chat
+
 - `POST /api/chat` - Send message and get streaming response
   - Body: `{ conversationId, message }`
   - Response: Server-Sent Events stream (Vercel AI SDK format)
   - Internally: embeds question -> vector search -> builds prompt -> streams completion
 
 ### Documents
+
 - `POST /api/documents` - Upload document (multipart/form-data)
 - `GET /api/documents` - List all documents with status
 - `GET /api/documents/:id` - Get document details
@@ -206,6 +219,7 @@ Collection: "documents"
 - `DELETE /api/documents/:id` - Delete document and its chunks from vector store
 
 ### Conversations
+
 - `GET /api/conversations` - List all conversations
 - `POST /api/conversations` - Create new conversation
 - `GET /api/conversations/:id` - Get conversation with messages
@@ -214,6 +228,7 @@ Collection: "documents"
 - `GET /api/conversations/:id/messages` - Get messages (paginated)
 
 ### Debug
+
 - `POST /api/search` - Direct vector similarity search (for testing retrieval)
   - Body: `{ query, topK }`
   - Response: `{ results: [{ text, score, metadata }] }`
@@ -221,12 +236,14 @@ Collection: "documents"
 ## RAG Pipeline Details
 
 ### Document Processing
+
 1. **Parse**: Extract text from PDF (pdf-parse) or read TXT/MD directly
 2. **Chunk**: Split into ~500 token chunks with 50 token overlap (RecursiveCharacterTextSplitter)
 3. **Embed**: Generate embeddings via OpenAI text-embedding-3-small (batch of 100)
 4. **Store**: Insert chunks + embeddings into ChromaDB with metadata
 
 ### Query Pipeline
+
 1. **Embed query**: Generate embedding for user's question
 2. **Retrieve**: Find top 5 most similar chunks from ChromaDB
 3. **Rerank** (optional): Score relevance of each chunk to the question
@@ -235,6 +252,7 @@ Collection: "documents"
 6. **Parse citations**: Extract [Source: ...] references from response
 
 ### System Prompt Template
+
 ```
 You are a helpful assistant that answers questions based on the provided context.
 Always cite your sources using [Source: filename, chunk N] format.
@@ -254,17 +272,18 @@ Answer the user's question based on the above context.
 ```typescript
 interface RAGSettings {
   model: "gpt-4o" | "gpt-4o-mini" | "gpt-3.5-turbo";
-  temperature: number;             // 0.0 - 1.0, default 0.3
-  maxTokens: number;               // default 2048
+  temperature: number; // 0.0 - 1.0, default 0.3
+  maxTokens: number; // default 2048
   embeddingModel: "text-embedding-3-small" | "text-embedding-3-large";
-  chunkSize: number;               // tokens, default 500
-  chunkOverlap: number;            // tokens, default 50
-  topK: number;                    // retrieval count, default 5
-  similarityThreshold: number;     // minimum score, default 0.7
+  chunkSize: number; // tokens, default 500
+  chunkOverlap: number; // tokens, default 50
+  topK: number; // retrieval count, default 5
+  similarityThreshold: number; // minimum score, default 0.7
 }
 ```
 
 ## Requirements
+
 - TypeScript throughout
 - Streaming responses (SSE via Vercel AI SDK)
 - Document processing runs asynchronously (user sees progress)
@@ -279,6 +298,7 @@ interface RAGSettings {
 - Graceful handling of API errors (rate limits, token limits, network)
 
 ## Testing
+
 - Unit tests: Chunker (splits correctly, respects overlap), parser (extracts text), prompt builder (Vitest)
 - Integration tests: Document upload -> processing -> vector store insertion
 - API tests: Chat endpoint with mocked OpenAI responses, document CRUD
@@ -286,6 +306,7 @@ interface RAGSettings {
 - Manual testing: Upload a real PDF, ask questions, verify answer quality and citations
 
 ## Out of Scope
+
 - User authentication (single-user app for MVP)
 - Multi-user document permissions
 - Web scraping / URL ingestion
@@ -297,6 +318,7 @@ interface RAGSettings {
 - Cost tracking / usage limits
 
 ## Success Criteria
+
 - Document upload and processing completes without errors
 - Chunks are correctly stored in vector store with metadata
 - Questions return relevant answers based on uploaded content

@@ -4,19 +4,19 @@
 
 This module synthesizes ideas from multiple validated sources. Each technique is cited.
 
-| Source | Key Contribution | Citation |
-|--------|-----------------|----------|
-| Amazon AGI Lab (2026) | Friction-as-semantics, agents as universal API over legacy UIs | [amazon.science blog](https://www.amazon.science/blog/how-agentic-ai-helps-heal-the-systems-we-cant-replace) |
-| Michael Feathers (2004) | Characterization testing, dependency-breaking techniques, seams | *Working Effectively with Legacy Code*, Prentice Hall |
-| Martin Fowler (2004) | Strangler Fig pattern for incremental replacement | [martinfowler.com/bliki/StranglerFigApplication](https://martinfowler.com/bliki/StranglerFigApplication.html) |
-| Eric Evans (2003) | Anti-Corruption Layer to isolate legacy from modern code | *Domain-Driven Design*, Addison-Wesley |
-| RepoMod-Bench (2026) | System-boundary testing for behavioral equivalence | arXiv:2602.22518 |
-| Model-Driven Modernization (2026) | Observability + contract tests for conformance | arXiv:2602.04341 |
-| HEC (2025) | Equivalence verification via equality saturation | arXiv:2506.02290 |
-| VAPU (2025) | Multi-agent pipeline for autonomous legacy updates | arXiv:2510.18509 |
-| Code Reborn (2025) | AI-driven COBOL-to-Java, 93% accuracy | arXiv:2504.11335 |
-| AWS Transform (2025-2026) | Decomposition agents, semantic seeding, domain grouping | [AWS blog](https://aws.amazon.com/blogs/migration-and-modernization/accelerate-your-mainframe-modernization-journey-using-ai-agents-with-aws-transform/) |
-| GitHub Copilot (2025) | 3-agent pattern: extract logic, generate tests, generate modern code | [github.blog](https://github.blog/ai-and-ml/github-copilot/how-github-copilot-and-ai-agents-are-saving-legacy-systems/) |
+| Source                            | Key Contribution                                                     | Citation                                                                                                                                                 |
+| --------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Amazon AGI Lab (2026)             | Friction-as-semantics, agents as universal API over legacy UIs       | [amazon.science blog](https://www.amazon.science/blog/how-agentic-ai-helps-heal-the-systems-we-cant-replace)                                             |
+| Michael Feathers (2004)           | Characterization testing, dependency-breaking techniques, seams      | _Working Effectively with Legacy Code_, Prentice Hall                                                                                                    |
+| Martin Fowler (2004)              | Strangler Fig pattern for incremental replacement                    | [martinfowler.com/bliki/StranglerFigApplication](https://martinfowler.com/bliki/StranglerFigApplication.html)                                            |
+| Eric Evans (2003)                 | Anti-Corruption Layer to isolate legacy from modern code             | _Domain-Driven Design_, Addison-Wesley                                                                                                                   |
+| RepoMod-Bench (2026)              | System-boundary testing for behavioral equivalence                   | arXiv:2602.22518                                                                                                                                         |
+| Model-Driven Modernization (2026) | Observability + contract tests for conformance                       | arXiv:2602.04341                                                                                                                                         |
+| HEC (2025)                        | Equivalence verification via equality saturation                     | arXiv:2506.02290                                                                                                                                         |
+| VAPU (2025)                       | Multi-agent pipeline for autonomous legacy updates                   | arXiv:2510.18509                                                                                                                                         |
+| Code Reborn (2025)                | AI-driven COBOL-to-Java, 93% accuracy                                | arXiv:2504.11335                                                                                                                                         |
+| AWS Transform (2025-2026)         | Decomposition agents, semantic seeding, domain grouping              | [AWS blog](https://aws.amazon.com/blogs/migration-and-modernization/accelerate-your-mainframe-modernization-journey-using-ai-agents-with-aws-transform/) |
+| GitHub Copilot (2025)             | 3-agent pattern: extract logic, generate tests, generate modern code | [github.blog](https://github.blog/ai-and-ml/github-copilot/how-github-copilot-and-ai-agents-are-saving-legacy-systems/)                                  |
 
 ---
 
@@ -49,6 +49,7 @@ friction_detection:
 ```
 
 **Friction Map Schema:**
+
 ```json
 {
   "frictions": [
@@ -68,7 +69,7 @@ friction_detection:
 
 ### 2. Characterize Before Modifying (Feathers)
 
-**Source:** Michael Feathers, *Working Effectively with Legacy Code* (2004)
+**Source:** Michael Feathers, _Working Effectively with Legacy Code_ (2004)
 
 A characterization test describes the ACTUAL behavior of existing code, not the INTENDED behavior. It is a change detector, not a correctness proof. Mark Seemann (2025) emphasizes: "Write an assertion that you know will fail" -- this prevents tautological tests.
 
@@ -119,7 +120,7 @@ strangler_fig:
 
 ### 4. Anti-Corruption Layer (Evans, DDD)
 
-**Source:** Eric Evans, *Domain-Driven Design* (2003), Chapter 14
+**Source:** Eric Evans, _Domain-Driven Design_ (2003), Chapter 14
 
 When integrating with a legacy system, create a layer that translates between your modern domain model and the legacy model. This prevents the legacy model from "corrupting" your clean design.
 
@@ -390,11 +391,12 @@ health_score:
 
 When `loki heal` is active, the code review specialist pool includes:
 
-| Specialist | Focus | Trigger Keywords |
-|-----------|-------|-----------------|
+| Specialist                 | Focus                                                             | Trigger Keywords                                                     |
+| -------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
 | **legacy-healing-auditor** | Behavioral preservation, friction safety, institutional knowledge | legacy, heal, migrate, cobol, fortran, refactor, modernize, deprecat |
 
 **Legacy Healing Auditor checks:**
+
 - Behavioral change without characterization test update (Feathers)
 - Removal of friction classified as `business_rule` or `unknown` (Amazon)
 - Missing anti-corruption layer for replaced components (Evans)
@@ -416,6 +418,7 @@ When `loki heal` is active, the code review specialist pool includes:
 ```
 
 **Progress Tracking:**
+
 ```json
 {
   "codebase": "./src",
@@ -444,25 +447,25 @@ When `loki heal` is active, the code review specialist pool includes:
 
 ## Healing Signals
 
-| Signal | Purpose | Emitted When |
-|--------|---------|-------------|
-| `FRICTION_DETECTED` | New friction point found | Archaeology scan finds quirky behavior |
-| `BEHAVIOR_CHANGE_RISK` | Proposed change may alter legacy behavior | Code review detects behavioral modification |
-| `INSTITUTIONAL_KNOWLEDGE_FOUND` | Tribal knowledge extracted from code | Comment/history analysis reveals business rule |
-| `HEALING_PHASE_COMPLETE` | Component completed a healing phase | Phase gate passed |
-| `LEGACY_COMPATIBILITY_RISK` | Breaking change to legacy API detected | System-boundary test fails |
+| Signal                          | Purpose                                   | Emitted When                                   |
+| ------------------------------- | ----------------------------------------- | ---------------------------------------------- |
+| `FRICTION_DETECTED`             | New friction point found                  | Archaeology scan finds quirky behavior         |
+| `BEHAVIOR_CHANGE_RISK`          | Proposed change may alter legacy behavior | Code review detects behavioral modification    |
+| `INSTITUTIONAL_KNOWLEDGE_FOUND` | Tribal knowledge extracted from code      | Comment/history analysis reveals business rule |
+| `HEALING_PHASE_COMPLETE`        | Component completed a healing phase       | Phase gate passed                              |
+| `LEGACY_COMPATIBILITY_RISK`     | Breaking change to legacy API detected    | System-boundary test fails                     |
 
 ---
 
 ## Environment Variables
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `LOKI_HEAL_MODE` | `false` | Enable healing mode |
-| `LOKI_HEAL_PHASE` | `archaeology` | Current healing phase |
-| `LOKI_HEAL_PRESERVE_FRICTION` | `true` | Warn before removing friction points |
-| `LOKI_HEAL_BASELINE_DIR` | `.loki/healing/behavioral-baseline/` | Pre-healing snapshots |
-| `LOKI_HEAL_STRICT` | `false` | Block ALL behavioral changes without approval |
+| Variable                      | Default                              | Purpose                                       |
+| ----------------------------- | ------------------------------------ | --------------------------------------------- |
+| `LOKI_HEAL_MODE`              | `false`                              | Enable healing mode                           |
+| `LOKI_HEAL_PHASE`             | `archaeology`                        | Current healing phase                         |
+| `LOKI_HEAL_PRESERVE_FRICTION` | `true`                               | Warn before removing friction points          |
+| `LOKI_HEAL_BASELINE_DIR`      | `.loki/healing/behavioral-baseline/` | Pre-healing snapshots                         |
+| `LOKI_HEAL_STRICT`            | `false`                              | Block ALL behavioral changes without approval |
 
 ---
 
@@ -470,14 +473,14 @@ When `loki heal` is active, the code review specialist pool includes:
 
 Honest assessment of what this module can and cannot do:
 
-| Capability | Status | Notes |
-|-----------|--------|-------|
-| Characterization test generation | Agent-guided | Agent writes tests following Feathers recipe, not fully automated |
-| Friction detection | Heuristic | Pattern matching for sleeps, retries, magic values. Not exhaustive. |
-| Equivalence verification | System-boundary | Not formal verification (HEC/arXiv:2506.02290 is research-stage) |
-| Multi-agent decomposition | Sequential | True parallel decomposition like AWS Transform requires cloud infra |
-| Institutional knowledge extraction | Best-effort | Comment/blame analysis. Cannot extract unwritten tribal knowledge. |
-| Scale | <50K LOC practical | RepoMod-Bench: pass rates drop to 15.3% above 50K LOC |
+| Capability                         | Status             | Notes                                                               |
+| ---------------------------------- | ------------------ | ------------------------------------------------------------------- |
+| Characterization test generation   | Agent-guided       | Agent writes tests following Feathers recipe, not fully automated   |
+| Friction detection                 | Heuristic          | Pattern matching for sleeps, retries, magic values. Not exhaustive. |
+| Equivalence verification           | System-boundary    | Not formal verification (HEC/arXiv:2506.02290 is research-stage)    |
+| Multi-agent decomposition          | Sequential         | True parallel decomposition like AWS Transform requires cloud infra |
+| Institutional knowledge extraction | Best-effort        | Comment/blame analysis. Cannot extract unwritten tribal knowledge.  |
+| Scale                              | <50K LOC practical | RepoMod-Bench: pass rates drop to 15.3% above 50K LOC               |
 
 ---
 

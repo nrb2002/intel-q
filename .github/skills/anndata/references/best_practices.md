@@ -5,6 +5,7 @@ Guidelines for efficient and effective use of AnnData.
 ## Memory Management
 
 ### Use sparse matrices for sparse data
+
 ```python
 import numpy as np
 from scipy.sparse import csr_matrix, csc_matrix
@@ -25,6 +26,7 @@ else:
 ```
 
 ### Convert strings to categoricals
+
 ```python
 # Inefficient: string columns use lots of memory
 adata.obs['cell_type'] = ['Type_A', 'Type_B', 'Type_C'] * 333 + ['Type_A']
@@ -39,6 +41,7 @@ adata.strings_to_categoricals()
 ```
 
 ### Use backed mode for large datasets
+
 ```python
 # Don't load entire dataset into memory
 adata = ad.read_h5ad('large_dataset.h5ad', backed='r')
@@ -55,6 +58,7 @@ adata_subset = filtered.to_memory()
 ## Views vs Copies
 
 ### Understanding views
+
 ```python
 # Subsetting creates a view by default
 subset = adata[0:100, :]
@@ -69,6 +73,7 @@ if adata.is_view:
 ```
 
 ### When to use views
+
 ```python
 # Good: Read-only operations on subsets
 mean_expr = adata[adata.obs['cell_type'] == 'T cell'].X.mean()
@@ -79,6 +84,7 @@ result = analyze(temp_subset.X)
 ```
 
 ### When to use copies
+
 ```python
 # Create independent copy for modifications
 adata_filtered = adata[keep_cells, :].copy()
@@ -97,15 +103,18 @@ adata_filtered.obs['new_column'] = values
 ### Choose the right format
 
 **H5AD (HDF5) - Default choice**
+
 ```python
 adata.write_h5ad('data.h5ad', compression='gzip')
 ```
+
 - Fast random access
 - Supports backed mode
 - Good compression
 - Best for: Most use cases
 
 **Zarr - Cloud and parallel access**
+
 ```python
 import anndata
 
@@ -114,21 +123,25 @@ anndata.settings.zarr_write_format = 3
 anndata.settings.auto_shard_zarr_v3 = True  # experimental; independent of zarr_write_format
 adata.write_zarr('data.zarr', chunks=(100, 100))
 ```
+
 - Excellent for cloud storage (S3, GCS)
 - Supports parallel I/O and opt-in Zarr v3 sharding (0.12+)
 - Good compression
 - Best for: Large datasets, cloud workflows, parallel processing
 
 **CSV - Interoperability**
+
 ```python
 adata.write_csvs('output_dir/')
 ```
+
 - Human readable
 - Compatible with all tools
 - Large file sizes, slow
 - Best for: Sharing with non-Python tools, small datasets
 
 ### Optimize file size
+
 ```python
 # Before saving, optimize:
 
@@ -151,6 +164,7 @@ adata.write_h5ad('data.h5ad', compression='gzip', compression_opts=9)
 ## Backed Mode Strategies
 
 ### Read-only analysis
+
 ```python
 # Open in read-only backed mode
 adata = ad.read_h5ad('data.h5ad', backed='r')
@@ -163,6 +177,7 @@ adata_filtered = high_quality.to_memory()
 ```
 
 ### Read-write modifications
+
 ```python
 # Open in read-write backed mode
 adata = ad.read_h5ad('data.h5ad', backed='r+')
@@ -177,6 +192,7 @@ adata_memory.write_h5ad('data_with_annotations.h5ad')
 ```
 
 ### Chunked processing
+
 ```python
 # Process large dataset in chunks
 adata = ad.read_h5ad('huge_dataset.h5ad', backed='r')
@@ -195,6 +211,7 @@ final_result = combine(results)
 ## Performance Optimization
 
 ### Subsetting performance
+
 ```python
 # Fast: Boolean indexing with arrays
 mask = np.array(adata.obs['quality'] > 0.5)
@@ -209,6 +226,7 @@ subset = adata[indices, :]
 ```
 
 ### Avoid repeated subsetting
+
 ```python
 # Inefficient: Multiple subset operations
 for cell_type in ['A', 'B', 'C']:
@@ -223,6 +241,7 @@ for cell_type, indices in groups.items():
 ```
 
 ### Use chunked operations for large matrices
+
 ```python
 # Process X in chunks
 for chunk in adata.chunked_X(chunk_size=1000):
@@ -234,6 +253,7 @@ for chunk in adata.chunked_X(chunk_size=1000):
 ## Working with Raw Data
 
 ### Store raw before filtering
+
 ```python
 # Original data with all genes
 adata = ad.AnnData(X=counts)
@@ -250,6 +270,7 @@ all_genes = adata.raw.var_names
 ```
 
 ### When to use raw
+
 ```python
 # Use raw for:
 # - Differential expression on filtered genes
@@ -266,6 +287,7 @@ else:
 ## Metadata Management
 
 ### Naming conventions
+
 ```python
 # Consistent naming improves usability
 
@@ -288,6 +310,7 @@ else:
 ```
 
 ### Document metadata
+
 ```python
 # Store metadata descriptions in uns
 adata.uns['metadata_descriptions'] = {
@@ -308,6 +331,7 @@ adata.uns['processing_steps'] = [
 ## Reproducibility
 
 ### Set random seeds
+
 ```python
 import numpy as np
 
@@ -319,6 +343,7 @@ adata.uns['random_seed'] = 42
 ```
 
 ### Store parameters
+
 ```python
 # Store analysis parameters in uns
 adata.uns['pca'] = {
@@ -336,6 +361,7 @@ adata.uns['neighbors'] = {
 ```
 
 ### Version tracking
+
 ```python
 import sys
 from importlib.metadata import version
@@ -352,6 +378,7 @@ adata.uns['versions'] = {
 ## Error Handling
 
 ### Check data validity
+
 ```python
 # Verify dimensions
 assert adata.n_obs == len(adata.obs)
@@ -370,6 +397,7 @@ if has_negative:
 ```
 
 ### Validate metadata
+
 ```python
 # Check for missing values
 missing_obs = adata.obs.isnull().sum()
@@ -389,6 +417,7 @@ assert len(adata.var) == adata.n_vars
 ## Integration with Other Tools
 
 ### Scanpy integration
+
 ```python
 import scanpy as sc
 
@@ -404,6 +433,7 @@ sc.tl.umap(adata)
 ```
 
 ### Pandas integration
+
 ```python
 import pandas as pd
 
@@ -418,6 +448,7 @@ adata.obs = adata.obs.merge(external_metadata, left_index=True, right_index=True
 ```
 
 ### PyTorch integration
+
 ```python
 from anndata.experimental import AnnLoader
 
@@ -433,6 +464,7 @@ for batch in dataloader:
 ## Common Pitfalls
 
 ### Pitfall 1: Modifying views
+
 ```python
 # Wrong: Modifying view can affect original
 subset = adata[:100, :]
@@ -444,6 +476,7 @@ subset.X = new_data  # Independent copy
 ```
 
 ### Pitfall 2: Index misalignment
+
 ```python
 # Wrong: Assuming order matches
 external_data = pd.read_csv('data.csv')
@@ -454,6 +487,7 @@ adata.obs['new_col'] = external_data.set_index('cell_id').loc[adata.obs_names, '
 ```
 
 ### Pitfall 3: Mixing sparse and dense
+
 ```python
 # Wrong: Converting sparse to dense uses huge memory
 result = adata.X + 1  # Converts sparse to dense!
@@ -466,6 +500,7 @@ if issparse(adata.X):
 ```
 
 ### Pitfall 4: Not handling views
+
 ```python
 # Wrong: Assuming subset is independent
 subset = adata[mask, :]
@@ -477,6 +512,7 @@ del adata  # subset remains valid
 ```
 
 ### Pitfall 5: Ignoring memory constraints
+
 ```python
 # Wrong: Loading huge dataset into memory
 adata = ad.read_h5ad('100GB_file.h5ad')  # OOM error!

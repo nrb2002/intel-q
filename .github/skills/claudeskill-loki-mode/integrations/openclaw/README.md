@@ -5,6 +5,7 @@ Run Loki Mode autonomous SDLC sessions from any OpenClaw channel (Slack, Discord
 ## Installation
 
 1. Install Loki Mode CLI:
+
    ```bash
    npm install -g loki-mode
    # or
@@ -12,6 +13,7 @@ Run Loki Mode autonomous SDLC sessions from any OpenClaw channel (Slack, Discord
    ```
 
 2. Copy skill to OpenClaw workspace:
+
    ```bash
    cp -r integrations/openclaw/ ~/.openclaw/workspace/skills/loki-mode/
    ```
@@ -21,6 +23,7 @@ Run Loki Mode autonomous SDLC sessions from any OpenClaw channel (Slack, Discord
 ## Usage
 
 From any connected channel, the agent will invoke Loki Mode when:
+
 - You ask it to "build" or "implement" something from a PRD
 - You say "loki mode" with a project reference
 - You provide requirements for autonomous development
@@ -51,19 +54,20 @@ Two helper scripts are provided in `scripts/` for structured status polling and 
 - `format-progress.sh` -- Reads the JSON output from `poll-status.sh` via stdin and produces a human-readable multi-line progress message suitable for channel posting.
 
 Example pipeline:
+
 ```bash
 ./scripts/poll-status.sh /path/to/project | ./scripts/format-progress.sh
 ```
 
 ## Configuration
 
-| Env Var | Description | Default |
-|---------|-------------|---------|
-| LOKI_PROVIDER | AI provider (claude/codex/gemini) | claude |
-| LOKI_BUDGET_LIMIT | Cost limit in USD | unlimited |
-| LOKI_MAX_PARALLEL_AGENTS | Max concurrent agents | 10 |
-| LOKI_COMPLEXITY | Force complexity tier (simple/standard/complex) | auto |
-| LOKI_DASHBOARD_PORT | Dashboard HTTP port | 57374 |
+| Env Var                  | Description                                     | Default   |
+| ------------------------ | ----------------------------------------------- | --------- |
+| LOKI_PROVIDER            | AI provider (claude/codex/gemini)               | claude    |
+| LOKI_BUDGET_LIMIT        | Cost limit in USD                               | unlimited |
+| LOKI_MAX_PARALLEL_AGENTS | Max concurrent agents                           | 10        |
+| LOKI_COMPLEXITY          | Force complexity tier (simple/standard/complex) | auto      |
+| LOKI_DASHBOARD_PORT      | Dashboard HTTP port                             | 57374     |
 
 ## Phase 2: Bridge Daemon (Foundation)
 
@@ -71,11 +75,11 @@ The bridge daemon watches Loki's `.loki/` flat-file events in real time and tran
 
 ### What exists now
 
-| Component | Path | Status |
-|-----------|------|--------|
+| Component            | Path                   | Status                                                                       |
+| -------------------- | ---------------------- | ---------------------------------------------------------------------------- |
 | Event schema mapping | `bridge/schema_map.py` | Implemented -- maps 15 Loki event types to OpenClaw `sessions_send` messages |
-| File watcher | `bridge/watcher.py` | Implemented -- polls `events/pending/` and `dashboard-state.json` |
-| CLI entry point | `bridge/__main__.py` | Implemented -- prints mapped events as JSON to stdout |
+| File watcher         | `bridge/watcher.py`    | Implemented -- polls `events/pending/` and `dashboard-state.json`            |
+| CLI entry point      | `bridge/__main__.py`   | Implemented -- prints mapped events as JSON to stdout                        |
 
 ### Running the bridge (stdout mode)
 
@@ -91,8 +95,18 @@ python -m integrations.openclaw.bridge --loki-dir .loki --gateway ws://127.0.0.1
 ```
 
 Events are printed to stdout as JSON, one per line:
+
 ```json
-{"method": "sessions_send", "params": {"message": "Loki Mode started. Provider: claude. PRD: my-app.md", "source": "loki-bridge", "event_type": "session.start", "timestamp": "2026-02-12T00:00:00Z", "loki_event_id": "a1b2c3d4"}}
+{
+  "method": "sessions_send",
+  "params": {
+    "message": "Loki Mode started. Provider: claude. PRD: my-app.md",
+    "source": "loki-bridge",
+    "event_type": "session.start",
+    "timestamp": "2026-02-12T00:00:00Z",
+    "loki_event_id": "a1b2c3d4"
+  }
+}
 ```
 
 ### What is NOT yet implemented
@@ -120,20 +134,20 @@ Currently mapped event types: `session.start`, `session.stop`, `session.end`, `p
 
 The enriched JSON from `poll-status.sh` contains:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| status | string | inactive, running, paused, stopped, completed, unknown |
-| phase | string/null | BOOTSTRAP, DISCOVERY, ARCHITECTURE, DEVELOPMENT, QA, DEPLOYMENT |
-| iteration | number | Current iteration count |
-| tasks_completed | number | Tasks finished successfully |
-| tasks_total | number | Total tasks discovered |
-| tasks_failed | number | Tasks that errored |
-| tasks_pending | number | Tasks not yet started |
-| elapsed_minutes | number | Minutes since session start |
-| provider | string | Active AI provider |
-| version | string | Loki Mode version |
-| pid | number/null | Session process ID |
-| dashboard_url | string/null | Dashboard URL if running |
-| budget_used | number/null | USD spent so far |
-| budget_limit | number/null | USD budget cap |
-| council_verdict | string/null | Completion council decision |
+| Field           | Type        | Description                                                     |
+| --------------- | ----------- | --------------------------------------------------------------- |
+| status          | string      | inactive, running, paused, stopped, completed, unknown          |
+| phase           | string/null | BOOTSTRAP, DISCOVERY, ARCHITECTURE, DEVELOPMENT, QA, DEPLOYMENT |
+| iteration       | number      | Current iteration count                                         |
+| tasks_completed | number      | Tasks finished successfully                                     |
+| tasks_total     | number      | Total tasks discovered                                          |
+| tasks_failed    | number      | Tasks that errored                                              |
+| tasks_pending   | number      | Tasks not yet started                                           |
+| elapsed_minutes | number      | Minutes since session start                                     |
+| provider        | string      | Active AI provider                                              |
+| version         | string      | Loki Mode version                                               |
+| pid             | number/null | Session process ID                                              |
+| dashboard_url   | string/null | Dashboard URL if running                                        |
+| budget_used     | number/null | USD spent so far                                                |
+| budget_limit    | number/null | USD budget cap                                                  |
+| council_verdict | string/null | Completion council decision                                     |

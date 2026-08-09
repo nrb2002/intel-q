@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode OpenTelemetry Observability - Public API
@@ -26,15 +26,21 @@
 // -------------------------------------------------------------------
 
 const NOOP_SPAN = {
-  traceId: '00000000000000000000000000000000',
-  spanId: '0000000000000000',
-  parentSpanId: '',
-  name: 'noop',
+  traceId: "00000000000000000000000000000000",
+  spanId: "0000000000000000",
+  parentSpanId: "",
+  name: "noop",
   attributes: {},
-  setAttribute: function () { return NOOP_SPAN; },
-  setStatus: function () { return NOOP_SPAN; },
+  setAttribute: function () {
+    return NOOP_SPAN;
+  },
+  setStatus: function () {
+    return NOOP_SPAN;
+  },
   end: function () {},
-  traceparent: function () { return '00-00000000000000000000000000000000-0000000000000000-00'; },
+  traceparent: function () {
+    return "00-00000000000000000000000000000000-0000000000000000-00";
+  },
 };
 
 // -------------------------------------------------------------------
@@ -42,12 +48,24 @@ const NOOP_SPAN = {
 // -------------------------------------------------------------------
 
 const noopTrace = {
-  startProjectSpan: function () { return NOOP_SPAN; },
-  startTaskSpan: function () { return NOOP_SPAN; },
-  startRARVSpan: function () { return NOOP_SPAN; },
-  startQualityGateSpan: function () { return NOOP_SPAN; },
-  startAgentSpan: function () { return NOOP_SPAN; },
-  startCouncilSpan: function () { return NOOP_SPAN; },
+  startProjectSpan: function () {
+    return NOOP_SPAN;
+  },
+  startTaskSpan: function () {
+    return NOOP_SPAN;
+  },
+  startRARVSpan: function () {
+    return NOOP_SPAN;
+  },
+  startQualityGateSpan: function () {
+    return NOOP_SPAN;
+  },
+  startAgentSpan: function () {
+    return NOOP_SPAN;
+  },
+  startCouncilSpan: function () {
+    return NOOP_SPAN;
+  },
 };
 
 // -------------------------------------------------------------------
@@ -55,8 +73,12 @@ const noopTrace = {
 // -------------------------------------------------------------------
 
 const noopMetrics = {
-  initMetrics: function () { return {}; },
-  getMetrics: function () { return null; },
+  initMetrics: function () {
+    return {};
+  },
+  getMetrics: function () {
+    return null;
+  },
   recordTaskDuration: function () {},
   recordQualityGateResult: function () {},
   setActiveAgents: function () {},
@@ -78,11 +100,11 @@ let _enabled = false;
 function _loadFull() {
   if (_trace) return; // already loaded
 
-  _otel = require('./otel');
+  _otel = require("./otel");
   _otel.initialize();
 
-  const spans = require('./spans');
-  const metricsModule = require('./metrics');
+  const spans = require("./spans");
+  const metricsModule = require("./metrics");
 
   _trace = {
     startProjectSpan: spans.startProjectSpan,
@@ -141,4 +163,3 @@ module.exports = {
   shutdown,
   NOOP_SPAN,
 };
-

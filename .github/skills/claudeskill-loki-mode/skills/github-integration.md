@@ -8,16 +8,16 @@
 
 ## Quick Reference
 
-| Action | Command | Result |
-|--------|---------|--------|
-| Import issues as tasks | `loki start --github` or `LOKI_GITHUB_IMPORT=true` | Fetches open issues, creates pending tasks |
-| Create PR on completion | `LOKI_GITHUB_PR=true` | Auto-creates PR with task summaries |
-| Sync status back | `LOKI_GITHUB_SYNC=true` | Comments progress on source issues (deduplicated) |
-| Manual sync | `loki github sync` | Sync completed tasks to GitHub now |
-| Export tasks | `loki github export` | Create GitHub issues from local tasks |
-| Manual PR | `loki github pr "feature name"` | Create PR from current work |
-| Check status | `loki github status` | Show config, sync history, imported count |
-| Import from URL | `LOKI_GITHUB_REPO=owner/repo` | Specify repo if not auto-detected |
+| Action                  | Command                                            | Result                                            |
+| ----------------------- | -------------------------------------------------- | ------------------------------------------------- |
+| Import issues as tasks  | `loki start --github` or `LOKI_GITHUB_IMPORT=true` | Fetches open issues, creates pending tasks        |
+| Create PR on completion | `LOKI_GITHUB_PR=true`                              | Auto-creates PR with task summaries               |
+| Sync status back        | `LOKI_GITHUB_SYNC=true`                            | Comments progress on source issues (deduplicated) |
+| Manual sync             | `loki github sync`                                 | Sync completed tasks to GitHub now                |
+| Export tasks            | `loki github export`                               | Create GitHub issues from local tasks             |
+| Manual PR               | `loki github pr "feature name"`                    | Create PR from current work                       |
+| Check status            | `loki github status`                               | Show config, sync history, imported count         |
+| Import from URL         | `LOKI_GITHUB_REPO=owner/repo`                      | Specify repo if not auto-detected                 |
 
 ---
 
@@ -74,13 +74,13 @@ Issues are converted to tasks in `.loki/queue/pending.json`:
 
 ### 3. Priority Mapping
 
-| GitHub Label | Loki Priority |
-|--------------|---------------|
-| `priority:critical`, `P0` | Critical |
-| `priority:high`, `P1` | High |
-| `priority:medium`, `P2` | Medium |
-| `priority:low`, `P3` | Low |
-| (no priority label) | Normal |
+| GitHub Label              | Loki Priority |
+| ------------------------- | ------------- |
+| `priority:critical`, `P0` | Critical      |
+| `priority:high`, `P1`     | High          |
+| `priority:medium`, `P2`   | Medium        |
+| `priority:low`, `P3`      | Low           |
+| (no priority label)       | Normal        |
 
 ---
 
@@ -103,18 +103,22 @@ gh pr create \
 Automated implementation by Loki Mode v5.25.0
 
 ### Tasks Completed
+
 - [x] Task 1: Description
 - [x] Task 2: Description
 
 ### Quality Gates
+
 - Static Analysis: PASS
 - Unit Tests: PASS (85% coverage)
 - Code Review: PASS (3/3 reviewers)
 
 ### Related Issues
+
 Closes #123, #124
 
 ### Test Plan
+
 1. Run `npm test` - verify all tests pass
 2. Review changes in `src/` directory
 3. Test login flow manually
@@ -191,11 +195,11 @@ loki github pr "Add user authentication"
 
 ## Dashboard API
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/github/status` | GET | Integration config, repo, sync count |
-| `/api/github/tasks` | GET | All GitHub-sourced tasks with sync status |
-| `/api/github/sync-log` | GET | History of status updates sent to issues |
+| Endpoint               | Method | Description                               |
+| ---------------------- | ------ | ----------------------------------------- |
+| `/api/github/status`   | GET    | Integration config, repo, sync count      |
+| `/api/github/tasks`    | GET    | All GitHub-sourced tasks with sync status |
+| `/api/github/sync-log` | GET    | History of status updates sent to issues  |
 
 ---
 
@@ -211,12 +215,12 @@ loki github pr "Add user authentication"
 
 ## Error Handling
 
-| Error | Solution |
-|-------|----------|
-| `gh: command not found` | Install: `brew install gh` |
-| `not authenticated` | Run: `gh auth login` |
-| `no repository found` | Set: `LOKI_GITHUB_REPO=owner/repo` |
-| `rate limit exceeded` | Wait or use PAT with higher limit |
+| Error                   | Solution                           |
+| ----------------------- | ---------------------------------- |
+| `gh: command not found` | Install: `brew install gh`         |
+| `not authenticated`     | Run: `gh auth login`               |
+| `no repository found`   | Set: `LOKI_GITHUB_REPO=owner/repo` |
+| `rate limit exceeded`   | Wait or use PAT with higher limit  |
 
 ---
 

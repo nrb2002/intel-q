@@ -35,6 +35,7 @@ The bundled `scripts/build_counts_matrix.py --from salmon --quant-dir quant/ --t
 ### Getting a tx2gene map
 
 A two-column transcript_id → gene_id table. Options:
+
 - `pytximport.utils.create_transcript_gene_map(species="human")` (or `human`/`mouse` etc.).
 - From the annotation GTF (authoritative — matches your quant reference):
 
@@ -67,7 +68,7 @@ DESeq2 output is typically keyed by **Ensembl gene IDs** (e.g. `ENSG00000141510`
 
 - Strip version suffixes: `ids.str.replace(r"\.\d+$", "", regex=True)`.
 - Map Ensembl → symbol with the `gget` skill (`gget info`), `database-lookup`, `pybiomart`, or `mygene`. On Path A, the nf-core `gene_name` column already gives symbols — keep it alongside `gene_id`.
-- Keep mapping for *enrichment input*; you can keep Ensembl IDs through DE and map only the final gene lists.
+- Keep mapping for _enrichment input_; you can keep Ensembl IDs through DE and map only the final gene lists.
 
 ## DE → enrichment recipe
 

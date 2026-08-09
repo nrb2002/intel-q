@@ -30,11 +30,11 @@ skill-name/
 
 ### Core Skills (Built-in)
 
-| Skill | Description | Agent Types |
-|-------|-------------|-------------|
-| `prompt-optimization` | Prompt repetition for Haiku agents | All |
-| `checkpoint-mode` | Pause for review every N tasks | Orchestrator |
-| `confidence-routing` | Multi-tier routing based on confidence | Orchestrator |
+| Skill                 | Description                            | Agent Types  |
+| --------------------- | -------------------------------------- | ------------ |
+| `prompt-optimization` | Prompt repetition for Haiku agents     | All          |
+| `checkpoint-mode`     | Pause for review every N tasks         | Orchestrator |
+| `confidence-routing`  | Multi-tier routing based on confidence | Orchestrator |
 
 ---
 
@@ -52,7 +52,7 @@ mkdir -p agent-skills/my-skill/{scripts,references,examples}
 ---
 name: my-skill
 description: What this skill does
-agent_types: [eng-frontend, eng-backend]  # Which agents can use this
+agent_types: [eng-frontend, eng-backend] # Which agents can use this
 ---
 
 # My Skill
@@ -120,6 +120,7 @@ def discover_agent_skills():
 ### Publishing Skills
 
 Skills can be:
+
 1. **Bundled with Loki Mode** (this directory)
 2. **Published as separate repos** (following agent-skills spec)
 3. **Installed dynamically** via `/install-skill` command

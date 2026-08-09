@@ -7,12 +7,14 @@ Production-validated pattern from HN discussions and Claude Agent SDK guide.
 ## Overview
 
 **Traditional Routing (Binary):**
+
 ```
 IF simple_task → direct routing
 ELSE → supervisor mode
 ```
 
 **Confidence-Based Routing (Multi-Tier):**
+
 ```
 Confidence >= 0.95 → Auto-approve (fastest)
 Confidence >= 0.70 → Direct with review (fast + safety)
@@ -124,12 +126,14 @@ def query_similar_tasks(task) -> float:
 ### Tier 1: Auto-Approve (Confidence >= 0.95)
 
 **Characteristics:**
+
 - Highly specific requirements
 - Well-established patterns
 - All resources available
 - 90%+ historical success rate
 
 **Action:**
+
 ```python
 if confidence >= 0.95:
     log_auto_approval(task, confidence)
@@ -137,6 +141,7 @@ if confidence >= 0.95:
 ```
 
 **Examples:**
+
 - Run linter on specific file
 - Execute unit test suite
 - Format code with prettier
@@ -145,12 +150,14 @@ if confidence >= 0.95:
 ### Tier 2: Direct with Review (0.70 <= Confidence < 0.95)
 
 **Characteristics:**
+
 - Clear requirements but some unknowns
 - Familiar patterns with minor variations
 - Most resources available
 - 70-90% historical success
 
 **Action:**
+
 ```python
 if 0.70 <= confidence < 0.95:
     result = execute_direct(task, review_after=True)
@@ -164,6 +171,7 @@ if 0.70 <= confidence < 0.95:
 ```
 
 **Examples:**
+
 - Implement CRUD endpoint from OpenAPI spec
 - Write unit tests for new function
 - Fix bug with clear reproduction steps
@@ -172,12 +180,14 @@ if 0.70 <= confidence < 0.95:
 ### Tier 3: Supervisor Mode (0.40 <= Confidence < 0.70)
 
 **Characteristics:**
+
 - Some ambiguity in requirements
 - Novel patterns or approaches needed
 - Partial resource availability
 - 40-70% historical success
 
 **Action:**
+
 ```python
 if 0.40 <= confidence < 0.70:
     # Full orchestrator coordination
@@ -194,6 +204,7 @@ if 0.40 <= confidence < 0.70:
 ```
 
 **Examples:**
+
 - Design new architecture for feature
 - Implement feature with unclear edge cases
 - Integrate unfamiliar third-party API
@@ -202,12 +213,14 @@ if 0.40 <= confidence < 0.70:
 ### Tier 4: Human Escalation (Confidence < 0.40)
 
 **Characteristics:**
+
 - High ambiguity or unknowns
 - Novel/unproven approach required
 - Missing critical resources
 - <40% historical success
 
 **Action:**
+
 ```python
 if confidence < 0.40:
     escalation_report = generate_escalation_report(task, confidence)
@@ -225,6 +238,7 @@ if confidence < 0.40:
 ```
 
 **Examples:**
+
 - Make breaking API changes
 - Delete production data
 - Choose between fundamentally different architectures
@@ -243,10 +257,10 @@ if confidence < 0.40:
   "confidence_assessment": {
     "overall_score": 0.85,
     "factors": {
-      "requirement_clarity": 0.90,
+      "requirement_clarity": 0.9,
       "technical_feasibility": 0.92,
       "resource_availability": 0.75,
-      "historical_success": 0.80,
+      "historical_success": 0.8,
       "complexity_match": 0.88
     }
   },
@@ -298,6 +312,7 @@ def calibrate_confidence_model():
 ### Monitoring Dashboard
 
 Track calibration metrics:
+
 - **Brier Score:** Mean squared error between predicted confidence and actual outcome
 - **Calibration Curve:** Plot predicted vs actual success rate
 - **Tier Accuracy:** Success rate by routing tier
@@ -342,6 +357,7 @@ Task(
 ### HN Community Insights
 
 From production deployments:
+
 - **Auto-approve threshold (0.95):** 98% success rate observed
 - **Direct-with-review (0.70-0.95):** 92% success rate, 8% caught by review
 - **Supervisor mode (0.40-0.70):** 75% success rate, requires iteration
@@ -350,6 +366,7 @@ From production deployments:
 ### Cost Savings
 
 Confidence-based routing reduces costs by:
+
 - **Auto-approve tier:** 40% faster, uses Haiku
 - **Direct-with-review:** 25% faster, uses Sonnet
 - **Supervisor mode:** Standard cost, uses Opus for planning

@@ -10,11 +10,11 @@ Audit logging records all agent actions for compliance and forensic analysis. As
 
 ### Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_AUDIT_DISABLED` | `false` | Set to `true` to disable audit logging |
+| Variable                | Default | Description                                                           |
+| ----------------------- | ------- | --------------------------------------------------------------------- |
+| `LOKI_AUDIT_DISABLED`   | `false` | Set to `true` to disable audit logging                                |
 | `LOKI_ENTERPRISE_AUDIT` | `false` | Legacy variable to force audit on (superseded by default-on behavior) |
-| `LOKI_AUDIT_LOG` | `true` | Enable/disable audit log file writing |
+| `LOKI_AUDIT_LOG`        | `true`  | Enable/disable audit log file writing                                 |
 
 ### CLI Commands
 
@@ -35,6 +35,7 @@ loki enterprise help      # Show available enterprise commands
 ### Audit Log Contents
 
 Audit entries record:
+
 - Timestamp of each agent action
 - Agent identity and type
 - Action taken (file read, file write, command execution, etc.)
@@ -57,13 +58,13 @@ export LOKI_AUDIT_SYSLOG_PROTO=udp
 loki start ./prd.md
 ```
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_AUDIT_SYSLOG_HOST` | (none) | Syslog server hostname or IP |
-| `LOKI_AUDIT_SYSLOG_PORT` | `514` | Syslog server port |
-| `LOKI_AUDIT_SYSLOG_PROTO` | `udp` | Protocol: `udp` or `tcp` |
-| `LOKI_SYSLOG_FACILITY` | `local0` | Syslog facility (local0-local7) |
-| `LOKI_SYSLOG_SEVERITY` | `info` | Minimum severity to forward |
+| Variable                  | Default  | Description                     |
+| ------------------------- | -------- | ------------------------------- |
+| `LOKI_AUDIT_SYSLOG_HOST`  | (none)   | Syslog server hostname or IP    |
+| `LOKI_AUDIT_SYSLOG_PORT`  | `514`    | Syslog server port              |
+| `LOKI_AUDIT_SYSLOG_PROTO` | `udp`    | Protocol: `udp` or `tcp`        |
+| `LOKI_SYSLOG_FACILITY`    | `local0` | Syslog facility (local0-local7) |
+| `LOKI_SYSLOG_SEVERITY`    | `info`   | Minimum severity to forward     |
 
 ### Filtering
 
@@ -127,11 +128,11 @@ When authentication is enabled, all dashboard API requests must include a valid 
 
 For organizations using SSO, Loki Mode supports OIDC (OpenID Connect) authentication:
 
-| Variable | Description |
-|----------|-------------|
-| `LOKI_OIDC_ISSUER` | OIDC issuer URL (e.g., `https://accounts.google.com`) |
-| `LOKI_OIDC_CLIENT_ID` | OIDC client/application ID |
-| `LOKI_OIDC_AUDIENCE` | Expected JWT audience (defaults to client_id) |
+| Variable              | Description                                           |
+| --------------------- | ----------------------------------------------------- |
+| `LOKI_OIDC_ISSUER`    | OIDC issuer URL (e.g., `https://accounts.google.com`) |
+| `LOKI_OIDC_CLIENT_ID` | OIDC client/application ID                            |
+| `LOKI_OIDC_AUDIENCE`  | Expected JWT audience (defaults to client_id)         |
 
 These variables are documented in the `autonomy/run.sh` header. OIDC validation requires a running dashboard API server.
 
@@ -158,14 +159,14 @@ export LOKI_TLS_KEY=/path/to/key.pem
 
 Loki Mode provides several security controls for enterprise environments:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_SANDBOX_MODE` | `false` | Run in Docker sandbox for isolation |
-| `LOKI_ALLOWED_PATHS` | (all) | Comma-separated paths agents can modify |
-| `LOKI_BLOCKED_COMMANDS` | `rm -rf /` | Comma-separated blocked shell commands |
-| `LOKI_MAX_PARALLEL_AGENTS` | `10` | Limit concurrent agent spawning |
-| `LOKI_STAGED_AUTONOMY` | `false` | Require approval before execution |
-| `LOKI_PROMPT_INJECTION` | `false` | Allow prompt injection via `HUMAN_INPUT.md` (disabled by default for security) |
+| Variable                   | Default    | Description                                                                    |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------ |
+| `LOKI_SANDBOX_MODE`        | `false`    | Run in Docker sandbox for isolation                                            |
+| `LOKI_ALLOWED_PATHS`       | (all)      | Comma-separated paths agents can modify                                        |
+| `LOKI_BLOCKED_COMMANDS`    | `rm -rf /` | Comma-separated blocked shell commands                                         |
+| `LOKI_MAX_PARALLEL_AGENTS` | `10`       | Limit concurrent agent spawning                                                |
+| `LOKI_STAGED_AUTONOMY`     | `false`    | Require approval before execution                                              |
+| `LOKI_PROMPT_INJECTION`    | `false`    | Allow prompt injection via `HUMAN_INPUT.md` (disabled by default for security) |
 
 ### Docker Sandbox
 

@@ -8,8 +8,8 @@
  * <loki-checkpoint-viewer api-url="http://localhost:57374" theme="dark"></loki-checkpoint-viewer>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * @class LokiCheckpointViewer
@@ -20,7 +20,7 @@ import { getApiClient } from '../core/loki-api-client.js';
  */
 export class LokiCheckpointViewer extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -52,17 +52,17 @@ export class LokiCheckpointViewer extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -81,7 +81,7 @@ export class LokiCheckpointViewer extends LokiElement {
         }
       }
     };
-    document.addEventListener('visibilitychange', this._visibilityHandler);
+    document.addEventListener("visibilitychange", this._visibilityHandler);
   }
 
   _stopPolling() {
@@ -90,7 +90,7 @@ export class LokiCheckpointViewer extends LokiElement {
       this._pollInterval = null;
     }
     if (this._visibilityHandler) {
-      document.removeEventListener('visibilitychange', this._visibilityHandler);
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
       this._visibilityHandler = null;
     }
   }
@@ -98,13 +98,13 @@ export class LokiCheckpointViewer extends LokiElement {
   async _loadData() {
     try {
       const [checkpointsResult] = await Promise.allSettled([
-        this._api._get('/api/checkpoints?limit=50'),
+        this._api._get("/api/checkpoints?limit=50"),
       ]);
 
-      if (checkpointsResult.status === 'fulfilled') {
+      if (checkpointsResult.status === "fulfilled") {
         this._checkpoints = Array.isArray(checkpointsResult.value)
           ? checkpointsResult.value
-          : (checkpointsResult.value?.checkpoints || []);
+          : checkpointsResult.value?.checkpoints || [];
       }
 
       this._error = null;
@@ -123,21 +123,23 @@ export class LokiCheckpointViewer extends LokiElement {
   }
 
   async _createCheckpoint() {
-    const input = this.shadowRoot.getElementById('checkpoint-message');
-    const message = input ? input.value.trim() : '';
+    const input = this.shadowRoot.getElementById("checkpoint-message");
+    const message = input ? input.value.trim() : "";
     if (!message) return;
 
     this._creating = true;
     this.render();
 
     try {
-      await this._api._post('/api/checkpoints', { message });
+      await this._api._post("/api/checkpoints", { message });
       this._showCreateForm = false;
       this._creating = false;
-      this.dispatchEvent(new CustomEvent('checkpoint-action', {
-        detail: { action: 'create', message },
-        bubbles: true,
-      }));
+      this.dispatchEvent(
+        new CustomEvent("checkpoint-action", {
+          detail: { action: "create", message },
+          bubbles: true,
+        }),
+      );
       this._lastDataHash = null;
       await this._loadData();
     } catch (err) {
@@ -161,10 +163,12 @@ export class LokiCheckpointViewer extends LokiElement {
       this._notice = undoId
         ? `Rolled back to ${checkpointId}. Undo this with checkpoint ${undoId}`
         : `Rolled back to ${checkpointId}.`;
-      this.dispatchEvent(new CustomEvent('checkpoint-action', {
-        detail: { action: 'rollback', checkpointId, preRollbackSnapshot: undoId || null },
-        bubbles: true,
-      }));
+      this.dispatchEvent(
+        new CustomEvent("checkpoint-action", {
+          detail: { action: "rollback", checkpointId, preRollbackSnapshot: undoId || null },
+          bubbles: true,
+        }),
+      );
       this._lastDataHash = null;
       await this._loadData();
     } catch (err) {
@@ -195,7 +199,7 @@ export class LokiCheckpointViewer extends LokiElement {
   }
 
   _formatRelativeTime(timestamp) {
-    if (!timestamp) return '';
+    if (!timestamp) return "";
     try {
       const now = Date.now();
       const t = new Date(timestamp).getTime();
@@ -225,20 +229,20 @@ export class LokiCheckpointViewer extends LokiElement {
             <span class="count-badge">${count}</span>
           </div>
           <button class="btn btn-primary" id="create-btn">
-            ${this._showCreateForm ? 'Cancel' : 'Create Checkpoint'}
+            ${this._showCreateForm ? "Cancel" : "Create Checkpoint"}
           </button>
         </div>
 
-        ${this._showCreateForm ? this._renderCreateForm() : ''}
+        ${this._showCreateForm ? this._renderCreateForm() : ""}
 
         <div class="checkpoint-list">
-          ${this._loading ? '<div class="loading-state">Loading checkpoints...</div>' : ''}
-          ${!this._loading && count === 0 ? '<div class="empty-state">No checkpoints yet. Create one to save the current state.</div>' : ''}
-          ${this._checkpoints.map(cp => this._renderCheckpointCard(cp)).join('')}
+          ${this._loading ? '<div class="loading-state">Loading checkpoints...</div>' : ""}
+          ${!this._loading && count === 0 ? '<div class="empty-state">No checkpoints yet. Create one to save the current state.</div>' : ""}
+          ${this._checkpoints.map((cp) => this._renderCheckpointCard(cp)).join("")}
         </div>
 
-        ${this._notice ? `<div class="notice-banner">${this._escapeHTML(this._notice)}</div>` : ''}
-        ${this._error ? `<div class="error-banner">${this._escapeHTML(this._error)}</div>` : ''}
+        ${this._notice ? `<div class="notice-banner">${this._escapeHTML(this._notice)}</div>` : ""}
+        ${this._error ? `<div class="error-banner">${this._escapeHTML(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -254,23 +258,23 @@ export class LokiCheckpointViewer extends LokiElement {
           class="form-input"
           placeholder="Checkpoint message (e.g., before refactoring auth module)"
           maxlength="200"
-          ${this._creating ? 'disabled' : ''}
+          ${this._creating ? "disabled" : ""}
         />
-        <button class="btn btn-primary" id="submit-create-btn" ${this._creating ? 'disabled' : ''}>
-          ${this._creating ? 'Creating...' : 'Save'}
+        <button class="btn btn-primary" id="submit-create-btn" ${this._creating ? "disabled" : ""}>
+          ${this._creating ? "Creating..." : "Save"}
         </button>
       </div>
     `;
   }
 
   _renderCheckpointCard(cp) {
-    const sha = cp.git_sha ? cp.git_sha.substring(0, 7) : '';
+    const sha = cp.git_sha ? cp.git_sha.substring(0, 7) : "";
     const filesCount = cp.files_count || (Array.isArray(cp.files) ? cp.files.length : 0);
     const isRollbackTarget = this._rollbackTarget === cp.id;
-    const iteration = cp.iteration != null ? `Iter ${cp.iteration}` : '';
-    const provider = cp.provider || '';
-    const phase = cp.phase || '';
-    const branch = cp.git_branch || '';
+    const iteration = cp.iteration != null ? `Iter ${cp.iteration}` : "";
+    const provider = cp.provider || "";
+    const phase = cp.phase || "";
+    const branch = cp.git_branch || "";
 
     // Build tag list from available metadata
     const tags = [iteration, provider, phase].filter(Boolean);
@@ -279,39 +283,43 @@ export class LokiCheckpointViewer extends LokiElement {
       <div class="checkpoint-card" data-checkpoint-id="${this._escapeHTML(cp.id)}">
         <div class="card-header">
           <div class="header-tags">
-            ${sha ? `<span class="checkpoint-sha mono">${this._escapeHTML(sha)}</span>` : ''}
-            ${tags.map(t => `<span class="checkpoint-tag">${this._escapeHTML(t)}</span>`).join('')}
+            ${sha ? `<span class="checkpoint-sha mono">${this._escapeHTML(sha)}</span>` : ""}
+            ${tags.map((t) => `<span class="checkpoint-tag">${this._escapeHTML(t)}</span>`).join("")}
           </div>
           <span class="checkpoint-time">${this._formatRelativeTime(cp.created_at)}</span>
         </div>
         <div class="card-body">
-          <p class="checkpoint-message">${this._escapeHTML(cp.message || 'Checkpoint')}</p>
+          <p class="checkpoint-message">${this._escapeHTML(cp.message || "Checkpoint")}</p>
           <div class="card-meta">
-            ${filesCount > 0 ? `<span class="meta-item">${filesCount} file${filesCount !== 1 ? 's' : ''}</span>` : ''}
-            ${branch ? `<span class="meta-item mono">${this._escapeHTML(branch)}</span>` : ''}
+            ${filesCount > 0 ? `<span class="meta-item">${filesCount} file${filesCount !== 1 ? "s" : ""}</span>` : ""}
+            ${branch ? `<span class="meta-item mono">${this._escapeHTML(branch)}</span>` : ""}
             <span class="meta-item mono">${this._escapeHTML(cp.id)}</span>
           </div>
         </div>
         <div class="card-actions">
-          ${isRollbackTarget ? `
+          ${
+            isRollbackTarget
+              ? `
             <span class="rollback-confirm-text">Rollback to this checkpoint?</span>
             <button class="btn btn-sm btn-danger" data-action="confirm-rollback" data-id="${this._escapeHTML(cp.id)}">Confirm</button>
             <button class="btn btn-sm" data-action="cancel-rollback">Cancel</button>
-          ` : `
+          `
+              : `
             <button class="btn btn-sm" data-action="rollback" data-id="${this._escapeHTML(cp.id)}">Rollback</button>
-          `}
+          `
+          }
         </div>
       </div>
     `;
   }
 
   _escapeHTML(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _attachEventListeners() {
@@ -319,22 +327,22 @@ export class LokiCheckpointViewer extends LokiElement {
     if (!s) return;
 
     // Create button (toggle form)
-    const createBtn = s.getElementById('create-btn');
+    const createBtn = s.getElementById("create-btn");
     if (createBtn) {
-      createBtn.addEventListener('click', () => this._toggleCreateForm());
+      createBtn.addEventListener("click", () => this._toggleCreateForm());
     }
 
     // Submit create
-    const submitBtn = s.getElementById('submit-create-btn');
+    const submitBtn = s.getElementById("submit-create-btn");
     if (submitBtn) {
-      submitBtn.addEventListener('click', () => this._createCheckpoint());
+      submitBtn.addEventListener("click", () => this._createCheckpoint());
     }
 
     // Enter key in message input
-    const msgInput = s.getElementById('checkpoint-message');
+    const msgInput = s.getElementById("checkpoint-message");
     if (msgInput) {
-      msgInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !this._creating) {
+      msgInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !this._creating) {
           e.preventDefault();
           this._createCheckpoint();
         }
@@ -344,14 +352,14 @@ export class LokiCheckpointViewer extends LokiElement {
     }
 
     // Checkpoint card actions
-    s.querySelectorAll('[data-action]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    s.querySelectorAll("[data-action]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         const action = btn.dataset.action;
         const id = btn.dataset.id;
-        if (action === 'rollback') this._confirmRollback(id);
-        else if (action === 'confirm-rollback') this._rollbackCheckpoint(id);
-        else if (action === 'cancel-rollback') this._cancelRollback();
+        if (action === "rollback") this._confirmRollback(id);
+        else if (action === "confirm-rollback") this._rollbackCheckpoint(id);
+        else if (action === "cancel-rollback") this._cancelRollback();
       });
     });
   }
@@ -616,6 +624,6 @@ export class LokiCheckpointViewer extends LokiElement {
 }
 
 // Register the custom element
-if (!customElements.get('loki-checkpoint-viewer')) {
-  customElements.define('loki-checkpoint-viewer', LokiCheckpointViewer);
+if (!customElements.get("loki-checkpoint-viewer")) {
+  customElements.define("loki-checkpoint-viewer", LokiCheckpointViewer);
 }

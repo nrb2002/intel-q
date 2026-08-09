@@ -8,12 +8,12 @@ Loki Mode supports four AI CLI providers with a unified abstraction layer. This 
 
 ## Provider Overview
 
-| Provider | CLI | Status | Features |
-|----------|-----|--------|----------|
-| **Claude Code** | `claude` | Full | Subagents, Parallel, Task Tool, MCP |
-| **OpenAI Codex** | `codex` | Degraded | Sequential, Effort Parameter, MCP (basic) |
-| **Cline CLI** | `cline` | Near-Full (Tier 2) | Subagents, MCP, 12+ providers |
-| **Aider** | `aider` | Degraded | Sequential, 18+ providers |
+| Provider         | CLI      | Status             | Features                                  |
+| ---------------- | -------- | ------------------ | ----------------------------------------- |
+| **Claude Code**  | `claude` | Full               | Subagents, Parallel, Task Tool, MCP       |
+| **OpenAI Codex** | `codex`  | Degraded           | Sequential, Effort Parameter, MCP (basic) |
+| **Cline CLI**    | `cline`  | Near-Full (Tier 2) | Subagents, MCP, 12+ providers             |
+| **Aider**        | `aider`  | Degraded           | Sequential, 18+ providers                 |
 
 ---
 
@@ -35,6 +35,7 @@ providers/
 Each provider config exports these variables:
 
 #### Identity Variables
+
 ```bash
 PROVIDER_NAME="claude"              # Internal identifier
 PROVIDER_DISPLAY_NAME="Claude Code" # Human-readable name
@@ -42,6 +43,7 @@ PROVIDER_CLI="claude"               # CLI binary name
 ```
 
 #### CLI Invocation Variables
+
 ```bash
 PROVIDER_AUTONOMOUS_FLAG="--dangerously-skip-permissions"
 PROVIDER_PROMPT_FLAG="-p"           # Empty for positional prompt
@@ -49,6 +51,7 @@ PROVIDER_PROMPT_POSITIONAL=false    # true if prompt is positional arg
 ```
 
 #### Capability Flags
+
 ```bash
 PROVIDER_HAS_SUBAGENTS=true    # Can spawn Task tool subagents
 PROVIDER_HAS_PARALLEL=true     # Supports parallel execution
@@ -58,6 +61,7 @@ PROVIDER_MAX_PARALLEL=10       # Maximum concurrent agents
 ```
 
 #### Model Configuration
+
 ```bash
 PROVIDER_MODEL_PLANNING="claude-opus-4-7"
 PROVIDER_MODEL_DEVELOPMENT="claude-sonnet-4-6"
@@ -65,6 +69,7 @@ PROVIDER_MODEL_FAST="claude-haiku-4-5-20251001"
 ```
 
 #### Rate Limiting
+
 ```bash
 PROVIDER_RATE_LIMIT_RPM=50      # Requests per minute
 PROVIDER_CONTEXT_WINDOW=1000000 # Max context tokens (Opus 4.7: 1M at standard pricing)
@@ -72,6 +77,7 @@ PROVIDER_MAX_OUTPUT_TOKENS=128000
 ```
 
 #### Degraded Mode
+
 ```bash
 PROVIDER_DEGRADED=false        # true for Codex/Aider
 PROVIDER_DEGRADED_REASONS=()   # Array of limitation descriptions
@@ -83,11 +89,11 @@ PROVIDER_DEGRADED_REASONS=()   # Array of limitation descriptions
 
 Loki Mode uses abstract tiers that map to provider-specific configurations:
 
-| Abstract Tier | Purpose | Claude | Codex |
-|---------------|---------|--------|-------|
-| `planning` | Architecture, PRD analysis | opus | xhigh effort |
-| `development` | Implementation, tests | sonnet | high effort |
-| `fast` | Simple tasks, docs | haiku | low effort |
+| Abstract Tier | Purpose                    | Claude | Codex        |
+| ------------- | -------------------------- | ------ | ------------ |
+| `planning`    | Architecture, PRD analysis | opus   | xhigh effort |
+| `development` | Implementation, tests      | sonnet | high effort  |
+| `fast`        | Simple tasks, docs         | haiku  | low effort   |
 
 ### Tier Selection by RARV Phase
 
@@ -283,12 +289,12 @@ Provider Capability Matrix:
 
 All CLI flags have been verified against actual CLI help output:
 
-| Provider | Flag | Verified Version | Notes |
-|----------|------|------------------|-------|
-| Claude | `--dangerously-skip-permissions` | v2.1.34 | Autonomous mode |
-| Codex | `--full-auto` | v0.98.0 | Recommended; legacy: `exec --dangerously-bypass-approvals-and-sandbox` |
-| Cline | `--auto-approve` | latest | Autonomous mode |
-| Aider | `--yes-always` | latest | Autonomous mode |
+| Provider | Flag                             | Verified Version | Notes                                                                  |
+| -------- | -------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| Claude   | `--dangerously-skip-permissions` | v2.1.34          | Autonomous mode                                                        |
+| Codex    | `--full-auto`                    | v0.98.0          | Recommended; legacy: `exec --dangerously-bypass-approvals-and-sandbox` |
+| Cline    | `--auto-approve`                 | latest           | Autonomous mode                                                        |
+| Aider    | `--yes-always`                   | latest           | Autonomous mode                                                        |
 
 ---
 
@@ -296,15 +302,16 @@ All CLI flags have been verified against actual CLI help output:
 
 The multi-provider system has 180 tests across 5 test suites:
 
-| Test Suite | Tests | Coverage |
-|------------|-------|----------|
-| `test-provider-loader.sh` | 12 | Provider loading, validation |
-| `test-provider-invocation.sh` | 24 | Invoke functions, tier params |
-| `test-provider-degraded-mode.sh` | 19 | Degraded flags, capabilities |
-| `test-cli-provider-flag.sh` | 39 | CLI flag parsing, precedence |
-| `test-rate-limiting.sh` | 27 | Rate limit detection, backoff |
+| Test Suite                       | Tests | Coverage                      |
+| -------------------------------- | ----- | ----------------------------- |
+| `test-provider-loader.sh`        | 12    | Provider loading, validation  |
+| `test-provider-invocation.sh`    | 24    | Invoke functions, tier params |
+| `test-provider-degraded-mode.sh` | 19    | Degraded flags, capabilities  |
+| `test-cli-provider-flag.sh`      | 39    | CLI flag parsing, precedence  |
+| `test-rate-limiting.sh`          | 27    | Rate limit detection, backoff |
 
 Run tests:
+
 ```bash
 for test in tests/test-provider-*.sh tests/test-cli-provider-flag.sh tests/test-rate-limiting.sh; do
     bash "$test"

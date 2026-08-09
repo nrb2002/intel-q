@@ -33,6 +33,7 @@ The Python ecosystem for BIDS centers on **PyBIDS** (`pybids`) for querying and 
 ## When to Use This Skill
 
 Apply this skill when:
+
 - Organizing raw neuroscience data (imaging, electrophysiology, behavioral) into BIDS-compliant directory structures
 - Querying an existing BIDS dataset to find specific files by subject, session, task, run, or modality
 - Validating a dataset against the BIDS specification before sharing or submission
@@ -111,6 +112,7 @@ my_dataset/
 ```
 
 **Key points:**
+
 - Every NIfTI file should have a corresponding `.json` sidecar
 - File names encode entities: `sub-<label>[_ses-<label>][_task-<label>][_acq-<label>][_run-<index>]_<suffix>.<extension>`
 - Entity order in filenames is fixed by the specification
@@ -206,6 +208,7 @@ print(bids_file.get_entities())
 ```
 
 **Key points:**
+
 - `BIDSLayout` indexes the entire dataset on initialization; for large datasets use `database_path` to cache the index
 - Metadata inheritance: a JSON sidecar at a higher level (e.g., root or subject) is inherited by all files below unless overridden
 - Use `return_type="filename"` for paths, `return_type="object"` (default) for `BIDSFile` objects
@@ -266,37 +269,37 @@ The tables below are a convenient summary; when in doubt, consult the schema.
 
 BIDS filenames are built from ordered key-value entity pairs:
 
-| Entity | Key | Example | Required for |
-|--------|-----|---------|--------------|
-| Subject | `sub-` | `sub-01` | All files |
-| Session | `ses-` | `ses-pre` | Multi-session studies |
-| Task | `task-` | `task-rest` | func (bold, cbv, phase), eeg, meg |
-| Acquisition | `acq-` | `acq-highres` | Distinguishing acquisition parameters |
-| Contrast enhancing agent | `ce-` | `ce-gadolinium` | Contrast-enhanced images |
-| Reconstruction | `rec-` | `rec-magnitude` | Reconstruction variants |
-| Direction | `dir-` | `dir-AP` | Fieldmaps, DWI, phase-encoding |
-| Run | `run-` | `run-01` | Multiple identical acquisitions |
-| Echo | `echo-` | `echo-1` | Multi-echo sequences |
-| Part | `part-` | `part-mag` | Magnitude/phase splits |
-| Space | `space-` | `space-MNI152NLin2009cAsym` | Derivatives in template space |
-| Description | `desc-` | `desc-preproc` | Derivatives only |
+| Entity                   | Key      | Example                     | Required for                          |
+| ------------------------ | -------- | --------------------------- | ------------------------------------- |
+| Subject                  | `sub-`   | `sub-01`                    | All files                             |
+| Session                  | `ses-`   | `ses-pre`                   | Multi-session studies                 |
+| Task                     | `task-`  | `task-rest`                 | func (bold, cbv, phase), eeg, meg     |
+| Acquisition              | `acq-`   | `acq-highres`               | Distinguishing acquisition parameters |
+| Contrast enhancing agent | `ce-`    | `ce-gadolinium`             | Contrast-enhanced images              |
+| Reconstruction           | `rec-`   | `rec-magnitude`             | Reconstruction variants               |
+| Direction                | `dir-`   | `dir-AP`                    | Fieldmaps, DWI, phase-encoding        |
+| Run                      | `run-`   | `run-01`                    | Multiple identical acquisitions       |
+| Echo                     | `echo-`  | `echo-1`                    | Multi-echo sequences                  |
+| Part                     | `part-`  | `part-mag`                  | Magnitude/phase splits                |
+| Space                    | `space-` | `space-MNI152NLin2009cAsym` | Derivatives in template space         |
+| Description              | `desc-`  | `desc-preproc`              | Derivatives only                      |
 
 **Entity ordering in filenames** is fixed by the spec (defined in `rules.entities` in `bids_schema.json`). See `references/bids_specification.md` for the complete numbered ordering table. A common subset:
 `sub-<label>[_ses-<label>][_task-<label>][_acq-<label>][_ce-<label>][_rec-<label>][_dir-<label>][_run-<index>][_echo-<index>][_part-<label>][_space-<label>][_desc-<label>]_<suffix>.<extension>`
 
 **Common suffixes by datatype:**
 
-| Datatype | Suffixes |
-|----------|----------|
-| anat | `T1w`, `T2w`, `FLAIR`, `T2star`, `T1map`, `T2map`, `defacemask` |
-| func | `bold`, `cbv`, `sbref`, `events`, `physio`, `stim` |
-| dwi | `dwi`, `sbref` |
-| fmap | `phasediff`, `phase1`, `phase2`, `magnitude1`, `magnitude2`, `fieldmap`, `epi` |
-| perf | `asl`, `m0scan`, `aslcontext` |
-| eeg | `eeg`, `channels`, `electrodes`, `events` |
-| meg | `meg`, `channels`, `coordsystem`, `events` |
-| ieeg | `ieeg`, `channels`, `electrodes`, `coordsystem`, `events` |
-| pet | `pet`, `blood` |
+| Datatype | Suffixes                                                                       |
+| -------- | ------------------------------------------------------------------------------ |
+| anat     | `T1w`, `T2w`, `FLAIR`, `T2star`, `T1map`, `T2map`, `defacemask`                |
+| func     | `bold`, `cbv`, `sbref`, `events`, `physio`, `stim`                             |
+| dwi      | `dwi`, `sbref`                                                                 |
+| fmap     | `phasediff`, `phase1`, `phase2`, `magnitude1`, `magnitude2`, `fieldmap`, `epi` |
+| perf     | `asl`, `m0scan`, `aslcontext`                                                  |
+| eeg      | `eeg`, `channels`, `electrodes`, `events`                                      |
+| meg      | `meg`, `channels`, `coordsystem`, `events`                                     |
+| ieeg     | `ieeg`, `channels`, `electrodes`, `coordsystem`, `events`                      |
+| pet      | `pet`, `blood`                                                                 |
 
 ### 6. DICOM to BIDS Conversion
 
@@ -314,6 +317,7 @@ heudiconv --files dicom/001 -o /path/to/bids -f reproin --bids --minmeta
 ```
 
 ReproIn protocol names encode BIDS entities directly:
+
 - `anat-T1w` → `sub-XX/anat/sub-XX_T1w.nii.gz`
 - `func-bold_task-rest` → `sub-XX/func/sub-XX_task-rest_bold.nii.gz`
 - `dwi_dir-AP` → `sub-XX/dwi/sub-XX_dir-AP_dwi.nii.gz`
@@ -346,6 +350,7 @@ heudiconv --files dicom/219/itbs/*/*.dcm -s 219 -ss itbs \
 See `references/conversion_tools.md` for complete heuristic file examples.
 
 **Key points:**
+
 - HeuDiConv wraps `dcm2niix` for the actual DICOM-to-NIfTI conversion
 - **`--minmeta`**: always use this flag to prevent excess DICOM metadata from overflowing JSON sidecars (can crash fMRIPrep/MRIQC)
 - **Duplicate handling**: use `{item:03d}` in templates for auto-numbering when the same protocol is run multiple times; without it, later runs overwrite earlier ones
@@ -372,6 +377,7 @@ See `references/conversion_tools.md` for detailed configuration examples.
 Every BIDS data file should have a JSON sidecar with acquisition parameters. Metadata fields follow the inheritance principle: a sidecar at a higher directory level applies to all matching files below.
 
 **Inheritance example:**
+
 ```
 my_dataset/
   task-rest_bold.json           # Applies to ALL rest BOLD files
@@ -383,42 +389,46 @@ my_dataset/
 **Critical metadata fields by modality:**
 
 For **func (BOLD)**:
+
 ```json
 {
-    "RepetitionTime": 2.0,
-    "TaskName": "rest",
-    "PhaseEncodingDirection": "j-",
-    "TotalReadoutTime": 0.05,
-    "SliceTiming": [0, 0.5, 1.0, 1.5],
-    "EffectiveEchoSpacing": 0.00058,
-    "EchoTime": 0.03
+  "RepetitionTime": 2.0,
+  "TaskName": "rest",
+  "PhaseEncodingDirection": "j-",
+  "TotalReadoutTime": 0.05,
+  "SliceTiming": [0, 0.5, 1.0, 1.5],
+  "EffectiveEchoSpacing": 0.00058,
+  "EchoTime": 0.03
 }
 ```
 
 For **anat**:
+
 ```json
 {
-    "MagneticFieldStrength": 3,
-    "Manufacturer": "Siemens",
-    "ManufacturersModelName": "Prisma",
-    "RepetitionTime": 2.3,
-    "EchoTime": 0.00293,
-    "FlipAngle": 8
+  "MagneticFieldStrength": 3,
+  "Manufacturer": "Siemens",
+  "ManufacturersModelName": "Prisma",
+  "RepetitionTime": 2.3,
+  "EchoTime": 0.00293,
+  "FlipAngle": 8
 }
 ```
 
 For **DWI**:
+
 ```json
 {
-    "PhaseEncodingDirection": "j-",
-    "TotalReadoutTime": 0.05,
-    "EchoTime": 0.089,
-    "RepetitionTime": 3.4,
-    "MultipartID": "dwi_1"
+  "PhaseEncodingDirection": "j-",
+  "TotalReadoutTime": 0.05,
+  "EchoTime": 0.089,
+  "RepetitionTime": 3.4,
+  "MultipartID": "dwi_1"
 }
 ```
 
 **Key points:**
+
 - `dcm2niix` auto-generates most sidecar fields from DICOM headers
 - `RepetitionTime` and `TaskName` are required for BOLD
 - `SliceTiming` is essential for slice-timing correction in fMRI preprocessing
@@ -438,10 +448,12 @@ onset	duration	trial_type	response_time
 ```
 
 **Required columns:**
+
 - `onset` - onset time in seconds relative to the start of the acquisition
 - `duration` - duration in seconds (use `n/a` for instantaneous events)
 
 **Recommended columns:**
+
 - `trial_type` - categorical label for condition
 - `response_time` - RT in seconds
 - Custom columns as needed (with descriptions in corresponding `.json` sidecar)
@@ -459,32 +471,32 @@ The `participants.json` sidecar describes columns:
 
 ```json
 {
-    "age": {
-        "Description": "Age of the participant at time of scanning",
-        "Units": "years"
-    },
-    "sex": {
-        "Description": "Biological sex",
-        "Levels": {
-            "M": "male",
-            "F": "female"
-        }
-    },
-    "group": {
-        "Description": "Experimental group",
-        "Levels": {
-            "control": "Healthy control",
-            "patient": "Patient group"
-        }
-    },
-    "handedness": {
-        "Description": "Dominant hand",
-        "Levels": {
-            "right": "Right-handed",
-            "left": "Left-handed",
-            "ambidextrous": "Ambidextrous"
-        }
+  "age": {
+    "Description": "Age of the participant at time of scanning",
+    "Units": "years"
+  },
+  "sex": {
+    "Description": "Biological sex",
+    "Levels": {
+      "M": "male",
+      "F": "female"
     }
+  },
+  "group": {
+    "Description": "Experimental group",
+    "Levels": {
+      "control": "Healthy control",
+      "patient": "Patient group"
+    }
+  },
+  "handedness": {
+    "Description": "Dominant hand",
+    "Levels": {
+      "right": "Right-handed",
+      "left": "Left-handed",
+      "ambidextrous": "Ambidextrous"
+    }
+  }
 }
 ```
 
@@ -516,6 +528,7 @@ my_dataset/
 ```
 
 **Derivative conventions:**
+
 - `space-<label>` - template/reference space (e.g., `MNI152NLin2009cAsym`, `T1w`)
 - `desc-<label>` - description of processing (e.g., `preproc`, `brain`, `smoothed`)
 - `res-<label>` - resolution (e.g., `2` for 2mm isotropic)
@@ -603,6 +616,7 @@ docker run pennbbl/qsiprep /data /out participant \
 ```
 
 **BIDS-App interface convention:**
+
 ```
 bids-app input_dataset output_dir {participant|group} [options]
 ```
@@ -625,37 +639,46 @@ Update schema and BEPs with: `python scripts/update_schema.py`
 ## Common Issues and Solutions
 
 ### 1. Validator reports "Not a BIDS dataset"
+
 **Cause**: Missing `dataset_description.json` at the root.
 **Fix**: Create the file with at minimum `{"Name": "...", "BIDSVersion": "1.10.0"}`.
 
 ### 2. Inconsistent subjects warning
+
 **Cause**: Not all subjects have the same set of files (some missing sessions, runs, etc.).
 **Fix**: This is a warning, not an error. Use `--ignoreSubjectConsistency` if intentional. Document missing data in `participants.tsv` or a `scans.tsv`.
 
 ### 3. Missing SliceTiming
+
 **Cause**: `dcm2niix` couldn't extract slice timing from DICOM headers.
 **Fix**: Determine slice order from the scan protocol and add manually to the JSON sidecar. Common patterns: ascending, descending, interleaved (odd-first or even-first).
 
 ### 4. Phase encoding direction confusion
+
 **Cause**: Axis labels (i/j/k vs x/y/z vs LR/AP/SI) are confusing.
 **Fix**: In BIDS, use NIfTI image axes: `i`=first axis, `j`=second, `k`=third. `-` means negative direction. For standard axial acquisitions: `j` is typically anterior-posterior. Verify with the acquisition protocol.
 
 ### 5. PyBIDS is slow on large datasets
+
 **Cause**: Full filesystem indexing on every `BIDSLayout()` call.
 **Fix**: Use `database_path` to cache the index to an SQLite file:
+
 ```python
 layout = BIDSLayout("/data", database_path="/data/.pybids_cache.db")
 ```
 
 ### 6. Derivatives not found by PyBIDS
+
 **Cause**: Derivatives directory missing its own `dataset_description.json`.
 **Fix**: Every derivatives directory must have `dataset_description.json` with `"DatasetType": "derivative"`.
 
 ### 7. Events file timing is off
+
 **Cause**: `onset` times are relative to the wrong reference (e.g., trigger time vs first volume).
 **Fix**: Onsets must be in seconds relative to the first volume of that run's acquisition. Account for dummy scans if they were discarded.
 
 ### 8. TSV files fail validation
+
 **Cause**: Encoding or delimiter issues (spaces instead of tabs, BOM characters, Windows line endings).
 **Fix**: Ensure tab-separated values with UTF-8 encoding and Unix line endings (`\n`). Use `n/a` (not `NA`, `NaN`, or empty) for missing values.
 
@@ -672,6 +695,7 @@ layout = BIDSLayout("/data", database_path="/data/.pybids_cache.db")
 5. **Document your dataset** - Write a thorough `README` describing the study design, acquisition parameters, known issues, and any deviations from BIDS.
 
 6. **Use scans.tsv for run-level metadata** - Record per-run acquisition times and quality notes:
+
    ```
    filename	acq_time	quality
    func/sub-01_task-rest_bold.nii.gz	2025-01-15T10:30:00	good
@@ -693,56 +717,57 @@ BEPs are community-driven proposals to extend BIDS to new modalities, derivative
 
 **Current BEPs** (as of schema update):
 
-| BEP | Title | Content | Status |
-|-----|-------|---------|--------|
-| 004 | Susceptibility Weighted Imaging | raw | Seeking new leader |
-| 011 | Structural preprocessing derivatives | derivative | Has PR (#518) |
-| 012 | Functional preprocessing derivatives | derivative | Has PR (#519), schema implemented |
-| 014 | Affine transforms and nonlinear field warps | derivative | X5 format development |
-| 016 | Diffusion weighted imaging derivatives | derivative | Has PR (#2211) |
-| 017 | Generic BIDS connectivity data schema | derivative | In development |
-| 021 | Common Electrophysiological Derivatives | derivative | In development |
-| 023 | PET Preprocessing derivatives | derivative | In development |
-| 024 | Computed Tomography scan | raw | Seeking contributors |
-| 026 | Microelectrode Recordings | raw | Seeking new leader |
-| 028 | Provenance | metadata | Has PR (#2099) |
-| 032 | Microelectrode electrophysiology | raw | Has PR (#2307), preview available — covers Neuropixels and other extracellular probes; relates to neuropixels-analysis skill |
-| 033 | Advanced Diffusion Weighted Imaging | raw | Seeking contributors |
-| 034 | Computational modeling | derivative | Has PR (#967) |
-| 035 | Mega-analyses with non-compliant derivatives | derivative | In development |
-| 036 | Phenotypic Data Guidelines | raw | Community review |
-| 037 | Non-Invasive Brain Stimulation | raw | In development |
-| 039 | Dimensionality reduction-based networks | raw | In development |
-| 040 | Functional Ultrasound | raw | In development |
-| 041 | Statistical Model Derivatives | derivative | Collecting feedback |
-| 043 | BIDS Term Mapping | metadata | Collecting feedback |
-| 044 | Stimuli | raw | Has PR (#2022), community review |
-| 045 | Peripheral Physiological Recordings | raw | Has PR (#2267) |
-| 046 | Diffusion Tractography | derivative | In development |
-| 047 | Audio/video recordings for behavioral experiments | raw | Has PR (#2231) |
+| BEP | Title                                             | Content    | Status                                                                                                                       |
+| --- | ------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 004 | Susceptibility Weighted Imaging                   | raw        | Seeking new leader                                                                                                           |
+| 011 | Structural preprocessing derivatives              | derivative | Has PR (#518)                                                                                                                |
+| 012 | Functional preprocessing derivatives              | derivative | Has PR (#519), schema implemented                                                                                            |
+| 014 | Affine transforms and nonlinear field warps       | derivative | X5 format development                                                                                                        |
+| 016 | Diffusion weighted imaging derivatives            | derivative | Has PR (#2211)                                                                                                               |
+| 017 | Generic BIDS connectivity data schema             | derivative | In development                                                                                                               |
+| 021 | Common Electrophysiological Derivatives           | derivative | In development                                                                                                               |
+| 023 | PET Preprocessing derivatives                     | derivative | In development                                                                                                               |
+| 024 | Computed Tomography scan                          | raw        | Seeking contributors                                                                                                         |
+| 026 | Microelectrode Recordings                         | raw        | Seeking new leader                                                                                                           |
+| 028 | Provenance                                        | metadata   | Has PR (#2099)                                                                                                               |
+| 032 | Microelectrode electrophysiology                  | raw        | Has PR (#2307), preview available — covers Neuropixels and other extracellular probes; relates to neuropixels-analysis skill |
+| 033 | Advanced Diffusion Weighted Imaging               | raw        | Seeking contributors                                                                                                         |
+| 034 | Computational modeling                            | derivative | Has PR (#967)                                                                                                                |
+| 035 | Mega-analyses with non-compliant derivatives      | derivative | In development                                                                                                               |
+| 036 | Phenotypic Data Guidelines                        | raw        | Community review                                                                                                             |
+| 037 | Non-Invasive Brain Stimulation                    | raw        | In development                                                                                                               |
+| 039 | Dimensionality reduction-based networks           | raw        | In development                                                                                                               |
+| 040 | Functional Ultrasound                             | raw        | In development                                                                                                               |
+| 041 | Statistical Model Derivatives                     | derivative | Collecting feedback                                                                                                          |
+| 043 | BIDS Term Mapping                                 | metadata   | Collecting feedback                                                                                                          |
+| 044 | Stimuli                                           | raw        | Has PR (#2022), community review                                                                                             |
+| 045 | Peripheral Physiological Recordings               | raw        | Has PR (#2267)                                                                                                               |
+| 046 | Diffusion Tractography                            | derivative | In development                                                                                                               |
+| 047 | Audio/video recordings for behavioral experiments | raw        | Has PR (#2231)                                                                                                               |
 
 **Related standards:**
+
 - **BIDS-Stats Models**: JSON specification for defining GLM-based neuroimaging analyses
 - **BIDS-Derivatives** (BEP003): Standard for preprocessed/analysis outputs (partially merged into spec)
 
 ## Related Tools Ecosystem
 
-| Tool | Purpose |
-|------|---------|
-| **fMRIPrep** | fMRI preprocessing (produces BIDS derivatives) |
-| **MRIQC** | MRI quality control (produces BIDS derivatives) |
-| **QSIPrep** | Diffusion MRI preprocessing |
-| **TemplateFlow** | Neuroimaging templates and atlases with BIDS-like naming |
-| **Fitlins** | BIDS Stats Models implementation |
-| **DataLad** | Version control for large datasets, integrates with BIDS |
-| **OpenNeuro** | Free BIDS dataset repository |
-| **DANDI** | Neurophysiology data archive (uses BIDS for some modalities) |
-| **HeuDiConv** | DICOM-to-BIDS with heuristic Python files |
-| **dcm2bids** | DICOM-to-BIDS with JSON config |
-| **BIDScoin** | DICOM-to-BIDS with GUI and YAML config |
-| **nwb2bids** | Convert NWB (Neurodata Without Borders) files to BIDS |
-| **CuBIDS** | BIDS dataset curation and harmonization |
-| **bids2table** | Efficient tabular indexing of BIDS datasets |
+| Tool              | Purpose                                                               |
+| ----------------- | --------------------------------------------------------------------- |
+| **fMRIPrep**      | fMRI preprocessing (produces BIDS derivatives)                        |
+| **MRIQC**         | MRI quality control (produces BIDS derivatives)                       |
+| **QSIPrep**       | Diffusion MRI preprocessing                                           |
+| **TemplateFlow**  | Neuroimaging templates and atlases with BIDS-like naming              |
+| **Fitlins**       | BIDS Stats Models implementation                                      |
+| **DataLad**       | Version control for large datasets, integrates with BIDS              |
+| **OpenNeuro**     | Free BIDS dataset repository                                          |
+| **DANDI**         | Neurophysiology data archive (uses BIDS for some modalities)          |
+| **HeuDiConv**     | DICOM-to-BIDS with heuristic Python files                             |
+| **dcm2bids**      | DICOM-to-BIDS with JSON config                                        |
+| **BIDScoin**      | DICOM-to-BIDS with GUI and YAML config                                |
+| **nwb2bids**      | Convert NWB (Neurodata Without Borders) files to BIDS                 |
+| **CuBIDS**        | BIDS dataset curation and harmonization                               |
+| **bids2table**    | Efficient tabular indexing of BIDS datasets                           |
 | **bids-examples** | Canonical collection of prototypical BIDS datasets for all modalities |
 
 ## Documentation

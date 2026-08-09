@@ -1,9 +1,11 @@
 # PRD: Discord Moderation Bot
 
 ## Overview
+
 A Discord bot called "Sentinel" that provides server moderation, role management, welcome messages, and utility commands via slash commands. Designed for medium-to-large Discord communities.
 
 ## Target Users
+
 - Discord server administrators and moderators
 - Community managers running gaming, developer, or hobby servers
 - Server owners who want automated moderation
@@ -11,6 +13,7 @@ A Discord bot called "Sentinel" that provides server moderation, role management
 ## Features
 
 ### MVP Features
+
 1. **Slash Commands** - All interactions via Discord slash commands (no prefix commands)
 2. **Moderation** - Warn, mute, kick, ban with reason logging and duration support
 3. **Auto-Moderation** - Spam detection, link filtering, banned word list
@@ -20,6 +23,7 @@ A Discord bot called "Sentinel" that provides server moderation, role management
 7. **Server Stats** - Member count, message activity, moderation action summary
 
 ### Command List
+
 ```
 Moderation:
   /warn <user> <reason>              - Issue a warning
@@ -56,6 +60,7 @@ Utility:
 ```
 
 ### User Flow
+
 1. Admin invites bot to server with required permissions
 2. Bot registers slash commands on join
 3. Admin runs `/welcome channel #welcome` to configure welcome
@@ -69,12 +74,14 @@ Utility:
 The bot requires the following environment variables, loaded via `dotenv` from a `.env` file:
 
 ### Required
+
 ```bash
 DISCORD_TOKEN=           # Bot token from Discord Developer Portal
 DISCORD_CLIENT_ID=       # Application ID for slash command registration
 ```
 
 ### Optional
+
 ```bash
 DISCORD_GUILD_ID=        # Development guild ID (for fast command registration during dev)
 LOG_CHANNEL_ID=          # Default audit log channel (can be overridden per guild via /config)
@@ -83,6 +90,7 @@ DATABASE_PATH=./data/sentinel.db  # SQLite database file path (default: ./data/s
 ```
 
 ### .env.example
+
 ```bash
 # Discord Bot Configuration
 # Get these from https://discord.com/developers/applications
@@ -100,9 +108,11 @@ DISCORD_CLIENT_ID=your-client-id-here
 ```
 
 ### Startup Validation
+
 The bot MUST validate required environment variables on startup and exit with a clear error message if any are missing:
+
 ```typescript
-const requiredEnvVars = ['DISCORD_TOKEN', 'DISCORD_CLIENT_ID'];
+const requiredEnvVars = ["DISCORD_TOKEN", "DISCORD_CLIENT_ID"];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     console.error(`Missing required environment variable: ${envVar}`);
@@ -112,6 +122,7 @@ for (const envVar of requiredEnvVars) {
 ```
 
 ## Tech Stack
+
 - Runtime: Node.js 18+
 - Library: discord.js v14
 - Database: SQLite via better-sqlite3 (per-guild data)
@@ -120,6 +131,7 @@ for (const envVar of requiredEnvVars) {
 - Environment: dotenv for token and config
 
 ### Structure
+
 ```
 /
 ├── src/
@@ -236,6 +248,7 @@ CREATE TABLE temp_roles (
 ```
 
 ## Requirements
+
 - TypeScript throughout
 - All commands use Discord slash command system (no message prefix)
 - Permission checks: mod commands require MODERATE_MEMBERS, admin commands require ADMINISTRATOR
@@ -247,12 +260,14 @@ CREATE TABLE temp_roles (
 - Welcome message templates support: {user}, {server}, {memberCount} placeholders
 
 ## Testing
+
 - Unit tests: Duration parsing, permission checks, auto-mod detection logic (Vitest)
 - Integration tests: Database queries, case creation, config management
 - Mock tests: Mock discord.js Client and interactions for command testing
 - Manual testing: Requires a test Discord server and bot token
 
 ## Out of Scope
+
 - Music playback
 - Leveling / XP system
 - Ticket system
@@ -262,6 +277,7 @@ CREATE TABLE temp_roles (
 - Deployment (Docker, hosting)
 
 ## Success Criteria
+
 - Bot connects and registers all slash commands
 - All moderation commands create cases and log to audit channel
 - Auto-mod detects spam (repeated messages) and filters banned words

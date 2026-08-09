@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-var { LinearClient, LinearApiError, RateLimitError, LINEAR_API_URL } = require('./client');
-var { LinearSync, PRIORITY_MAP, VALID_RARV_STATUSES } = require('./sync');
-var { loadConfig, validateConfig, parseSimpleYaml, DEFAULT_STATUS_MAPPING } = require('./config');
+var { LinearClient, LinearApiError, RateLimitError, LINEAR_API_URL } = require("./client");
+var { LinearSync, PRIORITY_MAP, VALID_RARV_STATUSES } = require("./sync");
+var { loadConfig, validateConfig, parseSimpleYaml, DEFAULT_STATUS_MAPPING } = require("./config");
 
 /**
  * Create a configured Linear sync manager.

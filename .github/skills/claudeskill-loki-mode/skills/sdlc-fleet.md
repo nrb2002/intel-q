@@ -96,6 +96,7 @@ loki <new-command> ...  # the change we just shipped
 ```
 
 Capture:
+
 - Exit codes
 - Output structure
 - Any unexpected errors / warnings

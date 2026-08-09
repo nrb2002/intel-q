@@ -17,12 +17,12 @@ loki notify slack "Build complete"
 
 ## Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `LOKI_SLACK_WEBHOOK` | Slack incoming webhook URL | `https://hooks.slack.com/services/...` |
-| `LOKI_DISCORD_WEBHOOK` | Discord webhook URL | `https://discord.com/api/webhooks/...` |
-| `LOKI_WEBHOOK_URL` | Custom webhook URL (POST JSON) | `https://your-server.com/loki-webhook` |
-| `LOKI_NOTIFY_CHANNELS` | Channels to use (comma-separated) | `slack,discord` or `all` |
+| Variable               | Description                       | Example                                |
+| ---------------------- | --------------------------------- | -------------------------------------- |
+| `LOKI_SLACK_WEBHOOK`   | Slack incoming webhook URL        | `https://hooks.slack.com/services/...` |
+| `LOKI_DISCORD_WEBHOOK` | Discord webhook URL               | `https://discord.com/api/webhooks/...` |
+| `LOKI_WEBHOOK_URL`     | Custom webhook URL (POST JSON)    | `https://your-server.com/loki-webhook` |
+| `LOKI_NOTIFY_CHANNELS` | Channels to use (comma-separated) | `slack,discord` or `all`               |
 
 ## Integration Points in run.sh
 
@@ -221,7 +221,7 @@ notifications:
   slack_webhook: YOUR_SLACK_WEBHOOK_URL_HERE
   discord_webhook: https://discord.com/api/webhooks/123456789012345678/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   webhook_url: https://your-server.com/loki-webhook
-  channels: all  # or: slack,discord,webhook
+  channels: all # or: slack,discord,webhook
 ```
 
 ## Webhook Payload Format

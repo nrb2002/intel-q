@@ -7,21 +7,21 @@ workflow skills are loaded automatically by VS Code Copilot.
 
 Select these in the agent picker (@ menu) or let auto-dispatch choose:
 
-| Agent | When It Activates | Tool Access |
-|-------|-------------------|-------------|
-| @godmode | Complex multi-step builds, end-to-end implementation | Full (read, edit, execute, search, web, agents) |
-| @council | Tough decisions, multiple perspectives needed | Read-only + agents |
-| @oracle | "What if" scenarios, contingency planning | Read-only + web |
-| @sceptic | Adversarial review, devil's advocate | Read-only (cannot edit) |
-| @debug | Bugs, test failures, unexpected behavior | Full |
-| @tdd | Feature or bugfix implementation | Full |
-| @review | Code review, security audit, PR review | Read-only + search |
-| @brainstorm | Creative design before implementation | Read + edit (docs only) |
-| @checkpoint | Long tasks needing periodic review | Full |
-| @verify | Before claiming work is complete | Execute + read |
-| @unstuck | Stuck, unsure which technique to use | Read-only + agents |
-| @parallel | 2+ independent tasks | Full + agents |
-| @defense | Multi-layer data validation | Full |
+| Agent       | When It Activates                                    | Tool Access                                     |
+| ----------- | ---------------------------------------------------- | ----------------------------------------------- |
+| @godmode    | Complex multi-step builds, end-to-end implementation | Full (read, edit, execute, search, web, agents) |
+| @council    | Tough decisions, multiple perspectives needed        | Read-only + agents                              |
+| @oracle     | "What if" scenarios, contingency planning            | Read-only + web                                 |
+| @sceptic    | Adversarial review, devil's advocate                 | Read-only (cannot edit)                         |
+| @debug      | Bugs, test failures, unexpected behavior             | Full                                            |
+| @tdd        | Feature or bugfix implementation                     | Full                                            |
+| @review     | Code review, security audit, PR review               | Read-only + search                              |
+| @brainstorm | Creative design before implementation                | Read + edit (docs only)                         |
+| @checkpoint | Long tasks needing periodic review                   | Full                                            |
+| @verify     | Before claiming work is complete                     | Execute + read                                  |
+| @unstuck    | Stuck, unsure which technique to use                 | Read-only + agents                              |
+| @parallel   | 2+ independent tasks                                 | Full + agents                                   |
+| @defense    | Multi-layer data validation                          | Full                                            |
 
 ## Auto-Dispatch Rules
 
@@ -46,14 +46,14 @@ When no agent is explicitly selected, apply these rules:
 
 Instructions in `.github/instructions/` load automatically:
 
-| Weight | Scope | Loaded When |
-|--------|-------|-------------|
-| security | All files | Always — safety classifiers, refusal logic |
-| compliance | All files | Always — copyright, data handling, evenhandedness |
-| engineering | Code files | When editing `*.ts,js,py,rs,go,java,c,cpp` |
-| reasoning | On-demand | When agent needs search/tool decisions |
-| persona | All files | Always — tone, formatting, user wellbeing |
-| identity | On-demand | When asked about model capabilities |
+| Weight      | Scope      | Loaded When                                       |
+| ----------- | ---------- | ------------------------------------------------- |
+| security    | All files  | Always — safety classifiers, refusal logic        |
+| compliance  | All files  | Always — copyright, data handling, evenhandedness |
+| engineering | Code files | When editing `*.ts,js,py,rs,go,java,c,cpp`        |
+| reasoning   | On-demand  | When agent needs search/tool decisions            |
+| persona     | All files  | Always — tone, formatting, user wellbeing         |
+| identity    | On-demand  | When asked about model capabilities               |
 
 ## Available Skills
 
@@ -72,6 +72,7 @@ security, bioinformatics, data science, ML/AI, scientific computing, and more.
 ## Success Criteria
 
 A task is complete when:
+
 - All requested changes are implemented
 - Tests pass (fresh run, not cached)
 - Build succeeds

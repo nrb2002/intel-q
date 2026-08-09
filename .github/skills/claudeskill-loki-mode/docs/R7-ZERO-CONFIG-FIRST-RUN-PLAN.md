@@ -44,6 +44,7 @@ the full RARV-C depth.
 ### The exact gap R7 closes (traced, not assumed)
 
 `loki start "build a todo app"` TODAY:
+
 1. `detect_arg_type("build a todo app")` returns `unknown` (has spaces, no
    extension, not a file, not an issue ref).
 2. The PRD-not-found guard at `autonomy/loki:1243` and `:1268` only fires for
@@ -82,10 +83,10 @@ behavior.
      (NO council verdicts, because the council was disabled).
    - `repo`: full-depth codebase analysis, council on; proof has
      diffs/cost/time/council verdicts.
-   Both point at `loki proof list` / `loki proof open` (the visible artifact)
-   and the depth opt-in. Gated so it is silent in CI / pipes and never fires
-   for normal PRD runs. Factored into `print_ttfv_next_steps` so it is
-   unit-testable.
+     Both point at `loki proof list` / `loki proof open` (the visible artifact)
+     and the depth opt-in. Gated so it is silent in CI / pipes and never fires
+     for normal PRD runs. Factored into `print_ttfv_next_steps` so it is
+     unit-testable.
 
 Honesty note: the `brief` message intentionally does NOT advertise "council
 verdicts" because brief mode runs with the council off (`_collect_council` in

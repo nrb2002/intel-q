@@ -8,6 +8,7 @@ without breaking the v7.18.2 zero-egress posture. Design only.
 All claims read from source.
 
 **Generator** `autonomy/lib/proof-generator.py` (689 lines)
+
 - `_build_proof` (line 366) assembles the frozen schema v1.0 dict. `deployment`
   set at line 401: `{"deployed_url": deployed_url, "public_url": None}`.
   `public_url` is ALWAYS `None` at generate time. This is the publish-time
@@ -25,6 +26,7 @@ All claims read from source.
   caps AFTER redaction (line 619), then hashes and writes proof.json + index.html.
 
 **Template** `autonomy/lib/proof-template.html` (803 lines)
+
 - Self-contained / zero-egress by contract (header comment lines 1-40). Social
   meta lines 46-55: og:title, og:description, twitter:card=summary,
   twitter:description. Line 46: "No og:image (would break self-containment)" -
@@ -38,6 +40,7 @@ All claims read from source.
 - Template reads `deployment.public_url` at line 466 (`renderTier1`).
 
 **CLI** `autonomy/loki`
+
 - `cmd_proof` (line 26277): list/show/open/share. `share` (26393) gates
   `--hosted` to `_loki_hosted_publish_proof` (26113, posts redacted bytes to
   `LOKI_HOSTED_ENDPOINT`, honest "no backend yet" otherwise), else uploads
@@ -101,6 +104,7 @@ generate path stays byte-for-byte zero network calls.
 
 **Slice A - Template: branded card + JS-click share buttons**
 (`autonomy/lib/proof-template.html` only)
+
 - Style the hero (261-265) into a branded card: what was built (files_changed +
   spec source), verified (council verdict/ratio + gates), cost (cost.usd),
   duration (wall_clock_sec), plus Loki/Autonomi branding. Inline CSS / inline SVG.
@@ -120,6 +124,7 @@ generate path stays byte-for-byte zero network calls.
 
 **Slice B - Generator: hook plumbing + public_url passthrough**
 (`autonomy/lib/proof-generator.py` only)
+
 - Add `LOKI_PROOF_SHARE_BUTTONS` (default ON; justified below) conditionally
   including the share-row markers. Reuse `_build_social_hook`.
 - public_url stays None at generate. Optional `LOKI_PROOF_PUBLIC_URL` env, when
@@ -128,6 +133,7 @@ generate path stays byte-for-byte zero network calls.
 
 **Slice C - CLI: publish-time re-render + og:image/public_url injection**
 (`autonomy/loki` only; OWNS the re-render)
+
 - Hosted path (`_loki_hosted_publish_proof`, 26113): after the host returns a
   public URL, re-render with deployment.public_url set + og:image set to the
   host-minted card URL, then upload. Re-render reuses the generator (env var) so

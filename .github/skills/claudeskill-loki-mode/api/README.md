@@ -21,6 +21,7 @@ loki serve --port 9000 --host 0.0.0.0
 - **Loki Mode** installed and configured
 
 Install Deno:
+
 ```bash
 curl -fsSL https://deno.land/install.sh | sh
 # or
@@ -31,13 +32,13 @@ brew install deno
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_DASHBOARD_PORT` | `57374` | Server port |
-| `LOKI_API_HOST` | `localhost` | Server host |
-| `LOKI_API_TOKEN` | none | API token for remote access |
-| `LOKI_DIR` | auto | Loki installation directory |
-| `LOKI_DEBUG` | false | Enable debug output |
+| Variable              | Default     | Description                 |
+| --------------------- | ----------- | --------------------------- |
+| `LOKI_DASHBOARD_PORT` | `57374`     | Server port                 |
+| `LOKI_API_HOST`       | `localhost` | Server host                 |
+| `LOKI_API_TOKEN`      | none        | API token for remote access |
+| `LOKI_DIR`            | auto        | Loki installation directory |
+| `LOKI_DEBUG`          | false       | Enable debug output         |
 
 ### Command Line Options
 
@@ -54,6 +55,7 @@ brew install deno
 By default, the API only accepts requests from localhost without authentication.
 
 For remote access:
+
 ```bash
 # Generate a token
 export LOKI_API_TOKEN=$(loki serve --generate-token)
@@ -69,44 +71,45 @@ curl -H "Authorization: Bearer $LOKI_API_TOKEN" http://server:57374/health
 
 ### Health
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/health` | Health check |
-| GET | `/health/ready` | Readiness probe |
-| GET | `/health/live` | Liveness probe |
-| GET | `/api/status` | Detailed status |
+| Method | Path            | Description     |
+| ------ | --------------- | --------------- |
+| GET    | `/health`       | Health check    |
+| GET    | `/health/ready` | Readiness probe |
+| GET    | `/health/live`  | Liveness probe  |
+| GET    | `/api/status`   | Detailed status |
 
 ### Sessions
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/api/sessions` | Start new session |
-| GET | `/api/sessions` | List all sessions |
-| GET | `/api/sessions/:id` | Get session details |
-| POST | `/api/sessions/:id/stop` | Stop session |
-| POST | `/api/sessions/:id/input` | Inject human input |
-| DELETE | `/api/sessions/:id` | Delete session record |
+| Method | Path                      | Description           |
+| ------ | ------------------------- | --------------------- |
+| POST   | `/api/sessions`           | Start new session     |
+| GET    | `/api/sessions`           | List all sessions     |
+| GET    | `/api/sessions/:id`       | Get session details   |
+| POST   | `/api/sessions/:id/stop`  | Stop session          |
+| POST   | `/api/sessions/:id/input` | Inject human input    |
+| DELETE | `/api/sessions/:id`       | Delete session record |
 
 ### Tasks
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/sessions/:id/tasks` | List session tasks |
-| GET | `/api/tasks` | List all tasks |
-| GET | `/api/tasks/active` | Get running tasks |
-| GET | `/api/tasks/queue` | Get queued tasks |
+| Method | Path                      | Description        |
+| ------ | ------------------------- | ------------------ |
+| GET    | `/api/sessions/:id/tasks` | List session tasks |
+| GET    | `/api/tasks`              | List all tasks     |
+| GET    | `/api/tasks/active`       | Get running tasks  |
+| GET    | `/api/tasks/queue`        | Get queued tasks   |
 
 ### Events (SSE)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/events` | SSE event stream |
-| GET | `/api/events/history` | Get event history |
-| GET | `/api/events/stats` | Event statistics |
+| Method | Path                  | Description       |
+| ------ | --------------------- | ----------------- |
+| GET    | `/api/events`         | SSE event stream  |
+| GET    | `/api/events/history` | Get event history |
+| GET    | `/api/events/stats`   | Event statistics  |
 
 ## SSE Event Types
 
 ### Session Events
+
 - `session:started` - Session started
 - `session:paused` - Session paused
 - `session:resumed` - Session resumed
@@ -115,11 +118,13 @@ curl -H "Authorization: Bearer $LOKI_API_TOKEN" http://server:57374/health
 - `session:failed` - Session failed
 
 ### Phase Events
+
 - `phase:started` - Phase started
 - `phase:completed` - Phase completed
 - `phase:failed` - Phase failed
 
 ### Task Events
+
 - `task:created` - Task created
 - `task:started` - Task started
 - `task:progress` - Task progress update
@@ -127,18 +132,21 @@ curl -H "Authorization: Bearer $LOKI_API_TOKEN" http://server:57374/health
 - `task:failed` - Task failed
 
 ### Agent Events
+
 - `agent:spawned` - Agent spawned
 - `agent:output` - Agent output
 - `agent:completed` - Agent completed
 - `agent:failed` - Agent failed
 
 ### Log Events
+
 - `log:debug` - Debug log
 - `log:info` - Info log
 - `log:warn` - Warning log
 - `log:error` - Error log
 
 ### Other Events
+
 - `metrics:update` - Metrics update
 - `input:requested` - Human input requested
 - `heartbeat` - Keep-alive heartbeat
@@ -156,34 +164,34 @@ curl -X POST http://localhost:57374/api/sessions \
 ### Subscribe to Events
 
 ```javascript
-const events = new EventSource('http://localhost:57374/api/events');
+const events = new EventSource("http://localhost:57374/api/events");
 
-events.addEventListener('task:completed', (e) => {
+events.addEventListener("task:completed", (e) => {
   const event = JSON.parse(e.data);
   console.log(`Task completed: ${event.data.title}`);
 });
 
-events.addEventListener('log:error', (e) => {
+events.addEventListener("log:error", (e) => {
   const event = JSON.parse(e.data);
   console.error(`Error: ${event.data.message}`);
 });
 
 events.onerror = (err) => {
-  console.error('Connection error:', err);
+  console.error("Connection error:", err);
 };
 ```
 
 ### Using the TypeScript Client
 
 ```typescript
-import { LokiClient } from './api/client.ts';
+import { LokiClient } from "./api/client.ts";
 
-const client = new LokiClient('http://localhost:57374');
+const client = new LokiClient("http://localhost:57374");
 
 // Start a session
 const { sessionId } = await client.startSession({
-  provider: 'claude',
-  prdPath: './docs/prd.md'
+  provider: "claude",
+  prdPath: "./docs/prd.md",
 });
 
 // Subscribe to events
@@ -279,18 +287,18 @@ Changes are detected via file watching and emitted as SSE events.
 
 ## Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `BAD_REQUEST` | 400 | Invalid request |
-| `UNAUTHORIZED` | 401 | Missing/invalid auth |
-| `FORBIDDEN` | 403 | Permission denied |
-| `NOT_FOUND` | 404 | Resource not found |
-| `CONFLICT` | 409 | State conflict |
-| `VALIDATION_ERROR` | 422 | Validation failed |
-| `INTERNAL_ERROR` | 500 | Server error |
-| `SESSION_NOT_FOUND` | 404 | Session not found |
-| `SESSION_ALREADY_RUNNING` | 409 | Session running |
-| `PROVIDER_NOT_AVAILABLE` | 503 | Provider unavailable |
+| Code                      | HTTP Status | Description          |
+| ------------------------- | ----------- | -------------------- |
+| `BAD_REQUEST`             | 400         | Invalid request      |
+| `UNAUTHORIZED`            | 401         | Missing/invalid auth |
+| `FORBIDDEN`               | 403         | Permission denied    |
+| `NOT_FOUND`               | 404         | Resource not found   |
+| `CONFLICT`                | 409         | State conflict       |
+| `VALIDATION_ERROR`        | 422         | Validation failed    |
+| `INTERNAL_ERROR`          | 500         | Server error         |
+| `SESSION_NOT_FOUND`       | 404         | Session not found    |
+| `SESSION_ALREADY_RUNNING` | 409         | Session running      |
+| `PROVIDER_NOT_AVAILABLE`  | 503         | Provider unavailable |
 
 ## License
 

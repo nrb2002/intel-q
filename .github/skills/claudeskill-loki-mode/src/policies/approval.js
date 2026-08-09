@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Loki Mode Policy Engine - Approval Gate System
@@ -16,18 +16,18 @@
  * The webhook is fire-and-forget: POST is sent and response handled async.
  */
 
-const fs = require('fs');
-const path = require('path');
-const http = require('http');
-const https = require('https');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const http = require("http");
+const https = require("https");
+const crypto = require("crypto");
 
 // -------------------------------------------------------------------
 // Constants
 // -------------------------------------------------------------------
 
 const DEFAULT_TIMEOUT_MINUTES = 30;
-const APPROVAL_STATES = ['pending', 'approved', 'rejected', 'timed_out'];
+const APPROVAL_STATES = ["pending", "approved", "rejected", "timed_out"];
 
 // -------------------------------------------------------------------
 // SSRF protection helpers
@@ -40,7 +40,7 @@ const APPROVAL_STATES = ['pending', 'approved', 'rejected', 'timed_out'];
  */
 function _isInternalHostname(hostname) {
   // Reject loopback
-  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') return true;
+  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
 
   // Reject link-local (169.254.x.x)
   if (/^169\.254\./.test(hostname)) return true;
@@ -65,13 +65,13 @@ function _validateWebhookUrl(url) {
   try {
     parsed = new URL(url);
   } catch (_) {
-    return 'Invalid webhook URL';
+    return "Invalid webhook URL";
   }
-  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    return 'Webhook URL must use http or https protocol, got: ' + parsed.protocol;
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return "Webhook URL must use http or https protocol, got: " + parsed.protocol;
   }
   if (_isInternalHostname(parsed.hostname)) {
-    return 'Webhook URL must not target internal/private addresses';
+    return "Webhook URL must not target internal/private addresses";
   }
   return null;
 }
@@ -91,7 +91,7 @@ class ApprovalGateManager {
   constructor(projectDir, gates) {
     this._projectDir = projectDir || process.cwd();
     this._gates = gates || [];
-    this._stateFile = path.join(this._projectDir, '.loki', 'state', 'approvals.json');
+    this._stateFile = path.join(this._projectDir, ".loki", "state", "approvals.json");
     this._state = this._loadState();
     this._pendingTimers = {};
   }
@@ -103,7 +103,7 @@ class ApprovalGateManager {
   _loadState() {
     try {
       if (fs.existsSync(this._stateFile)) {
-        const raw = fs.readFileSync(this._stateFile, 'utf8');
+        const raw = fs.readFileSync(this._stateFile, "utf8");
         return JSON.parse(raw);
       }
     } catch (_) {
@@ -117,7 +117,7 @@ class ApprovalGateManager {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(this._stateFile, JSON.stringify(this._state, null, 2), 'utf8');
+    fs.writeFileSync(this._stateFile, JSON.stringify(this._state, null, 2), "utf8");
   }
 
   // -----------------------------------------------------------------
@@ -161,19 +161,19 @@ class ApprovalGateManager {
       // No gate for this phase -- auto-approve
       return Promise.resolve({
         approved: true,
-        reason: 'No approval gate configured for phase: ' + phase,
-        method: 'auto',
+        reason: "No approval gate configured for phase: " + phase,
+        method: "auto",
       });
     }
 
-    const requestId = 'apr-' + crypto.randomBytes(16).toString('hex');
+    const requestId = "apr-" + crypto.randomBytes(16).toString("hex");
     const timeout = (gate.timeout_minutes || DEFAULT_TIMEOUT_MINUTES) * 60 * 1000;
 
     const request = {
       id: requestId,
       phase: phase,
       gate: gate.name,
-      status: 'pending',
+      status: "pending",
       context: context || {},
       createdAt: new Date().toISOString(),
       resolvedAt: null,
@@ -198,20 +198,26 @@ class ApprovalGateManager {
       const autoApproveOnTimeout = gate.auto_approve_on_timeout === true;
       const timer = setTimeout(function () {
         delete self._pendingTimers[requestId];
-        request.status = 'timed_out';
+        request.status = "timed_out";
         request.resolvedAt = new Date().toISOString();
-        request.method = 'timeout';
+        request.method = "timeout";
         if (autoApproveOnTimeout) {
-          request.reason = 'Auto-approved after ' + (gate.timeout_minutes || DEFAULT_TIMEOUT_MINUTES) + ' minute timeout';
+          request.reason =
+            "Auto-approved after " +
+            (gate.timeout_minutes || DEFAULT_TIMEOUT_MINUTES) +
+            " minute timeout";
         } else {
-          request.reason = 'Rejected: approval not received within ' + (gate.timeout_minutes || DEFAULT_TIMEOUT_MINUTES) + ' minute timeout';
+          request.reason =
+            "Rejected: approval not received within " +
+            (gate.timeout_minutes || DEFAULT_TIMEOUT_MINUTES) +
+            " minute timeout";
         }
         self._addAudit(request);
         self._saveState();
         resolve({
           approved: autoApproveOnTimeout,
           reason: request.reason,
-          method: 'timeout',
+          method: "timeout",
         });
       }, timeout);
 
@@ -240,10 +246,10 @@ class ApprovalGateManager {
     delete this._pendingTimers[requestId];
 
     const request = pending.request;
-    request.status = approved ? 'approved' : 'rejected';
+    request.status = approved ? "approved" : "rejected";
     request.resolvedAt = new Date().toISOString();
-    request.method = 'manual';
-    request.reason = reason || (approved ? 'Manually approved' : 'Manually rejected');
+    request.method = "manual";
+    request.reason = reason || (approved ? "Manually approved" : "Manually rejected");
 
     this._addAudit(request);
     this._saveState();
@@ -251,7 +257,7 @@ class ApprovalGateManager {
     pending.resolve({
       approved: approved,
       reason: request.reason,
-      method: 'manual',
+      method: "manual",
     });
 
     return true;
@@ -271,7 +277,7 @@ class ApprovalGateManager {
       }
 
       const payload = JSON.stringify({
-        type: 'approval_request',
+        type: "approval_request",
         id: request.id,
         phase: request.phase,
         gate: request.gate,
@@ -280,16 +286,16 @@ class ApprovalGateManager {
       });
 
       const parsed = new URL(url);
-      const transport = parsed.protocol === 'https:' ? https : http;
+      const transport = parsed.protocol === "https:" ? https : http;
 
       const opts = {
         hostname: parsed.hostname,
-        port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+        port: parsed.port || (parsed.protocol === "https:" ? 443 : 80),
         path: parsed.pathname + parsed.search,
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(payload),
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(payload),
         },
         timeout: 5000,
       };
@@ -297,7 +303,7 @@ class ApprovalGateManager {
       const req = transport.request(opts, function () {
         // Fire-and-forget: ignore response
       });
-      req.on('error', function () {
+      req.on("error", function () {
         // Silently ignore webhook failures
       });
       req.write(payload);
@@ -339,7 +345,7 @@ class ApprovalGateManager {
    */
   getPendingRequests() {
     return this._state.requests.filter(function (r) {
-      return r.status === 'pending';
+      return r.status === "pending";
     });
   }
 

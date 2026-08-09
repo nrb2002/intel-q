@@ -10,18 +10,18 @@ so setup compounds into shared value (the skills-marketplace stickiness dynamic)
 Before writing anything, the existing export/import/share + memory machinery
 was read in full. Findings:
 
-| Mechanism | Location | What it actually does | Reused? |
-|---|---|---|---|
-| `cmd_export` | `autonomy/loki:6254` | Per-run SESSION SNAPSHOT: json / markdown / csv / timeline of one `.loki/` run. Not portable across teams, not redacted. | Reused its `_export_check_overwrite` guard. |
-| `cmd_import` | `autonomy/loki:4722` | Imports GitHub ISSUES into `.loki/queue/`. Unrelated to assets. | Not applicable (different domain). |
-| `cmd_share` | `autonomy/loki:25147` | Uploads a session REPORT as a GitHub gist. | Not applicable (report, not assets). |
-| `cmd_memory` | `autonomy/loki:14475` | Lists/show cross-project learnings in `~/.loki/learnings/*.jsonl`. No tarball export. | Same source dir reused as an asset category. |
-| `proof_redact.py` | `autonomy/lib/proof_redact.py` | Single redaction chokepoint (R1). `redact_tree(obj)`, `redact_value(s)`, `set_context()`, `RULES_VERSION`. | REUSED as-is. No second redactor written. |
-| agent registry | `agents/types.json` | 41 shipped agent types. `cmd_agent` (`autonomy/loki:19509`) reads it from the install dir. | Bundled as the `agents` category. |
-| PRD templates | `templates/*.md` | 21 templates; read from `$SKILL_DIR/templates` at runtime (`autonomy/loki:9781`, `8840`). | Bundled as `templates`. |
-| council config | `<project>/.loki/council/*.json` | `config.json` / `state.json` (`autonomy/loki:16688`, `autonomy/run.sh:3643`). | Bundled as `council`. |
-| project memory | `<project>/.loki/memory/{episodic,semantic,skills,...}` (`autonomy/run.sh:3183`) | Per-project episodic/semantic/procedural memory. | Bundled as `memory`. |
-| R5 wiki | `<project>/.loki/wiki/**` (`autonomy/loki:22881`) | Cited per-project wiki. | Bundled as `wiki` (opt-in). |
+| Mechanism         | Location                                                                         | What it actually does                                                                                                    | Reused?                                      |
+| ----------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `cmd_export`      | `autonomy/loki:6254`                                                             | Per-run SESSION SNAPSHOT: json / markdown / csv / timeline of one `.loki/` run. Not portable across teams, not redacted. | Reused its `_export_check_overwrite` guard.  |
+| `cmd_import`      | `autonomy/loki:4722`                                                             | Imports GitHub ISSUES into `.loki/queue/`. Unrelated to assets.                                                          | Not applicable (different domain).           |
+| `cmd_share`       | `autonomy/loki:25147`                                                            | Uploads a session REPORT as a GitHub gist.                                                                               | Not applicable (report, not assets).         |
+| `cmd_memory`      | `autonomy/loki:14475`                                                            | Lists/show cross-project learnings in `~/.loki/learnings/*.jsonl`. No tarball export.                                    | Same source dir reused as an asset category. |
+| `proof_redact.py` | `autonomy/lib/proof_redact.py`                                                   | Single redaction chokepoint (R1). `redact_tree(obj)`, `redact_value(s)`, `set_context()`, `RULES_VERSION`.               | REUSED as-is. No second redactor written.    |
+| agent registry    | `agents/types.json`                                                              | 41 shipped agent types. `cmd_agent` (`autonomy/loki:19509`) reads it from the install dir.                               | Bundled as the `agents` category.            |
+| PRD templates     | `templates/*.md`                                                                 | 21 templates; read from `$SKILL_DIR/templates` at runtime (`autonomy/loki:9781`, `8840`).                                | Bundled as `templates`.                      |
+| council config    | `<project>/.loki/council/*.json`                                                 | `config.json` / `state.json` (`autonomy/loki:16688`, `autonomy/run.sh:3643`).                                            | Bundled as `council`.                        |
+| project memory    | `<project>/.loki/memory/{episodic,semantic,skills,...}` (`autonomy/run.sh:3183`) | Per-project episodic/semantic/procedural memory.                                                                         | Bundled as `memory`.                         |
+| R5 wiki           | `<project>/.loki/wiki/**` (`autonomy/loki:22881`)                                | Cited per-project wiki.                                                                                                  | Bundled as `wiki` (opt-in).                  |
 
 Key negative finding: there is NO separate per-user "custom agent" store.
 "Custom agents" == the `agents/types.json` registry. We do not invent one
@@ -40,14 +40,14 @@ the `proof_redact` chokepoint. No new redactor, no parallel exporter.
 
 ## 3. Asset map and the deliberate export/import asymmetry
 
-| Category | Export source | Bundle path | Import restore root |
-|---|---|---|---|
-| learnings | `~/.loki/learnings/*.jsonl` | `learnings/` | `$HOME/.loki/learnings` |
-| memory | `<project>/.loki/memory/**` | `memory/` | `<cwd>/.loki/memory` |
-| agents | `$SKILL_DIR/agents/types.json` | `agents/` | `<cwd>/agents` |
-| templates | `$SKILL_DIR/templates/*.md` | `templates/` | `<cwd>/templates` |
-| council | `<project>/.loki/council/*.json` | `council/` | `<cwd>/.loki/council` |
-| wiki (opt-in) | `<project>/.loki/wiki/**` | `wiki/` | `<cwd>/.loki/wiki` |
+| Category      | Export source                    | Bundle path  | Import restore root     |
+| ------------- | -------------------------------- | ------------ | ----------------------- |
+| learnings     | `~/.loki/learnings/*.jsonl`      | `learnings/` | `$HOME/.loki/learnings` |
+| memory        | `<project>/.loki/memory/**`      | `memory/`    | `<cwd>/.loki/memory`    |
+| agents        | `$SKILL_DIR/agents/types.json`   | `agents/`    | `<cwd>/agents`          |
+| templates     | `$SKILL_DIR/templates/*.md`      | `templates/` | `<cwd>/templates`       |
+| council       | `<project>/.loki/council/*.json` | `council/`   | `<cwd>/.loki/council`   |
+| wiki (opt-in) | `<project>/.loki/wiki/**`        | `wiki/`      | `<cwd>/.loki/wiki`      |
 
 The export and import repo_root values are DELIBERATELY DIFFERENT (enforced in
 `cmd_assets`, not in the Python helper):
@@ -74,6 +74,7 @@ take effect immediately regardless of the flag.
 
 `autonomy/lib/assets_bundle.py` calls `proof_redact.set_context(home, repo)`
 then dispatches by extension before any byte is written into the tarball:
+
 - `.json` -> parse -> `redact_tree` -> reserialize
 - `.jsonl` -> per-line parse -> `redact_tree` -> reserialize
 - `.md` / `.txt` / other -> `redact_value` on the whole string

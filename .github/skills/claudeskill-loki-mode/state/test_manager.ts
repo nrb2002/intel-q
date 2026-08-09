@@ -34,7 +34,7 @@ function assertEqual<T>(actual: T, expected: T, message: string): void {
   const expectedStr = JSON.stringify(expected);
   if (actualStr !== expectedStr) {
     throw new Error(
-      `Assertion failed: ${message}\n  Expected: ${expectedStr}\n  Actual: ${actualStr}`
+      `Assertion failed: ${message}\n  Expected: ${expectedStr}\n  Actual: ${actualStr}`,
     );
   }
 }
@@ -67,11 +67,7 @@ async function runTests(): Promise<void> {
 
     // Test: update_state
     const change2 = manager.updateState("test.json", { another: "field" });
-    assertEqual(
-      change2.newValue,
-      { key: "value", another: "field" },
-      "should merge updates"
-    );
+    assertEqual(change2.newValue, { key: "value", another: "field" }, "should merge updates");
     console.log("  [PASS] updateState works");
 
     // Test: ManagedFile enum
@@ -149,7 +145,6 @@ async function runTests(): Promise<void> {
 
     // Run optimistic update tests
     await runOptimisticUpdateTests();
-
   } finally {
     // Cleanup temp directory
     fs.rmSync(tempDir, { recursive: true, force: true });
@@ -334,8 +329,11 @@ async function runOptimisticUpdateTests(): Promise<void> {
       _version_vector: { agent2: 1 },
     };
 
-    const { resolvedState, conflicts: syncConflicts, committed: syncCommitted } =
-      manager6.syncWithRemote("sync.json", syncRemote, "agent2");
+    const {
+      resolvedState,
+      conflicts: syncConflicts,
+      committed: syncCommitted,
+    } = manager6.syncWithRemote("sync.json", syncRemote, "agent2");
 
     assert(syncConflicts.length === 0, "should have no conflicts (different keys)");
     assert(syncCommitted === 1, "should commit 1 update");
@@ -352,7 +350,6 @@ async function runOptimisticUpdateTests(): Promise<void> {
 
     console.log("");
     console.log("All Optimistic Update tests passed!");
-
   } finally {
     // Cleanup temp directory
     fs.rmSync(tempDir, { recursive: true, force: true });

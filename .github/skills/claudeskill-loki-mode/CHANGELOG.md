@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.23.1] - 2026-06-09
 
 ### Fixed
+
 - CI reliability: tests/test-delegate-notify.sh no longer false-fails on a CI
   runner whose git default branch is "master". The test git-inits a temp repo
   and asserted the notification body contained "main", but `git init` uses the
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.23.0] - 2026-06-09
 
 ### Added
+
 - Hybrid codebase search: `loki code search "<query>"`. Combines ripgrep keyword
   matching with ChromaDB semantic search via reciprocal-rank fusion (deduped by
   file:line), with token-budget-aware output. Flags: --grep-only, --semantic-only,
@@ -47,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   adaptive concurrent sessions on a local machine, not thousands).
 
 ### Fixed
+
 - CI reliability: the CLI command test (tests/test-cli-commands.sh) no longer
   false-fails on a loaded runner. The pattern check piped output into `grep -q`,
   which exits on first match and kills the upstream `echo` with SIGPIPE ("write
@@ -58,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.22.0] - 2026-06-09
 
 ### Added
+
 - Delegate then notify on done. When a background run (`loki start --bg`)
   finishes, Loki now writes a durable completion summary and fires a local
   desktop notification, so you can delegate a run, walk away, and be told when
@@ -83,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.21.0] - 2026-06-08
 
 ### Added
+
 - AGENTS.md support. Loki now points the agent at `AGENTS.md` in the repository
   root for build, test, and style conventions, falling back to `CLAUDE.md` when
   AGENTS.md is absent (nearest-file-wins, never merged). AGENTS.md is the
@@ -94,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the walker precedence, prompt emission, and cross-route byte-parity.
 
 ### Fixed
+
 - Dual-route parity: the Bun route's no-PRD `CODEBASE_ANALYSIS_MODE` instruction
   was still the pre-v7.8.1 short prompt while the bash route had the v7.8.1
   three-pass version. The byte-exact fixture corpus masked this because both the
@@ -105,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.20.0] - 2026-06-08
 
 ### Changed
+
 - Positioning refresh across README, SKILL.md, wiki, and the installation guide.
   Loki is now described as a spec-driven autonomous builder with a built-in
   trust layer (verified completion), surfacing the RARV-C loop, 11 quality
@@ -119,6 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verified by counting registrations, not estimated.
 
 ### Fixed
+
 - Benchmark table honesty. The SWE-bench row claimed "299/300 patches", which
   read as a near-perfect resolution rate, but only patches were generated and
   the official SWE-bench evaluator was never run (no pass-rate result exists).
@@ -127,6 +135,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`benchmarks/results/humaneval-loki-results.json`) for provenance.
 
 ### Notes
+
 - AGENTS.md support (reading AGENTS.md with a CLAUDE.md fallback) was scoped for
   this release but deferred to a dedicated code release. Implementing it surfaced
   a separate, pre-existing dual-route parity drift in the no-PRD codebase-analysis
@@ -136,6 +145,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.19.4] - 2026-06-07
 
 ### Fixed
+
 - `loki crash list` now lists crash reports, matching the bare `loki crash`
   command. Previously only the bare form listed and `loki crash list` errored
   with "Unknown crash subcommand", which a user mirroring `loki proof list` or
@@ -154,6 +164,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.19.3] - 2026-06-07
 
 ### Added
+
 - Shareable proof-of-run: the proof HTML (`loki proof`) now renders a branded
   in-page card (what was built, verified, cost, duration, with Loki/Autonomi
   branding) and opt-in share buttons (X/Twitter, LinkedIn, Copy link). The
@@ -167,6 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `LOKI_PROOF_SHARE_BUTTONS=0`.
 
 ### NOT tested in this release (honest disclosure)
+
 - A rich social-media preview (og:image) requires publishing to an
   HTML-serving host that returns a public URL (the `LOKI_HOSTED_ENDPOINT`
   seam). `loki proof share` to a GitHub Gist does NOT yield a rich preview: the
@@ -186,6 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.19.2] - 2026-06-07
 
 ### Added
+
 - Uncertainty-gated escalation (default-on, opt out with
   `LOKI_UNCERTAINTY_ESCALATION=0`). When Loki looks stuck, it now proactively
   escalates to the human (writes a structured handoff, fires an intervention
@@ -202,6 +215,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   it fires it prints a loud terminal line naming the opt-out.
 
 ### NOT tested in this release (honest disclosure)
+
 - Default autonomy mode is "perpetual", where `.loki/PAUSE` auto-clears, so by
   DEFAULT this feature is NOTIFY-ONLY: it surfaces the stuck state and saves a
   handoff but does not halt the run. It halts only in checkpoint/supervised
@@ -220,6 +234,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.19.1] - 2026-06-07
 
 ### Added
+
 - Verified-completion evidence gate (default-on, opt out with
   `LOKI_EVIDENCE_GATE=0`). Loki no longer accepts a "done" claim without real
   evidence: the completion council blocks completion unless there is a nonzero
@@ -240,6 +255,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `MAX_ITERATIONS`, then stops cleanly. It can never hang.
 
 ### Fixed
+
 - Stale-baseline bug on run 2+: a fresh `loki start` after a terminal run
   (success, failure, or crash) now resets the iteration baseline so the
   evidence gate diffs against the new run's HEAD, not the prior run's start SHA
@@ -249,6 +265,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   decision is unchanged.
 
 ### NOT tested in this release (honest disclosure)
+
 - The gate proves "something changed and tests pass", NOT PRD-semantic
   correctness. A diff that compiles and is green but does not satisfy the spec
   still passes the gate; the council vote is the semantic check, not this gate.
@@ -266,6 +283,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.19.0] - 2026-06-07
 
 ### Added
+
 - Failure-memory loop (default-on, opt out with `LOKI_FAILURE_MEMORY=0`). Loki
   now learns from its own failures within a run so it stops repeating the same
   mistake. When an iteration fails, the scrubbed crash record (or, when
@@ -280,6 +298,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   docs/PRIVACY.md is preserved.
 
 ### NOT tested in this release (honest disclosure)
+
 - No live multi-iteration autonomous run validating that the injected lesson
   measurably changes the next iteration's behavior; verification is via the
   module-level loop (crash -> ErrorEntry -> recency read -> injected block) and
@@ -297,12 +316,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.18.3] - 2026-06-06
 
 ### Changed
+
 - First-run experience: `loki` with no arguments now leads with a "New here?"
   getting-started block (loki doctor, loki quick, loki demo, loki start) so a
   new user has an obvious next step instead of a wall of 30+ commands. Reduces
   time-to-first-value. Help text only, no behavior change.
 
 ### Fixed
+
 - Honest `loki demo` description. The command help and the no-arg command list
   previously called demo a "~60s simulated session," but `loki demo` runs a
   real end-to-end build of a sample todo app. All three descriptions now say
@@ -314,6 +335,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.18.2] - 2026-06-06
 
 ### Added
+
 - Crash reporting Phase 0 (local-only, zero network egress). On an uncaught
   exception, unhandled rejection, nonzero iteration exit, provider-spawn
   exhaustion, rate-limit failover exhaustion, or repeated quality-gate failure,
@@ -340,6 +362,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/PRIVACY.md`: honest disclosure of what is and is not collected.
 
 ### Changed
+
 - Unified telemetry opt-out. `LOKI_TELEMETRY=off`, `loki telemetry off`,
   `DO_NOT_TRACK=1`, and `LOKI_TELEMETRY_DISABLED=true` now ALL disable both the
   new crash capture AND the existing PostHog usage telemetry
@@ -349,6 +372,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   routes and in `bin/postinstall.js` and `dashboard/telemetry.py`.
 
 ### NOT tested in this release (honest disclosure)
+
 - Network egress: none exists in Phase 0. The backend ingest, server-side
   second scrub, dedup, and private-issue creation are future phases (1-2).
 - The autonomous reproduce / fix / PR loop is a future phase (3).
@@ -360,6 +384,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.18.1] - 2026-06-04
 
 ### Fixed
+
 - `loki doctor` now emits byte-identical output on the bash route and the Bun
   route when `ANTHROPIC_BASE_URL` is set. Phase I (v7.5.25) added the
   alt-provider routing detection block (OpenRouter, Ollama, LiteLLM,
@@ -376,6 +401,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.18.0] - 2026-06-03
 
 ### Fixed
+
 - Dashboard standalone pages (Trust Trajectory, Cost, Proofs) now match the
   dashboard's cream/serif design language instead of a clashing dark theme.
   They were hardcoded dark and looked like a different product when embedded in
@@ -398,6 +424,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   loading now resolves correctly once the list arrives (no stuck spinner).
 
 ### Internal
+
 - New fresh-repo integrated UI harness (`tests/e2e/dashboard-fresh-repo.mjs` +
   `scripts/run-dashboard-fresh-repo-harness.sh`, wired into `local-ci`). It
   boots the dashboard against a fresh repo (no `.loki`) and drives a real
@@ -411,6 +438,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.17.1] - 2026-06-03
 
 ### Fixed
+
 - Proof-of-run (R1) now records the raw one-line brief from
   `loki start "<brief>"`. Previously the inline brief was dropped and the proof
   page showed "No brief recorded" with source "codebase-analysis", even though
@@ -436,6 +464,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   alias. The adapter already parametrizes the model; this only fixes the default.
 
 ### Internal
+
 - local-ci hardening so the v7.16.1-class bug (a built dashboard SPA whose inline
   JavaScript threw a SyntaxError while still serving HTTP 200 and passing every
   presence check) cannot ship again: a new node-gated gate parses every inline
@@ -455,6 +484,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.17.0] - 2026-05-30
 
 ### Added
+
 - Shareable team assets (R8 of the competitive arc): `loki assets export <bundle>`
   / `import <bundle>` / `inspect` - bundle a team's reusable assets (learnings,
   project memory, custom agents, PRD templates, council config, optionally the
@@ -467,10 +497,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Agent + template marketplace (R10): `loki agent install <source>` /
   `loki template install <source>` install community agents and PRD templates
   from a git repo, local path, or URL, validated and usable via `loki agent
-  list/run` and `loki init --template`. Source-based today (a hosted central hub
+list/run` and `loki init --template`. Source-based today (a hosted central hub
   is future work, stated honestly).
 
 ### Security
+
 - R8 import is path-contained: a malicious bundle whose member resolves (via an
   absolute or `..` sub-path, or a symlink) outside the restore root is SKIPPED,
   validated by realpath BEFORE any filesystem write (council round 1 found an
@@ -481,6 +512,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   git/url sources are fetched without shell injection.
 
 ### Notes
+
 - Council: both 3-of-3 unanimous (R8 round 2 after the path-containment fix; R10
   round 1). No duplication (R8 reuses proof_redact + export machinery; R10 reuses
   the agents/templates registry). bash + Bun parity via the bash route.
@@ -488,6 +520,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.16.1] - 2026-05-30
 
 ### Fixed
+
 - Dashboard SPA root threw "Uncaught SyntaxError: Invalid or unexpected token"
   and failed to render its inline scripts. The standalone build
   (dashboard-ui/scripts/build-standalone.js) emits the SPA from a backtick
@@ -504,6 +537,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.16.0] - 2026-05-30
 
 ### Added
+
 - Visible trust trajectory (R4 of the competitive arc): a per-project view of
   whether the agent is earning autonomy over time, derived from real run history
   (council pass-rate, quality-gate pass-rate, iterations-to-completion, and a
@@ -518,6 +552,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   updates live.
 
 ### Notes
+
 - Honest data: derived only from `.loki/proofs/<run_id>/proof.json`; with fewer
   than two runs it says "not enough history yet" rather than inventing a trend,
   it shows a DECLINING trajectory when the data declines (not a feel-good
@@ -532,9 +567,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.15.0] - 2026-05-30
 
 ### Added
+
 - Open-core hooks (R9 of the competitive arc): the seams for hosted + enterprise
-  + paid plans WITHOUT gating any existing free feature or faking a service.
-  Loki stays fully functional open-source with zero hosted backend.
+  - paid plans WITHOUT gating any existing free feature or faking a service.
+    Loki stays fully functional open-source with zero hosted backend.
 - `loki proof share --hosted <id>`: publishes the already-redacted proof artifact
   to an operator-supplied `LOKI_HOSTED_ENDPOINT` (both bash and Bun routes). With
   no endpoint set, it prints an honest "no official hosted backend yet; set
@@ -548,6 +584,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   paywall.
 
 ### Security
+
 - The `--hosted` publish guard fails CLOSED: it refuses unless the proof's
   redaction was confirmed applied (`redaction.applied == true`), on both routes.
   This prevents publishing an old/degraded proof whose HTML might carry secrets
@@ -555,6 +592,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   absent redaction metadata; fixed + regression-tested on both routes).
 
 ### Notes
+
 - Council: 3-of-3 unanimous (round 2, after the fail-closed redaction fix).
 - NOT shipped: a live Loki hosted backend / SaaS / license server (R9 ships the
   seams only); the proof.json public_url is printed, not written back.
@@ -562,6 +600,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.14.0] - 2026-05-30
 
 ### Added
+
 - 1-click rollback + checkpoint UX (R6 of the competitive arc): deterministic,
   obvious rollback so autonomous runs can be undone in one action. Enhances the
   existing checkpoint/rollback in place (no parallel system).
@@ -573,6 +612,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   pre-rollback snapshot id in a notice so dashboard users can undo the undo too.
 
 ### Fixed
+
 - Rollback safety invariant: if the automatic pre-rollback snapshot fails,
   rollback now ABORTS by default (preserving current state) instead of silently
   proceeding to a destructive restore; pass `--force` to roll back without a
@@ -580,6 +620,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   failure.
 
 ### Notes
+
 - The `.loki/` state restore is atomic (tmp + rename). Working-tree code restore
   is opt-in (`--code` / the surfaced `git stash apply refs/loki/cp/<id>`): a
   divergent apply aborts or shows conflict markers (exit 1), never a silent
@@ -593,6 +634,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.13.0] - 2026-05-30
 
 ### Added
+
 - Auto-wiki + cited codebase Q&A (R5 of the competitive arc): Loki's answer to
   a per-repo knowledge base. `loki wiki generate | show | ask` builds a
   persistent per-project wiki (architecture overview, key modules, data flow)
@@ -608,10 +650,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   team artifact. The `.loki/wiki/` directory (wiki.json + per-section markdown)
   is portable and readable without the dashboard.
 - Incremental regeneration: the wiki is keyed by a codebase signature (git HEAD
-  + per-file content hash); `loki wiki generate` skips when the codebase is
-  unchanged, with `--force` to override.
+  - per-file content hash); `loki wiki generate` skips when the codebase is
+    unchanged, with `--force` to override.
 
 ### Notes
+
 - No duplication: token-overlap retrieval reuses the scoring pattern from
   memory/knowledge_graph.py; the wiki index is intentionally dependency-free and
   CI-safe (distinct from the optional ChromaDB code index). bash and Bun routes
@@ -625,13 +668,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.12.0] - 2026-05-30
 
 ### Added
+
 - Zero-config killer first run (R7 of the competitive arc): `loki start "<one
-  line brief>"` now works and produces a fast, visible artifact, lowering
+line brief>"` now works and produces a fast, visible artifact, lowering
   time-to-first-value so a new user gets a good first experience instead of a
   blank or heavy one. Built additively, reusing the existing start/quick/proof
   flow (no parallel second start path).
 
 ### Fixed
+
 - `loki start "build a todo app"` previously errored "PRD file not found": a
   whitespace one-line brief was misrouted as a PRD file path. `detect_arg_type`
   now returns a brief type for whitespace args that match no file/issue/path
@@ -639,6 +684,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   all behave exactly as before (back-compat preserved).
 
 ### Notes
+
 - The brief path applies a genuinely lighter profile (capped iterations, council
   off, simple tier, heavy phases off) for a fast first pass, then emits an R1
   proof-of-run as the visible artifact and prints honest "what next / go deeper"
@@ -652,6 +698,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.11.0] - 2026-05-30
 
 ### Added
+
 - Cost + observability dashboard (R3 of the competitive arc): transparent,
   anti-surprise cost visibility, counter-positioned against the market's #1
   churn driver (surprise AI bills). All built by ENHANCING the existing cost
@@ -675,6 +722,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so a user not watching the terminal still sees the warning before the cap.
 
 ### Notes
+
 - Council: 3-of-3 unanimous (round 2, after adding the proactive in-dashboard
   budget banner; round 1 flagged the warning was passive-pull-only).
 - No duplication: every cost surface reuses the existing efficiency accounting;
@@ -686,6 +734,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.10.1] - 2026-05-30
 
 ### Fixed
+
 - benchmarks/bench/run.sh had a malformed shellcheck directive
   (`# shellcheck disable=SC2086 -- comment` on one line), which shellcheck
   itself cannot parse (SC1072/SC1073 error). The CI Shell-tests job runs
@@ -698,6 +747,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.10.0] - 2026-05-30
 
 ### Added
+
 - Head-to-head benchmark harness (R2 of the competitive arc): `loki bench`
   (run | vs | list | verify | report). A reproducible harness that runs a task
   on Loki and competitors and produces a results table, built so a third party
@@ -730,6 +780,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   proof generator so benchmark cost and proof cost are computed identically.
 
 ### Notes
+
 - bash + Bun parity: `loki bench` runs through the bash route on both runtimes
   (the Bun shim falls through); no separate Bun command.
 - Scope of this release: R2 ships the reproducible HARNESS plus a small pinned
@@ -744,6 +795,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.9.1] - 2026-05-30
 
 ### Fixed
+
 - Proof-of-run council section was blank on real runs. The generator read the
   per-verdict field as `verdict`/`decision` and expected flat
   `council/votes/*.json` files, but completion-council.sh actually writes the
@@ -760,6 +812,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.9.0] - 2026-05-30
 
 ### Added
+
 - Shareable proof-of-run (R1 of the competitive arc). Every run now emits a
   self-contained, shareable proof artifact under `.loki/proofs/<run_id>/`
   (`proof.json` + `index.html`) summarizing what the run built and how cheaply +
@@ -786,6 +839,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   index page.
 
 ### Notes
+
 - Both runtimes invoke the same Python generator, so artifacts are identical
   across the bash and Bun routes.
 - The integrity hash proves the artifact was not altered after emission; it does
@@ -800,6 +854,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.8.3] - 2026-05-30
 
 ### Fixed
+
 - bin/loki: the backgrounded telemetry subshells (the v7.8.2 `cli_command`
   emit and the first-run `installed` emit) now fully detach their file
   descriptors (`</dev/null >/dev/null 2>&1 &`). Previously the backgrounded
@@ -814,6 +869,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.8.2] - 2026-05-29
 
 ### Added
+
 - Bun-route usage analytics: the `bin/loki` shim now emits the `cli_command`
   product-analytics event for Bun-routed commands (version, status, stats,
   doctor, provider, memory, rollback, internal, kpis). These commands bypass
@@ -826,6 +882,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `main()`, and the two routes are mutually exclusive per invocation.
 
 ### Notes
+
 - No behavior change to any command, no new flags, no new env vars. The
   existing opt-out continues to suppress all telemetry including this new emit.
 - NOT tested in this release: real end-to-end PostHog ingestion (verified only
@@ -851,10 +908,10 @@ is sharper.
   - codebase changed -> UPDATE the PRD incrementally (reconcile, do not
     regenerate from scratch);
   - no recorded signature (older generated PRD) -> update (safe default).
-  Previously every no-PRD run blindly reused the generated PRD with no staleness
-  check, and the first run always regenerated. The decision is made once per run
-  so the cached prompt prefix stays stable across iterations. The user-PRD path
-  is unchanged (no signature is written for user-supplied PRDs).
+    Previously every no-PRD run blindly reused the generated PRD with no staleness
+    check, and the first run always regenerated. The decision is made once per run
+    so the cached prompt prefix stays stable across iterations. The user-PRD path
+    is unchanged (no signature is written for user-supplied PRDs).
 - **Sharper first-run codebase analysis.** The CODEBASE_ANALYSIS_MODE
   instruction is now a focused three-pass prompt (orient on high-signal
   manifests, locate entrypoints/API/tests, then write a fixed-section PRD)
@@ -1019,7 +1076,7 @@ because it read the user's global CLAUDE.md.
   recorded-but-dead pid is now authoritative; the `session.json` fallback only
   applies to legacy sessions that never recorded a pid.
 - **The autonomous agent refused to work and exited in ~30s.** When `loki
-  start` spawned the Claude provider, the agent read the user's global
+start` spawned the Claude provider, the agent read the user's global
   `~/.claude/CLAUDE.md` (rules like "always ask for clarification", "never
   commit without permission"), judged it to conflict with Loki's "never ask,
   never stop" prompt (which was only a user-message instruction, lower
@@ -1034,7 +1091,7 @@ because it read the user's global CLAUDE.md.
   `loki-ts/src/providers/claude_flags.ts`). The override is deliberately
   narrow: it does not relax any safety rule, it keeps git checkpoints local
   only (never push/force-push) and staged by explicit path (never `git add
-  -A`), and it leaves destructive or irreversible actions (deleting data,
+-A`), and it leaves destructive or irreversible actions (deleting data,
   dropping databases, publishing, rotating secrets, touching production) out of
   scope. Note: with the override on, `loki start` will make local atomic git
   checkpoints in the target repo as it works (this is Loki's existing RALPH
@@ -1186,7 +1243,7 @@ they have a wider blast radius and need their own careful review.)
 - **Memory: every orchestrator episode write silently failed.**
   `autonomy/run.sh` `store_episode_trace` called
   `MemoryEngine(f'{dir}/.loki/memory')`, but `__init__(self, storage=None,
-  base_path=...)` takes `storage` first, so the path became `self.storage`
+base_path=...)` takes `storage` first, so the path became `self.storage`
   and `engine.initialize()` crashed on `str.ensure_directory`, dropping
   every episode into the except handler. Now passes `base_path=`.
 - **Memory: the importance shadow-write never fired.**
@@ -1340,7 +1397,7 @@ a full-stack PRD build, clicking through every dashboard panel).
   routes): version/doctor/status correct; in-container dashboard serves
   the real UI and live `/api/*` endpoints.
 - A full-stack PRD ("TaskFlow") built end-to-end via `loki start
-  ./PRD.md`: produced a FastAPI backend + vanilla-JS frontend + tests;
+./PRD.md`: produced a FastAPI backend + vanilla-JS frontend + tests;
   the 11 generated tests pass and all 5 PRD acceptance criteria
   (create/list/patch/422-validation/served-frontend) pass on the live
   API. Completion council confirmed "all PRD requirements implemented
@@ -1407,8 +1464,9 @@ moat proof.
 ## [7.7.23] - 2026-05-28
 
 PATCH release. Speed bench (excellence bar 7) + privacy opt-out (bar 6)
-+ secret-scrub-in-memory. Seventh release in the v7.7.17-v7.7.24 memory
-arc.
+
+- secret-scrub-in-memory. Seventh release in the v7.7.17-v7.7.24 memory
+  arc.
 
 ### Added
 
@@ -1416,7 +1474,7 @@ arc.
   episodes, runs M COLD retrievals (fresh MemoryRetrieval+MemoryStorage
   per iteration, no warm cache), reports p50/p95/p99, exits 1 if
   p95 > threshold (default 500ms per bar 7). `--episodes/--runs/
-  --threshold-ms/--json`. Self-cleans its temp dir.
+--threshold-ms/--json`. Self-cleans its temp dir.
   **HONEST measured status (council Opus 1 fix -- no fabrication):**
   p95 ~26ms at 200 episodes, ~72ms at 1k (bar 7 MET), but ~1,648ms at
   10k episodes (bar 7 NOT MET -- 3.3x over). The bar-7 GOAL names 10k;
@@ -1428,7 +1486,7 @@ arc.
 - **Privacy opt-out (bar 6)**: `.loki/config.json`
   `{"memory": {"disabled": true}}` now disables BOTH capture (ingest)
   AND retrieval (load_memory_context). `memory/ingest.py
-  ::_capture_disabled(memory_base)` reads the sibling config; both
+::_capture_disabled(memory_base)` reads the sibling config; both
   ingest entry points + the MCP capture tool pass memory_base.
   `autonomy/loki::load_memory_context` gained a config.json gate after
   the existing LOKI_SKIP_MEMORY gate. Covers the v7.7.20 cross-project
@@ -1475,7 +1533,7 @@ release in the v7.7.17-v7.7.24 memory arc.
 ### Added
 
 - **`memory/replay.py` (NEW ~210 LOC)**: `replay_episode(episode_id,
-  memory_base)` loads a past episode and renders a READ-ONLY report:
+memory_base)` loads a past episode and renders a READ-ONLY report:
   the recorded action_log as a timeline + the CURRENT state of every
   touched file (missing / unchanged-since / changed-since /
   exists-not-in-git, via `git log --since=<episode_ts>`). Plus
@@ -1526,7 +1584,7 @@ rate + top-accessed patterns in the dashboard + a normalized API.
   fallback returned camelCase keys (`discoveryTokens`) that did NOT
   match the snake_case file (`metrics.discovery_tokens`). Now reads the
   file correctly, computes cache `hit_rate = cache_hits/(cache_hits+
-  cache_misses)`, surfaces top-10 most-accessed episodes/semantic
+cache_misses)`, surfaces top-10 most-accessed episodes/semantic
   patterns (ranked by access_count then importance), returns normalized
   snake_case + backward-compat camelCase aliases + `raw` passthrough.
 
@@ -1644,8 +1702,8 @@ v7.7.18). Fourth release in the v7.7.17 through v7.7.24 memory arc.
 - Real Claude Code SessionEnd firing the installed hook end-to-end.
 - Cross-project augmentation surfacing real patterns in a live
   multi-project session (requires accumulated episodes + consolidation
-  + rebuild; the wiring + population path are verified, the emergent
-  behavior is not).
+  - rebuild; the wiring + population path are verified, the emergent
+    behavior is not).
 
 ## [7.7.19] - 2026-05-28
 
@@ -1668,7 +1726,7 @@ PLAN-v7.7.17.md) slides to v7.7.20.
   always takes the Bun route by default, so piped JSON to
   `loki memory ingest --from-stdin` was lost. Now uses `Bun.spawn`
   directly with `stdin: "inherit"`, `stdout: "inherit"`, `stderr:
-  "inherit"` so the bash subprocess sees the full pipe.
+"inherit"` so the bash subprocess sees the full pipe.
 - Timeout cap (1h) preserved via direct `setTimeout` + `proc.kill("SIGKILL")`.
 
 ### Verified
@@ -1733,9 +1791,9 @@ capture paths so EVERY developer session can populate `.loki/memory/`.
 
 - Council: 2 Opus + 1 Sonnet unanimous APPROVE after 1 fix cycle.
   Opus 1 CONCERN on hook command quoting + Sonnet APPROVE first pass
-  + Opus 2 CONCERN on hook schema unverified + path-aware scrubber gap
-  + transcript size cap missing -> all fixed -> Opus 1/2 re-review
-  APPROVE.
+  - Opus 2 CONCERN on hook schema unverified + path-aware scrubber gap
+  - transcript size cap missing -> all fixed -> Opus 1/2 re-review
+    APPROVE.
 - WebSearch empirically validated Opus 2's claim: Claude Code
   SessionEnd schema is `{matcher, hooks:[{type:"command",command:...}]}`,
   fires only on `/clear` (not normal exits), payload is JSON on stdin
@@ -1791,15 +1849,15 @@ masking any future memory regression. v7.7.17 surfaces those failures.
   module import failure of the logger).
 - `loki doctor --json`: new `memory` field exposes
   `errors_log_path` + `recent_errors` (last 5) + `recent_error_count`
-  + `status` (pass/warn). Bash + Bun routes emit byte-identical field
-  values (council fix Opus 2: previously bash was relative path, Bun
-  was absolute; locked in by test 9 parity assertion).
+  - `status` (pass/warn). Bash + Bun routes emit byte-identical field
+    values (council fix Opus 2: previously bash was relative path, Bun
+    was absolute; locked in by test 9 parity assertion).
 
 ### Added
 
 - `memory/error_log.py` (~155 LOC): structured error log helper.
   Tab-separated single-line records: `timestamp \\t function \\t
-  error_class \\t message \\t traceback_snippet`. Rotates at 10 MB
+error_class \\t message \\t traceback_snippet`. Rotates at 10 MB
   (current -> `.log.1`, shift `.log.1` -> `.log.2` -> `.log.3`, drop
   oldest). Tail-only read (last 64 KB) so an oversize log cannot OOM
   the doctor command (council fix Opus 2). Secret scrubber (council
@@ -1928,7 +1986,7 @@ verifier returned `valid=False` while the chain was actually intact).
 - `tests/test-audit-chain-cross-file.sh` (5/5 PASS):
   - `verify_all_logs` on real production audit dir reports
     `valid=True, files_checked=23, files_skipped=2,
-    entries_checked=8872, genesis=audit-2026-02-14.jsonl`
+entries_checked=8872, genesis=audit-2026-02-14.jsonl`
   - Synthetic 2-file chain validates across rotation
   - Tampering on line 2 detected at correct file + line
   - Single-file `verify_log_integrity` backward-compat (no
@@ -1986,7 +2044,7 @@ DIAGNOSTIC-BROADCAST.md` section 3).
 - **Silent reader death drain**: on any reader exit path (stop signal,
   EOF, exception), the `finally` block drains all outstanding request
   waiters with `{'error': {'message': 'LSP reader thread exited: ...',
-  'request_id': rid}}` so callers fail fast (was: hang full 5s timeout)
+'request_id': rid}}` so callers fail fast (was: hang full 5s timeout)
   and logs a warning with exit reason + drained count.
 - **`lsp_get_diagnostics` consumer**: poll budget bumped from 250ms
   (5×50ms) to 1s (20×50ms) matching the docstring claim. Removed
@@ -2036,12 +2094,14 @@ and Docker.
 
 - **`loki start` (no PRD) crashes with `args[@]: unbound variable`**
   on bash 3.2 (macOS default). User repro on `~/git/anonima`:
+
   ```
   $ loki start
   Generate PRD from codebase and start? [Y/n] Y
   Starting Loki Mode...
   .../autonomy/loki: line 1551: args[@]: unbound variable
   ```
+
   Root cause: under bash 3.2 + `set -u`, `"${args[@]}"` on an empty
   array throws "unbound variable". The "no PRD" code path never
   populated `args`, so the exec at line 1551 (and the sandbox exec at
@@ -2058,7 +2118,7 @@ and Docker.
   Generate PRD from codebase and start? [Y/n] %
   ```
   Root cause: user did not pass `-it` so stdin is closed. The `read
-  -r confirm` returned EOF with empty string; the cmd_start fell
+-r confirm` returned EOF with empty string; the cmd_start fell
   through to the same args[@] bug above. Now the cmd_start prompt
   detects `[ ! -t 0 ]` (non-TTY stdin) and auto-confirms with a
   clear warning that suggests `docker run -it` or
@@ -2155,7 +2215,7 @@ APPROVE after one fix iteration on real defects surfaced by Opus reviewers.
   `renderUsageMarkdown()` function converts USAGE.md fenced code blocks,
   headings, lists, blockquotes, inline code, bold/italic, and links to
   HTML. Replaces the `<pre>` text-only panel with a styled `<div class=
-  "usage-md">`. CSS scoped to `.usage-md` so zero style bleed elsewhere.
+"usage-md">`. CSS scoped to `.usage-md` so zero style bleed elsewhere.
   Test: `tests/test-usage-markdown-render.sh` 11/11 PASS.
 - **UT2-12 XSS guard** (council fix from Opus 1 REJECT iteration): link
   href construction now validates URL against scheme allowlist
@@ -2168,12 +2228,12 @@ APPROVE after one fix iteration on real defects surfaced by Opus reviewers.
   `.loki/state/cli-provider` so `loki status --json` reports
   `provider_source: "cli"` for the session. Cascade order: cli > saved
   > env > default. 24-hour heuristic + PID liveness check. Cleanup hooks
-  in autonomy/run.sh STOP/double-Ctrl+C/normal-end paths (shipped in
-  v7.7.10 via staging race; harmless rm of file that didn't exist yet).
-  Test: `tests/test-provider-source-cli.sh` 8/8 PASS.
+  > in autonomy/run.sh STOP/double-Ctrl+C/normal-end paths (shipped in
+  > v7.7.10 via staging race; harmless rm of file that didn't exist yet).
+  > Test: `tests/test-provider-source-cli.sh` 8/8 PASS.
 - **UT2-13 provider name validation** (council fix from Opus 2 CONCERN):
   write sites now wrap in `case "$provider" in claude|codex|cline|aider)
-  ... ;; esac` so a typo like `--provider xyz` cannot pollute status
+... ;; esac` so a typo like `--provider xyz` cannot pollute status
   output. Reader (`_read_cli_provider`) also validates against the
   canonical set before returning, defense in depth.
 - **UT2-13 PID liveness** (council fix from Opus 1 CONCERN): cli-provider
@@ -2190,7 +2250,7 @@ APPROVE after one fix iteration on real defects surfaced by Opus reviewers.
   attempt, but next real flake will produce evidence on disk for
   root-cause analysis. Retry wrapper from v7.7.6 preserved unchanged.
 - **Forge plan docs extracted from closed PR #161**: `docs/plans/FORGE-
-  AUTONOMOUS-QUEUE.md` (312 lines) + `docs/plans/ULTRAPLAN-FORGE-BAAS.md`
+AUTONOMOUS-QUEUE.md` (312 lines) + `docs/plans/ULTRAPLAN-FORGE-BAAS.md`
   (612 lines). Architectural artifacts preserved for future reference.
 
 ### Verified
@@ -2292,13 +2352,13 @@ PATCH release. v7.7.0 LSP acceptance criterion #4 (Java coverage).
 
 ### LSP language coverage (v7.7.9)
 
-| Language | Server | Detection on PATH | Status |
-|---|---|---|---|
-| TypeScript / JavaScript | typescript-language-server | yes | covered |
-| Python | pyright-langserver (preferred) / pylsp (fallback) | yes | covered |
-| Go | gopls | yes | covered |
-| Rust | rust-analyzer | yes | covered |
-| Java | jdtls (NEW) | yes | covered |
+| Language                | Server                                            | Detection on PATH | Status  |
+| ----------------------- | ------------------------------------------------- | ----------------- | ------- |
+| TypeScript / JavaScript | typescript-language-server                        | yes               | covered |
+| Python                  | pyright-langserver (preferred) / pylsp (fallback) | yes               | covered |
+| Go                      | gopls                                             | yes               | covered |
+| Rust                    | rust-analyzer                                     | yes               | covered |
+| Java                    | jdtls (NEW)                                       | yes               | covered |
 
 Closes v7.7.0 LSP acceptance criterion #4 "Python, TypeScript, Go, Rust,
 and Java all work out of the box with no per-language config".
@@ -2639,7 +2699,7 @@ v7.5.24 Phase G; the new tools inherit that wiring):
 - `lsp_get_diagnostics(file)`: returns LSP errors/warnings for a file
   (drains the LSP push-diagnostics buffer for that file with a short
   wait). Output: `{diagnostics, count_errors, count_warnings, language,
-  elapsed_ms}`.
+elapsed_ms}`.
 - `lsp_workspace_symbols(query, limit?, language?)`: fuzzy workspace
   symbol search. Use when an agent knows the concept but not the
   exact name. Returns up to N matches with kind, container, location.
@@ -2679,8 +2739,8 @@ install hint.
 - `python3 -c "import mcp.lsp_proxy"` clean; 7 LSP tool functions
   registered (3 pre-existing + 4 new)
 - `lsp_check_exists("DefinitelyFabricatedSymbol")` returns `exists: null`
-  + clean error JSON when no matching LSP for workspace; ~600ms cold,
-  faster cached
+  - clean error JSON when no matching LSP for workspace; ~600ms cold,
+    faster cached
 - `lsp_workspace_symbols("buildPrompt")` returns the same shape
 - `loki doctor` reports "LSP servers detected (1): rust-analyzer" on
   this machine (only rust-analyzer installed in my dev env)
@@ -2985,17 +3045,17 @@ PRD (Express + HTML notes app), running `loki start`, then running the
 generated app. Captured everything in `artifacts/USER-TEST-REPORT-v7.6.0.md`
 and `artifacts/ut-screenshots/`.
 
-| UT | Scenario | Result |
-|---|---|---|
-| UT-1 | Install latest via bun | PASS |
-| UT-2 | `loki doctor` text + JSON | PASS (18 required checks) |
-| UT-3 | `loki start` on real fullstack PRD | PASS in 180s, cost $1.48 |
-| UT-3a | Run the generated app, verify 7 acceptance criteria | PASS 7/7 (curl + browser screenshot) |
-| UT-4 | Playwright clicks all 14 dashboard sidebar entries | PASS 14/14, 0 console errors |
-| UT-5 | Direct page.goto on 11 Purple Lab routes via /lab/ mount | PASS 11/11, 1 real error found (the route bug above) |
-| UT-6 | `loki memory` on real data | PARTIAL (index + timeline OK; retrieve + pattern broken -- B-2 below) |
-| UT-7 | `loki provider list/show` | PASS |
-| UT-8 | `loki kpis` + JSON validation | PASS (real $1.48 from UT-3 reflected) |
+| UT    | Scenario                                                 | Result                                                                |
+| ----- | -------------------------------------------------------- | --------------------------------------------------------------------- |
+| UT-1  | Install latest via bun                                   | PASS                                                                  |
+| UT-2  | `loki doctor` text + JSON                                | PASS (18 required checks)                                             |
+| UT-3  | `loki start` on real fullstack PRD                       | PASS in 180s, cost $1.48                                              |
+| UT-3a | Run the generated app, verify 7 acceptance criteria      | PASS 7/7 (curl + browser screenshot)                                  |
+| UT-4  | Playwright clicks all 14 dashboard sidebar entries       | PASS 14/14, 0 console errors                                          |
+| UT-5  | Direct page.goto on 11 Purple Lab routes via /lab/ mount | PASS 11/11, 1 real error found (the route bug above)                  |
+| UT-6  | `loki memory` on real data                               | PARTIAL (index + timeline OK; retrieve + pattern broken -- B-2 below) |
+| UT-7  | `loki provider list/show`                                | PASS                                                                  |
+| UT-8  | `loki kpis` + JSON validation                            | PASS (real $1.48 from UT-3 reflected)                                 |
 
 ### Other bugs documented (NOT yet fixed; v7.6.1 / v7.7.0)
 
@@ -3042,9 +3102,9 @@ Dashboard true-integration arc + comprehensive permutation testing artifact.
   visible migration hint without breaking any existing workflow.
 - `artifacts/merge3-7-permutation-report.md` (new) -- 24-scenario CLI
   permutation test report (23 PASS / 1 pre-existing non-Merge failure)
-  + 20-screenshot UI permutation summary across dashboard sidebar
-  pages and Purple Lab pages via mount. SDLC fleet role coverage
-  table included.
+  - 20-screenshot UI permutation summary across dashboard sidebar
+    pages and Purple Lab pages via mount. SDLC fleet role coverage
+    table included.
 - `artifacts/merge3-screenshots/` (5 PNGs from v7.5.29 standalone test)
 - `artifacts/merge4-screens/` (15 PNGs from v7.5.30 mount test)
 
@@ -3057,7 +3117,6 @@ Dashboard true-integration arc + comprehensive permutation testing artifact.
 - Hard deprecation of `loki web` standalone (removing the command entirely)
   -- the user-safety Rule 0 requires keeping it working for at least 2
   minor releases after the merge ships.
-
 
 PATCH release. Phases Merge-4 + Merge-6 of the v7.5.29+ Purple-Lab-into-
 Dashboard true-integration arc. Purple Lab is now mounted into the
@@ -3072,7 +3131,7 @@ same FastAPI handlers -- one source of truth, no duplicated UI.
   returns 404 with a clear log warning.
 - `dashboard/static/index.html` -- adds "Lab" entry to the sidebar nav
   (after Escalations) and a corresponding `<div class="section-page"
-  id="page-lab">` containing an iframe pointing at `/lab/`.
+id="page-lab">` containing an iframe pointing at `/lab/`.
 - `dashboard/static/index.html` switchSection JS -- lazy-loads the iframe
   on first visit to the Lab section so the dashboard's initial paint
   isn't blocked by the Purple Lab bundle download.
@@ -3149,7 +3208,7 @@ Dashboard mount (Merge-4). No duplicated UIs.
 - `package.json` -- `prepublishOnly` extended to rebuild `web-app/dist`
   and verify `/lab/assets/` is baked into `index.html` before publish.
 - `Dockerfile` -- `COPY web-app/server.py web-app/auth.py web-app/models.py
-  web-app/crypto.py web-app/requirements.txt web-app/migrations/ web-app/dist/`
+web-app/crypto.py web-app/requirements.txt web-app/migrations/ web-app/dist/`
   and `pip install -r web-app/requirements.txt` so the image actually
   ships Purple Lab. Closes a gap where Docker users would get 503
   responses from `loki web`.
@@ -3162,8 +3221,9 @@ Dashboard mount (Merge-4). No duplicated UIs.
 3 reviewers (2 Opus + 1 Sonnet). Initial round: 1 APPROVE-minor (favicon
 fix) + 2 CONCERN-major (API/WS routing under `/lab/` + Dockerfile +
 local-ci gaps). All concerns addressed via the `standalone_app` wrapper
-+ Dockerfile + local-ci + prepublishOnly updates documented above.
-Final round: unanimous APPROVE expected (pending re-run).
+
+- Dockerfile + local-ci + prepublishOnly updates documented above.
+  Final round: unanimous APPROVE expected (pending re-run).
 
 ### NOT tested
 
@@ -3317,6 +3377,7 @@ NPM_TOKEN was rotated mid-session via `gh secret set NPM_TOKEN`
 Release workflow's publish-npm + publish-ts-sdk jobs were
 `gh run rerun --failed` and succeeded. All 4 distribution channels
 now at v7.5.27+:
+
 - npm: v7.5.27 (was v7.5.17 for the entire v7.5.18-v7.5.27 arc)
 - Homebrew: v7.5.27 (was skipped on every release of the arc)
 - Docker Hub: v7.5.27
@@ -3405,6 +3466,7 @@ Claude CLI exposes --enable-memory-tool / --enable-context-editing /
 Phase D MCP bundle).
 
 Post-arc work (deferred to separate releases):
+
 - Phase K: Measurable accuracy + efficiency KPIs
 - Phase L: Disclosed-default-on telemetry (BLOCKED on user ack of
   disclosed-default-on design)
@@ -3545,7 +3607,7 @@ when an alt endpoint is set without an override.
 - Live OpenRouter invocation. Routing primitive (ANTHROPIC_BASE_URL +
   LOKI_MODEL_OVERRIDE) is unit-tested on BOTH bash and Bun routes;
   we have not yet run `claude --dangerously-skip-permissions --model
-  <openrouter-id> -p ...` with ANTHROPIC_BASE_URL pointing at
+<openrouter-id> -p ...` with ANTHROPIC_BASE_URL pointing at
   OpenRouter and observed a successful response. Deferred to first
   user-driven session.
 - Live Ollama invocation (same as above; OpenRouter and Ollama share
@@ -3752,7 +3814,7 @@ read from the user environment.
 ### Changed
 
 - **`autonomy/loki::cmd_start`** lines 1487-1497 -- before `exec
-  "$RUN_SH"`, source the project-graph helper and call
+"$RUN_SH"`, source the project-graph helper and call
   `loki_project_graph_discover`. The exec is unchanged.
 - **`autonomy/run.sh::build_prompt`** lines 9234-9248 -- after
   `memory_context` injection, call `load_app_graph_context` and append
@@ -3868,7 +3930,7 @@ for dashboard visibility. No new CLI subcommands.
   Python tee-parser learns the `hook_event` record type. New
   `append_hook_event(event_name, payload)` writes a
   `{"type":"claude_hook_<lower>", "source":"claude_cli",
-  "timestamp":"<iso>", "payload":<record>}` envelope to
+"timestamp":"<iso>", "payload":<record>}` envelope to
   `.loki/events.jsonl` via `fcntl.flock` on the existing
   `.loki/events.jsonl.lock` sentinel. Honors
   `LOKI_HOOK_EVENTS=off`.
@@ -4174,6 +4236,7 @@ from existing Loki state. No new CLI subcommands. No new opt-in env vars.
 ### Verified flag wiring on installed CLI
 
 `claude --help` on the local Mac confirms:
+
 - `--effort <level>` (low|medium|high|xhigh|max)
 - `--max-budget-usd <amount>` (only works with --print, which is `-p`)
 - `--fallback-model <model>` (only works with --print)
@@ -4396,9 +4459,9 @@ PATCH release. Adds council transcript persistence across both bash and Bun coun
     `votes/iteration-N/member-M.txt` free-text files with regex fallback.
   - Path B: `council_evaluate()` + `council_aggregate_votes()` (v2 path) -- reads from
     structured `votes/round-N.json` with Priority 1; falls back to member txt files.
-  Wire-in calls added to `council_vote()` (after emit_event_json, Path A) and to
-  `council_evaluate()` at all exit branches (after DA check, Path B).
-  -- Dev E
+    Wire-in calls added to `council_vote()` (after emit_event_json, Path A) and to
+    `council_evaluate()` at all exit branches (after DA check, Path B).
+    -- Dev E
 
 - **REST API endpoints** (`dashboard/server.py`):
   - `GET /api/council/transcripts` -- list transcripts, descending by iteration;
@@ -4406,7 +4469,7 @@ PATCH release. Adds council transcript persistence across both bash and Bun coun
   - `GET /api/council/transcripts/{iteration_id}` -- fetch single transcript by id or
     return 404. Both endpoints use `_get_loki_dir()` for path resolution and return
     gracefully when the transcripts directory does not yet exist.
-  -- Dev B
+    -- Dev B
 
 - **Dashboard panel** (`dashboard-ui/scripts/build-standalone.js`):
   new `<loki-council-transcripts>` custom element added inside `id="page-council"` after
@@ -4484,9 +4547,9 @@ follow-ups. Zero breaking changes; every new behavior is opt-in or additive.
   (Purple Lab on port 57375 vs Operations Dashboard on port 57374) -- closes
   the v7.5.12 UAT "loki web vs dashboard confusion" gap.
 - **`.github/workflows/sentrux-real.yml`** -- new workflow, manual
-  + nightly schedule, runs `tests/integration/test_sentrux_real.sh` against
-  the real binary on Linux. `continue-on-error: true`, does not block any
-  other workflow.
+  - nightly schedule, runs `tests/integration/test_sentrux_real.sh` against
+    the real binary on Linux. `continue-on-error: true`, does not block any
+    other workflow.
 
 ### Fixed
 
@@ -4586,7 +4649,7 @@ and a `loki doctor` line that reports presence.
   - `gate [<path>]`: parses verdict (OK/DEGRADED/UNKNOWN), exits 1 on DEGRADED,
     2 on UNKNOWN or when sentrux is unavailable.
   - `status [<path>]`: prints version + baseline quality.
-  Subcommand wired into the dispatch table next to `doctor`.
+    Subcommand wired into the dispatch table next to `doctor`.
 - **autonomy/loki: cmd_doctor sentrux check**. One line in the optional-services
   section reports `sentrux <version>` (PASS) or "not installed" (WARN). Mirrors
   the existing ChromaDB and MiroFish optional-service entries. JSON output
@@ -4686,7 +4749,7 @@ of-life regressions.
   `.tsx` files producing 9 `ERR_UNKNOWN_FILE_EXTENSION` stack traces
   per iteration. Fixed in BOTH routes:
   - `autonomy/run.sh:5566`: routes `.ts/.tsx` to `tsc --noEmit
-    --allowJs --jsx preserve --target esnext` if `tsc` on PATH;
+--allowJs --jsx preserve --target esnext` if `tsc` on PATH;
     skips with informational log otherwise.
   - `loki-ts/src/runner/quality_gates.ts:266-271`: defensive filter
     excludes `.ts/.tsx` from the node-check enumeration.
@@ -4755,35 +4818,35 @@ of-life regressions.
 
 - **Doc gate hard-required CLAUDE.md + SKILL.md** (ship-blocker for
   every external user): `loki-ts/src/runner/quality_gates.ts:1100-
-  1115` (listDocFiles) made `CLAUDE.md` and `SKILL.md` `required:
-  false`. Only `README.md` is required. Comment explains they are
+1115` (listDocFiles) made `CLAUDE.md` and `SKILL.md` `required:
+false`. Only `README.md` is required. Comment explains they are
   loki-mode-internal artifacts. New regression test for user-style
   repo with only README.md.
 - **Static analysis hardcoded to loki-mode repo layout** (ship-
   blocker): `quality_gates.ts:242-308` (runStaticAnalysis) replaced
   hardcoded `autonomy/*.sh + scripts/*.js` with diff-based
   enumeration mirroring the bash route. Chain: `git diff --name-only
-  HEAD~1 HEAD` -> `git diff --cached` -> `git ls-files`. Filters to
+HEAD~1 HEAD` -> `git diff --cached` -> `git ls-files`. Filters to
   `.sh|.js|.mjs|.cjs`, skips `.ts/.tsx` (handled by Dev9 below),
   skips deletions. Single-commit and shallow-clone fallbacks
   covered.
 - **TS gate ignored tsconfig.json paths**: `autonomy/run.sh:5678-
-  5747` (TS branch). When tsconfig.json exists, runs `tsc --noEmit
-  -p .` ONCE inside `${TARGET_DIR}` so `paths`/`baseUrl`/`types`
+5747` (TS branch). When tsconfig.json exists, runs `tsc --noEmit
+-p .` ONCE inside `${TARGET_DIR}` so `paths`/`baseUrl`/`types`
   resolve. Errors filtered to changed files only; pre-existing
   errors in unchanged files are logged but not blocking. Fixes the
   "@/components/x cannot find module" failure on every Next.js /
   NestJS / monorepo project.
 - **Shellcheck blocked on style severity**: `autonomy/run.sh:5790-
-  5798`. Added `-S error` so only error severity blocks. Honors
+5798`. Added `-S error` so only error severity blocks. Honors
   `.shellcheckrc` automatically.
 - **Dashboard React null guards**: 7 components fixed for
   `TypeError: Cannot read properties of undefined`:
   loki-cost-dashboard.js, loki-learning-dashboard.js,
   loki-memory-browser.js, loki-tool-insights.js, loki-analytics.js,
   loki-provider-health.js, loki-task-board.js. Pattern: `Number(x
-  ?? 0).toFixed(N)`, `(x ?? 0).toLocaleString()`, `(x ??
-  '?').charAt(0)`, `String(x ?? '').substring(0, N)`. Bundle mirror
+?? 0).toFixed(N)`, `(x ?? 0).toLocaleString()`, `(x ??
+'?').charAt(0)`, `String(x ?? '').substring(0, N)`. Bundle mirror
   in `dashboard/static/index.html`.
 - **Exit-code propagation audit**: `autonomy/run.sh:10968-10984`.
   Provider exits 130 (SIGINT), 143 (SIGTERM), 137 (SIGKILL) now
@@ -4963,7 +5026,7 @@ No behavior changes for users on the default flow.
   without filtering by `_namespace`. A `MemoryRetrieval(namespace="A")`
   query could return memories belonging to project B. Fixed:
   - `memory/storage.py` now stamps `_namespace = self._namespace or
-    "default"` on every `save_episode`, `save_pattern`, `save_skill`.
+"default"` on every `save_episode`, `save_pattern`, `save_skill`.
   - `memory/retrieval.py` adds `_belongs_to_namespace(result)` filter
     applied in `_keyword_search_episodic`, `_keyword_search_semantic`,
     `_keyword_search_skills`, `_keyword_search_anti_patterns`,
@@ -4996,7 +5059,7 @@ No behavior changes for users on the default flow.
 - **L1#5 + L1#9 intervention HUMAN_INPUT TOCTOU + symlink race**:
   wrapped the validate-and-consume sequence (lstat -> stat -> read ->
   rename) in `intervention.ts` in `withFileLockSync(sp.humanInput,
-  ...)`. Re-check inside the lock handles race-on-consume. Closes the
+...)`. Re-check inside the lock handles race-on-consume. Closes the
   symlink-swap window between `existsSync` and `lstat`.
 
 - **L17#3 quality_gates.ts static analysis sequential loop**: was
@@ -5025,7 +5088,7 @@ No behavior changes for users on the default flow.
 
 - **L9#2 /api/status auth scope**: added
   `dependencies=[Depends(auth.require_scope("read"))]` to `GET
-  /api/status`. Backward-compat preserved when
+/api/status`. Backward-compat preserved when
   `ENTERPRISE_AUTH_ENABLED=False` (default).
 
 - **autonomy/run.sh:483 eval audit**: confirmed safe -- Python emits
@@ -5045,7 +5108,7 @@ No behavior changes for users on the default flow.
 - **L20#7**: added `pyyaml>=6.0` to `web-app/requirements.txt` (web-
   app/server.py imports yaml).
 - **L13#4**: prepublishOnly now appends `&& test -f
-  ../dashboard/static/index.html` to fail-fast if dashboard build
+../dashboard/static/index.html` to fail-fast if dashboard build
   silently failed.
 - **protobufjs override fix**: serial-sed accident inflated the
   `overrides.protobufjs` pin from `>=7.5.5` (the original v7.5.5
@@ -5083,7 +5146,7 @@ No behavior changes for users on the default flow.
 - R1#3 `LOKI_STATIC_ANALYSIS_CONCURRENCY` decimal fractional values
   silently floor (e.g. "8.9" -> 8). Acceptable.
 - R1#4 events.jsonl mkdir-mutex stale-dir age fallback uses `||
-  echo 0` chain -- if both BSD/GNU stat fail simultaneously, age
+echo 0` chain -- if both BSD/GNU stat fail simultaneously, age
   would compute as huge and force-remove a live lockdir. Probability
   near zero; flagged for future hardening.
 - R4#1 retrieval.py legacy unstamped entries: minor accept-on-
@@ -5136,7 +5199,7 @@ No behavior changes for users on the default flow.
   append is atomic only for writes <PIPE_BUF and not all platforms
   honor it; under parallel-worktree contention the JSONL lines could
   interleave. Wrapped the append in `withFileLockSync(eventsPath,
-  ...)` matching the index.jsonl serialization added in v7.5.5.
+...)` matching the index.jsonl serialization added in v7.5.5.
 
 ### Documentation
 
@@ -5192,8 +5255,9 @@ PATCH release. Mega-batch: closes ALL deferred items from v7.5.7 council
 from the original 20-agent hunt that were triaged into this batch (MCP
 path-traversal, dashboard auth, bash quoting, doctor parallelization).
 Plus a parallel documentation audit team refreshed all top-level + skill
-+ reference + wiki + architecture docs against v7.5.8 reality. No
-behavior changes for users on the default flow.
+
+- reference + wiki + architecture docs against v7.5.8 reality. No
+  behavior changes for users on the default flow.
 
 ### Code
 
@@ -5207,7 +5271,7 @@ behavior changes for users on the default flow.
   in id, task_id, git_sha, git_branch, provider, phase fields (R4#2).
   `rebuildIndex` now emits a structured `checkpoint.metadata.dropped`
   event to `.loki/events.jsonl` with `{timestamp, type, checkpoint_dir,
-  reason, field}` (R3#1) instead of just a console.warn -- dashboards
+reason, field}` (R3#1) instead of just a console.warn -- dashboards
   can now surface corruption.
 - **autonomous.ts safety**: replaced `as unknown as T` cast in the
   dynamic module loader with a per-key validator that throws a clear
@@ -5235,18 +5299,18 @@ behavior changes for users on the default flow.
 - **safe_open migration in 4 functions**: `loki_get_hotspots:1885`,
   `loki_get_co_changes:1943`, `loki_get_doc_coverage:1996`, and
   `loki_findings:2080` (also switched `os.path.join(review_path,
-  entry)` to `safe_path_join` so a malicious `os.listdir` entry can
+entry)` to `safe_path_join` so a malicious `os.listdir` entry can
   no longer escape the validated `review_path`).
 - **error envelope normalization**: `loki_code_search` and
   `loki_code_search_stats` no longer leak raw exception strings on
   ChromaDB failures. Returns `{"error": "Code search failed",
-  "code": "CHROMA_QUERY_ERROR", "hint": "..."}` (and the stats
+"code": "CHROMA_QUERY_ERROR", "hint": "..."}` (and the stats
   variant) -- raw exception logged server-side via the existing
   logger.
 - **loki_learnings corrupt-JSON envelope**: corruption is no longer
   silently masked as an empty array. Returns `{"error": "Learning
-  file corrupted", "code": "LEARNINGS_CORRUPT", "path": <path>,
-  "entries": []}` so callers can detect data corruption.
+file corrupted", "code": "LEARNINGS_CORRUPT", "path": <path>,
+"entries": []}` so callers can detect data corruption.
 
 ### Dashboard hardening
 
@@ -5268,15 +5332,15 @@ behavior changes for users on the default flow.
 ### Bash hardening
 
 - **autonomy/sandbox.sh:1323**: switched `docker exec ... bash -c "cd
-  /workspace && $cmd"` to `docker exec -w /workspace ... bash -lc --
-  "$cmd"`. The `-w /workspace` decouples the workdir from `$cmd` so a
+/workspace && $cmd"` to `docker exec -w /workspace ... bash -lc --
+"$cmd"`. The `-w /workspace` decouples the workdir from `$cmd` so a
   malformed value cannot corrupt the `cd`; the `--` enforces argv
   positioning. Trust contract documented in a comment.
 - **autonomy/app-runner.sh:443/459**: tightened the
   `_validate_app_command` whitelist to `^[A-Za-z0-9_./=\\ -]+$` (no
   tabs, newlines, glob chars, quotes, parens, braces, tildes,
   backslashes), and switched `bash -c "$_APP_RUNNER_METHOD"` to `bash
-  -lc -- "$_APP_RUNNER_METHOD"`. Validator now rejects 21 attack
+-lc -- "$_APP_RUNNER_METHOD"`. Validator now rejects 21 attack
   classes; legitimate templates (npm/cargo/python/etc.) still
   accepted (28 tests covering both directions).
 - **autonomy/run.sh:4065-4067**: pre-escaped `$project_name` and
@@ -5317,6 +5381,7 @@ both Bun and bash routes. local-ci 20/20 GREEN.
 ### Documentation
 
 Parallel 8-agent doc audit. Files updated:
+
 - README.md: gate count corrected to 11, Docker tag pinned to
   v7.5.8, healing/memory/MCP claims with file pointers, `loki run`
   deprecation noted, `loki heal` row added.
@@ -5393,7 +5458,7 @@ users on the default flow.
   appends can no longer interleave partial lines.
 - **Queue read-modify-write under lock (queues.ts)**: wrapped the
   `{sentinel-check + readExisting + modify + atomicWriteJson +
-  sentinel-write}` sequence of `populatePrdQueue`,
+sentinel-write}` sequence of `populatePrdQueue`,
   `populateBmadQueue`, `populateOpenspecQueue`, and
   `populateMirofishQueue` in `withFileLock(pendingPath, ...)`.
   Sentinel pre-check kept outside the lock for the common no-op fast
@@ -5402,7 +5467,7 @@ users on the default flow.
   sentinel. Three new tests cover the race regression.
 - **Shared atomic-write in quality_gates.ts**: the local
   `atomicWrite()` helper used a PID-only tmp suffix (`<target>.tmp.
-  <pid>`), racy under PID reuse in containers and intra-process
+<pid>`), racy under PID reuse in containers and intra-process
   concurrent writes. Replaced with the shared `atomicWriteText` from
   `src/util/atomic.ts` (per-call counter on the suffix). Migrated all
   7 call sites (writeCounts, selection.json, aggregate.json, findings,
@@ -5441,7 +5506,7 @@ users on the default flow.
   asserting that a passing gate resets prior failure count from 5
   to 0 (51 pass, was 50).
 - 21 expect()-call test file `loki-ts/tests/runner/providers_truthy.
-  test.ts` covering positive + negative forms.
+test.ts` covering positive + negative forms.
 
 ### Process
 
@@ -5688,7 +5753,7 @@ findings.
   response unparseable) the slot fails-safe to REJECT_OVERRIDE so a
   hung provider cannot silently approve a bypass.
 - **3-LLM panel by default**: panel composition is `[claude, gemini,
-  codex]` so a model-specific bias does not sweep the panel. Override
+codex]` so a model-specific bias does not sweep the panel. Override
   council aggregates votes via the existing 2-of-3 majority rule.
   Set `LOKI_OVERRIDE_JUDGES=claude,gemini` (csv) to customize, or
   `LOKI_OVERRIDE_PANEL_SIZE=1` for single-judge mode (cost control).
@@ -5741,7 +5806,7 @@ with `LOKI_INJECT_FINDINGS=0` etc.
 ### UX (the headline change)
 
 - **Default-on flip**: `LOKI_INJECT_FINDINGS / LOKI_OVERRIDE_COUNCIL /
-  LOKI_AUTO_LEARNINGS / LOKI_HANDOFF_MD` now default to ON in the Bun
+LOKI_AUTO_LEARNINGS / LOKI_HANDOFF_MD` now default to ON in the Bun
   route. Pre-v7.5.3 users had to opt IN by setting env=1; now the
   autonomous flow gets findings injection, override council on BLOCK,
   auto-learnings, and structured handoff docs out of the box.
@@ -5756,7 +5821,7 @@ with `LOKI_INJECT_FINDINGS=0` etc.
   exist. No new command required. Quiet on greenfield runs.
 - **`loki start` no-args prompt**: was `Continue? [y/N]` with default-N
   (caused accidental cancel); now `Generate PRD from codebase and
-  start? [Y/n]` with default-Y.
+start? [Y/n]` with default-Y.
 - **`bin/loki-mode.js` deprecation banner removed**: was firing on
   every TTY invocation since v7.4.12. The wrapper still works.
 
@@ -5863,8 +5928,8 @@ main; counter-evidence walkthrough documented end-to-end.
   tier for parity.
 - **executeRollback ENOENT on fresh project (uncovered by new
   rollback CLI tests)**: pre-v7.5.2 the function assumed `.loki/queue/`
-  + `.loki/state/` already existed; restoring into a fresh repo
-  failed. Now mkdirSync(parent, recursive) before each copy.
+  - `.loki/state/` already existed; restoring into a fresh repo
+    failed. Now mkdirSync(parent, recursive) before each copy.
 
 ### New surfaces
 
@@ -5959,7 +6024,7 @@ existing v7.5.0 feature flags; no new flags.
   a counter-evidence file with `"proofType": "made-up"` was accepted
   and flowed into judges/audit transcripts. Now validated against the
   documented union (`file-exists, test-passes, grep-miss,
-  reviewer-misread, duplicate-code-path, out-of-scope`); unknown values
+reviewer-misread, duplicate-code-path, out-of-scope`); unknown values
   are silently dropped at load time.
 - **B3 unvalidated learnings entries in `learnings_writer.ts:loadOrInit`**:
   a corrupt `relevant-learnings.json` with `null` or `{}` array entries
@@ -5975,8 +6040,8 @@ existing v7.5.0 feature flags; no new flags.
   the target directly. Two PAUSE escalations of the same gate within
   one wall-clock second silently overwrote each other; a crash
   mid-write left a truncated handoff doc. Now: ms preserved + per-pid
-  + per-process counter in the filename, atomic tmp+rename write.
-  Added test proving same-millisecond writes do not collide.
+  - per-process counter in the filename, atomic tmp+rename write.
+    Added test proving same-millisecond writes do not collide.
 
 ### Fixed -- UX (bin/loki, autonomy/loki, loki-ts/src/commands/doctor.ts)
 
@@ -6069,7 +6134,7 @@ Backward-compatible behind four feature flags, all default off.
 - `loki-ts/src/runner/findings_injector.ts` -- parses per-reviewer `*.txt`
   files in `.loki/quality/reviews/<id>/` with the same `\[(Critical|High|Medium|Low)\]`
   regex `quality_gates.ts:548` uses. Exposes `loadPreviousFindings(lokiDir,
-  iter?)` returning structured `Finding[]` records (severity, file, line,
+iter?)` returning structured `Finding[]` records (severity, file, line,
   reviewer, evidence). The pre-v7.5.0 prompt-build path only saw a comma-
   separated failure token; this module surfaces the actual findings so the
   next iteration's prompt can address them directly.
@@ -6130,6 +6195,7 @@ Backward-compatible behind four feature flags, all default off.
 ### Council review (pre-merge)
 
 3 parallel reviewers + verification loops:
+
 - R1 correctness: APPROVE_WITH_CHANGES -> all 5 mandatory fixes landed
   (override council short-circuit, atomic-write race, TOCTOU,
   findings-<iter>.json persistence, episodeBridge hermeticity).
@@ -6194,6 +6260,7 @@ the auditor never fires. Healing projects (`loki heal ...`) get the
 unchanged pre-v7.4.20 behavior.
 
 Implemented symmetrically:
+
 - `loki-ts/src/runner/quality_gates.ts` -- new `isHealingActive(cwd)`
   helper + `selectReviewers(diff, files, { healingActive })` opt
 - `autonomy/run.sh:6332` -- new `LOKI_REVIEW_HEALING_ACTIVE` env var
@@ -6239,6 +6306,7 @@ into each iteration prompt to a single epic, story, or task subtree.
   var never hides all the work.
 
 Implemented in `loki-ts/src/runner/build_prompt.ts`:
+
 - `filterBmadTreeByStory(tree, storyId)` (new)
 - `buildBmadContext()` and `formatBmadTasks()` honor the filter
 
@@ -6287,8 +6355,8 @@ big customer base after Claude, so parity matters.
 `--full-auto` (legacy preset) replaced with the explicit flags it
 expands to:
 
-- `--ask-for-approval never`        (was: implicit via `--full-auto`)
-- `--sandbox danger-full-access`    (was: implicit via `--full-auto`)
+- `--ask-for-approval never` (was: implicit via `--full-auto`)
+- `--sandbox danger-full-access` (was: implicit via `--full-auto`)
 
 Forward-compatible if the preset is renamed/removed in a future
 codex release. Readable in `ps`/process listings -- you can see
@@ -6298,6 +6366,7 @@ exactly what is being granted to codex without grokking the preset.
 broken-compat -- we are just opting into the canonical form.
 
 Applied symmetrically to:
+
 - `loki-ts/src/runner/providers.ts` (Bun-route)
 - `providers/codex.sh` (bash-route)
 
@@ -6316,10 +6385,12 @@ Applied symmetrically to:
 ### Tests
 
 `loki-ts/tests/runner/providers.test.ts` updated for new argv shape:
+
 - Old: `argv = [exec, --full-auto, prompt]`
 - New: `argv = [exec, --ask-for-approval, never, --sandbox, danger-full-access, ..., prompt]`
 
 Two NEW tests added:
+
 - `LOKI_CODEX_OUTPUT_LAST=false disables --output-last-message`
 - `LOKI_CODEX_WEB_SEARCH=true appends --search`
 
@@ -6383,18 +6454,18 @@ task-detail modal so it actually shows what we have.
   synthesizes a completion payload with confidence=medium. The
   prompt now tells the LLM about this fallback explicitly.
 
-- **Dashboard task-detail modal was empty for #todo-* tasks** (and
+- _*Dashboard task-detail modal was empty for #todo-* tasks_* (and
   hid the User Story for #prd-* tasks even though the backend was
   sending it). Two fixes:
   (a) `autonomy/run.sh` now enriches TodoWrite items with title,
-      description, source tag, and activeForm. The modal at least
-      explains "this is the LLM's internal scratch list, not a
-      PRD-derived work item".
+  description, source tag, and activeForm. The modal at least
+  explains "this is the LLM's internal scratch list, not a
+  PRD-derived work item".
   (b) `dashboard-ui/components/loki-task-board.js` now renders
-      `User Story` and `Source` modal sections (both gated on
-      data presence). PRD-derived tasks have user_story populated
-      from the parser; TodoWrite items have source="claude_code_
-      todowrite". Both were silently dropped before.
+  `User Story` and `Source` modal sections (both gated on
+  data presence). PRD-derived tasks have user_story populated
+  from the parser; TodoWrite items have source="claude_code_
+  todowrite". Both were silently dropped before.
 
 ### Added (dashboard frontend rebuild)
 
@@ -6430,8 +6501,8 @@ Ctrl+C.
   immediate pause on next `loki start`. Root cause: the init cleanup at
   `autonomy/run.sh:3052` cleaned `PAUSE`, `STOP`, `HUMAN_INPUT.md` but
   was never updated when `PAUSE_AT_CHECKPOINT` (and siblings `PAUSED.md`
-  + `COMPLETED`) were added to the signal-file family later. Classic
-  regression -- new files added without updating cleanup.
+  - `COMPLETED`) were added to the signal-file family later. Classic
+    regression -- new files added without updating cleanup.
 
   The user's reproduction:
   1. Prior session: user pressed Ctrl+C in checkpoint mode
@@ -6503,9 +6574,9 @@ smoke test (the "monitor/test/fix/release/repeat" loop, iteration 2).
   works.
 
   Verified against three scenarios:
-    - Bun-installed via `~/.bun/install/global/...`: detects "bun"
-    - Source-tree clone: detects "unknown" + suggests `git pull`
-    - Direct invocation by absolute path: works (was broken in v7.4.14)
+  - Bun-installed via `~/.bun/install/global/...`: detects "bun"
+  - Source-tree clone: detects "unknown" + suggests `git pull`
+  - Direct invocation by absolute path: works (was broken in v7.4.14)
 
 - **Better "unknown manager" error message.** Old message was
   "Cannot detect package manager"; new one detects whether the
@@ -6537,12 +6608,12 @@ the `loki self-update` command + a Bun-first README rewrite.
   Then runs the right upgrade command without you having to remember
   which one applies.
 
-  - `loki self-update`            -- upgrade in place via current manager
-  - `loki self-update --to bun`   -- switch to Bun (recommended for v8)
-  - `loki self-update --to npm`   -- switch to npm
-  - `loki self-update --to brew`  -- switch to Homebrew
-  - `loki self-update --check`    -- print detected manager and exit
-  - `loki self-update --help`     -- show usage
+  - `loki self-update` -- upgrade in place via current manager
+  - `loki self-update --to bun` -- switch to Bun (recommended for v8)
+  - `loki self-update --to npm` -- switch to npm
+  - `loki self-update --to brew` -- switch to Homebrew
+  - `loki self-update --check` -- print detected manager and exit
+  - `loki self-update --help` -- show usage
 
   Cross-manager switches install via the new manager FIRST (so a
   failed install does not leave you with no loki), then uninstall
@@ -6550,7 +6621,7 @@ the `loki self-update` command + a Bun-first README rewrite.
   have the new binary).
 
   Combines what was originally planned as TWO commands (`loki
-  self-update` for in-place + a separate `loki migrate` for npm->Bun)
+self-update` for in-place + a separate `loki migrate` for npm->Bun)
   into one. `loki migrate` is taken (codebase migration tool); the
   cross-manager switch is now `loki self-update --to <mgr>`.
 
@@ -6737,8 +6808,8 @@ re-pushing. Introduces strict pre-push local-CI gating per user mandate.
   - license-audit (direct + transitive)
   - npm audit with overrides
   - cleanup probe
-  Use `--fast` to skip SBOM, `--verbose` to see full output.
-  Exit code 0 = safe to push; nonzero = "DO NOT PUSH".
+    Use `--fast` to skip SBOM, `--verbose` to see full output.
+    Exit code 0 = safe to push; nonzero = "DO NOT PUSH".
 
 ### CLAUDE.md mandate
 
@@ -6782,7 +6853,7 @@ ARM64 hardware, paid services, etc.) or "calendar-bound" (Phase 6 sunset).
   were blind.
 - **dependency-snapshot.sh now records SHA-512 integrity (W2-R6).**
   Materializes a temporary `package-lock.json` via `npm install
-  --package-lock-only` and embeds it alongside the npm tree. Snapshot
+--package-lock-only` and embeds it alongside the npm tree. Snapshot
   JSON now includes `integrity_hash_count` so CI can fail if it ever
   drops to zero. Closes the dependency-confusion vulnerability
   window the v7.4.6 audit flagged.
@@ -6987,6 +7058,7 @@ outstanding W2-R3 race-condition findings.
 Before merging PR #158 (v7.3.0) and PR #157 (v7.4.0..v7.4.7) to main,
 the `v7.2.0-bash-final` annotated tag was created on
 `origin/main@0e56e6c5` so users can revert via:
+
 - `npm install -g loki-mode@7.2.0`
 - `git checkout v7.2.0-bash-final`
 
@@ -7140,14 +7212,14 @@ six Wave 1 agents shipped real, verified-by-file work.
   WERE real.
 - **W1-A6 cleanup report was FABRICATED.** Claimed `LOKI_DEBUG`
   helper added to autonomy/loki at 8 sites + bin/loki-mode.js banner
-  + `.claude/scheduled_tasks.lock` added to .gitignore. Verified
-  post-edit: zero `loki_debug`/`LOKI_DEBUG` references in
-  autonomy/loki, bin/loki-mode.js unchanged from pre-session
-  contents, .gitignore had no scheduled_tasks.lock entry.
-  **Partially redone**: scheduled_tasks.lock added to .gitignore
-  this commit. LOKI_DEBUG and the banner are deferred to a
-  follow-up patch (touching ~22K-line autonomy/loki responsibly
-  needs its own scope).
+  - `.claude/scheduled_tasks.lock` added to .gitignore. Verified
+    post-edit: zero `loki_debug`/`LOKI_DEBUG` references in
+    autonomy/loki, bin/loki-mode.js unchanged from pre-session
+    contents, .gitignore had no scheduled_tasks.lock entry.
+    **Partially redone**: scheduled_tasks.lock added to .gitignore
+    this commit. LOKI_DEBUG and the banner are deferred to a
+    follow-up patch (touching ~22K-line autonomy/loki responsibly
+    needs its own scope).
 - **W1-A5 CONTRIBUTING.md "rewrite" was FABRICATED.** Claimed full
   rewrite. `git diff CONTRIBUTING.md` returns empty -- file is
   unchanged from main. The other docs A5 claimed (README runtime
@@ -7816,7 +7888,7 @@ versions; the new shim auto-detects Bun and falls through to bash if missing.
   tarball via `prepack` lifecycle hook (graceful skip if Bun absent).
 - **CI matrix coverage** in .github/workflows/test.yml: new `bun-tests` job
   runs typecheck + bun test + both bash and shim routes for tests/test-cli-commands.sh
-  + hyperfine sanity bench. release.yml gains setup-bun for prepack.
+  - hyperfine sanity bench. release.yml gains setup-bun for prepack.
 - **Docker images** (Dockerfile, Dockerfile.sandbox) install pinned Bun 1.3.13
   and COPY loki-ts/dist so `loki <ported>` runs Bun inside container.
 - **Phase 4-5 research deliverables** under loki-ts/docs/{phase4,phase5}-research/:
@@ -7900,7 +7972,7 @@ Default behavior unchanged for non-VSCode users.
   the rebuilt 563KB `dashboard/static/index.html` (+1.6KB
   `dashboard-ui/dist/loki-dashboard-standalone.html`) with the panel
   registered. Verified via `grep -c "loki-managed-memory-panel"
-  dashboard/static/index.html` = 2 (was 0). Lesson: CLAUDE.md release
+dashboard/static/index.html` = 2 (was 0). Lesson: CLAUDE.md release
   workflow step 2 (build dashboard) is mandatory before EVERY release;
   missed in v7.1.0, added explicitly to release-day checklist via
   `cd dashboard-ui && npm run build:all` invocation.
@@ -7914,7 +7986,7 @@ Default behavior unchanged for non-VSCode users.
   cost estimate). The v7.0.2 NOT-tested entry "Docker container actual
   boot" is now CLOSED.
 - **Homebrew install works (with correct tap name).** `brew tap
-  asklokesh/tap` (NOT `asklokesh/loki-mode` as I misremembered),
+asklokesh/tap` (NOT `asklokesh/loki-mode` as I misremembered),
   `brew upgrade loki-mode` -> v7.1.0 live in `/opt/homebrew/bin/loki`.
   Old v6.82.0 cleanup verified. Documentation update added correct tap
   name to `docs/INSTALLATION.md`.
@@ -7969,8 +8041,8 @@ verdicts + 1 false-positive cleared.
   renders events table + memory-version lookup. Status-disabled state shows
   informational notice. Uses CSS custom properties + LokiElement base class
   matching existing panel conventions. Registered in `dashboard-ui/index.js`
-  + componentModules array. Backed by new public `get(endpoint)` method on
-  `loki-api-client.js`. E2E test added to `dashboard-ui/tests/e2e/dashboard.spec.js`.
+  - componentModules array. Backed by new public `get(endpoint)` method on
+    `loki-api-client.js`. E2E test added to `dashboard-ui/tests/e2e/dashboard.spec.js`.
 
 - **Live-API gated test infrastructure.** New `tests/live/` directory with
   `__init__.py`, `conftest.py`, `README.md`, and 3 test modules:
@@ -7995,7 +8067,7 @@ verdicts + 1 false-positive cleared.
 - **Bare SDK calls in `memory/managed_memory/client.py` now wrapped.**
   All 5 SDK call sites (`stores.list`, `stores.create`, `memories.create`,
   `memories.retrieve`, `memories.list`) wrapped in `try/except Exception
-  as e: raise ManagedDisabled(...) from e`. Pre-existing `ManagedDisabled`
+as e: raise ManagedDisabled(...) from e`. Pre-existing `ManagedDisabled`
   re-raised first to avoid double-wrapping. Original exception message
   embedded in the new message + chained via `from e`. Defensively
   consistent with the rest of the codebase. New unit test
@@ -8357,6 +8429,7 @@ silent shipping bug and produced the first measured A/B comparison of the
 magic debate gate.
 
 ### Fixed (real-world bug surfaced by actually running the orchestrator)
+
 - **`magic/` Python package was missing from npm tarball**
   (`package.json` `files` field) and from both Docker images
   (`Dockerfile`, `Dockerfile.sandbox`). Every `npm install -g loki-mode`
@@ -8369,6 +8442,7 @@ magic debate gate.
   restores the feature for all distribution channels.
 
 ### Added
+
 - **`benchmarks/magic-ab/`**: A/B benchmark harness (`run.sh`,
   `compare.py`, `prd.md`, `README.md`) that runs the same PRD twice
   -- once with `LOKI_GATE_MAGIC_DEBATE=true` and once with `false`
@@ -8384,17 +8458,19 @@ magic debate gate.
   multi-component PRD over more iterations.
 
 ### Verification (executed live, not just static)
+
 - `loki start --provider claude` ran twice end-to-end (gate ON and
   gate OFF arms). Both completed cleanly in 1 iteration with status
   `completion_promise_fulfilled`.
 - BOOTSTRAP hook fired: `[magic] Extracted design tokens: 0 colors,
-  0 spacing` -- confirming `magic/core/design_tokens.py` is reachable
+0 spacing` -- confirming `magic/core/design_tokens.py` is reachable
   and runs (the 0/0 is the correct empty-codebase result, not a bug).
 - `npm pack --dry-run | grep magic/ | wc -l` -> 20 files now in
   tarball (was 0 before this commit).
 - Pre-push hook 567/567 pass.
 
 ### Known follow-ups (not blocking this release)
+
 - Multi-iteration A/B (5-10 iters per arm) on a multi-component PRD
   to surface the gate's effect under realistic conditions.
 - PRD scanner vocab does not match "Counter" -- the seeded specs were
@@ -8415,6 +8491,7 @@ backend half of the dynamic model catalog wiring, and a weekly cron that surface
 new provider models for review.
 
 ### Fixed
+
 - **Release gate dependency install** (`.github/workflows/release.yml`):
   the gate now installs the same package set as `python-tests` in
   `test.yml` (`fastapi httpx pydantic sqlalchemy[asyncio] aiosqlite uvicorn`).
@@ -8422,13 +8499,14 @@ new provider models for review.
   with `ModuleNotFoundError: httpx / sqlalchemy` and blocked the publish.
 
 ### Added
+
 - **`/api/providers/models` endpoint** (`dashboard/server.py`): returns
   `providers/model_catalog.json` verbatim with a degraded fallback if the
   file is missing. Future frontend rebuilds can drop hardcoded model lists
   in favour of this endpoint -- this release ships the backend half only,
   so the change is purely additive.
 - **`tools/regen-state-machine-refs.py`**: scans
-  `docs/architecture/STATE-MACHINES.md` for ``<file>:<line> (func_name)``
+  `docs/architecture/STATE-MACHINES.md` for `<file>:<line> (func_name)`
   patterns, locates each named function in the source, and reports or fixes
   any drift. Run `--fix` to rewrite, `--strict` for CI gating. Initial run
   on this commit corrected 12 stale line references (run.sh and
@@ -8446,11 +8524,13 @@ new provider models for review.
   vs. merged so contributor expectations are clear up front.
 
 ### Changed
+
 - `docs/architecture/STATE-MACHINES.md`: 12 line-number references updated
   by `regen-state-machine-refs.py --fix`. Function names are unchanged;
   only the trailing line numbers moved as the source files grew.
 
 ### Verification
+
 - Pre-push hook: 567/567 pytest pass.
 - `python3 tools/regen-state-machine-refs.py` -> "OK -- no drift".
 - `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/model-catalog-probe.yml'))"`: valid.
@@ -8466,6 +8546,7 @@ server-side gate that blocks the Release workflow from running until tests
 pass. Both land in this release.
 
 ### Added
+
 - **Pre-push git hook** (`.githooks/pre-push`): runs `bash -n` on
   `autonomy/run.sh` and `autonomy/loki`, then `python3 -m pytest -q`.
   Aborts the push if anything fails. Bypass with `PRE_PUSH_SKIP=1 git push`
@@ -8474,6 +8555,7 @@ pass. Both land in this release.
   `git config core.hooksPath .githooks`. Idempotent.
 
 ### Changed
+
 - **`.github/workflows/release.yml`**: new `gate` job runs `bash -n` and
   `pytest` before any publish job. All downstream jobs (`release`,
   `publish-npm`, `publish-docker`, `publish-vscode`, `publish-ts-sdk`,
@@ -8490,6 +8572,7 @@ pass. Both land in this release.
   idiom, removing the `PydanticDeprecatedSince20` warning from CI logs.
 
 ### Verification
+
 - `.githooks/pre-push` executes locally: bash syntax clean, 567/567
   pytest green.
 - `python3 -m pytest -W error::DeprecationWarning tests/test_api_v2.py`
@@ -8515,6 +8598,7 @@ under the maintainer's release cadence so version-bump and CHANGELOG cadence
 stay consistent.
 
 ### Fixed
+
 - **`track_iteration_start` unbound-variable crash** (`autonomy/run.sh:3598`):
   under `set -uo pipefail`, `local task_json` without an initializer becomes
   unset. When the pending queue is empty (iteration 2+ on many runs), the
@@ -8532,7 +8616,7 @@ stay consistent.
   block. Matches the style already used by the neighbouring Glob branch.
 - **OpenSpec sentinel leaks tasks across changes**
   (`autonomy/run.sh populate_openspec_queue`, `autonomy/openspec-adapter.py
-  parse_tasks`): the sentinel `.loki/queue/.openspec-populated` was a
+parse_tasks`): the sentinel `.loki/queue/.openspec-populated` was a
   single-touch marker, so switching `--openspec A` to `--openspec B` left
   change A's tasks in the pending queue and silently skipped loading B.
   Fix: sentinel now stores change path + content hash (two lines); same
@@ -8545,6 +8629,7 @@ stay consistent.
   trigger a clean reload.
 
 ### Added
+
 - `tests/test-openspec-sentinel.sh` — 10 focused integration tests covering
   the six state transitions (fresh run, crash-restart, change switch,
   content edit, non-OpenSpec task preservation, legacy-sentinel upgrade).
@@ -8556,6 +8641,7 @@ stay consistent.
   is identical on macOS and Linux (no `md5sum` vs `md5 -q` fork).
 
 ### Closed
+
 - PR #152 (@alilxxey) — `task_json` init. Rolled into this release.
 - PR #153 (@alilxxey) — Grep branch quoting. Rolled into this release.
 - PR #151 (@vishnujayvel) — OpenSpec sentinel scope. Rolled into this release.
@@ -8569,6 +8655,7 @@ extractors now work on arbitrary project layouts (not just loki-mode's) and
 the memory bridge's happy path works end-to-end against the real memory API.
 
 ### Added
+
 - **Dynamic model catalog** (`providers/model_catalog.json`, `providers/models.sh`):
   single source of truth for provider/tier -> model ID mapping. New releases
   update one JSON file; every provider, doc, and dashboard picks it up.
@@ -8582,6 +8669,7 @@ the memory bridge's happy path works end-to-end against the real memory API.
   tool registration/callability, and the memory bridge store-then-recall path.
 
 ### Fixed
+
 - **Design token extractor** (`magic/core/design_tokens.py`): previously only
   scanned loki-mode-specific paths (`web-app/src/`, `dashboard-ui/`) and
   returned 0 colors / 0 spacing for any other project. Now uses generic
@@ -8600,6 +8688,7 @@ the memory bridge's happy path works end-to-end against the real memory API.
   `retrieve_relevant(context=..., top_k=...)`.
 
 ### Changed
+
 - `providers/cline.sh` and `providers/aider.sh` default model now resolves
   from the catalog instead of a hardcoded dated ID.
 - `web-app/src/pages/SettingsPage.tsx` + `SystemSettingsPage.tsx`: default
@@ -8609,6 +8698,7 @@ the memory bridge's happy path works end-to-end against the real memory API.
   Sonnet 4.6 references.
 
 ### Verification
+
 - `python3 tests/test_magic_extractors.py` -- 10/10 PASS
 - `bash -n providers/{claude,cline,aider,models}.sh autonomy/run.sh` -- all clean
 - `bash -c 'source providers/models.sh; loki_latest_model claude planning'` -> `claude-opus-4-7`
@@ -8622,6 +8712,7 @@ Magic Modules is now woven into the autonomous orchestrator. Users do not run
 components during normal RARV-C phases.
 
 ### Added
+
 - **BOOTSTRAP hook** (`autonomy/run.sh`): design tokens auto-extracted from
   project at iteration 0; saved to `.loki/magic/tokens.json`.
 - **REASON phase** (`magic/core/prd_scanner.py`): PRD scanner detects UI
@@ -8647,6 +8738,7 @@ components during normal RARV-C phases.
   magic update from seeded spec.
 
 ### Fixed
+
 - `update_components()` accepts arbitrary kwargs (registry_path etc.) for
   CLI-call compatibility.
 
@@ -8658,6 +8750,7 @@ Inspired by [MagicModules](https://github.com/romannurik/MagicModules-Experiment
 multi-persona debate (MoMoA) into a native Loki subsystem.
 
 ### Added
+
 - **`loki magic` CLI**: New command family with 6 subcommands
   - `magic generate <name>` -- create React + Web Component from description, spec, or screenshot
   - `magic update` -- incremental regen via SHA256 freshness check
@@ -8701,11 +8794,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **Integration tests**: `tests/test-magic.sh` -- 6-case end-to-end test suite.
 
 ### Fixed (carried forward from 6.75.x)
+
 - AI Chat sidebar UX; ProjectWorkspace refactor; ShellCheck green.
 
 ## [6.72.0] - 2026-03-24 - Dark Mode, RBAC/Teams, GitPanel, Template Gallery, CI/CD Pipeline, NotificationSystem
 
 ### Added
+
 - **BuildActivityFeed** (sprint-2): Real-time build activity stream in Purple Lab dashboard showing agent actions, file changes, and build events as they happen
 - **DeployPanel** (sprint-2): Integrated deployment control panel with one-click deploy, environment selection, and live deployment status tracking
 - **CheckpointTimeline** (sprint-3): Visual timeline of project checkpoints with diff viewer, restore capability, and checkpoint annotations
@@ -8721,6 +8816,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **CI/CD Pipeline** (sprint-5): Built-in CI/CD pipeline configuration with automatic test running, build verification, and deployment gating
 
 ### Fixed (117 bugs from 20-agent parallel hunt)
+
 - **CLI** (14 fixes): Shell injection via unquoted paths (x14), PID recycling guard, overwrite protection, division by zero, exit->return (x7)
 - **Purple Lab** (8 fixes): Crypto import crash, orphaned processes, path disclosure (x2), arbitrary projectDir, missing size limit, race conditions, input validation
 - **Dashboard** (7 fixes): Unauthenticated token endpoint, unauthenticated focus/token-listing endpoints, file handle leak, input validation (x3), asyncio deprecation
@@ -8739,6 +8835,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.63.0] - 2026-03-22 - PRD-to-Task Parser with Rich Task Details
 
 ### Added
+
 - `populate_prd_queue()` function in `autonomy/run.sh` -- extracts features/requirements from plain PRD markdown into structured task entries with title, description, acceptance criteria, user stories, priority, and project name
 - PRD parser runs once (idempotent via `.prd-populated` sentinel) and skips if BMAD/OpenSpec/MiroFish adapters already populated tasks
 - Dashboard task API (`GET /api/tasks`) now passes through `acceptance_criteria`, `user_story`, `project`, and `source` fields from queue files
@@ -8748,6 +8845,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.62.1] - 2026-03-22 - State Manager Fixes, CI Stability, Config Mappings
 
 ### Fixed
+
 - **State Manager** (7 bugs): ABBA deadlock prevention in refresh_cache, atomic read-modify-write in update_state, correct concurrent_with semantics, singleton race condition with double-checked locking, version cleanup filters orphan temp files, optimistic_update uses deepcopy, _merge_values handles unhashable types
 - **Parallel Workflows**: 12 workflow fixes verified and applied (branch naming, merge, signal files)
 - **CI Test Stability**: Remove cross-test pkill in memory test suites that killed parallel test runs on CI
@@ -8757,6 +8855,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.62.0] - 2026-03-22 - 215-Bug Mega-Fix: Full Codebase Audit Resolution
 
 ### Fixed (215 bugs across 20 components)
+
 - **CLI** (35 bugs): Shell injection via Python interpolation, unbound variable crashes, --mirofish flag eating next arg, template bash 3.2 incompatibility, config type coercion
 - **Orchestrator** (28 bugs): ITERATION_COUNT persistence, stale daily log detection, non-atomic state writes, gate escalation PAUSE path, retry counter counting successes
 - **Purple Lab** (30 bugs): Dead code after stop_session, missing session.reset(), pexpect NameError, secrets missing in chat, pause state not tracked, pip installing into server env
@@ -8776,6 +8875,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **Cross-cutting** (12 bugs): Queue file race conditions, non-atomic session.json, log truncation invalidating indices, temp file leaks
 
 ### Added
+
 - 43 new CLI bug-fix regression tests (tests/test-bugfix-audit.sh)
 - 44 new Purple Lab regression tests (web-app/tests/test_server.py)
 - Bug audit report at docs/BUG-AUDIT-v6.61.0.md (215 bugs documented)
@@ -8783,11 +8883,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.61.0] - 2026-03-22 - Purple Lab Security and Reliability Overhaul
 
 ### Security
+
 - Fixed critical shell injection vulnerability in dev server startup (shell=True with user input)
 - Hardened CORS: restricted methods, headers, and added wildcard origin guard
 - Added Pydantic field validator to reject dangerous shell metacharacters in dev commands
 
 ### Fixed
+
 - Dashboard /api/projects returning 500 on database errors (added proper error handling)
 - Auto-fix tight loop causing resource exhaustion (added exponential backoff + circuit breaker)
 - Process cleanup only killing parent process, leaving orphans (now uses process groups via os.killpg)
@@ -8798,6 +8900,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Database init failures silently breaking all DB routes (added error handling and health check)
 
 ### Improved
+
 - WebSocket connection limits (MAX_WS_CLIENTS=50, MAX_TERMINAL_PTYS=20)
 - PID tracking now covers dev server, auto-fix, and chat processes (not just session)
 - Python framework detection reads only first 1KB instead of entire files
@@ -8806,6 +8909,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.60.0] - 2026-03-21 - MiroFish Market Validation Integration
 
 ### Added
+
 - MiroFish swarm intelligence adapter (`autonomy/mirofish-adapter.py`) for pre-build market validation
 - CLI flags: `--mirofish`, `--mirofish-docker`, `--mirofish-rounds`, `--mirofish-timeout`, `--mirofish-bg`, `--no-mirofish`
 - Non-blocking background pipeline: ontology generation, graph building, simulation, report generation
@@ -8820,6 +8924,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.59.0] - 2026-03-21 - AI Chat as Real Agent Interface + Auto-Fix Error Loop
 
 ### Added
+
 - Error-aware chat: AI chat now auto-injects dev server errors and quality gate failures into context
 - Auto-fix loop: dev server crashes trigger automatic error repair (up to 3 attempts with circuit breaker)
 - Fix endpoint: POST /api/sessions/{id}/fix for manual error fixing via UI
@@ -8832,12 +8937,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.58.1] - 2026-03-21 - fix: persist config selections, hide empty activity tabs
 
 ### Fixed
+
 - Persist config selections across sessions
 - Hide empty activity tabs in dashboard UI
 
 ## [6.58.0] - 2026-03-21 - 3-dot project menu, static file fix, Docker-first, UI polish
 
 ### Added
+
 - 3-dot context menu on project cards (Open, Open in new tab, Copy path, Delete)
 - Docker Compose as highest-priority dev server detection (isolated containers)
 - LLM instructed to generate Dockerfile + docker-compose.yml for all projects
@@ -8847,6 +8954,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Auto-install npm/pip dependencies before dev server start
 
 ### Fixed
+
 - Static file serving: replaced broken StaticFiles mount with direct catch-all serving
 - Preview iframe points directly to localhost:port (fixes CSS/JS for Next.js and all frameworks)
 - Preview URL bar shows path only, not full http://localhost:3000/
@@ -8861,6 +8969,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.57.2] - 2026-03-21 - Docker-first dev server, multi-select delete, Expo QR, 7 framework detections
 
 ### Added
+
 - Docker Compose detection as highest-priority dev server strategy (isolated containers, no port conflicts)
 - Multi-select delete for projects: checkbox on hover, Select All / Clear / Delete(N) bulk actions, red ring highlight on selected cards
 - Delete projects from Projects page (trash icon, confirmation dialog, full cleanup: files, node_modules, processes, PTY, dev server)
@@ -8875,23 +8984,27 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - LLM instructed to generate Dockerfile + docker-compose.yml for all new projects
 
 ### Changed
+
 - Delete and select buttons always visible on project cards (not just on hover)
 - Preview URL bar shows path only, not full localhost URL
 
 ## [6.57.1] - 2026-03-21 - Remove beforeunload warning on PRD page refresh
 
 ### Fixed
+
 - Remove beforeunload warning on PRD page refresh (content persisted to sessionStorage)
 
 ## [6.57.0] - 2026-03-21 - Preview iframe direct localhost URL (fixes Next.js/framework preview)
 
 ### Fixed
+
 - Preview iframe now loads http://localhost:{port}/ directly instead of routing through proxy path prefix (/proxy/sessionId/) which broke absolute asset URLs in Next.js and other frameworks
 - Frameworks using absolute URL references (Next.js, etc.) now render correctly in Purple Lab preview panel
 
 ## [6.56.0] - 2026-03-21 - Project delete, Expo QR, stack-agnostic detection
 
 ### Added
+
 - Delete projects from Projects page (trash icon, confirmation dialog, full cleanup: files, node_modules, processes, PTY, dev server)
 - Expo/React Native QR code preview for Expo Go mobile testing
 - Java/Spring Boot detection (Maven + Gradle with wrapper support)
@@ -8903,6 +9016,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Port detection patterns for Tomcat, Rails, Laravel, Phoenix
 
 ### Fixed
+
 - Preview iframe points directly to localhost:port (fixes CSS/JS asset loading for all frameworks)
 - beforeunload dialog suppressed globally (was blocking page refresh)
 - Proxy error handler with logging (catches and reports actual errors instead of generic 500)
@@ -8911,11 +9025,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.55.0] - 2026-03-21 - Auto-install deps, portless, dev server fixes
 
 ### Added
+
 - Auto-install dependencies before starting dev server (npm install if node_modules missing, pip install if requirements.txt)
 - Portless integration for named .localhost URLs (optional, falls back gracefully)
 - Dev server searches subdirectories for package.json (nested project structures)
 
 ### Fixed
+
 - Preview-info returns "npm run dev" instead of raw script content ("next dev" failed because next is a local dep)
 - Dev server Start button now passes the detected command to the API
 - Dev server start endpoint returns 400 with message instead of crashing with 500
@@ -8925,6 +9041,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.54.0] - 2026-03-21 - Dev server Start fix, AI Chat noise filter
 
 ### Fixed
+
 - Dev server Start button now passes detected command (was calling API without command, causing "No dev command detected" error)
 - Restart button also passes the last known command
 - AI Chat filters raw Claude tool-use output ([Tool: Read], [Result], [Thinking]) for cleaner display
@@ -8932,6 +9049,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.53.0] - 2026-03-21 - npm package fix, 58/58 E2E pass, auto-install pexpect
 
 ### Fixed
+
 - npm package now includes auth.py, models.py, crypto.py, migrations/, Dockerfile, K8s manifests
 - postinstall auto-installs Python deps (pexpect, watchdog, httpx) so terminal works out of the box
 - Terminal auto-installs pexpect if missing; closes with code 4000 (no retry loop) if install fails
@@ -8942,24 +9060,28 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.52.0] - 2026-03-21 - Cloud readiness: encryption, migrations, linting
 
 ### Added
+
 - Fernet encryption for secrets (activates when PURPLE_LAB_SECRET_KEY is set)
 - Alembic database migrations with initial schema (5 tables)
 - ESLint 9 flat config (typescript-eslint + react-hooks + react-refresh)
 - crypto.py module with encrypt_value/decrypt_value helpers
 
 ### Fixed
+
 - FastAPI lifespan: replaced deprecated @app.on_event with async context manager
 - Legacy plaintext secrets remain readable after encryption is enabled
 
 ## [6.51.0] - 2026-03-20 - Test stability, Docker production readiness
 
 ### Added
+
 - web-app/Dockerfile for Purple Lab standalone container (multi-stage: Node build + Python runtime)
 - Chat mode tests (quick/standard/max command construction)
 - ANSI stripping tests (3 test cases covering color, bold, cursor codes)
 - data-testid attributes on Sidebar user section for E2E testability
 
 ### Fixed
+
 - All E2E tests pass (29/29, 20 skipped for session-dependent tests, 0 failures)
 - Backend tests pass (53/53, 11 skipped for optional deps)
 - OnboardingOverlay storageState value corrected ('1' not 'true')
@@ -8973,6 +9095,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.50.1] - 2026-03-20 - AI Chat fix, mktemp fix, test stability
 
 ### Fixed
+
 - AI Chat: all modes now use `loki quick` for focused changes (standard mode was incorrectly running `loki start` with PRD)
 - AI Chat: strip ANSI escape codes from output (raw `[0;32m` codes no longer shown)
 - AI Chat: detect uncommitted + staged + committed file changes (not just HEAD~1)
@@ -8983,6 +9106,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.50.0] - 2026-03-20 - Purple Lab v2: Production IDE Platform
 
 ### Added
+
 - Real interactive terminal (pexpect PTY + xterm.js) with multi-tab support
 - Dev server manager with auto-detection for 8+ frameworks (Vite, Next.js, Django, Flask, Express, Go, Rust)
 - HTTP/WebSocket proxy for live preview with HMR support
@@ -9000,6 +9124,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - 404 page, mobile responsive sidebar
 
 ### Fixed
+
 - Terminal tab no longer destroys state on tab switch (CSS visibility)
 - PTY reuse on reconnect prevents orphaned processes
 - OAuth callback flow with proper code exchange
@@ -9012,6 +9137,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.45.1] - 2026-03-20
 
 ### Fixed
+
 - Stale "running" status: check session.json mtime, mark completed if idle > 5 min
 - Preview showing raw JSON error: verify entry file exists before setting preview URL
 - Add "Build" button to IDE workspace so users can start builds from project page
@@ -9021,6 +9147,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.45.0] - 2026-03-20
 
 ### Added
+
 - Smart preview detection: auto-detect project type (web-app, API, static-site, library, Go, Rust, containerized) for Preview tab
 - Secrets management: full CRUD UI with add/delete/show-hide, ENV_VAR validation, injected into builds
 - Non-blocking AI Chat: polling pattern with task_id, 5-min timeout guard
@@ -9030,6 +9157,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Preview-info API endpoint: GET /api/sessions/{id}/preview-info returns project type and dev command
 
 ### Fixed
+
 - loki web stop now kills only Purple Lab sessions (tracked PIDs), leaves external sessions alone
 - loki web stop also stops Loki Dashboard on port 57374
 - Orphan process cleanup: kills entire process tree with SIGKILL escalation
@@ -9037,6 +9165,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.44.1] - 2026-03-20
 
 ### Fixed
+
 - Start Build does nothing: add setIsRunning(true) after startSession so the UI enters running state immediately
 - File DELETE API: send path in JSON body instead of query param (was causing 422 Unprocessable Entity)
 - File SAVE API: include path in request body alongside content (was missing, causing 422)
@@ -9044,35 +9173,40 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - _kill_orphan_loki_processes: run via executor to avoid blocking the event loop
 
 ### Removed
+
 - Header.tsx: deleted as dead code (unused component)
 
 ## [6.44.0] - 2026-03-20
 
 ### Added
+
 - Workspace tab system in Project Workspace: Code, Preview, Config, Secrets, PRD tabs for structured navigation
 - Build controls: Stop, Pause, Resume buttons with real-time session status polling
 - Full process tree cleanup on `loki web stop`: SIGTERM then SIGKILL for all loki-run child processes
 
 ### Changed
+
 - File tree visibility improvements: larger chevrons, more readable file size labels, higher contrast delete button
 - Orphan process cleanup now kills entire process trees (catches claude/codex/gemini child processes that survive parent death)
 
 ## [6.43.0] - 2026-03-20
 
 ### Added
+
 - Context menu on file tree (right-click for Open, Preview, Run Tests, View Docs, Delete)
 - Template prefill: selecting a template on the Templates page now pre-populates the PRD input on Home
 - AI chat panel: added Max mode alongside Quick and Standard
 - Preview URL bar with history (back/forward navigation) in Project Workspace
 
 ### Changed
+
 - ProjectWorkspace preview panel now tracks navigation history with back/forward controls and editable URL bar
 - PRDInput accepts initialPrd prop to support template injection from TemplatesPage
-
 
 ## [6.42.0] - 2026-03-20
 
 ### Added
+
 - Multi-page web app: Projects page (session browser with filtering), Templates page (13 PRD templates with categories), Settings page (provider selection, version info)
 - AI Chat panel: in-session conversational interface using `loki quick` for mid-run steering and clarifications
 - Activity panel: real-time activity feed showing agent actions as they happen
@@ -9081,12 +9215,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - URL-based routing for all web app pages (react-router)
 
 ### Changed
+
 - Home page refactored to dedicated HomePage component with improved layout
 - All web app components updated for consistency with new UI library
 
 ## [6.41.0] - 2026-03-19
 
 ### Added
+
 - Tab system: open multiple files simultaneously, click tabs to switch, close tabs with unsaved changes warning, modified indicator dot on tabs
 - Quick Open (Cmd/Ctrl+P): fuzzy file search modal -- type to filter, Enter to open, Escape to close
 - Preview auto-refresh: saving HTML/CSS/JS files automatically reloads the preview iframe
@@ -9095,6 +9231,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.40.0] - 2026-03-19
 
 ### Added
+
 - Monaco Editor integration in ProjectWorkspace -- full VS Code-grade syntax highlighting for 17+ languages, bracket pair colorization, code folding, smooth scrolling
 - Resizable split panes (react-resizable-panels) -- drag to resize file tree, editor, and preview panels independently
 - File CRUD API endpoints: PUT (save/update), POST (create file), DELETE (delete file), POST directory (create folder) -- all with path traversal protection and atomic writes
@@ -9105,6 +9242,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Session data auto-refresh after file CRUD operations
 
 ### Changed
+
 - ProjectPage lazy-loaded chunk grew from 8KB to 59KB (includes Monaco + resizable panels)
 - Editor replaces plain code table viewer -- proper language detection, line numbers, word wrap, folding
 - Preview panel is now a resizable pane instead of fixed 50% width
@@ -9112,6 +9250,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.39.0] - 2026-03-19
 
 ### Added
+
 - URL-based project routing: `/project/:sessionId` URLs persist across refresh (React Router)
 - Live preview server: `GET /api/sessions/:id/preview/:path` serves project files with correct MIME types, enabling HTML/CSS/JS preview in iframe
 - ProjectPage component with lazy loading (code-split 8.4KB chunk)
@@ -9121,6 +9260,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Session state persistence: provider, active tab, current PRD survive page refresh via sessionStorage
 
 ### Changed
+
 - Session history navigation uses URL (`/project/:id`) instead of in-memory state
 - "View Project" button navigates to URL route instead of loading inline
 - Preview iframe uses real URL (`/api/sessions/:id/preview/index.html`) instead of srcDoc, so relative CSS/JS/image assets load correctly
@@ -9128,12 +9268,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.38.5] - 2026-03-19
 
 ### Fixed
+
 - `loki web` start/stop/status lifecycle fully robust: start auto-kills orphaned processes blocking the port instead of erroring with "Port already in use"; stop kills processes by port when PID file is missing; status detects orphan processes via port check and shows their PID with cleanup instructions
 - All `loki web` subcommands return exit code 0 on success (was returning 1 from lsof/rm failures under set -e)
 
 ## [6.38.4] - 2026-03-19
 
 ### Fixed
+
 - Purple Lab: file content viewer now works for past sessions -- new `GET /api/sessions/{id}/file?path=` endpoint reads files from completed project directories with path traversal protection (previously only worked during active sessions, returning 400 for past builds)
 - Purple Lab: ProjectWorkspace uses session-scoped file endpoint so clicking files in the file tree actually loads content
 - Purple Lab: terminal output contained in fixed-height scrollable window (was growing infinitely, pushing page content down)
@@ -9142,6 +9284,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Purple Lab: null guards on agent type and phase toLowerCase calls (fixes TypeError crash when agents have undefined type)
 
 ### Added
+
 - ProjectWorkspace component: full IDE-like view with file tree sidebar, code viewer, and HTML preview iframe
 - "View Project" primary CTA button after build completes -- opens ProjectWorkspace with file browser
 - ErrorBoundary component with retry button for graceful crash recovery
@@ -9149,6 +9292,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.38.3] - 2026-03-19
 
 ### Added
+
 - Project Workspace: full-screen file browser and HTML preview panel after a build completes
 - "View Project -- Browse Files and Preview" CTA button appears post-build in the dashboard
 - File tree with recursive expand/collapse, language-specific icons, file size display
@@ -9159,22 +9303,26 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.38.2] - 2026-03-19
 
 ### Fixed
+
 - fix: auto-recreate /opt/homebrew/bin symlinks on macOS after Node version upgrade (postinstall)
 
 ## [6.38.1] - 2026-03-19
 
 ### Fixed
+
 - CI failure: test_api_v2.py seed_project fixture and test_tenants.py backward-compat tests missing tenant_id (NOT NULL constraint added in v6.37.8)
 - Removed stale backward-compatibility tests that tested tenant_id=None (behavior removed in v6.37.8); replaced with tests that verify tenant isolation
 
 ## [6.38.0] - 2026-03-19
 
 ### Fixed
+
 - CI failure on Python 3.13: tests/test_runs.py fixtures missing tenant_id (NOT NULL constraint added in v6.37.8)
 
 ## [6.37.9] - 2026-03-19
 
 ### Fixed
+
 - Web App: file browser TreeNode lazy-renders children in chunks of 100 with "show more" button, preventing browser freeze on directories with 1000+ files (#120)
 - Dashboard: Project.tenant_id changed from nullable to non-nullable with DB constraint, preventing orphaned projects without a tenant (#112)
 - Dashboard: cost calculations use round() to 6 decimal places (was 4), fixing float precision loss above ~$100K (#111)
@@ -9182,6 +9330,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.8] - 2026-03-19
 
 ### Fixed
+
 - Web App: file browser TreeNode starts collapsed by default, lazy-rendering children only when expanded to prevent browser freeze on large trees (#120)
 - Dashboard: tenant_id is now required in ProjectCreate schema, preventing orphaned projects without a tenant (#112)
 - Dashboard: cost calculation uses round() to 4 decimal places throughout, fixing float precision loss for large amounts (#111)
@@ -9189,6 +9338,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.7] - 2026-03-19
 
 ### Fixed
+
 - CLI: agent list/info Python heredoc passes types_file via env var instead of shell interpolation (#64)
 - CLI: telemetry stop/start commands for persistent opt-out across sessions via ~/.loki/config (#77)
 - CLI: completions updated with telemetry and agent subcommands for both bash and zsh (#80)
@@ -9199,6 +9349,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.6] - 2026-03-19
 
 ### Fixed
+
 - CLI: cmd_explain --json validates jq is available before processing (#71)
 - CLI: cmd_stop with session ID prints success/failure feedback (#63)
 - CLI: loki watch rejects decimal and octal interval/debounce values (#61)
@@ -9209,6 +9360,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.5] - 2026-03-19
 
 ### Fixed
+
 - CLI: watch PRD auto-detect now verifies file is readable before proceeding (#67)
 - CLI: config set rejects invalid budget values (negative, zero, non-numeric) (#68)
 - CLI: agent run captures subagent exit code and surfaces non-zero as failure (#72)
@@ -9219,12 +9371,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.4] - 2026-03-19
 
 ### Security
+
 - OIDC JWT: reject tokens when PyJWT is not installed unless explicitly opted in via LOKI_OIDC_SKIP_SIGNATURE_VERIFY (#86)
 - Dashboard: TaskCreate.title and ProjectCreate.name strip/reject control characters (#110)
 - Dashboard: TaskMove validates status transitions via state machine, rejects invalid transitions with 422 (#95)
 - Dashboard: subtask creation detects circular parent references, rejects with 422 (#96)
 
 ### Fixed
+
 - Dashboard: WebSocket rate limiter uses per-connection uuid4 key when client IP is unavailable (#90)
 - Dashboard: rate limiter evicts by last-access time instead of creation time for proper LRU behavior (#99, #100)
 - Dashboard: episode listing uses heapq.nlargest to avoid sorting all files before paginating (#93)
@@ -9240,6 +9394,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.3] - 2026-03-19
 
 ### Fixed
+
 - Dashboard: token validation now iterates all tokens before returning match, preventing timing side-channel that leaked token count (#98)
 - Dashboard: token file permissions enforced on every write via explicit `os.chmod(0o600)`, not just on file creation (#97)
 - Dashboard: audit query endpoints now require `audit` scope via `require_scope` dependency (#104)
@@ -9252,6 +9407,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.2] - 2026-03-19
 
 ### Fixed
+
 - Purple Lab: model tier display now uses actual RARV iteration mapping instead of heuristic model name matching (#140)
 - Purple Lab: file content errors show specific error messages with retry button instead of generic text (#121)
 - Purple Lab: removed stale hardcoded template fallback list, shows user warning when templates fail to load (#119)
@@ -9262,6 +9418,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.1] - 2026-03-19
 
 ### Fixed
+
 - Security: macOS /tmp symlink bypassed onboard path traversal check -- now uses Path.relative_to() with resolved paths (#137)
 - Windows: start_new_session and os.killpg are Unix-only -- added platform-guarded process group handling (#124)
 - Terminal: log lines lost when switching from WebSocket to HTTP polling -- now merges with dedup instead of replacing (#122)
@@ -9271,15 +9428,18 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.37.0] - 2026-03-19
 
 ### Changed
+
 - Added Contributor License Agreement (CLA.md) requirement for all external contributions
 - Added CLA Assistant GitHub Action workflow (.github/workflows/cla.yml) for automated CLA checking on PRs
 - Updated PR template with CLA acknowledgment checkbox
 - Tracked pending CLA signatures for 2 external contributors (@ziadsawalha PR #11, @jpreyesm03 commit 6b677c3)
 
 ### Security
+
 - Dashboard: OIDC JWT authentication, PID race condition fix, WebSocket broadcast hardening (#144)
 
 ### Fixed
+
 - CLI: `loki export json` and `loki export timeline` now check for jq upfront with a helpful install message instead of silently failing (#138)
 - Events: `EventBus` now cleans up background threads on destruction via `__del__`, `close()`, and context manager support (#133)
 - Events: processed event ID set is now pruned before disk write, preventing unbounded growth when disk writes fail (#132)
@@ -9299,9 +9459,11 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.6] - 2026-03-19
 
 ### Fixed
+
 - CI: `loki ci --pr --github-comment --format github` no longer fails with `unbound variable: report_timestamp_` -- trailing underscore typo fixed in `autonomy/loki` line 16742 (#145)
 
 ### Changed
+
 - License transitioned from MIT to Business Source License 1.1 (BSL 1.1)
 - Free for personal, internal, academic, and non-commercial use
 - Commercial use that competes with Loki Mode requires a separate license from Autonomi, Inc.
@@ -9312,6 +9474,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.5] - 2026-03-19
 
 ### Fixed
+
 - Memory: `EpisodeCluster.to_dict()` now uses `getattr()` instead of `.get()` for EpisodeTrace dataclass instances in `memory/consolidation.py` (#134)
 - MCP: module-level `_state_manager` and `_learning_collector` singletons are now cleaned up via `cleanup_mcp_singletons()` registered with `atexit`, preventing file handle leaks on server restart (#130)
 - State: `VersionVector.concurrent_with()` now returns True for identical vectors, matching causality semantics where equal vectors represent independent events with the same knowledge (#129)
@@ -9321,12 +9484,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.4] - 2026-03-19
 
 ### Fixed
+
 - Purple Lab: CORS origins are now configurable via `PURPLE_LAB_CORS_ORIGINS` env var (comma-separated list), enabling remote and Docker deployments that were previously blocked by hardcoded localhost-only origins (#135)
 - Purple Lab: path traversal protection now uses `Path.relative_to()` instead of `str.startswith()`, preventing the prefix-collision edge case where `/tmp/proj` would incorrectly match `/tmp/projother`; symlink chains that escape the project base are also rejected (#115)
 
 ## [6.36.3] - 2026-03-19
 
 ### Fixed
+
 - Orchestrator reliability: initialize `file_count` before use to prevent unbound variable errors in run.sh (#66)
 - Orchestrator reliability: add guards in `load_ledger_context` to handle missing or malformed ledger files gracefully (#62)
 - Orchestrator reliability: PRD conflict resolution no longer overwrites user-specified PRD when a session already exists (#60)
@@ -9340,6 +9505,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.2] - 2026-03-19
 
 ### Fixed
+
 - Dashboard not refreshing in Claude Code sessions: `_get_loki_dir()` used relative `.loki/` path which resolved to the dashboard server's CWD (loki-mode install dir), not the project directory where `run.sh` writes state. Now resolves via LOKI_DIR env var -> CWD/.loki -> ~/.loki fallback chain.
 - Dashboard WebSocket was passive (never pushed `.loki/` state). Added `_push_loki_state_loop()` background task that watches `dashboard-state.json` for changes and broadcasts `status_update` messages every 2s when running (30s idle), transforming raw state to StatusResponse-compatible format.
 - Dashboard overview component now connects WebSocket on mount so server-push state updates are received in real-time (supplements existing 5s HTTP polling)
@@ -9347,6 +9513,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.1] - 2026-03-19
 
 ### Fixed
+
 - Session history now shows real status (not "Unknown") for past builds -- infers completed/started/in_progress/empty from project contents when session.json is absent
 - Past builds in session history are clickable and open a read-only viewer with PRD preview, file tree, and session logs
 - Cluster lifecycle hooks now expand `$LOKI_CLUSTER_*` env var references in hook commands -- previously `shell=False` passed literal `$LOKI_CLUSTER_NAME` to `echo` instead of the value (test-platform-infra.sh Test 7)
@@ -9355,6 +9522,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.36.0] - 2026-03-19
 
 ### Fixed
+
 - CRITICAL: Stop session now kills the entire process group (catches loki child processes), cancels the reader task, and closes stdout pipes -- previously only killed the parent process leaving orphaned children, leaked file descriptors, and accumulated background tasks across start/stop cycles
 - CRITICAL: Race condition on concurrent start requests -- session state mutations now protected by asyncio.Lock preventing double-spawned loki processes
 - CRITICAL: Replaced deprecated `asyncio.get_event_loop()` with `asyncio.get_running_loop()` across 6 call sites (Python 3.12+ compatibility)
@@ -9367,12 +9535,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Subprocess now spawned with `start_new_session=True` for clean process group kill on stop
 
 ### Added
+
 - `/health` endpoint for load balancer and orchestrator health checks
 - WebSocket disconnect indicator already visible in header (verified working)
 
 ## [6.35.1] - 2026-03-19
 
 ### Fixed
+
 - Python CI test failure: moved `pytest_plugins` from `tests/docker/conftest.py` to top-level `conftest.py` to comply with pytest requirements for non-top-level conftest files
 - Added `pytest.ini` to exclude Docker integration tests from default test run (they require a live server and are meant for Docker CI only)
 - All 483 Python unit tests now pass across Python 3.10, 3.11, 3.12, 3.13
@@ -9380,6 +9550,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.35.0] - 2026-03-18
 
 ### Added - Purple Lab CLI Feature Integration Complete
+
 - loki plan: Pre-build estimate panel -- shows complexity, cost, iterations, time before confirming start
 - loki report: Post-build report generation -- HTML/Markdown shareable reports with full session analysis
 - loki share: One-click GitHub Gist sharing from report panel
@@ -9396,6 +9567,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.34.0] - 2026-03-18
 
 ### Added - Purple Lab GTM Feature Complete
+
 - ControlBar: Stop, Pause, and Resume buttons now visible during active sessions (previously read-only status bar)
 - PRDInput: Optional project directory field -- type a path or leave blank to auto-create under ~/purple-lab-projects/
 - FileBrowser: File content viewer -- click any file in the tree to view it inline with syntax highlighting
@@ -9408,12 +9580,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.33.1] - 2026-03-18
 
 ### Fixed
+
 - Fix `loki metrics` version display (was hardcoded to v6.32.0 instead of reading runtime version)
 - Pass `LOKI_SKILL_DIR` env var to metrics Python heredoc for proper version detection
 
 ## [6.33.0] - 2026-03-18
 
 ### Added
+
 - `loki watch [prd-path]` command: auto-rerun on PRD file changes
   - Monitors a PRD file and automatically re-runs `loki start` when the file is saved
   - Enables a tight edit-PRD-see-results development loop
@@ -9427,11 +9601,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
   - Shell completions updated for bash
 
 ### Tests
+
 - New test suite: tests/test-watch-command.sh (12 tests)
 
 ## [6.32.1] - 2026-03-18
 
 ### Fixed
+
 - postinstall: detect when npm global bin dir is not in PATH and print clear fix instructions
 - Fixes "command not found: loki" for users with Homebrew-managed Node.js (affects npm prefix pointing to keg dir)
 - Also suggests Homebrew tap as alternative install method
@@ -9439,6 +9615,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.32.0] - 2026-03-18
 
 ### Added
+
 - `loki metrics` command: session productivity reporter that analyzes past Loki Mode sessions
   - Reads `.loki/` session data (orchestrator state, queue, efficiency metrics, memory)
   - Aggregates stats: iterations completed, agents deployed, tasks completed, success rate
@@ -9453,11 +9630,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
   - Shell completions updated for bash and zsh
 
 ### Tests
+
 - New test suite: tests/test-metrics-command.sh (12 tests)
 
 ## [6.31.0] - 2026-03-18
 
 ### Added
+
 - `loki explain [path]` command: analyze any codebase and generate a plain-English architectural explanation
   - Executive summary, architecture overview, technology stack, key patterns, getting started, and contributor guide
   - Auto-detects language, framework, build system, test framework, CI/CD, and architecture patterns
@@ -9469,6 +9648,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.30.3] - 2026-03-18
 
 ### Fixed
+
 - Purple Lab: eliminated network connection explosion (was 27+ unique TCP connections per session)
   - Server: added timeout_keep_alive=30 to uvicorn so connections are reused
   - Server: WebSocket now pushes state_update bundles (status + agents + logs) every 2s when running, 30s when idle -- eliminates 3 of 6 polling loops entirely
@@ -9480,6 +9660,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.30.2] - 2026-03-18
 
 ### Fixed
+
 - Purple Lab: Start Build button appeared to do nothing after click -- POST /api/session/start returned 200 but UI stayed on PRD screen because isRunning state only updated on next poll cycle (up to 30s in idle). Now immediately transitions to running view on successful start response.
 - Stop button now immediately transitions back to PRD/idle view on success.
 - PRDInput onSubmit prop typed as Promise<void> to ensure await works correctly in component.
@@ -9487,11 +9668,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.30.1] - 2026-03-18
 
 ### Fixed
+
 - Purple Lab: stop polling all API endpoints when idle -- status now polls every 30s (was 2s) when no session running; agents/logs/memory/checklist/files polling pauses entirely until session starts. Eliminates 57+ unnecessary network requests visible in browser devtools.
 
 ## [6.30.0] - 2026-03-18
 
 ### Added
+
 - `loki share` command: upload session reports as shareable GitHub Gists in one command
 - Supports `--private` flag for secret gists (default: public)
 - Supports `--format text|markdown|html` flag (default: markdown)
@@ -9499,17 +9682,20 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Shell completions updated for bash and zsh
 
 ### Tests
+
 - New test suite: tests/test-share-command.sh (8 tests)
 
 ## [6.29.0] - 2026-03-18
 
 ### Added
+
 - BMAD story priority ordering by MVP/phase label: stories from MVP epics are queued first, then Phase 2, then Phase 3
 - Auto-write-back to sprint-status.yml and epics.md checkboxes when stories are completed
 - New CLI flags: --write-back, --completed-story, --completed-stories-file for bmad-adapter.py
 - Priority fields (priority, priority_weight) added to parsed epic and story data
 
 ### Changed
+
 - parse_epics() now extracts phase labels from Epic List section and headings
 - run.sh BMAD queue population sorts stories by priority_weight before queuing
 - track_iteration_complete() triggers bmad_write_back() after successful iterations
@@ -9517,6 +9703,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.28.0] - 2026-03-18
 
 ### Added
+
 - `loki init` project scaffolding: creates project directory, prd.md from template, .loki/ config, README.md, and git init
 - Expanded template gallery from 13 to 22 templates (added ai-chatbot, api-only, blog-platform, e-commerce, full-stack-demo, rest-api-auth, saas-starter, simple-todo-app, static-landing-page)
 - New flags: --template/-t TYPE, --no-git, --stdout, --dry-run
@@ -9525,18 +9712,21 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.27.2] - 2026-03-18
 
 ### Fixed
+
 - Purple Lab: tighten CORS from wildcard (*) to localhost only (127.0.0.1:57375 and localhost:57375)
 - Added full Docker Compose E2E test harness (tests/docker/, docker-compose.test.yml) -- 20/20 tests pass
 
 ## [6.27.1] - 2026-03-18
 
 ### Fixed
+
 - Purple Lab (loki web): web-app/server.py was missing from npm package -- loki web failed with "server not found" error on any npm install
 - Added web-app/server.py to package.json files array
 
 ## [6.27.0] - 2026-03-18
 
 ### Added
+
 - `loki report` command -- session report generator with text, markdown, and HTML output formats
 - Report reads .loki/ session data (autonomy state, quality gates, agents, queue, council, events)
 - Flags: `--format text|markdown|html`, `--output <file>`, `--no-gates`, `--no-agents`, `--no-timeline`
@@ -9545,6 +9735,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - 10 tests in tests/test-report-command.sh
 
 ### Changed
+
 - Separated Purple Lab (web-app/) from Loki Dashboard (dashboard/) -- they are now fully independent products
 - Dashboard server (port 57374) no longer serves web-app files; only serves dashboard-ui/dist/ and dashboard/static/
 - Purple Lab server (port 57375) runs standalone via web-app/server.py with no dashboard dependency
@@ -9559,26 +9750,32 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.26.6] - 2026-03-18
 
 ### Fixed
+
 - web-app/dist/ now committed to git and included in npm package -- root .gitignore had `dist/` which excluded it from the repo, so CI never had the built files to publish
+
 ## [6.26.5] - 2026-03-18
 
 ### Fixed
+
 - npm package actually includes web-app/dist/ now -- replaced `**/dist/` npmignore pattern (which blocked all dist dirs including web-app) with specific exclusions for dashboard-ui/dist/ and vscode-extension/dist/ only
 
 ## [6.26.4] - 2026-03-18
 
 ### Fixed
+
 - npm package now actually includes web-app/dist/ -- .npmignore had `**/dist/` which excluded it despite package.json files array including it
 
 ## [6.26.3] - 2026-03-18
 
 ### Fixed
+
 - Security: path traversal vulnerability in SPA catch-all route -- now uses realpath() + containment check (found by review council)
 - Dashboard empty states: quality gates and PRD checklist panels now show clear actionable messages instead of appearing broken when no session has run
 
 ## [6.26.2] - 2026-03-18
 
 ### Fixed
+
 - Dashboard no longer stops when loki session finishes -- persists for post-session analysis, metrics, and browsing
 - Dashboard no longer crashes when idle -- removed orphan watchdog that killed the server when no active session was detected
 - Dashboard returns clean "idle" status when no .loki/ directory exists instead of crashing
@@ -9586,6 +9783,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.26.1] - 2026-03-18
 
 ### Fixed
+
 - `loki web` now works correctly: web app is served by the dashboard FastAPI server on port 57374 instead of a separate static file server that could not proxy API calls
 - Added web-app/dist/ to npm package files so the web app is included in global installs
 - Web app SPA catch-all route serves index.html for client-side routing
@@ -9593,6 +9791,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.26.0] - 2026-03-18
 
 ### Added
+
 - `loki web` CLI command: serves the web app, auto-starts dashboard API, opens browser
   - Subcommands: start (default), stop, status. Options: --port, --no-open, --no-api
 - Web App: File Browser with recursive tree view, expand/collapse, file content preview
@@ -9605,6 +9804,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.25.2] - 2026-03-18
 
 ### Fixed
+
 - Added missing `loki web` CLI command -- v6.25.0 shipped the web app but the CLI command to launch it was not included
 - `loki web` serves the built web app, auto-starts the dashboard API, opens browser
 - Subcommands: start (default), stop, status. Options: --port, --no-open, --no-api
@@ -9612,6 +9812,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.25.1] - 2026-03-18
 
 ### Fixed
+
 - Dashboard: graceful empty state handling for short/sequential sessions (#54)
 - Overview cards show context-aware messages (Waiting/Pending/Not started) based on session status
 - RARV timeline shows placeholder visualization instead of bare "no data" message
@@ -9622,6 +9823,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.25.0] - 2026-03-18
 
 ### Added
+
 - Loki Web App: Replit-like web UI for visual PRD-to-code workflow
 - PRD Input panel with template selector (13 templates) and provider picker
 - Agent Dashboard with live status, color-coded agent cards, phase indicators
@@ -9635,6 +9837,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.24.0] - 2026-03-18
 
 ### Added
+
 - `loki test` command: AI-powered test generation for any language/framework
 - Auto-detects language (JavaScript, TypeScript, Python, Go, Rust, Java, Ruby, Shell)
 - Auto-detects test framework (jest, vitest, mocha, pytest, go-test, cargo-test, junit, rspec, bats)
@@ -9652,6 +9855,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.23.0] - 2026-03-18
 
 ### Added
+
 - VSCode extension: added 4 new commands to command palette and quick pick menu
   - "Analyze PRD Complexity (loki plan)" -- opens file picker for PRD, runs loki plan
   - "Review Code Quality (loki review)" -- runs loki review on current workspace
@@ -9662,6 +9866,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.22.0] - 2026-03-18
 
 ### Added
+
 - `loki ci` command: CI/CD quality gate integration for GitHub Actions, GitLab CI, Jenkins, CircleCI
 - Auto-detects CI environment from standard env vars (GITHUB_ACTIONS, GITLAB_CI, JENKINS_URL, CIRCLECI)
 - PR diff review with static analysis, security scanning, and anti-pattern detection
@@ -9677,6 +9882,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.21.0] - 2026-03-18
 
 ### Added
+
 - `loki onboard` command: instant project analysis and CLAUDE.md generation
 - Scans directory structure, package files, README, CI configs to detect project type
 - Language detection: JavaScript/TypeScript, Python, Rust, Go, Ruby, Java/Kotlin, C/C++, Bash
@@ -9693,6 +9899,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.20.0] - 2026-03-18
 
 ### Added
+
 - `loki review` standalone code review command with diff-based quality gates
 - Review sources: uncommitted changes, staged (--staged), GitHub PR (--pr), files/dirs, since commit (--since)
 - Security scanning: hardcoded secrets, SQL injection, eval/exec, unsafe deserialization, disabled SSL
@@ -9708,6 +9915,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.19.0] - 2026-03-18
 
 ### Added
+
 - Cross-provider auto-failover: automatic provider switching on rate limit (429/529) detection
 - `loki failover` command: status, --enable, --disable, --chain, --test, --reset
 - Failover state persistence in `.loki/state/failover.json`
@@ -9720,6 +9928,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.18.0] - 2026-03-18
 
 ### Added
+
 - `loki plan` command: pre-execution PRD analysis with complexity assessment, cost estimation, iteration planning, and quality gate preview
 - `--json` flag for programmatic JSON output
 - `--verbose` flag for detailed analysis breakdown
@@ -9728,6 +9937,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.17.2] - 2026-03-18
 
 ### Added
+
 - `loki stats` command: comprehensive session statistics (token usage, quality gates, efficiency, budget tracking)
 - `--json` flag for programmatic JSON output
 - `--efficiency` flag for per-iteration token and cost breakdown
@@ -9736,11 +9946,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.17.1] - 2026-03-18
 
 ### Fixed
+
 - Added visibility into inter-iteration gap: users now see log messages during quality gates (static analysis, test coverage, code review) and completion council check between RARV iterations. Previously the terminal was silent for minutes between "[Session complete]" and the next iteration start, causing confusion about whether execution was stuck.
 
 ## [6.17.0] - 2026-03-18
 
 ### Added
+
 - `loki trigger` command: event-driven autonomous execution (analogous to Cursor Automations)
 - `autonomy/trigger-server.py`: GitHub webhook receiver (issues, pull_request, workflow_run events)
   - HMAC-SHA256 signature validation (X-Hub-Signature-256)
@@ -9757,11 +9969,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.16.1] - 2026-03-18
 
 ### Fixed
+
 - Dashboard Python compatibility: added `from __future__ import annotations` to 14 dashboard files that used Python 3.10+ type union syntax (`X | None`) and Python 3.9+ built-in generics (`dict[str, Any]`). Dashboard now works on Python 3.8+ as documented.
 
 ## [6.16.0] - 2026-03-17
 
 ### Added
+
 - Dashboard memory browser: FTS5 full-text search with collection filtering and result display
 - Dashboard memory browser: storage backend stats showing backend type, entry counts, database size, FTS5 status
 - Dashboard: quality gates and RARV timeline components now wired into standalone dashboard pages
@@ -9770,12 +9984,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.15.1] - 2026-03-17
 
 ### Fixed
+
 - BMAD adapter path resolution broken for global npm installs -- resolve_script_path now used instead of dirname "$0" fallback which resolved to bin/ symlink directory
 - BMAD sprint-status.yml now read and parsed -- completed/done stories are skipped when populating the task queue, preventing re-implementation of already-completed work
 
 ## [6.15.0] - 2026-03-17
 
 ### Added
+
 - **SQLite + FTS5 memory storage**: New primary storage backend with full-text search. Factory auto-selects SQLite when available, falls back to JSON storage. Located in `memory/sqlite_storage.py`.
 - **Auto RARV capture**: Cleaned up duplicate `store_episode_trace` calls in the autonomous loop for cleaner episode recording.
 - **3 MCP memory tools**: Added `mem_search`, `mem_timeline`, and `mem_get` tools to `mcp/server.py` for programmatic memory access.
@@ -9784,12 +10000,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.14.0] - 2026-03-17
 
 ### Added
+
 - **`loki review <dir>` command**: Standalone quality gate runner for any project directory. Runs 6 gates: project-type detection, lint, tests, security, dependencies, and structure. Supports `--json` and `--verbose` flags. No AI provider needed. Works as a CI/CD step.
 - **GitHub Action (`review`)**: New reusable action at `.github/actions/review/action.yml` -- enables `loki review` in any GitHub Actions workflow.
 
 ## [6.13.1] - 2026-03-17
 
 ### Fixed
+
 - **simple-todo-app.md**: Added project structure, database schema, API endpoints, testing section, and success criteria to pass quality audit
 - **api-only.md**: Added project structure, data model, expanded testing section, and added success criteria
 - **e-commerce.md**: Removed undocumented 'reviews' from features (no schema/API supported it)
@@ -9798,36 +10016,43 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.13.0] - 2026-03-17
 
 ### Added
+
 - **`loki demo` rewrite**: Replaced simulated/fake demo with real execution that runs `loki start` on a bundled template. Supports `--dir`, `--provider`, `--dry-run` flags. Shows project summary and offers to open result in browser.
 
 ## [6.12.5] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` bypass permissions**: Added `--permission-mode bypassPermissions` to `claude remote-control` invocations so spawned remote sessions can actually use Read, Write, and Bash tools. Without this, Loki Mode was blocked from operating in remote sessions.
 
 ## [6.12.4] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` auto-trust via config**: Previous approach (piping `/exit` to `claude`) could not interact with the TUI trust dialog. Now writes `hasTrustDialogAccepted: true` directly to `~/.claude.json` projects config, which is the actual trust storage used by Claude Code. Uses `os.path.realpath()` to handle macOS symlinks (`/tmp` -> `/private/tmp`).
 
 ## [6.12.3] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` zero-friction trust**: Auto-trust workspace by piping `/exit` to `claude` instead of requiring manual interaction. Fully automatic recovery from untrusted workspace errors.
 
 ## [6.12.2] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` trust auto-recovery**: Fixed `set -euo pipefail` causing script to exit before auto-recovery could trigger on workspace trust errors. Now uses `|| rc_exit=$?` pattern to capture exit code safely.
 
 ## [6.12.1] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` trust auto-recovery**: On workspace trust failure, automatically opens interactive Claude for trust acceptance, then retries remote-control seamlessly
 
 ## [6.12.0] - 2026-03-07
 
 ### Added
+
 - **OpenSpec Bridge** (`loki start --openspec PATH`): Spec-driven development input pathway
   - Reads OpenSpec change directories (proposal.md, specs/, tasks.md, design.md)
   - Normalizes to Loki-native formats (PRD, task queue, delta context)
@@ -9839,11 +10064,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
   - Delta context injection in agent prompts
 
 ### Fixed
+
 - **`loki remote` auto-trust**: Automatically trusts workspace via `claude -p` before launching remote-control, eliminating manual trust step
 - **OpenSpec adapter parser**: Fixed "Previously" annotation extraction for inline format, fixed "Deprecated" reason extraction for narrative descriptions
 - **CLI adapter invocation**: Fixed adapter running with --validate only (never generating output files)
 
 ### New Files
+
 - `autonomy/openspec-adapter.py` -- Stdlib-only Python adapter (~480 lines)
 - `skills/openspec-integration.md` -- Delta-aware development skill module
 - `tests/test_openspec_adapter.py` -- 28 unit tests
@@ -9852,16 +10079,19 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.11.3] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` auto-recovery**: When workspace isn't trusted, automatically opens interactive Claude Code for trust acceptance, then retries remote-control -- zero manual steps needed
 
 ## [6.11.1] - 2026-03-07
 
 ### Fixed
+
 - **`loki remote` workspace trust error**: Replaced `exec` with normal invocation so troubleshooting guidance is shown when `claude remote-control` fails (e.g., untrusted workspace, not logged in)
 
 ## [6.11.0] - 2026-03-07
 
 ### Added
+
 - **OpenSpec Bridge** (`loki start --openspec PATH`): New input pathway for spec-driven development
   - Reads OpenSpec change directories (proposal.md, specs/, tasks.md, design.md)
   - Normalizes to Loki-native formats (PRD, task queue, delta context)
@@ -9871,12 +10101,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
   - Follows BMAD adapter pattern (CLI flag -> validation -> adapter -> queue bridge)
 
 ### New Files
+
 - `autonomy/openspec-adapter.py` - Stdlib-only Python adapter (~480 lines)
 - `skills/openspec-integration.md` - Delta-aware development skill module
 - `tests/test_openspec_adapter.py` - 28 unit tests for adapter
 - `examples/openspec/` - 6 test fixtures (simple, standard, complex, brownfield, partial, malformed)
 
 ### Changed
+
 - Mutual exclusivity check for `--openspec` and `--bmad-project` flags
 - Warning when all OpenSpec tasks are already completed
 - Delta context injection in agent prompts (ADDED/MODIFIED/REMOVED awareness)
@@ -9885,6 +10117,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.10.0] - 2026-03-06
 
 ### Fixed
+
 - Done signals safety valve: agent signaling "done" repeatedly now force-stops after 10 total signals (env: `LOKI_COUNCIL_DONE_SIGNAL_LIMIT`)
 - Arithmetic error in completion council: sanitize `grep -ciE` output before arithmetic to prevent bash errors
 - PRD scope misclassification: expanded header regex to match 16 section types (module, component, epic, etc.) plus word-count fallback for large PRDs
@@ -9895,27 +10128,32 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.9.0] - 2026-03-06
 
 ### Added
+
 - Dashboard task detail modal: click any task to view story, acceptance criteria, context files, and full specification
 - Dashboard checkpoint enrichment: checkpoints now show iteration number, provider, phase, git branch, and file count
 - Task markdown parser in dashboard API: extracts structured data from queue markdown files (metadata, spec, criteria, context)
 
 ### Fixed
+
 - Path traversal hardening: checkpoint listing now validates IDs with `_SAFE_ID_RE` before filesystem access
 - XSS hardening: all dynamic values in task board kanban cards now escaped via `_escapeHtml()`
 - Removed dead code: unused `PRIORITY_COLORS` constant, redundant `import re`
 
 ### Changed
+
 - Checkpoint API normalizes field names from run.sh format (ts/sha/task/iter) to frontend format (created_at/git_sha/message/iteration)
 
 ## [6.8.1] - 2026-03-06
 
 ### Fixed
+
 - OTEL spans: use custom Span class directly in spans.js instead of tracer (real SDK returns incompatible span objects breaking parent-child hierarchy, status codes, and unique spanId generation)
 - `loki provider models` source attribution: single-model providers (aider, cline) no longer falsely report generic tier env vars as source
 
 ## [6.8.0] - 2026-03-05
 
 ### Added
+
 - Dynamic model configuration: all providers use env var override chains instead of hardcoded model strings
 - Claude provider uses aliases (`opus`/`sonnet`/`haiku`) that auto-resolve to latest versions via Claude CLI
 - 3-tier env var precedence: provider-specific (`LOKI_CLAUDE_MODEL_PLANNING`) > generic (`LOKI_MODEL_PLANNING`) > default
@@ -9924,6 +10162,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Codex/Gemini/Aider/Cline providers support env var overrides (`LOKI_CODEX_MODEL`, `LOKI_GEMINI_MODEL_*`, etc.)
 
 ### Changed
+
 - Claude provider stores aliases instead of full model IDs (e.g., `opus` not `claude-opus-4-6`)
 - Pricing labels use generic names (`Opus (latest)` instead of `Opus 4.6`)
 - Removed all `sed` model-string extraction from `get_provider_tier_param()` and `provider_invoke_with_tier()`
@@ -9933,6 +10172,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.7.1] - 2026-03-04
 
 ### Fixed
+
 - Vector search: use python3.12 (not system python3.14) for ML packages (sentence-transformers, numpy)
 - Vector search: wire `loki memory search` to actual `MemoryRetrieval.retrieve_by_similarity()` API
 - Quality gates: `mkdir -p` for signals directory in `enforce_static_analysis()` and `enforce_test_coverage()`
@@ -9942,6 +10182,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.7.0] - 2026-03-04
 
 ### Added
+
 - Hard quality gates: `enforce_static_analysis()` and `enforce_test_coverage()` in orchestrator, controlled by `LOKI_HARD_GATES` env var
 - `loki audit lint` and `loki audit test` CLI commands for on-demand quality checks
 - Gate failure injection into `build_prompt()` so LLM self-corrects on next iteration
@@ -9958,6 +10199,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Comprehensive E2E test suite: 67 tests across 10 sections (tests/test-e2e-features.sh)
 
 ### Fixed
+
 - `loki provider show <name>` now correctly forwards arguments (was ignoring provider name)
 - Aider default model updated from deprecated `claude-3.7-sonnet` to `claude-sonnet-4-5-20250929`
 - Worktree clean command: fixed subshell variable scope bug (pipeline counter)
@@ -9968,6 +10210,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.6.1] - 2026-03-01
 
 ### Fixed
+
 - Degraded providers (aider/codex/gemini) now get simplified prompts that small models can process
 - Completion council integer expression error from grep -c output handling
 - Aider stdin blocking risk (added < /dev/null to invocation helpers)
@@ -9975,12 +10218,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.6.0] - 2026-03-01
 
 ### Added
+
 - Cline CLI provider (Tier 2 - near-full capabilities with subagents and MCP)
 - Aider provider (Tier 3 - 18+ model provider support via OpenRouter, Ollama, etc.)
 - `--cline-model`, `--aider-model`, `--aider-flags` CLI options
 - Provider support in dashboard, sandbox, council-v2, and doctor commands
 
 ### Fixed
+
 - Doctor command no longer aborts on first warning (set -e safety)
 - Duplicate --parallel flag in `loki run` command
 - `loki provider show` now accepts positional argument
@@ -9989,12 +10234,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.5.0] - 2026-02-28
 
 ### Security Fixes
+
 - **CRITICAL: Command injection in swarm hooks** - `swarm/patterns.py` used `shell=True` with untrusted hook strings; replaced with `shlex.split()` + `shell=False`
 - **HIGH: Shell injection via issue title** - `loki run` nohup detached mode interpolated `$title` inside `bash -c` string; replaced with temp script file + environment variables
 - **HIGH: Path traversal in dashboard** - `get_episode`/`get_skill` endpoints lacked path validation; added `realpath()` + prefix check
 - **CRITICAL: bash 3.2 incompatibility** - `declare -A` in `sandbox.sh` and `declare -g` in `migration-hooks.sh` required bash 4+; replaced with function lookups and `printf -v`
 
 ### Fixed
+
 - **Duplicate session launch** - `loki run 52 -d` called twice now detects and rejects if session already running
 - **Status display threshold** - `loki status` now shows session info when 1+ sessions are running (was >1)
 - **Triple --parallel flag** - `loki run --ship -d` no longer passes `--parallel` three times
@@ -10022,12 +10269,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **Arithmetic** - `((channels_notified++))` replaced with `$((... + 1))` to avoid `set -e` crash
 
 ### Changed
+
 - **Documentation accuracy** - Updated all 15 function line numbers, 10 file line counts, command count (74), tool count (15), reference count (20), template count (13) in CLAUDE.md
 - **Version sync** - README.md and docker-compose.yml updated from stale v6.2.1
 
 ## [6.4.0] - 2026-02-27
 
 ### Added
+
 - **Concurrent sessions** - Multiple `loki run` commands can execute in parallel
   - Per-session PID/lock files under `.loki/sessions/<issue-id>/`
   - `loki run 52 --ship -d` and `loki run 54 --ship -d` no longer block each other
@@ -10043,6 +10292,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **18 concurrent session tests** (`tests/test-concurrent-sessions.sh`)
 
 ### Changed
+
 - `run.sh` session lock is now session-scoped when `LOKI_SESSION_ID` is set
 - `init_loki_dir()` cleanup is session-aware (only cleans own session's stale files)
 - All 3 cleanup paths (STOP signal, double Ctrl+C, normal exit) clean per-session PID
@@ -10052,6 +10302,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.3.1] - 2026-02-26
 
 ### Fixed
+
 - Rebuild dashboard frontend (missed in v6.3.0 release workflow)
 - Ran Opus feedback loop to verify all 17 v6.3.0 feature claims (all verified)
 - Ran Playwright E2E tests (9 passed)
@@ -10062,6 +10313,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ### Added
 
 #### Track A: Migration Engine V2 Hardening
+
 - **Deterministic migration hooks engine** (`autonomy/hooks/migration-hooks.sh`)
   - `hook_post_file_edit`: runs tests after every file change, blocks and rolls back on failure
   - `hook_post_step`: validates step completion claims mechanically
@@ -10081,6 +10333,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - **14 migration engine tests** (`tests/test-migration-v2.sh`)
 
 #### Track B: Platform Infrastructure
+
 - **Cluster lifecycle hooks** (`ClusterLifecycleHooks` in swarm/patterns.py)
   - 5 hook points: pre_run, post_validation, on_rejection, on_completion, on_failure
   - Shell command and Python callable support
@@ -10106,6 +10359,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.2.1] - 2026-02-26
 
 ### Fixed
+
 - **CRITICAL**: Remove `eval echo` command injection on user-supplied `--mount` paths in sandbox.sh
 - **CRITICAL**: Fix `PROJECT_DIR` injection into inline Python string in sandbox.sh
 - Restrict SSH Docker preset to `known_hosts` only (was mounting entire `~/.ssh` with private keys)
@@ -10137,6 +10391,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.2.0] - 2026-02-25
 
 ### Added
+
 - Progressive Isolation flags for `loki run`: `--worktree`, `--pr`, `--ship`, `--detach` with cascade logic
 - Docker credential mount presets (9 presets: gh, git, ssh, aws, azure, kube, terraform, gcloud, npm)
 - `resolve_docker_mounts()` function with env var passthrough and wildcard support
@@ -10149,6 +10404,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.1.0] - 2026-02-25
 
 ### Added
+
 - BMAD Method integration for structured requirements pipeline
   - `autonomy/bmad-adapter.py` -- discovers and normalizes BMAD output artifacts (PRD, architecture, epics)
   - `--bmad-project <path>` flag for `loki start` -- loads BMAD artifacts as structured input
@@ -10161,6 +10417,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Architecture documentation: validation report, epic breakdown, council analysis, adversarial review
 
 ### Security
+
 - Path traversal protection for BMAD config.json outputDir
 - Atomic file writes in BMAD adapter (tempfile + os.replace pattern)
 - Safe file reading with size limits (10MB) and encoding safety (errors="replace")
@@ -10170,10 +10427,12 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [6.0.0] - 2026-02-25
 
 ### BREAKING
+
 - `loki issue` is now deprecated in favor of `loki run` (still works with deprecation warning)
 - Blind validation enabled by default in completion council (validators no longer see iteration/convergence context)
 
 ### Added
+
 - `loki run <issue>` - New primary entry point for issue-driven engineering
   - Supports GitHub, GitLab, Jira, and Azure DevOps issues
   - Auto-detects issue provider from URL/reference format
@@ -10187,7 +10446,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - `loki watch [interval]` - Live TUI session monitor with real-time status
 - `loki export <format>` - Export session data in json, markdown, csv, or timeline formats
 - `loki config set/get` - Programmatic configuration management
-  - Settable keys: maxTier, model.*, provider, issue.provider, blind_validation, adversarial_testing, spawn_timeout, spawn_retries, notify.*, budget
+  - Settable keys: maxTier, model._, provider, issue.provider, blind_validation, adversarial_testing, spawn_timeout, spawn_retries, notify._, budget
   - JSON config store at `.loki/config/settings.json`
 - Adversarial testing for Standard+ complexity tiers (`run_adversarial_testing()` in run.sh)
   - Spawns adversarial agent that tries to break the implementation
@@ -10204,6 +10463,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - 64-test v6 feature test suite (`tests/test-v6-features.sh`)
 
 ### Changed
+
 - `get_provider_tier_param()` now delegates to `resolve_model_for_tier()` when available
 - Completion council evidence strips convergence data in blind mode (prevents bias)
 - Help text updated with v6.0.0 commands and examples
@@ -10212,6 +10472,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.59.0] - 2026-02-25
 
 ### Added
+
 - Migrate: dashboard auto-launches during migration with real-time progress monitoring
 - Migrate: new `--no-dashboard` flag to disable dashboard during migration
 - Migrate: post-migration `migration_docs/` generation with 8 comprehensive documentation files
@@ -10219,6 +10480,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Migrate: seam statistics (high/medium/low breakdown) now returned by `get_progress()` API
 
 ### Fixed
+
 - Migrate: `--resume` no longer creates a new migration, correctly loads existing migration directory
 - Migrate: dashboard PID cleanup via RETURN trap prevents orphaned processes on error paths
 - Migrate: port-finding loop no longer kills unrelated Python processes on occupied ports
@@ -10236,6 +10498,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.58.2] - 2026-02-25
 
 ### Fixed
+
 - Migrate: all dataclass constructors now filter unknown JSON keys (Feature, MigrationPlan, MigrationStep, SeamInfo)
 - Migrate: handle wrapped JSON formats (e.g. {"features": [...]}, {"seams": [...]})
 - Migrate: made Feature.category, MigrationStep.description/type, and SeamInfo fields optional with defaults
@@ -10246,6 +10509,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.58.1] - 2026-02-24
 
 ### Fixed
+
 - XSS: escape HTML in dashboard event log, memory browser, task board, and session control
 - Signal handler: timestamp-based detection to distinguish Ctrl+C from dashboard crash
 - Budget limit: perpetual mode PAUSE auto-clear now respects BUDGET_EXCEEDED signals
@@ -10275,6 +10539,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.58.0] - 2026-02-25
 
 ### Added
+
 - Per-iteration checkpoints: state snapshots after every successful and failed iteration
 - Session checkpoint count logged at session end
 - Codebase Knowledge Graph: peer-reviewed architecture reference in CLAUDE.md and memory
@@ -10282,6 +10547,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - PAUSE auto-clear notification in perpetual mode
 
 ### Fixed
+
 - Autonomous pause bug: perpetual mode no longer pauses and waits for Enter on dashboard crash
 - Checkpoint mode defers pause to next checkpoint boundary instead of blocking immediately
 - Double-Ctrl+C escape now works correctly in perpetual/checkpoint modes (INTERRUPT_COUNT preserved)
@@ -10290,6 +10556,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.57.1] - 2026-02-25
 
 ### Fixed
+
 - Migrate: PYTHONPATH not set for Python module resolution across working directories
 - Migrate: `start_phase()` crash when phase already in_progress (now idempotent)
 - Migrate: Phase stubs replaced with real Claude/Codex/Gemini invocation logic
@@ -10300,6 +10567,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.57.0] - 2026-02-24
 
 ### Added
+
 - Remote Control: `loki remote` command starts Claude Code Remote Control sessions
 - Connect from phone, tablet, or browser via claude.ai/code with Loki Mode pre-loaded
 - Supports --verbose, --sandbox, --no-sandbox flags and optional PRD file
@@ -10310,6 +10578,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.56.2] - 2026-02-24
 
 ### Fixed
+
 - Analytics: CSS shadow fallback for undefined --loki-glass-shadow variable
 - Analytics: race condition guard (_loading flag) on concurrent _loadData() calls
 - Analytics: time range filter scoped to Velocity tab only (was misleading on Tools tab)
@@ -10326,11 +10595,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Build: analytics added to bare-key keyboard shortcut sections array
 
 ### Changed
+
 - Docker Hub documentation rewritten with accurate defaults and complete reference
 
 ## [5.56.1] - 2026-02-24
 
 ### Fixed
+
 - App Runner: port detection broken on macOS BSD sed, replaced with grep/cut pipeline
 - App Runner: docker compose up -d PID tracking fundamentally broken, added container-aware health checks
 - App Runner: port field in detection.json/state.json could contain raw YAML garbage, added numeric validation
@@ -10339,11 +10610,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.56.0] - 2026-02-24
 
 ### Added
+
 - Cross-provider analytics dashboard - activity heatmap, tool usage breakdown, velocity metrics, and provider comparison
 
 ## [5.55.1] - 2026-02-24
 
 ### Fixed
+
 - Secret scan grep pipeline failing under `set -euo pipefail` in `loki migrate`
 - Integrity audit workflow: helm chart path `loki-mode` -> `autonomi`
 - Integrity audit workflow: setup/install steps missing `if: always()` causing cascading skips
@@ -10355,6 +10628,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.55.0] - 2026-02-24
 
 ### Added
+
 - `loki migrate` command - enterprise code transformation engine
 - 4-phase migration pipeline: Understand > Guardrail > Migrate > Verify
 - MigrationPipeline with phase gates, thread-safe state management, atomic writes
@@ -10364,11 +10638,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Migration manifest, feature list, migration plan, and seams as JSON artifacts
 
 ### Fixed
+
 - Weekly integrity audit workflow skipping all checks (#45)
 
 ## [5.54.0] - 2026-02-24
 
 ### Added
+
 - Activity Logger: JSONL append-only log with 10MB rotation, thread-safe reads/writes
 - Session Diff API: /api/session-diff returns structured change summary since timestamp
 - Session Resume dashboard card on Overview page
@@ -10383,6 +10659,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - 10 new API endpoints: activity, session-diff, failures, prompt-versions, prompt-optimize, quality-score, quality-score/history, quality-scan, quality-report
 
 ### Fixed
+
 - 50 bugs found and fixed via council review across all new files
 - Thread safety: atomic file writes, lock coverage for read/write cycles
 - Server stability: lazy-init imports, sync/async correctness, rate limiting on all routes
@@ -10392,6 +10669,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.53.0] - 2026-02-23
 
 ### Changed
+
 - Dashboard redesign: glassmorphism effects, translucent sidebar with backdrop-filter
 - Navigation: sidebar now shows/hides sections instead of scrolling (page-based)
 - Branding: "Loki Mode / powered by Autonomi" replaces "Autonomi Dashboard"
@@ -10402,21 +10680,25 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.52.4] - 2026-02-23
 
 ### Fixed
+
 - Python SDK: remove deprecated license classifier (setuptools 77+ compat)
 
 ## [5.52.3] - 2026-02-23
 
 ### Fixed
+
 - Python SDK build backend: use `setuptools.build_meta` (compat with Python 3.10-3.13)
 - Python SDK license field: SPDX string format (removes setuptools deprecation warning)
 
 ## [5.52.2] - 2026-02-23
 
 ### Fixed
+
 - SDK package name collision: renamed Python SDK from `autonomi` to `loki-mode-sdk` (PyPI), TypeScript SDK from `@autonomi/sdk` to `loki-mode-sdk` (npm)
 - Release workflow now auto-syncs SDK versions from root VERSION file
 
 ### Added
+
 - CI test matrix workflow (Node 18/20/22, Python 3.10-3.13, shell tests, Helm lint, dashboard build)
 - Weekly integrity audit workflow with auto-issue on failure
 - PyPI and npm SDK publishing jobs in release workflow
@@ -10426,6 +10708,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.52.1] - 2026-02-21
 
 ### Fixed
+
 - Dashboard secrets.py naming collision (renamed to app_secrets.py, unblocked 7 capabilities)
 - TypeScript SDK build step (added tsc, compiled dist/)
 - MCP server enterprise tools (added 5 enterprise tools, 15 total)
@@ -10435,6 +10718,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.52.0] - 2026-02-21
 
 ### Added - Infrastructure Deployment (P2-1, P2-2, P2-3)
+
 - Helm chart: controlplane + worker deployments, HPA, PVC, PDB, RBAC, NetworkPolicy, Ingress
 - Production and HA value overlays with pod anti-affinity and topology spread
 - Docker Compose production stack with optional OTEL Collector and Jaeger profiles
@@ -10442,12 +10726,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Cloud deployment examples for all 3 providers with tfvars templates
 
 ### Added - Adaptive Agent Composition (P2-4)
+
 - PRD classifier: rule-based keyword matching across 7 feature categories, 4 complexity tiers
 - Swarm composer: feature-driven agent team assembly from registry, priority-based cap
 - Mid-project adjuster: quality signal monitoring with 4 decision rules (gate failures, coverage, review rate, trimming)
 - Agent performance tracker: running averages, trend computation, atomic JSON persistence
 
 ### Added - Plugin Architecture (P2-5)
+
 - YAML/JSON plugin schemas for 4 types: agent, quality gate, integration, MCP tool
 - Schema validator with security checks (shell injection, template injection, HTTPS enforcement)
 - Plugin loader with zero-dependency YAML parser, file discovery, hot-reload via fs.watch
@@ -10456,12 +10742,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Integration plugin: template rendering with JSON-safe escaping, webhook dispatch
 
 ### Added - Certification Program (P2-6)
+
 - 5 training modules: core concepts, enterprise features, advanced patterns, production deployment, troubleshooting
 - Each module includes lesson, quiz, and hands-on lab
 - 3 sample PRDs (todo app, SaaS dashboard, microservices platform) for lab exercises
 - 50-question certification exam with balanced answer distribution
 
 ### Security
+
 - Helm: PodDisruptionBudget for zero-downtime upgrades, automountServiceAccountToken disabled by default
 - Helm: scoped ALB controller IAM policy (replaces ElasticLoadBalancingFullAccess)
 - Plugins: shell injection regex catches redirection operators and newlines
@@ -10472,6 +10760,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.51.0] - 2026-02-22
 
 ### Added - Enterprise Wiring (P0.5)
+
 - OTEL bridge: background Node.js process creates OpenTelemetry spans from RARV events
 - Policy engine wiring: pre-execution policy checks in RARV cycle (ALLOW/DENY/REQUIRE_APPROVAL)
 - Audit subscriber: event-driven hash-chained audit logging from event bus
@@ -10479,22 +10768,26 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Enterprise process manager: unified lifecycle management for background services
 
 ### Added - Enterprise Integrations (P1-1, P1-2)
+
 - Slack integration: HMAC-SHA256 webhook verification, slash commands (/loki-status, /loki-approve, /loki-stop), Block Kit messages
 - Microsoft Teams integration: shared-secret webhook auth, Adaptive Cards, webhook-only (no SDK dependency)
 - Both integrations fail-closed when secrets not configured, 1MB body size limits
 
 ### Added - Knowledge Graph (P1-5)
+
 - Organization knowledge graph: cross-project pattern aggregation
 - Cross-project memory index: multi-project discovery and indexing
 - RAG context injection CLI for knowledge-enhanced prompts
 
 ### Added - ConsensAgent v2 (P1-6)
+
 - Blind review protocol: isolated evidence packages per reviewer
 - Sycophancy detection: 4-signal weighted scoring (unanimity, similarity, severity, count)
 - Reviewer calibration tracking: EMA-based accuracy scoring over time
 - All reviewer failure paths default to REJECT (fail-closed)
 
 ### Added - Control Plane API v2 (P1-3)
+
 - Multi-tenant project isolation with slug-based routing
 - Run lifecycle management: create, cancel, replay, timeline visualization
 - API key rotation with configurable grace periods
@@ -10502,28 +10795,33 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Auth required on all endpoints (read=read scope, audit=audit scope, write=control/admin scope)
 
 ### Added - Control Plane Web UI (P1-4)
+
 - 6 new web components: RARV timeline, quality gates, audit viewer, tenant switcher, run manager, API key management
 - Follows existing vanilla Web Components pattern (no framework)
 
 ### Added - SDKs (P1-7, P1-8)
+
 - Python SDK (`loki-mode-sdk`): zero-dependency, stdlib-only, Python 3.9+
 - TypeScript SDK (`loki-mode-sdk`): zero-dependency, Node.js 18+ built-in modules only
 
 ### Added - Enterprise Documentation (P1-9)
+
 - Architecture, security, performance, integration cookbook, migration guide, SDK quickstart
 - Wiki pages: Enterprise overview and setup guide
 
 ### Security
+
 - Webhook HMAC-SHA256 verification on Slack and Teams (fail-closed)
 - Run status transition guards: terminal states cannot be cancelled, active runs cannot be replayed
 - Policy update size limit (1MB)
 - Audit export capped at 10,000 entries
 - Python SDK: ForbiddenError (no longer shadows builtin PermissionError)
-- TokenAuth.__repr__ masks credentials
+- TokenAuth.**repr** masks credentials
 
 ## [5.50.0] - 2026-02-21
 
 ### Added - Enterprise Protocol Layer (P0-1, P0-2, P0-3)
+
 - MCP server: JSON-RPC 2.0 over stdio/SSE with 5 enterprise tools (start-project, project-status, agent-metrics, checkpoint-restore, quality-report)
 - MCP client: consume external MCP servers with circuit breaker, connection pooling, auto-reconnect
 - A2A protocol: agent discovery via `.well-known/agent.json`, task delegation, SSE streaming, artifact management
@@ -10531,6 +10829,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Session guard: prevents concurrent project starts
 
 ### Added - Enterprise Observability (P0-4, P0-5, P0-9)
+
 - OpenTelemetry instrumentation: RARV cycle, quality gates, agents, council (zero-overhead when disabled)
 - Policy engine: governance-as-code with YAML config, approval gates, webhook notifications
 - Audit trail: tamper-evident SHA-256 hash chain, JSONL persistence
@@ -10538,11 +10837,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Data residency controller: provider/region restrictions, air-gapped mode
 
 ### Added - Enterprise Integrations (P0-6, P0-7, P0-8)
+
 - Jira bidirectional sync: epic-to-PRD conversion, webhook handler, sub-task creation
 - Linear bidirectional sync: reusable adapter pattern, webhook support
 - GitHub Actions: enterprise trigger patterns, fork trust controls, expression injection prevention
 
 ### Security
+
 - JQL injection prevention: strict epic key validation (`^[A-Z][A-Z0-9_]+-\d+$`)
 - Response size limits (10MB) and request timeouts (30s) on all HTTP clients
 - SSE buffer bounds and input size limits on A2A task manager
@@ -10551,17 +10852,20 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Metadata deep-copy in audit trail to prevent hash integrity bypass
 
 ### Tests
+
 - 572 enterprise tests across all modules (protocols, observability, policies, audit, integrations)
 - Council-reviewed: 3 blind reviewers per module, anti-sycophancy devil's advocate pass
 
 ## [5.49.4] - 2026-02-21
 
 ### Added
+
 - `loki setup-skill` command: creates skill symlinks for all 3 providers (Claude, Codex, Gemini)
 - `loki doctor` now checks skill symlinks for all 3 provider directories
 - Multi-provider postinstall: `bin/postinstall.js` creates symlinks at `~/.claude/skills/`, `~/.codex/skills/`, and `~/.gemini/skills/`
 
 ### Changed
+
 - README installation restructured: npm first, Homebrew second, Quick Start shows all 3 providers
 - Git clone moved from primary README install to `docs/alternative-installations.md`
 - `docs/INSTALLATION.md` restructured to lead with npm/Homebrew
@@ -10572,12 +10876,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.49.3] - 2026-02-21
 
 ### Added
+
 - Mandatory testing rules in `skills/testing.md`: 7 rules covering test-first, real assertions, mock restrictions, assertion protection
 - Test quality review checklist in `references/quality-control.md`: reviewers now check for assertion manipulation, excessive internal mocks, and meaningless tests
 - Gate 8/9 run documentation in `skills/quality-gates.md`: VERIFY phase execution, env var toggles (`LOKI_GATE_MOCK_DETECTOR`, `LOKI_GATE_MUTATION_DETECTOR`)
 - "What To Expect" table in README: project type vs autonomy level (Simple/Standard/Complex)
 
 ### Changed
+
 - `docs/INSTALLATION.md`: restructured to lead with git clone as primary method; npm/Homebrew/Docker moved to "Alternative Methods" section with honest status notes and Docker TTY limitation
 - `integrations/openclaw/SKILL.md`: "zero intervention" -> "minimal human intervention"
 - `demo/voice-over-script.md`: "completely autonomous" -> "with minimal human oversight"; "without a single human intervention" -> "with minimal human intervention"
@@ -10587,6 +10893,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.49.2] - 2026-02-21
 
 ### Added
+
 - Dashboard honest process states: `_resolve_process_state()` returns 6 states (RUNNING, STALE, COMPLETED, FAILED, CRASHED, UNKNOWN) instead of simple "alive"/"dead"
 - Dashboard `/api/health/processes` now includes timestamps: `started`, `last_heartbeat`, `heartbeat_age_seconds`, `duration_seconds`, `checked_at`
 - Dashboard PID registry uses file mtime as heartbeat fallback when no explicit heartbeat field
@@ -10597,6 +10904,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - `docs/alternative-installations.md`: honest documentation of all secondary install methods with status labels and limitations
 
 ### Changed
+
 - Quality gate count updated from 7 to 9 across all documentation (README, CLAUDE.md, DOCKER_README.md, CONSTITUTION.md, skills/00-index.md, quality-gates.md, artifacts.md, cursor-comparison.md, COMPARISON.md, COMPETITIVE-ANALYSIS.md)
 - `references/core-workflow.md`: "ZERO human intervention" replaced with "minimal human intervention"
 - Version bumped to v5.49.2 across all version files
@@ -10604,6 +10912,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.49.1] - 2026-02-21
 
 ### Added
+
 - Central PID registry at `.loki/pids/` with JSON entries for all spawned processes
 - 6 registry functions: `init_pid_registry`, `register_pid`, `unregister_pid`, `kill_registered_pid`, `cleanup_orphan_pids`, `kill_all_registered`
 - `_parse_json_field` helper with python3 + shell (sed) fallback for environments without python3
@@ -10616,6 +10925,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Dashboard `/api/health/processes` endpoint reads PID registry for process status
 
 ### Fixed
+
 - Dashboard fake demo logs removed (6 fabricated setTimeout log entries)
 - Dashboard `running_agents` count now verifies PID liveness via `os.kill(pid, 0)` instead of raw array length
 - Dashboard quality gates return `null` instead of fake "pending" defaults
@@ -10627,6 +10937,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - `detect-mock-problems.sh` grep backreference portability for macOS
 
 ### Changed
+
 - "zero human intervention" replaced with "minimal human intervention" project-wide (README, SKILL.md, CLAUDE.md, DOCKER_README.md, wiki, demo, docs/COMPARISON.md)
 - "100+" agent claims replaced with accurate language across all docs (README, skills, references, docs)
 - "7 swarms" corrected to "8 swarms" across all docs (README, COMPARISON, cursor-comparison, agents, agent-types, CONSTITUTION, competitive-analysis)
@@ -10642,6 +10953,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.49.0] - 2026-02-19
 
 ### Added
+
 - Config self-protection: validate-bash.sh now blocks deletion/overwrite of .loki/council/, .loki/config.yaml, .loki/logs/bash-audit, .loki/session.lock
 - Config self-protection: Docker sandbox mounts .loki/council/ and .loki/config.yaml as read-only
 - Council severity-aware error budget: LOKI_COUNCIL_SEVERITY_THRESHOLD (critical/high/medium/low) and LOKI_COUNCIL_ERROR_BUDGET env vars
@@ -10653,12 +10965,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Structured handoff automatically written at session end
 
 ### Changed
+
 - Council dashboard state now includes severity_threshold and error_budget fields
 - All defaults are backwards-compatible (severity=low, budget=0.0 = strictest = same as before)
 
 ## [5.48.2] - 2026-02-18
 
 ### Fixed
+
 - Issue #41: Changed all shell script shebangs from `#!/bin/bash` to `#!/usr/bin/env bash` for macOS Homebrew bash 5.x compatibility
 - Issue #41: Dashboard now creates a Python virtualenv at `dashboard/.venv` for PEP 668 compliance (externally-managed-environment)
 - Issue #41: All dashboard startup paths (run.sh, loki dashboard start, loki api start, loki serve) use venv with fallback chain
@@ -10669,6 +10983,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.48.1] - 2026-02-16
 
 ### Fixed
+
 - Dashboard server auto-installs Python dependencies (fastapi/uvicorn/pydantic/websockets) before starting
 - Fixes ModuleNotFoundError on fresh npm/Homebrew installations where FastAPI is not pre-installed
 - Applied to all entry points: run.sh start_dashboard, loki dashboard start, loki api start, loki serve
@@ -10676,6 +10991,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.48.0] - 2026-02-16
 
 ### Fixed
+
 - Critical: VSCode extension API endpoint paths corrected (/api/control/* instead of /start, /stop, /pause, /resume)
 - Critical: VSCode health check now matches server response ("healthy" not "ok")
 - Critical: VSCode response type schemas aligned with server (success/message pattern)
@@ -10694,7 +11010,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - High: VSCode apiClient recreated on host/port config change
 - Medium: Provider wrapper fails explicitly when loader.sh missing (was silent Claude fallback)
 - Medium: Docker credential mount paths corrected (/home/loki/ not /root/) in README and wiki
-- Medium: npm test file leak prevention (*_test.ts/*_test.js patterns added to .npmignore)
+- Medium: npm test file leak prevention (_\_test.ts/__test.js patterns added to .npmignore)
 - Medium: Visibility-aware polling for cost dashboard and context tracker components
 - Medium: Memory embedding cache bounded at 10K entries with LRU eviction
 - Medium: VSCode VERSION file synced to current version
@@ -10702,6 +11018,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.47.0] - 2026-02-16
 
 ### Added
+
 - Council hard gate: blocks completion when critical PRD checklist items are failing
 - Waiver mechanism: add/remove/list waivers for checklist items that should not block completion
 - Re-verification: council re-runs checklist verification before every evaluation for fresh data
@@ -10712,6 +11029,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - API: auth scopes and rate limiting on waiver mutation endpoints
 
 ### Fixed
+
 - Critical: setsid not available on macOS, app runner now falls back gracefully
 - Critical: http_check rejected root path "/" as unsafe (default health check path)
 - Critical: council hard gate was dead code (council_evaluate never called from council_should_stop)
@@ -10733,12 +11051,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Medium: gate-block.json used unguarded ITERATION_COUNT variable
 
 ### Changed
+
 - npm test now validates all 6 shell scripts (was 3)
 - Council evaluation pipeline: council_should_stop now routes through council_evaluate
 
 ## [5.46.0] - 2026-02-16
 
 ### Added
+
 - PRD Checklist system: automated requirement tracking from PRD analysis (`autonomy/prd-checklist.sh`, `autonomy/checklist-verify.py`)
 - PRD Analyzer: quality scoring, gap detection, assumption tracking (`autonomy/prd-analyzer.py`)
 - App Runner: auto-detect, start, restart, and health-check user applications locally (`autonomy/app-runner.sh`)
@@ -10754,6 +11074,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Sidebar navigation: PRD Checklist and App Runner pages with keyboard shortcuts
 
 ### Fixed
+
 - GitHub Actions: removed invalid example-loki-review.yml that failed on every push (renamed to .yml.example)
 - Security: added auth scope requirement on app-runner control endpoints
 - Security: command injection prevention in app-runner via _validate_app_command()
@@ -10761,11 +11082,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Security: file handle leak in checklist-verify.py http_check
 
 ### Changed
+
 - Version bump from 5.43.0 to 5.46.0 across all distribution files (npm, Docker, Homebrew, VSCode, wiki)
 
 ## [5.43.0] - 2026-02-15
 
 ### Fixed
+
 - CLI: Added missing `syslog` command (was documented but not implemented)
 - CLI: Added 7 missing commands to bash completions (checkpoint, watchdog, audit, metrics, secrets, github, syslog)
 - Dashboard API: session.json writes now use atomic_write_json to prevent race conditions
@@ -10774,19 +11097,21 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Dashboard frontend: Fixed model pricing mutation across instances (moved to instance-level state)
 - Dashboard frontend: Fixed keyboard shortcut help overlay to include Context (9) and Notifications (0)
 - GitHub Actions: Fixed base64 -w 0 portability (release.yml now uses base64 | tr -d '
-')
+  ')
 - GitHub Actions: Updated deprecated model ID in wiki-sync.yml to claude-sonnet-4-5-20250929
-- npm: Fixed Python __pycache__ files leaking into package (added prepack cleanup + .npmignore patterns)
-- Versions: Fixed learning/__init__.py version (was 1.2.0, now matches release), added missing __version__ to memory/__init__.py
+- npm: Fixed Python **pycache** files leaking into package (added prepack cleanup + .npmignore patterns)
+- Versions: Fixed learning/**init**.py version (was 1.2.0, now matches release), added missing **version** to memory/**init**.py
 - Runtime: Added provider CLI validation in completion-council.sh before council invocations
 
 ### Added
+
 - 8 enterprise documentation files: network-security.md, authentication.md, authorization.md, metrics.md, git-workflow.md, audit-logging.md, siem-integration.md, openclaw-integration.md
 - wiki/Changelog.md linking to main CHANGELOG.md
 
 ## [5.42.2] - 2026-02-15
 
 ### Changed
+
 - Autonomi parent brand added across all surfaces (README, SKILL.md, Dockerfiles, package.json, wiki, docs, VSCode extension)
 - GitHub Pages redirects to autonomi.dev
 - Homepage URL updated to autonomi.dev
@@ -10796,11 +11121,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.42.1] - 2026-02-14
 
 ### Fixed
+
 - Orphan dashboard process: added async watchdog that checks session PID every 30s and self-terminates if session is gone (prevents dashboard surviving after SIGKILL)
 
 ## [5.42.0] - 2026-02-14
 
 ### Fixed
+
 - Cost tab always showing zeros: efficiency files now include token counts from context tracker
 - Learning tab empty: success patterns and tool efficiency now read from `.loki/learning/signals/`
 - Cost API fallback reads `.loki/context/tracking.json` instead of nonexistent `state.tokens`
@@ -10811,6 +11138,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.41.0] - 2026-02-13
 
 ### Added
+
 - GitHub sync-back: `sync_github_status()` wired into iteration loop and session lifecycle
 - GitHub PR creation: `create_github_pr()` called on successful session end (`LOKI_GITHUB_PR=true`)
 - GitHub task export: `export_tasks_to_github()` available via CLI
@@ -10822,12 +11150,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Comprehensive CLI reference wiki with copy-paste examples for all commands
 
 ### Fixed
+
 - Misleading "API credits" wording in no-PRD confirmation prompt
 - GitHub integration status changed from "Planned" to "Implemented" in SKILL.md
 
 ## [5.40.1] - 2026-02-13
 
 ### Fixed
+
 - OIDC JWT signature validation - fail-closed by default, explicit opt-in for skip
 - Provider allowlist and PRD path traversal validation in control API
 - Rate limiter memory leak - key eviction with max_keys=10000 limit
@@ -10849,6 +11179,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.40.0] - 2026-02-14
 
 ### Added
+
 - Context window tracking: parses Claude session JSONL to track token usage per RARV iteration
 - Context tracker dashboard component with gauge, timeline, and breakdown tabs
 - SVG circular progress ring showing context window usage percentage with color thresholds
@@ -10863,17 +11194,20 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Keyboard shortcuts: Cmd+9 (Context), Cmd+0 (Notifications)
 
 ### Fixed
+
 - Docker build failure: UID 1000 conflict with NodeSource-created user (useradd now checks for existing UID)
 
 ## [5.39.1] - 2026-02-13
 
 ### Fixed
+
 - API key validation no longer blocks CLI tools (claude/codex/gemini use their own login sessions)
 - Validation only enforced inside Docker/Kubernetes where CLI login is unavailable
 
 ## [5.39.0] - 2026-02-12
 
 ### Added
+
 - Anonymous usage telemetry via PostHog (opt-out: LOKI_TELEMETRY_DISABLED=true or DO_NOT_TRACK=1)
 - Telemetry tracks: installs, session starts/ends, CLI commands, dashboard starts (anonymous, no PII)
 - New files: autonomy/telemetry.sh (bash), dashboard/telemetry.py (Python)
@@ -10881,6 +11215,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Self-hosted endpoint support via LOKI_TELEMETRY_ENDPOINT env var
 
 ### Security
+
 - Fixed JSON injection in audit_log() and save_learning() functions (run.sh) - user input now escaped via jq or sed fallback
 - Added auth protection (require_scope("control")) to 5 unprotected POST endpoints in dashboard server
 - Fixed Dockerfile: replaced curl-pipe-bash NodeSource install with GPG-verified approach matching Dockerfile.sandbox
@@ -10888,6 +11223,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Fixed sandbox.sh md5sum/md5 pipeline fallback (empty hash on macOS)
 
 ### Fixed
+
 - Docker: docker-compose.yml volume mounts target /home/loki/ instead of /root/ (non-root user since v5.36.0)
 - Docker: dashboard/Dockerfile and docker-compose.yml updated from stale port 8420 to unified 57374
 - Docker: dashboard/Dockerfile now copies secrets.py, control.py, run.py (was crashing on startup)
@@ -10899,7 +11235,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - CLI: Fixed loki metrics curl crash under set -euo pipefail
 - CLI: Fixed stale port 8420 in dashboard/run.py and 13 frontend wrapper files
 - Dashboard: Fixed updateThemeLabel() -> updateThemeUI() JS runtime error on keyboard shortcut
-- Dashboard: FastAPI version now reads from __version__ instead of hardcoded 0.1.0
+- Dashboard: FastAPI version now reads from **version** instead of hardcoded 0.1.0
 - Dashboard: Audit log integrity chain now recovers last hash on server restart
 - Dashboard: dashboard-ui package.json version synced to 1.3.0
 - Release: GitHub release zip now includes events/, templates/, learning/, mcp/, completions/, integrations/
@@ -10911,6 +11247,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.38.0] - 2026-02-12
 
 ### Added
+
 - Branch protection: agent sessions auto-create feature branches (LOKI_BRANCH_PROTECTION=true), PR creation via `gh`
 - Agent action audit trail: JSON lines log at .loki/logs/agent-audit.jsonl (cli_invoke, git_commit, session events)
 - `loki audit` CLI with log/count/help subcommands
@@ -10919,9 +11256,10 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Log integrity chain hashing: SHA-256 tamper-evident audit entries with verify_log_integrity()
 - Network security wiki documentation (Docker isolation, Kubernetes NetworkPolicy)
 - OpenClaw bridge foundation: event schema mapping (15 event types), file watcher, CLI skeleton
-- integrations/openclaw/bridge/ package with __main__.py entry point
+- integrations/openclaw/bridge/ package with **main**.py entry point
 
 ### Fixed
+
 - loki_agents_total Prometheus metric type corrected from counter to gauge
 - Python 3.8 compat: removed dict|None type hints in OpenClaw bridge and Pydantic models
 - Added python3 guard in audit_agent_action() for systems without Python
@@ -10929,23 +11267,27 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.37.1] - 2026-02-12
 
 ### Security
+
 - WebSocket /ws endpoint now requires token query param when enterprise auth or OIDC enabled (closes unauthenticated WS gap)
 - RBAC role model: admin, operator, viewer, auditor roles with scope hierarchy (* > control > write > read)
 - Removed SETUID/SETGID Docker capabilities from sandbox (unnecessary for non-root UID 1000)
 - CORS wildcard warning logged when LOKI_DASHBOARD_CORS set to *
 
 ### Added
+
 - Syslog audit log forwarding via LOKI_AUDIT_SYSLOG_HOST/PORT/PROTO (fire-and-forget, off by default)
 - Role parameter on token generation (generate_token(role="viewer"))
 - resolve_scopes() and list_roles() functions in auth module
 
 ### Fixed
+
 - Gemini provider PROVIDER_RATE_LIMIT_RPM changed from hardcoded 60 to configurable ${LOKI_GEMINI_RPM:-15} (free tier default)
 - Gemini model name comment updated to note preview status
 
 ## [5.37.0] - 2026-02-12
 
 ### Added
+
 - Dashboard: TLS/HTTPS support via LOKI_TLS_CERT and LOKI_TLS_KEY environment variables
 - Dashboard: OIDC/SSO authentication support (experimental, claims-based JWT validation)
 - Dashboard: Budget and cost limit controls (/api/budget endpoint, LOKI_BUDGET_LIMIT env var)
@@ -10962,16 +11304,19 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Wiki: Updated audit logging documentation for default-on behavior
 
 ### Security
+
 - auth.py: Runtime warning when OIDC enabled without cryptographic signature verification
 - run.sh: Fixed shell injection in budget limit check (numeric validation + sys.argv passing)
 - auth.py: Fixed Python 3.8 compatibility for OIDC JWKS cache type hint
 
 ### Changed
+
 - Audit logging now on by default (was opt-in via LOKI_ENTERPRISE_AUDIT, now opt-out via LOKI_AUDIT_DISABLED)
 
 ## [5.36.0] - 2026-02-12
 
 ### Security
+
 - Dashboard: Wire auth.py to all destructive API endpoints (control/stop, agent/kill, DELETE operations)
 - Dashboard: Add rate limiting (10 req/min) on session control and agent management endpoints
 - Dashboard: Add per-token random salt to SHA-256 token hashing (backwards compatible with unsalted tokens)
@@ -10984,6 +11329,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.35.0] - 2026-02-12
 
 ### Added
+
 - Quality gates: 3-specialist code review execution in run.sh with keyword-based selection (v5.35.0)
 - CONTINUITY.md: Automatic working memory management updated each iteration (v5.35.0)
 - VSCode extension: Checkpoint tree view with create/rollback commands (v5.35.0)
@@ -10991,6 +11337,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - CLI tests: test-checkpoint-cli.sh for checkpoint commands
 
 ### Fixed
+
 - docs/SYNERGY-ROADMAP.md: Replaced deprecated utcnow() with datetime.now(timezone.utc)
 - autonomy/hooks/store-episode.sh: Replaced deprecated utcnow() with datetime.now(timezone.utc)
 - wiki/Configuration.md: Fixed stale port 9898 to 57374
@@ -11000,6 +11347,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.34.0] - 2026-02-12
 
 ### Added
+
 - Checkpoint/snapshot system with automatic git SHA tracking (v5.34.0)
 - Automatic state checkpoints after session completion in run.sh
 - `loki checkpoint` CLI with create/list/show/rollback subcommands
@@ -11008,6 +11356,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Pre-rollback safety snapshot before restoring state
 
 ### Fixed
+
 - Dockerfile: Added missing COPY for learning/ and templates/ directories
 - Dockerfile.sandbox: Added missing COPY for learning/ and templates/ directories
 - Wiki API-Reference: Fixed stale port 9898 references (now 57374)
@@ -11017,6 +11366,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.33.0] - 2026-02-11
 
 ### Fixed - Critical (5)
+
 - run.sh: PAUSE file deleted before handle_pause() checks it (#4)
 - run.sh: LOKI_HUMAN_INPUT never cleared after use, repeats every iteration (#5)
 - memory/engine.py: Naive vs timezone-aware datetime crashes consolidation (#1)
@@ -11024,6 +11374,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - mcp/server.py: Local mcp/ package shadows pip SDK via importlib.util bypass (#3)
 
 ### Fixed - High (13)
+
 - dashboard/server.py: time_range parameter ignored in _read_events() (#6)
 - dashboard/server.py: Default 0.0.0.0 bind with CORS * exposes control endpoints (#7)
 - dashboard/server.py: No agent_id sanitization in signal file writes (#8)
@@ -11039,6 +11390,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - run.sh: Force-review approval skips COMPLETED marker and report (#17)
 
 ### Fixed - Medium (22)
+
 - memory/retrieval.py: Namespace-unaware direct path access bypasses storage (#19)
 - memory/vector_index.py: In-place normalization corrupts stored embeddings (#20)
 - dashboard/server.py: get_episode() missing dir existence check (#21)
@@ -11063,6 +11415,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - docker-compose.yml: Named volume shadows bind-mounted .loki/ (#41)
 
 ### Fixed - Low (9)
+
 - memory/storage.py: Lock files never cleaned up, prevent dir removal (#42)
 - dashboard/server.py: evidence_file.read_text() unprotected by try/except (#43)
 - dashboard/server.py: kill_agent() returns HTTP 200 on failure (#44)
@@ -11074,10 +11427,11 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - hooks/validate-bash.sh: Trailing newline in logged JSON (#51)
 - events/emit.sh: Key names not JSON-escaped (#52)
 - hooks/quality-gate.sh: TODOS count becomes "0
-0" (#53)
+  0" (#53)
 - completion-council.sh: COUNCIL_SIZE>3 assigns empty role (#54)
 
 ### Added
+
 - completion-council.sh: council_evaluate_member() function for test/convergence/error checks
 - completion-council.sh: council_aggregate_votes() function with 2/3 majority logic
 - completion-council.sh: council_devils_advocate_review() with 5 skeptical checks
@@ -11085,15 +11439,17 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Dockerfile: Missing COPY for providers/, memory/, events/ (#18)
 - Dockerfile.sandbox: Missing COPY for memory/, events/ (#55)
 - package.json: learning/ added to npm files whitelist (#56)
-- .npmignore: Exclude __pycache__, test files, .loki/ (#57)
+- .npmignore: Exclude **pycache**, test files, .loki/ (#57)
 
 ### Changed
+
 - SKILL.md: Removed unimplemented feature claims, added Planned Features section
 - SKILL.md: Honest capability documentation matching actual code
 
 ## [5.32.2] - 2026-02-09
 
 ### Changed
+
 - action.yml: Provider-agnostic CLI installation (supports claude, codex, gemini)
 - action.yml: Provider-aware credential verification (ANTHROPIC_API_KEY, OPENAI_API_KEY, GOOGLE_API_KEY)
 - action.yml: Support Claude Max OAuth token authentication (CLAUDE_CODE_OAUTH_TOKEN)
@@ -11102,12 +11458,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.32.1] - 2026-02-10
 
 ### Fixed
+
 - action.yml: Add ANTHROPIC_API_KEY verification step with clear error message
 - action.yml: Fail fast when API key is missing instead of silent failure at runtime
 
 ## [5.32.0] - 2026-02-10
 
 ### Added
+
 - `loki doctor` command for system prerequisite checks (#22)
 - `--json` flag for `loki status` machine-readable output (#20)
 - Dark/light theme toggle for dashboard (#17)
@@ -11121,6 +11479,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - 14 shell script tests for loki CLI commands (#25)
 
 ### Fixed
+
 - Auto-confirm precedence: LOKI_AUTO_CONFIRM now takes priority over CI env var
 - Word-splitting safety in action.yml using bash arrays
 - Variable scope leak in memory clear command
@@ -11128,6 +11487,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.31.0] - 2026-02-09
 
 ### Added
+
 - Shell completion support for bash and zsh (community contribution by @jpreyesm03)
 - 28 commands with 15 subcommand groups in completions
 - `loki completions [bash|zsh]` subcommand to output completion scripts
@@ -11140,12 +11500,14 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Comprehensive Action inputs documentation table in README
 
 ### Changed
+
 - GitHub Action budget handling improved with proper --budget flag construction
 - GitHub Action example workflow with clearer prerequisites documentation
 
 ## [5.30.0] - 2026-02-09
 
 ### Added
+
 - Knowledge Compounding system (COMPOUND phase) - structured solution files with YAML frontmatter at `~/.loki/solutions/{category}/`
 - Deepen-Plan phase - 4 parallel research agents (repo-analyzer, dependency-researcher, edge-case-finder, security-threat-modeler) enhance architecture plans before coding
 - CLI: `loki compound` with 6 subcommands (list, show, search, run, stats, help)
@@ -11154,6 +11516,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - `load_solutions_context()` function in run.sh for solution retrieval during REASON phase
 
 ### Changed
+
 - RARV cycle extended to RARV+C (Compound) - extract structured solutions after VERIFY passes
 - Phase transitions: ARCHITECTURE -> DEEPEN_PLAN -> INFRASTRUCTURE for standard/complex tiers
 - Blind review system enhanced with 5 Specialist Review Agents (security-sentinel, performance-oracle, architecture-strategist, test-coverage-auditor, dependency-analyst) - 3-slot selection from specialist pool
@@ -11163,6 +11526,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.29.0] - 2026-02-08
 
 ### Added
+
 - Docker Desktop Sandbox as default isolation mode for `loki sandbox`
 - 3-tier fallback: Docker Desktop microVM > Docker Container > Git Worktree
 - New `--docker-desktop` flag for explicit Docker Desktop Sandbox selection
@@ -11173,6 +11537,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - GitHub Action usage section and Marketplace badge in README
 
 ### Changed
+
 - `loki sandbox` auto-detects Docker Desktop Sandbox as highest priority
 - Simplified `loki` CLI sandbox delegation (removed hard Docker check, sandbox.sh handles detection)
 - Added `IS_SANDBOX=1` guard to prevent double-sandbox when running inside Docker Desktop VM
@@ -11180,6 +11545,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.28.1] - 2026-02-08
 
 ### Fixed
+
 - Critical: `_LOKI_DIR` cached at import time in server.py -- stale for long-running dashboard (30 refs replaced with per-request calls)
 - Critical: Learning aggregation field names mismatched between API and frontend (key vs preference_key, type vs error_type, etc.)
 - Critical: Task titles invisible -- server read `payload.action` but run.sh writes flat `title` field
@@ -11195,6 +11561,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Low: Dead-letter and failed queue tasks invisible in `/api/tasks` endpoint
 
 ### Added
+
 - `provider` field in `dashboard-state.json` for multi-provider visibility
 - Efficiency tracking files written per iteration for `/api/cost` data
 - `/api/pricing` endpoint with multi-provider support (Claude, Codex, Gemini)
@@ -11203,6 +11570,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.28.0] - 2026-02-07
 
 ### Added
+
 - CLI: `loki demo` - Interactive 60-second demo with live dashboard visualization
 - CLI: `loki quick "task"` - Lightweight single-task mode (3 iterations max)
 - CLI: `loki init` - Interactive PRD builder with template support (`--template`, `--list-templates`)
@@ -11218,10 +11586,11 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - GitHub: 12 good-first-issues (#14-#25) for community onboarding
 
 ### Fixed
+
 - Shell: BSD sed `` uppercase conversion fails on macOS (use awk instead)
 - Shell: BSD sed `\+` regex fails on macOS (use `sed -E` extended regex)
 - Shell: `dogfood-stats.sh` grep -c produces "0
-0" on no matches (use `|| true`)
+  0" on no matches (use `|| true`)
 - Shell: `cmd_init()` --output/--template crash on missing argument (add guard checks)
 - Shell: `--budget` accepts non-numeric values (add validation)
 - Shell: Demo phase counter off-by-one (0/7 instead of 1/7)
@@ -11234,18 +11603,20 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Blog: SWE-bench claims 299/300 but actual data shows 300/300 with 0 errors
 - Blog: HumanEval comment says 158 solved in 1 attempt (actual: 160)
 - Blog: Website version stale at v5.25.0
-- Version: mcp/__init__.py stuck at 5.27.0 (missed in v5.27.1 bump)
+- Version: mcp/**init**.py stuck at 5.27.0 (missed in v5.27.1 bump)
 - Version: docker-compose.yml stuck at 5.27.0
 - Packaging: `templates/` missing from npm `files` whitelist
 - Templates: static-landing-page.md references emoji usage (contradicts no-emoji rule)
 
 ### Changed
+
 - CLI header comment updated from v5.0.0 to current
 - Budget flag help text clarified (display only, not auto-pause)
 
 ## [5.27.1] - 2026-02-07
 
 ### Fixed
+
 - Dashboard: Pause/resume/stop buttons now call backend API (were firing DOM events only)
 - Dashboard: Overview section replaced inline JS with proper `loki-overview` web component
 - Dashboard: Log stream polls `/api/logs` as fallback when WebSocket unavailable
@@ -11261,6 +11632,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ### Fixed (57 bugs from comprehensive 10-agent audit with 3-member council review)
 
 **Critical (5)**
+
 - Shell: PAUSE file deleted before `handle_pause()` checks it (pause never worked)
 - Shell: `LOKI_HUMAN_INPUT` never cleared after use (same directive repeated every iteration)
 - Python: Naive vs tz-aware datetime comparison crashes memory consolidation pipeline
@@ -11268,6 +11640,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Python: Local `mcp/` package shadows pip `mcp` SDK (circular import, MCP server can't start)
 
 **High (13)**
+
 - Dashboard: `time_range` parameter completely ignored in event filtering
 - Dashboard: Default bind `0.0.0.0` changed to `127.0.0.1` for security
 - Dashboard: `agent_id` sanitization added to signal file writes
@@ -11283,6 +11656,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Docker: Missing COPY for `providers/`, `memory/`, `events/` in Dockerfile
 
 **Medium (30)**
+
 - Shell: Non-atomic dashboard-state.json writes (now uses temp file + mv)
 - Shell: PRD paths with special chars properly escaped in JSON
 - Shell: Wrong Gemini package name (`@anthropic-ai` -> `@google/gemini-cli`)
@@ -11296,7 +11670,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Shell: `track-metrics.sh` TOOL_NAME properly JSON-escaped
 - Shell: `emit.sh` failed `shift 3` no longer re-processes args
 - Shell: `quality-gate.sh` TODOS no longer becomes "0
-0"
+  0"
 - Shell: Council `COUNCIL_SIZE>3` now assigns "generalist" role instead of empty
 - Dashboard: `get_episode()` and `get_skill()` check directory existence
 - Dashboard: Inconsistent LOKI_DIR resolution unified via helper function
@@ -11316,6 +11690,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Python: Integer division `// 1000` changed to float division for durations
 
 **Low (9)**
+
 - Shell: Orphaned install process PIDs now tracked and cleaned up
 - Dashboard: `evidence_file.read_text()` wrapped in try/except
 - Dashboard: `kill_agent()` returns proper HTTP 404/500 on failure
@@ -11327,6 +11702,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Shell: `validate-bash.sh` audit logging uses printf instead of echo
 
 ### Process
+
 - 10 parallel Opus agents audited entire codebase as product owners
 - 8 parallel Opus validation agents confirmed 48 TRUE, 1 PARTIALLY TRUE, 0 FALSE
 - 10 parallel fix agents implemented all fixes (no file conflicts)
@@ -11337,6 +11713,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.26.2] - 2026-02-07
 
 ### Fixed
+
 - Dashboard: Removed full-viewport min-height from section pages (whitespace gap)
 - Shell: TARGET_DIR initialized for parallel mode
 - Shell: Source guard on self-copy exec block prevents sourcing from launching orchestrator
@@ -11351,6 +11728,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.26.1] - 2026-02-07
 
 ### Fixed
+
 - Release workflow YAML parse error (root cause of npm stuck at 5.23.0)
 - Shell bugs: md5sum macOS compat, verdict init, contrarian regex, HUMAN_INPUT subshell
 - Dashboard server default port 8420 to 57374
@@ -11362,6 +11740,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.26.0] - Developer Adoption and Community Infrastructure
 
 ### Added
+
 - CONTRIBUTING.md with prerequisites, setup, and test instructions
 - GitHub issue templates (bug report, feature request)
 - Pull request template with checklist
@@ -11372,6 +11751,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Port documentation (57374 vs 9898) in installation guide
 
 ### Fixed
+
 - postinstall.js backs up existing non-symlink installs instead of silently failing
 - `loki status` shows helpful message when no active session found
 - `jq` dependency guard on all jq-dependent CLI commands
@@ -11381,6 +11761,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Broken reference link (agents.md -> agent-types.md)
 
 ### Changed
+
 - README consolidated from 868 to ~500 lines with badges
 - npm package excludes Dockerfiles, large binaries (3.5MB -> 2.7MB)
 - `npm test` validates shell script syntax instead of being a no-op
@@ -11427,6 +11808,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.25.0] - 2026-02-06
 
 ### Added - Completion Council Multi-Agent System
+
 - 3-member council votes on project completion (2/3 majority required)
 - Anti-sycophancy devil's advocate on unanimous votes
 - Convergence detection via git diff hash tracking
@@ -11437,6 +11819,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - CLI: `loki council` with 7 subcommands
 
 ### Fixed
+
 - Dashboard frontend resolution and `loki stop` behavior
 - VSCode auto-start configuration
 
@@ -11445,6 +11828,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.24.0] - 2026-02-05
 
 ### Added - Enterprise Dashboard Pipeline
+
 - GPT-5.3 Codex and Claude Opus 4.6 model support
 - Enterprise dashboard pipeline with comprehensive E2E tests
 - 32 Playwright tests covering all dashboard components
@@ -11454,6 +11838,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.23.0] - 2026-02-05
 
 ### Fixed - Dashboard File-Based API
+
 - server.py now reads from `.loki/` flat files instead of empty SQLAlchemy DB
 - All 19 API endpoints read from dashboard-state.json, queue/, memory/, events.jsonl, metrics/
 - Web components changed from hardcoded `localhost:8420` to `window.location.origin`
@@ -11463,6 +11848,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ## [5.21.0] - 2026-02-04
 
 ### Added - Dashboard Web Components Architecture
+
 - Unified 5 dashboards into reusable Web Components (71-87% code reduction)
 - LokiElement base class with shadow DOM, theme support, keyboard shortcuts
 - API client with adaptive polling, WebSocket, VS Code integration
@@ -11482,6 +11868,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 ### Comprehensive Testing Complete (100% Coverage)
 
 **CLI Commands Tested: 87 commands - ALL PASS**
+
 - Session: start, stop, pause, resume, status, reset
 - Dashboard/API: start, stop, status, url, serve
 - Provider: show, list, info, set (claude/codex/gemini)
@@ -11493,6 +11880,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 **run.sh Testing: 34 tests - ALL PASS**
 
 **VS Code Extension: Fully verified**
+
 - 11 commands, 8 settings, 6 views, 22 source files
 
 ---
@@ -11505,6 +11893,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - Comprehensive testing plan executed with all CLI commands verified
 
 ### Test Results Summary
+
 - Session: start, stop, pause, resume, status, reset - ALL PASS
 - Dashboard: start, stop, status, url, API endpoints - ALL PASS
 - Provider: show, list, info, set (claude/codex/gemini) - ALL PASS
@@ -11573,18 +11962,21 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Build Infrastructure
 
 **New File: `dashboard-ui/esbuild.config.cjs`**
+
 - ESM bundle for modern browsers and React integration
 - IIFE bundle for VS Code webview (CSP-compatible)
 - Watch mode with hot reload for development
 - Minification and sourcemaps for production
 
 **New File: `dashboard-ui/types/index.d.ts`**
+
 - TypeScript definitions for all 5 components
 - Event detail types for custom events
 - API client and state management types
 - JSX intrinsic element declarations
 
 **New File: `dashboard-ui/scripts/build-standalone.js`**
+
 - Generates self-contained HTML with inlined bundle
 - Offline support with localStorage
 - Theme switching with system preference detection
@@ -11592,28 +11984,33 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### VS Code Integration
 
 **Refactored: `vscode-extension/src/views/dashboardWebview.ts`**
+
 - Reduced from 1,339 lines to 392 lines (71% reduction)
 - Uses Web Components instead of inline HTML/JS
 - All 5 tabs: Tasks, Sessions, Logs, Memory, Learning
 - CSP-compliant with nonce-based script loading
 
 **Updated: `vscode-extension/esbuild.js`**
+
 - Copies dashboard-ui bundle to media/
 - Build order: dashboard-ui first, then extension
 
 **Deprecated: `vscode-extension/src/views/memoryViewProvider.ts`**
+
 - Marked deprecated (removal in v6.0.0)
 - Memory available in main dashboard Memory tab
 
 #### React Integration
 
 **New File: `dashboard/frontend/src/hooks/useWebComponent.ts`**
+
 - Generic hook for Web Component integration
 - Prop-to-attribute syncing with camelCase conversion
 - Event listener management with cleanup
 - Complex value serialization
 
 **New Directory: `dashboard/frontend/src/components/wrappers/`**
+
 - `LokiTaskBoardWrapper.tsx` - Task board with drag-drop events
 - `LokiSessionControlWrapper.tsx` - Session lifecycle control
 - `LokiMemoryBrowserWrapper.tsx` - Memory browser with selection events
@@ -11621,6 +12018,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### API Client Enhancements
 
 **Updated: `dashboard-ui/core/loki-api-client.js`**
+
 - Adaptive polling based on page visibility
 - VS Code message bridge for extension communication
 - Context detection (vscode, browser, cli)
@@ -11629,22 +12027,24 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Theme Unification
 
 **Updated: `dashboard/frontend/tailwind.config.js`**
+
 - Imports design tokens from loki-unified-styles.js
 - CSS variables mapped to Tailwind utilities
 - Anthropic color palette (orange #d97757, cream #faf9f0, charcoal #131314)
 
 **Updated: `dashboard/frontend/src/index.css`**
+
 - Complete light/dark theme CSS variables
 - Component classes using unified tokens
 
 #### Code Reduction Summary
 
-| Component | Before | After | Reduction |
-|-----------|--------|-------|-----------|
-| dashboardWebview.ts | 1,339 lines | 392 lines | 71% |
-| Static dashboard | ~2,000 lines | 262 lines | 87% |
-| Theme implementations | 4 separate | 1 unified | 75% |
-| API clients | 4 separate | 1 + bridge | 75% |
+| Component             | Before       | After      | Reduction |
+| --------------------- | ------------ | ---------- | --------- |
+| dashboardWebview.ts   | 1,339 lines  | 392 lines  | 71%       |
+| Static dashboard      | ~2,000 lines | 262 lines  | 87%       |
+| Theme implementations | 4 separate   | 1 unified  | 75%       |
+| API clients           | 4 separate   | 1 + bridge | 75%       |
 
 ---
 
@@ -11657,6 +12057,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### State Management (Phase 3)
 
 **New Files: `state/manager.py`, `state/manager.ts`**
+
 - Centralized state manager with file locking and caching
 - Change notifications via file watchers
 - Conflict resolution strategies (last-write-wins, merge, fail)
@@ -11666,37 +12067,44 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Learning System (Phase 4)
 
 **New Files: `learning/signals.py`, `learning/signals.ts`**
+
 - Signal types: UserPreference, ErrorPattern, SuccessPattern, ToolEfficiency, ContextRelevance, WorkflowPattern
 - Cross-language signal definitions for Python and TypeScript
 
 **New File: `learning/aggregator.py`**
+
 - Aggregates signals from `.loki/learning/signals/`
 - Preference voting, error frequency tracking, success pattern promotion
 - Time-weighted aggregation with decay
 
 **New File: `learning/suggestions.py`**
+
 - Context-aware suggestions based on aggregated learnings
 - Priority scoring and relevance filtering
 
 **New Files: `api/routes/learning.ts`, `api/services/learning-collector.ts`**
+
 - REST endpoints: GET /api/learning/metrics, /trends, /signals, /aggregation
 - Learning signal collection in API layer
 
 #### Dashboard Web Components (Phase 5)
 
 **New Directory: `dashboard-ui/`**
+
 - `loki-task-board.js` - Kanban board with drag-drop, ARIA labels, keyboard navigation
 - `loki-learning-dashboard.js` - Learning metrics visualization with SVG charts
 - `loki-unified-styles.js` - 5 theme variants (light, dark, high-contrast, vscode-light, vscode-dark)
 - Shadow DOM isolation, Custom Elements, focus management
 
 **New File: `vscode-extension/src/views/dashboardWebview.ts`**
+
 - WebviewViewProvider for embedding dashboard in VS Code
 - CSP with nonce-based scripts, HTML escaping, message passing
 
 #### Swarm Intelligence
 
 **New Directory: `swarm/`**
+
 - `intelligence.py` - SwarmCoordinator with voting, consensus, delegation, emergence patterns
 - `bft.py` - Byzantine Fault Tolerance with PBFT-lite consensus
 - Agent reputation tracking, fault detection, message authentication
@@ -11704,11 +12112,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Memory Enhancements
 
 **New File: `memory/namespace.py`**
+
 - NamespaceManager for project isolation
 - Auto-detection from git repo, package.json, or directory name
 - Namespace inheritance support
 
 **Updated: `memory/embeddings.py`**
+
 - Multi-provider: LocalEmbeddingProvider, OpenAIEmbeddingProvider, CohereEmbeddingProvider
 - TextChunker with fixed/sentence/semantic strategies
 - Quality scoring, semantic deduplication
@@ -11716,6 +12126,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Real-Time Collaboration
 
 **New Directory: `collab/`**
+
 - `presence.py` - User presence tracking with heartbeat
 - `sync.py` - Operational Transformation for concurrent edits
 - `websocket.py` - WebSocket broadcasting
@@ -11724,23 +12135,27 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### VS Code Extension Enhancements
 
 **New File: `vscode-extension/src/services/memory-integration.ts`**
+
 - FileEditMemoryIntegration - tracks file edits as episodic memories
 - Debounced recording (5s window), code pattern detection
 
 #### CLI Enhancements
 
 **Updated: `autonomy/loki`**
+
 - `load_memory_context()` with base64 encoding for security
 - Namespace subcommand support
 - Memory context loads to `.loki/state/memory-context.json`
 
 **Updated: `autonomy/run.sh`**
+
 - `load_startup_learnings()` with JSON schema validation
 - Learning signal emission on RARV cycle completion
 
 #### API Security Fixes
 
 **Updated: `api/routes/memory.ts`**
+
 - Rate limiting (10 req/s), subprocess timeout (30s)
 - Input validation (10,000 char limit)
 - Command injection fix with proper JSON escaping
@@ -11748,10 +12163,12 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Documentation
 
 **Updated: `docs/SYNERGY-TASKS.md`**
+
 - All 45 tasks marked complete
 - Progress: 100% (45/45 tasks)
 
 **Updated: `docs/loki-mode-presentation.pptx`**
+
 - Updated presentation file
 
 ---
@@ -11765,11 +12182,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Security Fixes (Critical)
 
 **Command Injection Fixes:**
+
 - `.loki/hooks/session-init.sh` - Shell variables now passed via environment variables instead of string interpolation
 - `.loki/hooks/store-episode.sh` - Same fix, prevents arbitrary code execution
 - Input validation added for paths and session IDs
 
 **Path Traversal Fix:**
+
 - `mcp/server.py` - Added comprehensive path validation with `validate_path()`, `safe_path_join()`, `safe_open()`
 - All file access points now validate paths are within allowed directories (.loki/, memory/)
 - Uses `os.path.realpath()` to prevent symlink escapes
@@ -11777,6 +12196,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Unified Memory Access Layer
 
 **New File: `memory/unified_access.py`**
+
 - `UnifiedMemoryAccess` class - single interface for all tools
 - `get_relevant_context(task_type, query, token_budget)` - retrieves context from all memory types
 - `record_interaction(source, action)` - records interactions to timeline
@@ -11786,33 +12206,39 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Importance Scoring System
 
 **Updated: `memory/schemas.py`**
+
 - Added `importance: float` (0.0-1.0) to EpisodeTrace, SemanticPattern, ProceduralSkill
 - Added `last_accessed: datetime` for recency tracking
 - Added `access_count: int` for frequency tracking
 
 **Updated: `memory/storage.py`**
+
 - `calculate_importance(memory, task_type)` - scores based on outcome, errors, access frequency
 - `apply_decay(memories, decay_rate, half_life_days)` - exponential time decay
 - `boost_on_retrieval(memory, boost)` - increases importance on access
 
 **Updated: `memory/retrieval.py`**
+
 - Importance now factors into relevance scoring (30% weight)
 - Retrieved memories get importance boost
 
 #### Context Window Optimization
 
 **Updated: `memory/token_economics.py`**
+
 - `optimize_context(memories, budget)` - selects memories within token budget
 - Scores by importance (40%), recency (30%), relevance (30%)
 - Layer preference: index (1.1x) > summaries (1.0x) > full (0.9x)
 
 **Updated: `memory/retrieval.py`**
+
 - `retrieve_with_budget(query, task_type, budget)` - budget-aware retrieval
 - Progressive disclosure: Layer 1 (20%) -> Layer 2 (40%) -> Layer 3 (remaining)
 
 #### CLI Event Emission
 
 **Updated: `autonomy/loki`**
+
 - `cmd_start` emits `session:start` with provider, prd_path
 - `cmd_stop` emits `session:stop` with reason
 - `cmd_pause` emits `session:pause` with reason
@@ -11822,6 +12248,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### API Memory Context
 
 **Updated: `api/routes/health.ts`**
+
 - `/api/status` now includes `memoryContext` field
 - Returns top 3 relevant patterns for current phase
 - Graceful fallback when memory unavailable
@@ -11829,6 +12256,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### MCP Event Emission
 
 **Updated: `mcp/server.py`**
+
 - All 8 MCP tools emit events on start and completion
 - Uses EventType.COMMAND and EventSource.MCP
 - Non-blocking via background threads
@@ -11836,6 +12264,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### VS Code Memory Sidebar
 
 **New File: `vscode-extension/src/views/memoryViewProvider.ts`**
+
 - Memory panel in VS Code sidebar
 - Shows: episodes count, patterns count, skills count
 - Lists recent patterns, episodes, and skills
@@ -11850,6 +12279,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Files Added/Modified
 
 **New Files:**
+
 - `memory/unified_access.py`
 - `memory/test_importance.py`
 - `tests/test-unified-memory.sh`
@@ -11857,6 +12287,7 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 - `vscode-extension/src/views/memoryViewProvider.ts`
 
 **Modified Files:**
+
 - `.loki/hooks/session-init.sh` (security fix)
 - `.loki/hooks/store-episode.sh` (security fix)
 - `mcp/server.py` (path traversal fix + event emission)
@@ -11881,11 +12312,13 @@ multi-persona debate (MoMoA) into a native Loki subsystem.
 #### Security Fixes (Critical)
 
 **Command Injection Fixes:**
+
 - `.loki/hooks/session-init.sh` - Fixed shell variable interpolation into Python code by using environment variables
 - `.loki/hooks/store-episode.sh` - Fixed shell variable interpolation into Python code by using environment variables
 - Both hooks now pass data via `LOKI_CWD`, `LOKI_SESSION_ID` environment variables instead of string interpolation
 
 **Path Traversal Fix:**
+
 - `mcp/server.py` - Added comprehensive path validation with `validate_path()`, `safe_path_join()`, `safe_open()`, `safe_makedirs()`
 - All file access now validated against allowed directories (`.loki/`, `memory/`)
 - Uses `os.path.realpath()` to prevent symlink-based escapes
@@ -11904,6 +12337,7 @@ suggestions = access.get_suggestions("auth flow")
 ```
 
 **Features:**
+
 - `get_relevant_context(task_type, query, token_budget)` - Task-aware retrieval
 - `record_interaction(source, action, outcome)` - Record any tool interaction
 - `record_episode(task_id, agent, goal, actions, outcome)` - Store episode traces
@@ -11915,11 +12349,13 @@ suggestions = access.get_suggestions("auth flow")
 Memory decay and retrieval boost for smarter context:
 
 **New Fields on All Memory Types:**
+
 - `importance: float` (0.0-1.0) - Decays over time
 - `last_accessed: datetime` - Updated on retrieval
 - `access_count: int` - Tracks retrieval frequency
 
 **New Functions:**
+
 - `calculate_importance(memory, task_type)` - Score based on outcome, errors, access, confidence
 - `apply_decay(memories, decay_rate, half_life_days)` - Exponential time-based decay
 - `boost_on_retrieval(memory, boost)` - Increase importance when accessed
@@ -11930,11 +12366,13 @@ Memory decay and retrieval boost for smarter context:
 Token-aware memory retrieval with progressive disclosure:
 
 **New Functions:**
+
 - `optimize_context(memories, budget)` - Select best memories within token budget
 - `retrieve_with_budget(query, task_type, budget, progressive)` - Budget-aware retrieval
 - `get_context_efficiency()` - Token utilization metrics
 
 **Progressive Disclosure:**
+
 - Layer 1 (20% budget): Topic index
 - Layer 2 (40% budget): Summaries
 - Layer 3 (remaining): Full details
@@ -11970,6 +12408,7 @@ Status endpoint now includes memory context:
 #### MCP Event Emission (mcp/server.py)
 
 All MCP tool calls emit events:
+
 - `loki_memory_retrieve` - start/complete with query, result count
 - `loki_task_queue_*` - start/complete with action, status
 - `loki_state_get` - start/complete
@@ -11978,6 +12417,7 @@ All MCP tool calls emit events:
 #### VS Code Memory Panel (vscode-extension/)
 
 New memory context sidebar showing:
+
 - Token economics (total tokens, savings percentage)
 - Relevant patterns with confidence scores
 - Recent episodes with outcomes
@@ -11985,6 +12425,7 @@ New memory context sidebar showing:
 - Auto-refresh every 10 seconds
 
 **Files Added:**
+
 - `memory/unified_access.py` - Unified memory access layer
 - `memory/test_importance.py` - Importance scoring tests (23 tests)
 - `tests/test-unified-memory.sh` - Unified memory tests (15 tests)
@@ -11992,6 +12433,7 @@ New memory context sidebar showing:
 - `vscode-extension/src/views/memoryViewProvider.ts` - Memory view provider
 
 **Files Modified:**
+
 - `.loki/hooks/session-init.sh` - Security fix
 - `.loki/hooks/store-episode.sh` - Security fix
 - `mcp/server.py` - Path traversal fix + event emission
@@ -12004,6 +12446,7 @@ New memory context sidebar showing:
 - `vscode-extension/package.json` - Memory view
 
 **Test Results:**
+
 - Memory engine tests: 15/15 passed
 - Importance scoring tests: 23/23 passed
 - Unified memory tests: 15/15 passed
@@ -12025,6 +12468,7 @@ New memory context sidebar showing:
 File-based pub/sub system for cross-process communication between all Loki Mode components.
 
 **Features:**
+
 - Cross-language support (Python, TypeScript, Bash)
 - File-based persistence (survives crashes, enables replay)
 - Event filtering by type and timestamp
@@ -12032,6 +12476,7 @@ File-based pub/sub system for cross-process communication between all Loki Mode 
 - No external dependencies
 
 **Event Types:**
+
 - `session` - Session lifecycle (start, stop, pause, resume)
 - `task` - Task lifecycle (claim, complete, fail)
 - `state` - State changes (phase, status)
@@ -12042,9 +12487,11 @@ File-based pub/sub system for cross-process communication between all Loki Mode 
 - `user` - User actions (VS Code, dashboard)
 
 **Event Sources:**
+
 - `cli`, `api`, `vscode`, `mcp`, `skill`, `hook`, `dashboard`, `memory`, `runner`
 
 **Files Added:**
+
 - `events/__init__.py` - Python package
 - `events/bus.py` - Python event bus implementation
 - `events/bus.ts` - TypeScript event bus implementation
@@ -12052,6 +12499,7 @@ File-based pub/sub system for cross-process communication between all Loki Mode 
 - `tests/test-event-bus.sh` - Event bus test suite (10 tests)
 
 **Usage (Python):**
+
 ```python
 from events import EventBus, LokiEvent, EventType, EventSource
 
@@ -12070,6 +12518,7 @@ for event in bus.subscribe(types=[EventType.SESSION]):
 ```
 
 **Usage (Bash):**
+
 ```bash
 ./events/emit.sh session cli start provider=claude
 ./events/emit.sh task runner complete task_id=task-001
@@ -12080,6 +12529,7 @@ for event in bus.subscribe(types=[EventType.SESSION]):
 Comprehensive architecture document for unified tool integration:
 
 **Five Pillars:**
+
 1. **Unified Event Bus** - Cross-process event propagation (implemented)
 2. **Memory as Central Hub** - All tools query and contribute to memory
 3. **Smart State Synchronization** - Coordinated state with change notifications
@@ -12087,6 +12537,7 @@ Comprehensive architecture document for unified tool integration:
 5. **Unified Dashboard** - Same experience everywhere (web, VS Code, CLI)
 
 **Implementation Phases:**
+
 - Phase 1 (v5.17.0): Event bus foundation
 - Phase 2 (v5.18.0): Memory integration
 - Phase 3 (v5.19.0): Smart state sync
@@ -12094,6 +12545,7 @@ Comprehensive architecture document for unified tool integration:
 - Phase 5 (v5.21.0): Unified dashboard
 
 **Target Metrics:**
+
 - Cross-tool event latency: <100ms
 - Memory utilization: 100% (all tools)
 - User task completion time: -30%
@@ -12111,6 +12563,7 @@ Comprehensive architecture document for unified tool integration:
 Model Context Protocol server exposing Loki Mode capabilities to Claude Code.
 
 **Tools (8 total):**
+
 - `loki_memory_retrieve` - Task-aware memory retrieval with query and task type
 - `loki_memory_store_pattern` - Store new semantic patterns with category and confidence
 - `loki_task_queue_list` - List all tasks in the queue
@@ -12121,15 +12574,18 @@ Model Context Protocol server exposing Loki Mode capabilities to Claude Code.
 - `loki_consolidate_memory` - Run episodic-to-semantic consolidation
 
 **Resources:**
+
 - `loki://state/continuity` - CONTINUITY.md content
 - `loki://memory/index` - Memory index (Layer 1)
 - `loki://queue/pending` - Pending tasks from the queue
 
 **Prompts:**
+
 - `loki_start` - Initialize a Loki Mode session with optional PRD
 - `loki_phase_report` - Generate a status report for the current phase
 
 **Configuration:**
+
 - `.mcp.json` - MCP server configuration for Claude Code
 - Transport: STDIO (default) or HTTP mode
 - Automatic PYTHONPATH setup for memory module access
@@ -12139,6 +12595,7 @@ Model Context Protocol server exposing Loki Mode capabilities to Claude Code.
 Lifecycle hooks that run automatically at specific points in Claude Code's workflow.
 
 **Hook Scripts:**
+
 - `session-init.sh` (SessionStart) - Initialize session, load memory context
 - `validate-bash.sh` (PreToolUse) - Block dangerous commands, audit logging
 - `quality-gate.sh` (Stop) - Run quality checks before completion
@@ -12146,16 +12603,19 @@ Lifecycle hooks that run automatically at specific points in Claude Code's workf
 - `store-episode.sh` (SessionEnd) - Store session as episodic memory
 
 **Security Features:**
+
 - Blocked command patterns: rm -rf /, fork bombs, dd to devices, curl|bash
 - Audit trail: All bash commands logged to `.loki/logs/bash-audit.jsonl`
 - Quality gates: Check for uncommitted changes, new TODOs
 
 **Configuration:**
+
 - `.claude/settings.json` - Hook event configuration
 - Supports matchers for tool filtering (Bash, Edit, Write, etc.)
 - Async mode for non-blocking metric collection
 
 #### Files Added
+
 - `mcp/__init__.py` - MCP package
 - `mcp/server.py` - Main MCP server with tools, resources, prompts
 - `mcp/tools.py` - Task queue helper functions
@@ -12174,6 +12634,7 @@ Lifecycle hooks that run automatically at specific points in Claude Code's workf
 #### Usage
 
 **Enable MCP Server:**
+
 ```bash
 # Add to Claude Code (auto-configured via .mcp.json)
 claude mcp add loki-mode
@@ -12194,6 +12655,7 @@ python -m mcp.server --transport http   # HTTP mode
 **Major release: Full implementation of the 3-tier memory system documented in references/memory-system.md.**
 
 #### Memory Engine (memory/)
+
 - **Episodic Memory**: Store and retrieve task execution traces
 - **Semantic Memory**: Pattern extraction and anti-pattern tracking
 - **Procedural Memory**: Reusable skill templates
@@ -12204,6 +12666,7 @@ python -m mcp.server --transport http   # HTTP mode
 - **Zettelkasten Linking**: Cross-reference patterns with relations
 
 #### CLI Commands (loki memory)
+
 - `loki memory index [rebuild]` - View/rebuild index layer
 - `loki memory timeline` - View timeline layer
 - `loki memory consolidate [hours]` - Run consolidation pipeline
@@ -12215,6 +12678,7 @@ python -m mcp.server --transport http   # HTTP mode
 - `loki memory vectors [rebuild]` - Manage vector indices
 
 #### API Endpoints
+
 - `GET /api/memory` - Memory summary
 - `GET /api/memory/index` - Index layer
 - `GET /api/memory/timeline` - Timeline layer
@@ -12226,11 +12690,13 @@ python -m mcp.server --transport http   # HTTP mode
 - `GET /api/memory/economics` - Token economics
 
 #### RARV Integration
+
 - Memory context injected before each task execution
 - Episode traces stored after task completion
 - Automatic consolidation on session completion
 
 #### Files Added
+
 - `memory/` - Complete Python memory system package
 - `memory/layers/` - Progressive disclosure implementation
 - `api/routes/memory.ts` - Memory API endpoints
@@ -12246,12 +12712,14 @@ python -m mcp.server --transport http   # HTTP mode
 Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 changes.
 
 #### Critical Fixes
+
 - **run.sh**: Fixed `date -Iseconds` to portable `date -u +%Y-%m-%dT%H:%M:%SZ` (macOS BSD compat)
 - **voice.sh**: Fixed osascript shell injection vulnerability with proper escaping
 - **api-server.js**: Added port validation (range 1-65535, handles NaN/edge cases)
 - **VS Code types**: Fixed HealthResponse to match actual server response
 
 #### Additional Fixes
+
 - **voice.sh**: Fixed whisper local output path with `--output_dir` flag
 - **api-server.js**: Added logs endpoint line validation (positive, capped at 10000)
 - **blog/index.html**: Removed hardcoded version range in changelog description
@@ -12265,6 +12733,7 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 **Dictate PRDs using voice instead of typing. Supports multiple transcription backends.**
 
 #### CLI Commands
+
 - `loki voice status` - Check voice input capabilities
 - `loki voice listen` - Listen and transcribe voice input
 - `loki voice dictate [FILE]` - Guided PRD dictation
@@ -12272,33 +12741,39 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 - `loki voice start [FILE]` - Dictate PRD and start Loki Mode immediately
 
 #### Supported Backends
+
 - **macOS Dictation** - Native system dictation (System Settings > Keyboard > Dictation)
 - **Whisper API** - OpenAI Whisper cloud transcription (requires OPENAI_API_KEY)
 - **Local Whisper** - Offline transcription (pip install openai-whisper)
 
 #### Platform Support
+
 - macOS: Full support (Dictation, Whisper API, local Whisper, TTS via `say`)
 - Linux: Whisper API and local Whisper (TTS via espeak/festival)
 - Windows: Not yet supported
 
 #### Added
+
 - Guided PRD creation with voice prompts
 - Text-to-speech feedback during dictation
 - Secure temp file handling with automatic cleanup
 - POSIX-compatible (works with bash 3.2 on macOS)
 
 #### New Files
+
 - `autonomy/voice.sh` - Voice input module
 
 ### Fixed - API Server and VS Code Extension
 
 #### API Server (v1.2.0)
+
 - Fixed CORS to include DELETE method for cross-origin requests
 - Added proper `--port` and `-p` flag parsing (also accepts bare number)
 - Added body size limit (1MB default, configurable via LOKI_API_MAX_BODY)
 - Fixed SSE connection leak with proper cleanup on close/error/finish
 
 #### VS Code Extension
+
 - Fixed type definitions to match actual api-server.js response format
 - StatusResponse now matches flat server response (state, pid, statusText, etc.)
 - StartResponse, StopResponse, PauseResponse, ResumeResponse updated to flat format
@@ -12307,6 +12782,7 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 - Updated StatusApiResponse validator for backward compatibility
 
 #### run.sh Cross-Platform Compatibility
+
 - Added bash version check at script startup (warns if bash < 3.2)
 - Added explicit shell compatibility check (rejects sh/dash/zsh)
 - Improved parallel mode error message with upgrade instructions for all platforms
@@ -12317,18 +12793,22 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 ### Fixed - Peer Review (5 Opus agents)
 
 #### API Server
+
 - Added port validation (range 1-65535, handles NaN and edge cases)
 - Added logs endpoint line count validation (positive integers only, cap at 10000)
 
 #### Voice Input (voice.sh)
+
 - Fixed osascript shell injection vulnerability with proper escaping
 - Fixed whisper local output path by specifying `--output_dir`
 - Added fallback for older whisper versions that output to current directory
 
 #### VS Code Extension
+
 - Fixed HealthResponse type to match actual server response (removed uptime/timestamp)
 
 #### Documentation
+
 - Fixed blog/index.html changelog description (removed hardcoded version range)
 
 ---
@@ -12336,6 +12816,7 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 ## [5.13.1] - 2026-02-02
 
 ### Fixed
+
 - JSON escaping using Python for guaranteed correctness
 - POSIX-compatible boolean normalization for notifications
 - Curl timeout and error detection for webhook reliability
@@ -12347,12 +12828,14 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 **Simple, opt-in notifications to Slack, Discord, and custom webhooks.**
 
 #### Environment Variables
+
 - `LOKI_SLACK_WEBHOOK` - Slack incoming webhook URL
 - `LOKI_DISCORD_WEBHOOK` - Discord webhook URL
 - `LOKI_WEBHOOK_URL` - Generic webhook URL (POST JSON)
 - `LOKI_NOTIFICATIONS` - Enable/disable notifications (default: true)
 
 #### CLI Commands
+
 - `loki notify test` - Send test notification to all channels
 - `loki notify slack <message>` - Send to Slack only
 - `loki notify discord <message>` - Send to Discord only
@@ -12360,6 +12843,7 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 - `loki notify status` - Show configured channels
 
 #### Added
+
 - Non-blocking (curl runs in background)
 - Fails silently (won't break session if webhook fails)
 - Color-coded messages by event type
@@ -12367,6 +12851,7 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 - Config file support (.loki/config.yaml)
 
 #### New Files
+
 - `autonomy/notify.sh` - Multi-channel notification module
 - `autonomy/NOTIFY_INTEGRATION.md` - Integration guide
 
@@ -12379,10 +12864,12 @@ Consolidated fixes from 5 parallel Opus review agents analyzing all v5.14.0 chan
 **New opt-in enterprise features for organizations deploying Loki Mode at scale.**
 
 All enterprise features are disabled by default and can be enabled via environment variables:
+
 - `LOKI_ENTERPRISE_AUTH=true` - Enable token-based authentication
 - `LOKI_ENTERPRISE_AUDIT=true` - Enable audit logging
 
 #### Token-Based Authentication
+
 - Secure token generation with SHA256 hashing and constant-time comparison
 - Token scopes and expiration support
 - CLI: `loki enterprise token generate/list/revoke/delete`
@@ -12390,6 +12877,7 @@ All enterprise features are disabled by default and can be enabled via environme
 - Tokens stored in `~/.loki/dashboard/tokens.json` (0600 permissions)
 
 #### Audit Logging
+
 - JSONL-formatted logs with automatic rotation
 - Query and summary APIs
 - CLI: `loki enterprise audit summary/tail`
@@ -12397,6 +12885,7 @@ All enterprise features are disabled by default and can be enabled via environme
 - Logs stored in `~/.loki/dashboard/audit/`
 
 #### Cross-Project Registry
+
 - Auto-discovery of projects with `.loki` directories
 - Health checks and status tracking
 - CLI: `loki projects list/add/remove/discover/sync/health`
@@ -12404,23 +12893,27 @@ All enterprise features are disabled by default and can be enabled via environme
 - Registry stored in `~/.loki/dashboard/projects.json`
 
 #### Docker Deployment
+
 - Multi-stage build (Node frontend + Python backend)
 - Non-root user for security (appuser)
 - Health checks using Python urllib
 - `docker-compose.yml` included for easy deployment
 
 ### Security
+
 - Constant-time token comparison to prevent timing attacks
 - Input validation (empty names, negative expires, max lengths)
 - Pydantic Field constraints for API validation
 - Non-root Docker user
 
 ### Fixed
+
 - CLI flag parsing validation (names starting with `-`)
 - Exit codes for invalid subcommands (now returns 1)
 - Enterprise mode warnings when generating tokens without auth enabled
 
 ### New Files
+
 - `dashboard/auth.py` - Token authentication module
 - `dashboard/audit.py` - Audit logging module
 - `dashboard/registry.py` - Cross-project registry
@@ -12445,11 +12938,13 @@ Full-featured web dashboard for multi-project task management.
 **New feature: Convert GitHub issues to PRDs and auto-start Loki Mode.**
 
 #### New CLI Command
+
 - `loki issue <url-or-number>` - Generate PRD from GitHub issue
 - `loki issue parse <ref>` - Parse issue and output structured YAML/JSON
 - `loki issue view <ref>` - View parsed issue details
 
 #### Options
+
 - `--dry-run` - Preview generated PRD without saving
 - `--start` - Generate PRD and start Loki Mode
 - `--output FILE` - Save PRD to custom path
@@ -12457,6 +12952,7 @@ Full-featured web dashboard for multi-project task management.
 - `--number NUM` - Specify issue number
 
 #### Added
+
 - Parse issue URL, `owner/repo#num`, or issue number formats
 - Extract acceptance criteria from checkboxes
 - Detect priority and type from labels
@@ -12464,6 +12960,7 @@ Full-featured web dashboard for multi-project task management.
 - Generate structured PRD ready for Loki Mode execution
 
 #### New Files
+
 - `autonomy/issue-parser.sh` - Issue parsing and PRD generation
 - `tests/test-issue-parser.sh` - Test suite (11 tests)
 
@@ -12478,6 +12975,7 @@ Full-featured web dashboard for multi-project task management.
 Cross-project learnings automatically extract patterns, mistakes, and successes from every Loki Mode session and make them available for future sessions.
 
 #### New CLI Commands
+
 - `loki memory list` - View summary of all cross-project learnings
 - `loki memory show <type>` - View patterns, mistakes, or successes
 - `loki memory search <query>` - Search across all learnings
@@ -12486,6 +12984,7 @@ Cross-project learnings automatically extract patterns, mistakes, and successes 
 - `loki memory clear <type>` - Clear specific learning type
 
 #### New API Endpoints
+
 - `GET /memory` - Summary of all learnings (patterns, mistakes, successes counts)
 - `GET /memory/:type` - Get learnings by type with pagination
 - `GET /memory/search?q=` - Search across all learnings
@@ -12493,17 +12992,20 @@ Cross-project learnings automatically extract patterns, mistakes, and successes 
 - `DELETE /memory/:type` - Clear specific learning type
 
 #### Dashboard Integration
+
 - New "Cross-Project Learnings" card in the dashboard
 - Real-time updates showing patterns, mistakes, and successes counts
 - Visual progress bars for each learning type
 
 #### Storage
+
 - Learnings stored in `~/.loki/learnings/` (global, not project-specific)
 - JSONL format for efficient append-only storage
 - MD5 hash-based deduplication prevents duplicate entries
 - Automatic extraction from CONTINUITY.md at session end
 
 #### How It Works
+
 1. At the end of each session, Loki Mode extracts learnings from CONTINUITY.md
 2. Patterns are extracted from "Patterns Used", "Solutions Applied", "Key Approaches"
 3. Mistakes are extracted from "Challenges Encountered", "Mistakes Made"
@@ -12519,6 +13021,7 @@ Cross-project learnings automatically extract patterns, mistakes, and successes 
 **Bug fix: New sessions were failing immediately due to persisted retry count.**
 
 #### Fixed
+
 - **Retry count reset**: New sessions now automatically reset retry count when previous session ended in failure (status: failed, max_retries_exceeded, max_iterations_reached)
 - **New `loki reset` command**: Added command to manually reset session state
   - `loki reset` - Reset all state (autonomy + failed queue)
@@ -12526,6 +13029,7 @@ Cross-project learnings automatically extract patterns, mistakes, and successes 
   - `loki reset failed` - Clear failed task queue
 
 #### Root Cause
+
 The `autonomy-state.json` persisted `retryCount: 50` from a failed session. New sessions would load this and immediately exit with "Max retries exceeded" without doing any work.
 
 ---
@@ -12537,6 +13041,7 @@ The `autonomy-state.json` persisted `retryCount: 50` from a failed session. New 
 **Critical fix: Background mode was deleting run.sh from npm installation.**
 
 #### Bug Fix
+
 - **Root cause**: When starting background mode, `LOKI_RUNNING_FROM_TEMP` was exported to the child process, causing it to skip self-copy and run directly from the original file. The exit trap then deleted the original run.sh instead of the temp copy.
 - **Fix**: Unset `LOKI_RUNNING_FROM_TEMP` before starting the nohup background process
 - **Impact**: `loki status` and `loki stop` would fail with "Could not find Loki Mode installation" after running `loki start --bg`
@@ -12550,6 +13055,7 @@ The `autonomy-state.json` persisted `retryCount: 50` from a failed session. New 
 **Patch release: Improved CLI user experience based on feedback.**
 
 #### UX Improvements
+
 - **`loki start --help`**: Added help flag support with detailed usage info
 - **Provider capability indicator**: Shows "full features" vs "degraded mode" status
 - **Smarter stop/pause**: Now checks if session is running before sending signals
@@ -12557,6 +13063,7 @@ The `autonomy-state.json` persisted `retryCount: 50` from a failed session. New 
 - **CLI installation warning**: `loki provider set` warns if CLI not installed
 
 #### Example Output
+
 ```
 $ loki provider show
 Provider: codex
@@ -12576,6 +13083,7 @@ Start a session with: loki start
 **Minor release: Provider selection now persists across runs for each codebase.**
 
 #### Provider Management
+
 - **Persistent provider**: Once you select a provider (claude/codex/gemini), it saves to `.loki/state/provider`
 - **Auto-load on start**: `loki start` automatically loads the saved provider for the codebase
 - **Provider display**: `loki start` and `loki status` now show current provider with switch instructions
@@ -12586,6 +13094,7 @@ Start a session with: loki start
   - `loki provider info <name>` - Show detailed provider info
 
 #### Example Output
+
 ```
 $ loki status
 Provider: claude (full features)
@@ -12601,16 +13110,19 @@ Provider: claude (full features)
 **Patch release: Fix parallel mode bash version compatibility on macOS.**
 
 #### Bash Compatibility
+
 - **Parallel mode fallback**: Gracefully fall back to sequential mode when bash < 4.0
 - **Proper version check**: Check bash version before entering parallel mode, not during execution
 - **Unbound variable fix**: Prevent "testing: unbound variable" errors in bash 3.x
 - **macOS support**: Users on macOS with default bash 3.2 now get automatic sequential mode fallback
 
 #### New Release Tools
+
 - **scripts/release.sh**: Automated release script for version bumping and publishing
 - **scripts/update-changelog.sh**: Auto-generate changelog from conventional commits
 
 ---
+
 ## [5.8.2] - 2026-02-01
 
 ### Fixed - API Status Bug
@@ -12618,6 +13130,7 @@ Provider: claude (full features)
 **Patch release: Fix misleading API status when session not running.**
 
 #### Fixed
+
 - **API status fix**: Return 'idle' instead of stale 'failed'/'completed' when no process is running
 - **Added lastSessionResult field**: Debug info showing what the last session's exit status was
 - **Version sync**: Fixed root package.json version sync with VS Code extension
@@ -12633,22 +13146,26 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Patch release: Chat sidebar improvements and prompt injection handling.**
 
 #### VS Code Extension
+
 - **Separate chat sidebar**: Chat is now in its own activity bar container (like Copilot/Claude Code)
 - **Chat icon**: New chat bubble icon in the activity bar
 - **Keyboard shortcut**: `Cmd+Shift+K` (Mac) / `Ctrl+Shift+K` (Windows/Linux) to open chat
 
 #### Prompt Injection Handling
+
 - **Helpful warning UI**: When prompt injection is disabled, shows clear instructions
 - **Enable command**: Displays `loki start --allow-injection` to users
 - **Security note**: Includes warning about only enabling in trusted environments
 
 #### Refactoring
+
 - Consolidated duplicate polling mechanisms using subscription pattern
 - Extracted shared `getNonce()` utility to `utils/webview.ts`
 - Added runtime type validation in `api/validators.ts`
 - Centralized port constant (9898) in `utils/constants.ts`
 
 #### TypeScript Fixes
+
 - Added type annotations for `response.json()` calls
 - Fixed `error.cause` type issue in API client
 - Added `mapTaskStatus()` for proper status mapping
@@ -12662,6 +13179,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Minor release: Interactive chat and real-time log viewing in VS Code extension.**
 
 #### Chat View
+
 - **Interactive chat panel**: Chat with AI while Loki Mode runs in the background
 - **Provider selection**: Choose Claude, Codex, or Gemini for chat
 - **Message history**: View conversation history with timestamps
@@ -12669,6 +13187,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - **Clear history**: Button to clear chat history
 
 #### Logs View
+
 - **Real-time log viewer**: View session logs with auto-scroll
 - **Log level filtering**: Filter by debug, info, warn, error
 - **Auto-refresh**: Logs update every 2 seconds when running
@@ -12676,18 +13195,21 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - **Refresh and clear**: Manual refresh and clear buttons
 
 #### API Enhancements
+
 - `POST /chat` - Send chat messages to Loki session
 - `GET /chat/history` - Retrieve chat history
 - `DELETE /chat/history` - Clear chat history
 - Enhanced `/logs` endpoint for VS Code consumption
 
 #### Technical
+
 - New `ChatViewProvider` webview provider
 - New `LogsViewProvider` webview provider
 - Improved API client integration
 - Enhanced event handling
 
 #### Security Fixes
+
 - Fixed XSS vulnerability in chat message rendering (escape role and provider)
 - Added input validation for provider selection from webview
 - Fixed chat endpoint to work when prompt injection is disabled
@@ -12696,6 +13218,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - Implemented `Disposable` interface for proper resource cleanup
 
 #### Performance Improvements
+
 - Changed synchronous `fs.readFileSync` to async `fs.promises.readFile`
 - Fixed race condition in log polling startup
 - Added log level validation and normalization
@@ -12710,6 +13233,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Patch release: Fixed loki command to work from any directory.**
 
 #### CLI Fixes
+
 - **Symlink resolution**: Added `resolve_script_path()` function to follow npm/Homebrew symlinks
 - **Silent failure fix**: Added `|| true` to show error message instead of silent exit
 - **API directory**: Added `api/` to npm package for `loki api` commands
@@ -12723,6 +13247,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Patch release: Fixed VS Code marketplace publishing in CI.**
 
 #### CI Fixes
+
 - Added `permissions: contents: write` to publish-vscode job
 - Reordered steps: marketplace publish before GitHub upload
 - Ensures extension is published even if upload fails
@@ -12736,12 +13261,14 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Patch release: Improved error handling and documentation for server requirement.**
 
 #### VS Code Extension (v0.1.1)
+
 - **Server requirement clarified**: Extension now shows clear error when API server is not running
 - **Action buttons**: "Open Terminal" and "Copy Command" buttons added to connection error dialogs
 - **Connection detection**: Better detection of ECONNREFUSED and connection refused errors
 - **Documentation**: Quick Start now emphasizes starting the server first
 
 #### Documentation Updates
+
 - README.md: Added server start requirement to VS Code section
 - docs/INSTALLATION.md: Clarified server requirement with multiple start options
 - vscode-extension/README.md: Restructured Quick Start with server step first
@@ -12755,6 +13282,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Minor release: Official VS Code extension for visual Loki Mode interface.**
 
 #### VS Code Extension (v0.1.0)
+
 - **Marketplace**: Published at [marketplace.visualstudio.com/items?itemName=asklokesh.loki-mode](https://marketplace.visualstudio.com/items?itemName=asklokesh.loki-mode)
 - **Activity Bar**: Dedicated Loki Mode icon in the sidebar
 - **Session Tree View**: Real-time session status (provider, phase, duration, progress)
@@ -12766,6 +13294,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - **Auto-connect**: Automatically connects to running Loki API when workspace has `.loki/` directory
 
 #### Commands
+
 - `loki.start` - Start a new session with PRD selection
 - `loki.stop` - Stop current session
 - `loki.pause` - Pause current session
@@ -12776,6 +13305,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - `loki.showQuickPick` - Show quick actions menu
 
 #### Configuration
+
 - `loki.provider` - Default AI provider (claude/codex/gemini)
 - `loki.apiPort` - API server port (default: 9898)
 - `loki.apiHost` - API server host (default: localhost)
@@ -12784,6 +13314,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - `loki.pollingInterval` - Status polling interval in ms (default: 2000)
 
 #### Files Added
+
 - `vscode-extension/` - Complete VS Code extension source
 - `.github/workflows/release.yml` - Added publish-vscode job for automated marketplace publishing
 - `assets/publisher-icon-128.png` - Marketplace publisher icon
@@ -12798,6 +13329,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Patch release: Critical security fixes for sandbox and prompt injection.**
 
 #### Security Fixes
+
 - **Command injection in sandbox**: Fixed `sandbox_prompt()` using heredoc instead of echo interpolation
 - **Symlink attack prevention**: Added symlink check before processing HUMAN_INPUT.md
 - **File size limit**: HUMAN_INPUT.md limited to 1MB to prevent resource exhaustion
@@ -12805,6 +13337,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - **CORS origin bypass**: Fixed with strict regex pattern for localhost only
 
 #### Files Changed
+
 - `autonomy/run.sh`: Symlink check, size limit for HUMAN_INPUT.md
 - `autonomy/sandbox.sh`: Heredoc fix, command injection prevention
 
@@ -12817,6 +13350,7 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 **Minor release: Docker sandbox isolation and enterprise security controls.**
 
 #### Sandbox Mode
+
 - **Docker isolation**: Run Loki Mode in isolated container with seccomp profiles
 - **Resource limits**: CPU, memory, and process limits enforced
 - **Dropped capabilities**: Minimal Linux capabilities for security
@@ -12824,11 +13358,13 @@ This fixes the issue where `loki api status` would show `"status": "failed"` eve
 - **Git worktree fallback**: Automatic fallback when Docker unavailable
 
 #### Prompt Injection Control
+
 - **Disabled by default**: `LOKI_PROMPT_INJECTION_ENABLED=false` for enterprise safety
 - **Opt-in activation**: Set `LOKI_PROMPT_INJECTION_ENABLED=true` to enable
 - **Security gate**: Prevents untrusted input from being injected into AI prompts
 
 #### Usage
+
 ```bash
 # Enable sandbox mode
 ./autonomy/sandbox.sh ./my-prd.md
@@ -12838,6 +13374,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 ```
 
 #### Files Changed
+
 - `autonomy/sandbox.sh`: New sandbox runner with Docker isolation
 - `autonomy/run.sh`: Added LOKI_PROMPT_INJECTION_ENABLED check
 
@@ -12850,6 +13387,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Full REST API server for programmatic control and integrations.**
 
 #### API Server (`loki serve`)
+
 - **Session Management**: Start, stop, list, and inject input into sessions
 - **Task Management**: List tasks, view active/queued tasks per session
 - **SSE Event Streaming**: Real-time events for sessions, phases, tasks, agents, logs
@@ -12860,14 +13398,15 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 
 #### API Endpoints
 
-| Category | Endpoints |
-|----------|-----------|
+| Category | Endpoints                                                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Sessions | `POST /api/sessions`, `GET /api/sessions`, `GET /api/sessions/:id`, `POST /api/sessions/:id/stop`, `POST /api/sessions/:id/input` |
-| Tasks | `GET /api/sessions/:id/tasks`, `GET /api/tasks`, `GET /api/tasks/active`, `GET /api/tasks/queue` |
-| Events | `GET /api/events` (SSE), `GET /api/events/history`, `GET /api/events/stats` |
-| Health | `GET /health`, `GET /health/ready`, `GET /health/live` |
+| Tasks    | `GET /api/sessions/:id/tasks`, `GET /api/tasks`, `GET /api/tasks/active`, `GET /api/tasks/queue`                                  |
+| Events   | `GET /api/events` (SSE), `GET /api/events/history`, `GET /api/events/stats`                                                       |
+| Health   | `GET /health`, `GET /health/ready`, `GET /health/live`                                                                            |
 
 #### SSE Event Types
+
 - Session: `session:started`, `session:paused`, `session:resumed`, `session:stopped`, `session:completed`, `session:failed`
 - Phase: `phase:started`, `phase:completed`, `phase:failed`
 - Task: `task:created`, `task:started`, `task:progress`, `task:completed`, `task:failed`
@@ -12875,12 +13414,14 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - Logs: `log:debug`, `log:info`, `log:warn`, `log:error`
 
 #### CLI Commands
+
 - `loki serve` - Start the API server
 - `loki serve --port 9000` - Custom port
 - `loki serve --host 0.0.0.0` - Allow remote connections
 - `loki serve --generate-token` - Generate secure API token
 
 #### Files Added
+
 - `api/server.ts` - Main Deno HTTP server
 - `api/client.ts` - TypeScript client SDK
 - `api/openapi.yaml` - OpenAPI 3.0 specification
@@ -12892,11 +13433,13 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 ### Added - Gemini Rate Limit Fallback
 
 #### Gemini Provider
+
 - **Flash fallback**: Automatically falls back to `gemini-2.0-flash` on rate limits
 - **Retry logic**: Exponential backoff with model downgrade
 - **Stdin pause fix**: Fixed input handling for Gemini CLI
 
 #### Files Changed
+
 - `providers/gemini.sh`: Rate limit detection and flash fallback
 - `autonomy/run.sh`: Gemini-specific retry handling
 
@@ -12909,11 +13452,13 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Patch release: Background execution and automatic task status updates.**
 
 #### Background Mode
+
 - **Detached execution**: Run Loki Mode in background with `--background` flag
 - **Log persistence**: Output saved to `.loki/logs/background.log`
 - **PID tracking**: Process ID saved for status checks
 
 #### Task Auto-Tracking
+
 - **Automatic status**: Tasks auto-update based on file changes
 - **Progress sync**: Dashboard reflects real-time progress
 
@@ -12926,6 +13471,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Full JSON PRD support and critical directive injection fix.**
 
 #### JSON PRD Support
+
 - **Auto-detection**: Now detects JSON PRDs (PRD.json, prd.json, requirements.json, spec.json)
 - **Complexity analysis**: Uses jq to count features, requirements, tasks, user_stories, epics
 - **Fallback**: Grep-based counting when jq unavailable
@@ -12933,12 +13479,14 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - **Generated PRD**: Supports `.loki/generated-prd.json` fallback
 
 #### HUMAN_INPUT.md Directive Fix (PR #11)
+
 - **Bug fix**: `check_human_intervention()` was defined but never called
 - **Now works**: Directives in `.loki/HUMAN_INPUT.md` are injected into prompts
 - **Priority marker**: Directives marked as "HUMAN_DIRECTIVE (PRIORITY)" and executed before normal tasks
 - **Documentation**: Added "Hints vs Directives" section to SKILL.md
 
 #### Files Changed
+
 - `autonomy/run.sh`: JSON PRD detection, complexity analysis, directive injection
 - `SKILL.md`: JSON PRD examples, hints vs directives documentation
 - `tests/test-json-prd.sh`: New test suite (8 tests)
@@ -12953,6 +13501,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Control Haiku model usage with opt-in flag. Default to higher quality models.**
 
 #### Model Selection Changes
+
 - **Default behavior**: Haiku disabled for improved quality
   - Development tier: Opus (was Sonnet)
   - Fast tier: Sonnet (was Haiku)
@@ -12962,6 +13511,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
   - Useful for cost optimization when quality trade-off acceptable
 
 #### Files Changed
+
 - `providers/claude.sh`: Conditional model selection based on LOKI_ALLOW_HAIKU
 - `autonomy/run.sh`: Added `--allow-haiku` CLI flag
 - `skills/model-selection.md`: Updated tier documentation
@@ -12976,6 +13526,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Patch release: Verify full automated release workflow.**
 
 #### CI/CD
+
 - Updated HOMEBREW_TAP_TOKEN with correct repo permissions
 - Full automation now working: VERSION -> release -> npm/docker/homebrew
 
@@ -12988,6 +13539,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Patch release: Consolidate all publishing into single workflow.**
 
 #### CI/CD
+
 - Merged publish.yml into release.yml for unified workflow
 - npm, Docker, Homebrew all run in same workflow with job dependencies
 - Removed separate publish.yml to avoid workflow chain issues
@@ -13002,6 +13554,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Patch release: Fix automated publish workflow triggering.**
 
 #### CI/CD
+
 - Use PAT instead of GITHUB_TOKEN for release creation
 - Ensures release event triggers publish.yml workflow
 - Full automation: VERSION change -> release -> npm/Docker/Homebrew
@@ -13015,6 +13568,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Patch release: Test automated release workflow.**
 
 #### CI/CD
+
 - Improved publish workflow with direct Homebrew API updates
 - Added auto-update website job on release
 - Removed dependency on repository_dispatch for Homebrew
@@ -13028,6 +13582,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Chain-of-Verification (CoVe), MemEvolve patterns, and comprehensive quality gate improvements based on academic research and open-source skill analysis.**
 
 #### Research Integration
+
 - **Chain-of-Verification (CoVe)** from arXiv 2309.11495
   - 4-step anti-hallucination: Draft -> Plan Verifications -> Execute -> Final
   - Factor+Revise variant for longform generation
@@ -13040,10 +13595,12 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
   - Added to `references/memory-system.md`
 
 #### Quality Gates (skills/quality-gates.md)
+
 - **Two-Stage Review Protocol** - Spec compliance THEN code quality (never mix)
 - **CoVe Protocol** - 4-step verification with independent execution
 
 #### Troubleshooting (skills/troubleshooting.md)
+
 - **Rationalization Tables** - 12 agent excuses with explicit counters
 - **Red Flag Detection** - 5 categories of agent rationalization patterns
 - **Dead Letter Queue** - Failed task handling with recovery strategies
@@ -13052,6 +13609,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - **Fix:** Model guidance contradiction (sonnet for reviews, not opus)
 
 #### Memory System (references/memory-system.md)
+
 - **Progressive Disclosure** - 3-layer architecture (index ~100 tokens -> timeline ~500 -> full)
 - **Token Economics Tracking** - 6 action thresholds with rationale
 - **Evaluation Frequency** - Per-task, session boundary, triggered checkpoints
@@ -13059,26 +13617,31 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - **Task-Aware Strategy Selection** - Different retrieval weights by task type
 
 #### Model Selection (skills/model-selection.md)
+
 - **Tiered Agent Escalation Triggers** - LOW/MEDIUM/HIGH with explicit thresholds
 - **HIGH->HUMAN Escalation** - Terminal path when Opus fails (5+ errors)
 - **Threshold Rationale** - Research-backed justifications (McCabe 1976, Cisco, SmartBear)
 - **De-escalation Triggers** - Cost optimization after sustained success
 
 #### SKILL.md Enhancements
+
 - **PRE-ACT ATTENTION** - Goal alignment check before each action (prevents context drift)
 - **9 new Key Files** - Progressive disclosure layers, signals, queues
 
 #### Comparison Updates (docs/COMPARISON.md)
+
 - **8 open-source Claude Code skills** analyzed (Superpowers, agents, claude-flow, etc.)
 - **Phase 1 & 2 COMPLETED** with file:line references
 - Honest assessment of what Loki Mode lacks vs excels at
 
 #### Acknowledgements (docs/ACKNOWLEDGEMENTS.md)
+
 - CoVe paper citation (arXiv 2309.11495)
 - MemEvolve paper citation (arXiv 2512.18746)
 - Community Projects section (8 repos)
 
 #### Quality Assurance
+
 - 6 parallel Opus feedback loops with peer review
 - Cross-reference verification of all file:line claims
 - 10/10 quality score achieved on all sections
@@ -13092,6 +13655,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Enhanced provider support with dynamic tier selection, provider-agnostic rate limiting, and comprehensive test coverage.**
 
 #### Dynamic Tier Selection (autonomy/run.sh)
+
 - `get_rarv_tier()` - Maps RARV phases to abstract tiers (planning/development/fast)
 - `get_rarv_phase_name()` - Human-readable phase names for logging
 - `get_provider_tier_param()` - Converts tiers to provider-specific params
@@ -13102,6 +13666,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
   - VERIFY -> fast tier (haiku/low/low)
 
 #### Provider-Agnostic Rate Limiting
+
 - `is_rate_limited()` - Detects 429, rate limit, quota exceeded, retry-after
 - `parse_claude_reset_time()` - Claude-specific "resets Xam/pm" parsing
 - `parse_retry_after()` - HTTP Retry-After header parsing
@@ -13109,6 +13674,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - `detect_rate_limit()` - Fallback chain: provider-specific -> generic -> calculated
 
 #### Test Suites (180 tests total, all passing)
+
 - `test-provider-loader.sh` - 12 tests for provider loading
 - `test-provider-invocation.sh` - 24 tests for provider functions
 - `test-provider-degraded-mode.sh` - 19 tests for degraded mode flags
@@ -13116,6 +13682,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - `test-rate-limiting.sh` - 27 tests for rate limit detection (NEW)
 
 #### Fixes from Peer Review
+
 - Fixed deprecated Gemini `-p` flag in run.sh (now uses positional prompt)
 - Added rm -rf safety check in worktree cleanup
 - Fixed loader.sh source command (was losing variables in subshell)
@@ -13123,6 +13690,7 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 - Updated docker-compose.yml version to v5.0.0
 
 #### Website Updates
+
 - Added announcement banner for multi-provider support
 - New "Providers" section with comparison table
 - Provider selection quick start guide
@@ -13137,35 +13705,41 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Major release: Support for Claude Code, OpenAI Codex CLI, and Google Gemini CLI with degraded mode for non-Claude providers.**
 
 #### Provider System (`providers/`)
+
 - **claude.sh** - Full-featured provider (subagents, parallel, Task tool, MCP)
 - **codex.sh** - Degraded mode (effort parameter, sequential only)
 - **gemini.sh** - Degraded mode (thinking_level parameter, sequential only)
 - **loader.sh** - Provider loader with validation and capability matrix
 
 #### CLI Integration
+
 - `--provider` flag for run.sh and loki CLI
 - `LOKI_PROVIDER` environment variable (claude, codex, gemini)
 - Provider info display at startup
 - Capability matrix in `--help` output
 
 #### Abstract Model Tiers
+
 - **planning** - Architecture, PRD analysis (opus/xhigh/high)
 - **development** - Implementation, tests (sonnet/high/medium)
 - **fast** - Simple tasks, docs (haiku/low/low)
 
 #### Degraded Mode for Codex/Gemini
+
 - Sequential RARV cycle (no parallel agents)
 - No Task tool (cannot spawn subagents)
 - No MCP server integration
 - Model tier maps to provider-specific parameter
 
 #### Documentation
+
 - `skills/providers.md` - Provider comparison and usage guide
 - Updated `skills/model-selection.md` with provider-aware examples
 - Updated `skills/00-index.md` with providers module
 - Provider support matrix in README
 
 #### Files Added/Modified
+
 - `providers/claude.sh` - Claude Code provider config
 - `providers/codex.sh` - OpenAI Codex provider config
 - `providers/gemini.sh` - Gemini CLI provider config
@@ -13183,7 +13757,9 @@ LOKI_PROMPT_INJECTION_ENABLED=true ./autonomy/run.sh ./my-prd.md
 **Minor release: Constitutional improvements inspired by Anthropic's soul spec and production learnings.**
 
 #### Foundational Principles (CONSTITUTION.md)
+
 Five principles explaining WHY each autonomy rule exists:
+
 1. **Autonomy Preserves Momentum** - Questions create blocking dependencies; decide and verify instead
 2. **Memory Matters More Than Reasoning** - Context retrieval is the bottleneck, not intelligence
 3. **Verification Builds Trust** - Trust through observable, repeatable evidence, not intentions
@@ -13191,19 +13767,24 @@ Five principles explaining WHY each autonomy rule exists:
 5. **Constraints Enable Speed** - Quality gates catch problems when they're cheap to fix
 
 #### Priority Order for Conflict Resolution
+
 When rules conflict, resolve by hierarchy:
+
 1. Safety (don't break production)
 2. Correctness (tests pass, specs match)
 3. Quality (reviews passed, maintainable)
 4. Speed (autonomy, parallelization)
 
 #### Memory > Reasoning Insight (memory-system.md)
+
 Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - Its Memory Isn't"
+
 - Production problems solved by better context retrieval, not reasoning
 - Memory architecture is the competitive advantage
 - Episodic-to-semantic consolidation is not optional
 
 #### Research Attribution
+
 - [Anthropic Claude Constitution](https://www.anthropic.com/news/claude-new-constitution) - principled reasoning over rigid rules
 - [Cursor Scaling Blog](https://cursor.com/blog/scaling-agents) January 2026 - "Your Agent's Reasoning Is Fine - Its Memory Isn't"
 - [GraphRAG Production Engineer](https://www.decodingai.com/p/designing-production-engineer-agent-graphrag) - context retrieval architecture
@@ -13218,6 +13799,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 **Major release: Complete distribution system with CLI wrapper, YAML configuration, and multiple installation methods.**
 
 #### loki CLI Wrapper (`autonomy/loki`)
+
 - `loki start [PRD]` - Start Loki Mode with optional PRD file
 - `loki stop` - Stop execution immediately via STOP signal
 - `loki pause` - Pause after current session via PAUSE signal
@@ -13230,24 +13812,28 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Options: `--parallel`, `--simple`, `--complex`, `--github`, `--no-dashboard`
 
 #### YAML Configuration (`autonomy/config.example.yaml`)
+
 - 50+ configurable settings organized in sections
 - Search order: `.loki/config.yaml` (project) -> `~/.config/loki-mode/config.yaml` (global)
 - Security: Input validation, symlink rejection, regex escaping
 - Fallback YAML parser (no external dependencies)
 
 #### Distribution Methods
+
 - **Homebrew**: `brew install asklokesh/tap/loki-mode`
 - **npm**: `npm install -g loki-mode`
 - **Docker**: `docker pull asklokesh/loki-mode:4.1.0`
 - **Manual**: Clone and symlink `loki` to PATH
 
 #### Dashboard Enhancements
+
 - **Terminal Output**: Live log viewer with auto-scroll toggle
 - **Quick Actions Bar**: Pause All, Resume, Import GitHub, Export Report
 - **GitHub Import Modal**: Import issues with repo/labels/milestone filters
 - Memory management: MAX_TERMINAL_LINES = 1000
 
 #### Security Hardening
+
 - `sanitizeShellArg()` - Prevents command injection in GitHub import
 - `validateRepoFormat()` - Validates owner/repo format
 - `validate_yaml_value()` - Rejects shell metacharacters in config values
@@ -13255,6 +13841,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Symlink rejection for project-local config files
 
 #### Files Added
+
 - `autonomy/loki` - CLI wrapper script
 - `autonomy/config.example.yaml` - Configuration template
 - `Dockerfile` - Docker image definition
@@ -13272,6 +13859,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 **Major release: Production-ready web dashboard for monitoring and managing Loki Mode operations.**
 
 #### Dashboard Features
+
 - **Realtime Sync**: File-based polling every 2 seconds via `dashboard-state.json`
 - **Kanban Board**: 4-column task visualization (Pending, In Progress, Review, Completed)
 - **Agent Cards**: Live status for all active agents with model badges (Opus/Sonnet/Haiku)
@@ -13280,12 +13868,14 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - **Memory System**: Progress bars for episodic, semantic, procedural memory
 
 #### Design System
+
 - **Anthropic Design Language**: Light mode (#faf9f0 cream) and dark mode (#131314)
 - **Theme Toggle**: Saved to localStorage, respects system preference
 - **Mobile Responsive**: Collapsible sidebar, mobile header on small screens
 - **Keyboard Shortcuts**: Cmd/Ctrl+N for new task, Escape to close modals
 
 #### Technical Architecture
+
 - `run.sh`: Added `write_dashboard_state()` function for JSON state output
 - `autonomy/.loki/dashboard/index.html`: Complete rewrite (2000+ lines)
 - Sidebar navigation with scroll-to-section and scroll spy
@@ -13293,6 +13883,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Export functionality for combined server + local state
 
 #### Documentation
+
 - `docs/dashboard-guide.md`: Complete dashboard documentation
 
 ---
@@ -13304,10 +13895,12 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 **Analyzed top competitors (Auto-Claude, MemOS, Dexter) and 2026 agentic AI trends. Implemented key missing features.**
 
 #### Competitive Analysis
+
 - `docs/auto-claude-comparison.md` - Honest technical comparison with Auto-Claude (9,594 stars)
 - `references/competitive-analysis.md` - Full analysis of MemOS, Dexter, Simon Willison patterns
 
 #### Human Intervention Mechanism (from Auto-Claude)
+
 - `PAUSE` file - Pauses execution after current session
 - `HUMAN_INPUT.md` - Injects human instructions into next prompt
 - `STOP` file - Stops execution immediately
@@ -13315,11 +13908,13 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Ctrl+C (twice within 2s) - Exits immediately
 
 #### AI-Powered Merge Resolution (from Auto-Claude)
+
 - Automatic conflict resolution using Claude when git merge fails
 - `resolve_conflicts_with_ai()` function in run.sh
 - Falls back to abort if AI resolution fails
 
 #### Complexity Tiers (from Auto-Claude)
+
 - Auto-detection from PRD and codebase analysis
 - `LOKI_COMPLEXITY` env var to force tier
 - Simple (3 phases): 1-2 files, UI fixes
@@ -13327,6 +13922,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Complex (8 phases): 10+ files, microservices
 
 #### Research Sources
+
 - [Auto-Claude](https://github.com/AndyMik90/Auto-Claude) - 9,594 stars, top competitor
 - [MemOS](https://github.com/MemTensor/MemOS) - Memory OS, arXiv:2507.03724
 - [Dexter](https://github.com/virattt/dexter) - Financial research agent
@@ -13334,6 +13930,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - [AAMAS 2026](https://cyprusconferences.org/aamas2026/) - Leading AI agents conference
 
 #### Honest Assessment
+
 - **Auto-Claude wins:** Desktop GUI, packaged releases, community, integrations
 - **Loki Mode wins:** Research foundation, 37 agents, full SDLC, anti-sycophancy, MIT license, benchmarks
 
@@ -13346,6 +13943,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 **Patterns proven at 100+ agent scale, incorporated from Cursor's blog post.**
 
 #### New Reference: `references/cursor-learnings.md`
+
 - Complete analysis of Cursor's multi-agent scaling experience
 - Key findings: flat coordination fails, integrators create bottlenecks
 - Optimistic concurrency control pattern
@@ -13354,23 +13952,27 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Scale-aware review intensity
 
 #### New Agent Types: Orchestration Swarm (4 types)
+
 - `orch-planner` - Main planner with sub-planner spawning
 - `orch-sub-planner` - Domain-specific recursive planning
 - `orch-judge` - Cycle continuation decisions
 - `orch-coordinator` - Cross-stream conflict resolution
 
 #### Updated Modules
+
 - `skills/parallel-workflows.md` - Added optimistic concurrency section
 - `skills/quality-gates.md` - Added scale considerations, review intensity scaling
 - `references/agent-types.md` - Added Orchestration Swarm with recursive sub-planner pattern
 
 #### Key Learnings Applied
+
 1. **Recursive sub-planners** - Planning scales horizontally, not bottlenecked
 2. **Judge agents** - Explicit cycle continuation decisions (CONTINUE/COMPLETE/ESCALATE/PIVOT)
 3. **Optimistic concurrency** - No locks, write fails on conflict, scales to 100+ agents
 4. **Scale-aware review** - Full review for high-risk only at scale, trust workers for trivial changes
 
 #### Source
+
 - [Cursor Blog - Scaling Agents](https://cursor.com/blog/scaling-agents) (January 2026)
 
 ---
@@ -13382,6 +13984,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 **True parallel feature development using git worktrees and multiple Claude sessions.**
 
 #### New Module: `skills/parallel-workflows.md`
+
 - Git worktree-based isolation for parallel feature development
 - Multiple Claude sessions running simultaneously (one per worktree)
 - Parallel work streams: feature development, testing, documentation, blog
@@ -13390,6 +13993,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Orchestrator state tracking in `.loki/state/parallel-streams.json`
 
 #### run.sh Enhancements
+
 - New `--parallel` flag to enable worktree-based parallelism
 - Worktree management functions: create, remove, list
 - Parallel session spawning with configurable limits
@@ -13397,6 +14001,7 @@ Prominent documentation of the core insight: "Your Agent's Reasoning Is Fine - I
 - Auto-merge completed feature branches
 
 #### New Environment Variables
+
 ```bash
 LOKI_PARALLEL_MODE         # Enable parallel mode (default: false)
 LOKI_MAX_WORKTREES         # Maximum worktrees (default: 5)
@@ -13408,6 +14013,7 @@ LOKI_AUTO_MERGE            # Auto-merge completed features (default: true)
 ```
 
 #### Usage
+
 ```bash
 # Enable parallel mode
 ./autonomy/run.sh --parallel
@@ -13420,6 +14026,7 @@ LOKI_PARALLEL_MODE=true ./autonomy/run.sh
 ```
 
 #### Parallel Streams Architecture
+
 ```
 Main Worktree (orchestrator)
     |
@@ -13430,6 +14037,7 @@ Main Worktree (orchestrator)
 ```
 
 #### Benefits
+
 - Feature A doesn't block Feature B development
 - Testing runs continuously against main while features develop
 - Documentation updates happen in parallel with code changes
@@ -13437,6 +14045,7 @@ Main Worktree (orchestrator)
 - Auto-merge when features complete and tests pass
 
 #### Source
+
 - [Claude Code Git Worktrees](https://code.claude.com/docs/en/common-workflows#run-parallel-claude-code-sessions-with-git-worktrees)
 
 ---
@@ -13444,6 +14053,7 @@ Main Worktree (orchestrator)
 ## [3.1.1] - 2026-01-19
 
 ### Fixed
+
 - Decouple tag and release creation in workflow
 - Create release even if tag was created manually
 - Skip tag creation gracefully if blocked by repo rules
@@ -13455,6 +14065,7 @@ Main Worktree (orchestrator)
 ### Added - Batch Processing & Research Integration
 
 #### Claude Batch API Patterns
+
 - Added batch processing patterns to `skills/production.md`
 - 50% cost reduction for large-scale async operations (100K requests/batch)
 - Implementation patterns with polling and result streaming
@@ -13462,17 +14073,20 @@ Main Worktree (orchestrator)
 - Decision table: when to use batch vs real-time API
 
 #### New Research Integrated
+
 - **Google A2A Protocol v0.3**: Agent Cards, capability discovery, gRPC support
 - **awesome-agentic-patterns**: 105+ production patterns catalog
 - **moridinamael orchestration critique**: "Ralph Wiggum Mode" - simpler beats complex
 
 #### Documentation
+
 - Added `docs/thick2thin.md`: Honest analysis of thin-skill refactoring tradeoffs
 - Updated `ACKNOWLEDGEMENTS.md` with A2A, agentic patterns sources
 - Updated `skills/agents.md` with A2A-inspired communication patterns
 - Updated `skills/00-index.md` with references/ directory pointer
 
 #### Sources
+
 - https://platform.claude.com/docs/en/build-with-claude/batch-processing
 - https://github.com/a2aproject/A2A
 - https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/
@@ -13488,6 +14102,7 @@ Main Worktree (orchestrator)
 **Complete rewrite of SKILL.md from 1350+ lines to ~120 lines core with on-demand module loading.**
 
 #### Why This Matters
+
 - **Context Preservation**: Original 1350-line SKILL.md consumed 10-15% of Claude's context window before any work began
 - **Research-Backed**: 12gramsofcarbon.com analysis found most skills are "slop" at 150+ lines; recommended <150 lines always-on
 - **Production-Tested**: HN 2025 patterns confirm "less is more" for agent context
@@ -13496,11 +14111,13 @@ Main Worktree (orchestrator)
 #### Architecture
 
 **Before (v2.x):**
+
 ```
 SKILL.md (1350 lines) -> Always loaded -> 10-15% context consumed
 ```
 
 **After (v3.0):**
+
 ```
 SKILL.md (~120 lines)     # Always loaded: core essentials only
 skills/00-index.md        # Module routing table
@@ -13508,6 +14125,7 @@ skills/{module}.md        # Loaded on-demand (1-3 at a time)
 ```
 
 #### New Structure
+
 ```
 skills/
   00-index.md          # Module selection rules + routing
@@ -13522,18 +14140,21 @@ skills/
 ```
 
 #### Usage
+
 1. Read `skills/00-index.md` at task start
 2. Load only 1-3 relevant modules for current task
 3. Execute with focused context
 4. Unload modules when task changes
 
 #### Research Sources Integrated
+
 - [12gramsofcarbon.com](https://12gramsofcarbon.com/p/your-agent-skills-are-all-slop) - Skill size limits
 - [rijnard.com](https://rijnard.com/blog/the-code-only-agent) - Code-only agent pattern
 - [platform.claude.com/docs](https://platform.claude.com/docs/en/build-with-claude/context-windows) - Context window management
 - [Claude Code --agents flag](https://claude.ai/code) - Custom agent definitions via JSON
 
 #### Breaking Changes
+
 - SKILL.md no longer contains detailed patterns (moved to modules)
 - Must read `skills/00-index.md` to find detailed content
 - Behavior remains identical, only loading strategy changed
@@ -13547,11 +14168,13 @@ skills/
 **Replaced JSON file export with direct SQLite database writes for seamless Vibe Kanban integration.**
 
 #### Problem Solved
+
 - Previous setup wrote JSON files to `~/.vibe-kanban/loki-tasks/` which Vibe Kanban doesn't read
 - Vibe Kanban reads from its SQLite database at `~/Library/Application Support/ai.bloop.vibe-kanban/db.sqlite`
 - Now writes directly to SQLite, eliminating the disconnect
 
 #### New Script
+
 - **`scripts/sync-to-vibe-kanban.sh`**: Single script that handles everything
   - Auto-detects project name from current directory
   - Cross-platform support (macOS and Linux)
@@ -13560,6 +14183,7 @@ skills/
   - Maps statuses: pending->todo, in-progress->inprogress, completed->done, failed->cancelled
 
 #### Usage
+
 ```bash
 # Run from any project directory with .loki folder
 cd ~/git/your-project
@@ -13570,6 +14194,7 @@ cd ~/git/your-project
 ```
 
 #### Updated
+
 - `scripts/vibe-sync-watcher.sh` now uses `sync-to-vibe-kanban.sh` instead of JSON export
 
 ---
@@ -13581,20 +14206,24 @@ cd ~/git/your-project
 **Resolved critical issues in Vibe Kanban export integration with comprehensive security and quality improvements.**
 
 #### Security Fixes
+
 - **Command Injection Vulnerability**: Fixed command injection vulnerability in `scripts/vibe-sync-watcher.sh:90` by replacing `find -exec md5sum` with safe `find -print0 | xargs -0 md5sum` pattern
 - **File Permissions**: Ensured safe file handling in polling mode
 
 #### Fixed
+
 - **AttributeError in Export Script**: Fixed `scripts/export-to-vibe-kanban.sh:115` to handle both dict and string payloads using `isinstance()` check
 - **Race Condition**: Changed `inotifywait -e modify` to `-e close_write` in watcher script to wait for complete file writes before triggering export
 - **Error Handling**: Added error checks at all 4 locations where export script is called in watcher, displaying warnings on failure
 - **Debug Logging**: Added warning when `orchestrator.json` is not found to help diagnose configuration issues
 
 #### Code Quality
+
 - **Reduced Duplication**: Extracted duplicate payload handling code into helper functions (`get_payload_title()`, `get_payload_description()`) eliminating 20+ lines of duplication
 - **Shellcheck Compliance**: All scripts pass shellcheck validation
 
 #### Added
+
 - **Watcher Script**: Created `scripts/vibe-sync-watcher.sh` for automatic task syncing with cross-platform support (fswatch/inotifywait/polling fallback)
 - **Test Coverage**: Added comprehensive test suite `tests/test-vibe-kanban-export.sh` with 6 test cases covering:
   - Dict payload handling with action/description/command fields
@@ -13605,10 +14234,12 @@ cd ~/git/your-project
   - Missing orchestrator.json warning display
 
 #### Documentation
+
 - **Integration Guide**: Enhanced `integrations/vibe-kanban.md` with step-by-step instructions, troubleshooting section, and realistic expectations about manual export workflow
 - **README Updates**: Clarified Vibe Kanban integration requirements in main README
 
 #### Technical Details
+
 - Watcher supports three modes: fswatch (macOS), inotifywait (Linux), and polling fallback (BSD/universal)
 - Color-coded logging for better visibility (green=success, yellow=warning, red=error)
 - Graceful degradation when file watching tools unavailable
@@ -13626,11 +14257,11 @@ cd ~/git/your-project
 
 #### Research Sources Analyzed
 
-| Source | Key Findings |
-|--------|--------------|
-| [arXiv 2511.04427v2](https://arxiv.org/abs/2511.04427) | LLM agents: 281% velocity gains are TRANSIENT, 30% warnings + 41% complexity are PERSISTENT |
-| [Microsoft OptiMind](https://ai.azure.com/catalog/models/microsoft-optimind-sft) | Problem classification, domain expert hints, ensemble solution generation |
-| [k8s-valkey-operator](https://github.com/smoketurner/k8s-valkey-operator) | Formal state machines, idempotent operations, Kubernetes reconciliation patterns |
+| Source                                                                           | Key Findings                                                                                |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [arXiv 2511.04427v2](https://arxiv.org/abs/2511.04427)                           | LLM agents: 281% velocity gains are TRANSIENT, 30% warnings + 41% complexity are PERSISTENT |
+| [Microsoft OptiMind](https://ai.azure.com/catalog/models/microsoft-optimind-sft) | Problem classification, domain expert hints, ensemble solution generation                   |
+| [k8s-valkey-operator](https://github.com/smoketurner/k8s-valkey-operator)        | Formal state machines, idempotent operations, Kubernetes reconciliation patterns            |
 
 #### Changed Made
 
@@ -13671,11 +14302,11 @@ The arXiv research provides empirical evidence for why Loki Mode's quality gates
 
 #### Research Sources Analyzed
 
-| Source | Key Findings |
-|--------|--------------|
-| [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) | 5 workflow patterns, simplicity emphasis |
-| [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices) | Explore-Plan-Code, thinking modes, TDD |
-| [Enterprise AI Transformation](https://claude.com/blog/driving-ai-transformation-with-claude) | Bottleneck targeting, quality focus |
+| Source                                                                                         | Key Findings                             |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)   | 5 workflow patterns, simplicity emphasis |
+| [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices) | Explore-Plan-Code, thinking modes, TDD   |
+| [Enterprise AI Transformation](https://claude.com/blog/driving-ai-transformation-with-claude)  | Bottleneck targeting, quality focus      |
 
 #### Changed Made
 
@@ -13700,6 +14331,7 @@ The arXiv research provides empirical evidence for why Loki Mode's quality gates
 #### Already Aligned (Validated)
 
 These patterns were already correctly implemented:
+
 - Explore-Plan-Code workflow
 - Confidence-based routing
 - Parallelization with Haiku
@@ -13719,12 +14351,12 @@ These patterns were already correctly implemented:
 
 Added Parallel AI as recommended MCP server for enhanced web research:
 
-| Capability | Benefit for Loki Mode |
-|------------|----------------------|
-| Deep Research API | 48% accuracy on complex research (vs native LLM search) |
-| Evidence-based results | Provenance for every output - aligns with quality gates |
-| Monitor API | Track dependency updates, security advisories, competitor changes |
-| Task API | Structured research with custom schemas |
+| Capability             | Benefit for Loki Mode                                             |
+| ---------------------- | ----------------------------------------------------------------- |
+| Deep Research API      | 48% accuracy on complex research (vs native LLM search)           |
+| Evidence-based results | Provenance for every output - aligns with quality gates           |
+| Monitor API            | Track dependency updates, security advisories, competitor changes |
+| Task API               | Structured research with custom schemas                           |
 
 **SDLC Phases Enhanced:** Discovery, Web Research, Continuous Monitoring
 
@@ -13744,25 +14376,29 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 **Updated model selection strategy to assign models by SDLC phase rather than task type.**
 
 #### Previous Model Assignment
-| Model | Use For |
-|-------|---------|
-| Opus 4.5 | Planning only - architecture & high-level decisions |
-| Sonnet 4.5 | Development - implementation & functional testing |
-| Haiku 4.5 | Operations - simple tasks & monitoring |
+
+| Model      | Use For                                             |
+| ---------- | --------------------------------------------------- |
+| Opus 4.5   | Planning only - architecture & high-level decisions |
+| Sonnet 4.5 | Development - implementation & functional testing   |
+| Haiku 4.5  | Operations - simple tasks & monitoring              |
 
 #### New Model Assignment (SDLC Phase-Based)
-| Model | SDLC Phases | Examples |
-|-------|-------------|----------|
-| **Opus 4.5** | Bootstrap, Discovery, Architecture, Development | PRD analysis, system design, feature implementation, API endpoints, complex bug fixes |
-| **Sonnet 4.5** | QA, Deployment | Integration/E2E tests, security scanning, performance testing, deployment automation |
-| **Haiku 4.5** | All other operations (in parallel) | Unit tests, docs, bash commands, linting, monitoring, health checks |
+
+| Model          | SDLC Phases                                     | Examples                                                                              |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Opus 4.5**   | Bootstrap, Discovery, Architecture, Development | PRD analysis, system design, feature implementation, API endpoints, complex bug fixes |
+| **Sonnet 4.5** | QA, Deployment                                  | Integration/E2E tests, security scanning, performance testing, deployment automation  |
+| **Haiku 4.5**  | All other operations (in parallel)              | Unit tests, docs, bash commands, linting, monitoring, health checks                   |
 
 #### Rationale
+
 - **Opus for Development**: Higher quality code generation for core implementation work
 - **Sonnet for QA/Deployment**: Cost-effective for testing and deployment automation
 - **Haiku in parallel**: Maximum parallelization for operations tasks
 
 #### Files Modified
+
 - `SKILL.md`: Updated Model Selection Strategy section (lines 163-210)
 - `SKILL.md`: Updated Quick Reference line 21
 - `SKILL.md`: Updated Dynamic Agent Selection table
@@ -13778,34 +14414,37 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Zencoder Features Analyzed
 
-| Feature | Zencoder | Loki Mode | Assessment |
-|---------|----------|-----------|------------|
-| Four Pillars | Structured Workflows, SDD, Multi-Agent Verification, Parallel Execution | SDLC + RARV + 7 Gates + Worktrees | TIE |
-| Spec-Driven Development | Specs as first-class objects | OpenAPI-first | TIE |
-| Multi-Agent Verification | Model diversity (Claude vs OpenAI, 54% improvement) | 3 blind reviewers + devil's advocate | Different (N/A for Claude Code) |
-| Quality Gates | Built-in verification loops | 7 explicit gates + anti-sycophancy | Loki Mode |
-| Memory System | Not documented | 3-tier episodic/semantic/procedural | Loki Mode |
-| Agent Specialization | Custom Zen Agents | 37 pre-defined specialized | Loki Mode |
-| CI Failure Analysis | Explicit pattern with auto-fix | DevOps agent only | **ADOPTED** |
-| Review Comment Resolution | Auto-apply simple changes | Manual review | **ADOPTED** |
-| Dependency Management | Scheduled PRs, one group at a time | Mentioned only | **ADOPTED** |
-| Multi-Repo Support | Full cross-repo | Single repo | Zencoder (N/A for Claude Code) |
+| Feature                   | Zencoder                                                                | Loki Mode                            | Assessment                      |
+| ------------------------- | ----------------------------------------------------------------------- | ------------------------------------ | ------------------------------- |
+| Four Pillars              | Structured Workflows, SDD, Multi-Agent Verification, Parallel Execution | SDLC + RARV + 7 Gates + Worktrees    | TIE                             |
+| Spec-Driven Development   | Specs as first-class objects                                            | OpenAPI-first                        | TIE                             |
+| Multi-Agent Verification  | Model diversity (Claude vs OpenAI, 54% improvement)                     | 3 blind reviewers + devil's advocate | Different (N/A for Claude Code) |
+| Quality Gates             | Built-in verification loops                                             | 7 explicit gates + anti-sycophancy   | Loki Mode                       |
+| Memory System             | Not documented                                                          | 3-tier episodic/semantic/procedural  | Loki Mode                       |
+| Agent Specialization      | Custom Zen Agents                                                       | 37 pre-defined specialized           | Loki Mode                       |
+| CI Failure Analysis       | Explicit pattern with auto-fix                                          | DevOps agent only                    | **ADOPTED**                     |
+| Review Comment Resolution | Auto-apply simple changes                                               | Manual review                        | **ADOPTED**                     |
+| Dependency Management     | Scheduled PRs, one group at a time                                      | Mentioned only                       | **ADOPTED**                     |
+| Multi-Repo Support        | Full cross-repo                                                         | Single repo                          | Zencoder (N/A for Claude Code)  |
 
 #### Patterns ADOPTED from Zencoder (HIGH Priority)
 
 **1. CI Failure Analysis and Auto-Resolution:**
+
 - Analyze cryptic CI logs automatically
 - Classify failure type: regression vs flakiness vs environment vs dependency
 - Auto-fix 90% of flaky tests
 - Reduce time-to-green by 50%
 
 **2. Automated Review Comment Resolution:**
+
 - Auto-apply straightforward review comments
 - Categories: input validation, missing tests, error messages, small refactoring, documentation
 - Skip: architecture changes, API modifications, security-sensitive code
 - Commit with "fix: address review comments (auto-applied)"
 
 **3. Continuous Dependency Management:**
+
 - Schedule: weekly or bi-weekly scans
 - Strategy: one dependency group at a time
 - Prioritize: security > major > minor > patch
@@ -13814,12 +14453,12 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Patterns NOT Adopted (with justification)
 
-| Pattern | Zencoder | Why Not Adopted |
-|---------|----------|-----------------|
-| Model Diversity | Claude critiques OpenAI code | Claude Code only has Claude models |
-| Multi-Repo Support | Cross-repo changes | Claude Code is single-context |
-| IDE Plugins | VS Code, JetBrains | Loki Mode is a skill, not a plugin |
-| Repo Grokking | Proprietary indexing | Claude Code has native exploration |
+| Pattern            | Zencoder                     | Why Not Adopted                    |
+| ------------------ | ---------------------------- | ---------------------------------- |
+| Model Diversity    | Claude critiques OpenAI code | Claude Code only has Claude models |
+| Multi-Repo Support | Cross-repo changes           | Claude Code is single-context      |
+| IDE Plugins        | VS Code, JetBrains           | Loki Mode is a skill, not a plugin |
+| Repo Grokking      | Proprietary indexing         | Claude Code has native exploration |
 
 #### Where Loki Mode Remains SUPERIOR
 
@@ -13839,37 +14478,41 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Resources Analyzed
 
-| Resource | Key Patterns | Assessment |
-|----------|--------------|------------|
-| **arXiv 2512.24601 (RLM)** | Python REPL context, recursive self-invocation, 10M+ token handling | Different use case - extreme context scenarios, not Claude Code workflows |
-| **ysz/recursive-llm** | Depth-bound recursion, async parallelization, two-model optimization | Already covered via sub-agent architecture + parallel Haiku agents |
-| **Token-aware planning** | Context rot (<256k effective), sub-agent isolation, compaction | Already comprehensive (SKILL.md:880-920, run.sh compaction) |
-| **davila7/claude-code-templates** | 100+ agents, semantic validator, hooks with matchers | Loki has 37 specialized agents (better organization), guardrails, hooks |
-| **pguso/agents-from-scratch** | "Agents are loops, state, constraints" | Educational - Loki Mode IS the production implementation |
-| **Boris Cherny Tips (Jan 2026)** | 5 Claudes parallel, Opus thinking, ~42hr sessions, hooks | All present: 10+ Haiku parallel, model tiering, CONTINUITY.md |
-| **Inner/outer loop bottleneck** | AI dev creates CI/CD bottleneck | Loki Mode IS the solution - automated quality gates |
-| **azidan/codemap** | Symbol-to-line-range mapping, hash staleness, 60-80% token savings | Complementary MCP tool, not a pattern to implement |
+| Resource                          | Key Patterns                                                         | Assessment                                                                |
+| --------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **arXiv 2512.24601 (RLM)**        | Python REPL context, recursive self-invocation, 10M+ token handling  | Different use case - extreme context scenarios, not Claude Code workflows |
+| **ysz/recursive-llm**             | Depth-bound recursion, async parallelization, two-model optimization | Already covered via sub-agent architecture + parallel Haiku agents        |
+| **Token-aware planning**          | Context rot (<256k effective), sub-agent isolation, compaction       | Already comprehensive (SKILL.md:880-920, run.sh compaction)               |
+| **davila7/claude-code-templates** | 100+ agents, semantic validator, hooks with matchers                 | Loki has 37 specialized agents (better organization), guardrails, hooks   |
+| **pguso/agents-from-scratch**     | "Agents are loops, state, constraints"                               | Educational - Loki Mode IS the production implementation                  |
+| **Boris Cherny Tips (Jan 2026)**  | 5 Claudes parallel, Opus thinking, ~42hr sessions, hooks             | All present: 10+ Haiku parallel, model tiering, CONTINUITY.md             |
+| **Inner/outer loop bottleneck**   | AI dev creates CI/CD bottleneck                                      | Loki Mode IS the solution - automated quality gates                       |
+| **azidan/codemap**                | Symbol-to-line-range mapping, hash staleness, 60-80% token savings   | Complementary MCP tool, not a pattern to implement                        |
 
 #### Key Findings
 
 **1. Recursive Language Models (MIT, Dec 2025):**
+
 - Handles 10M+ tokens via Python REPL context storage
 - Two-model optimization (expensive root, cheap branches)
 - Assessment: Specialized for extreme context, not typical Claude Code workflows
 - Loki Mode's CONTINUITY.md + compaction + sub-agents already sufficient
 
 **2. Token-Aware Planning / Context Engineering:**
+
 - Context rot phenomenon: effective window <256k even with 1M limit
 - Sub-agent architectures with clean context windows
 - ADK compaction triggers at configurable thresholds
 - Assessment: Already implemented (COMPACTION_INTERVAL=25, sub-agent isolation)
 
 **3. Claude Code Templates (davila7):**
+
 - 100+ agents, 159+ commands, semantic/reference validators
 - Proper hook specifications with tool matchers
 - Assessment: Loki has superior architecture (37 specialized vs generic templates)
 
 **4. CodeMap (azidan):**
+
 - Symbol-to-line-range precision reduces tokens 60-80%
 - Per-directory distributed indexing
 - Hash-based staleness detection
@@ -13877,15 +14520,15 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Patterns Already Present in Loki Mode
 
-| External Pattern | Loki Mode Implementation |
-|-----------------|-------------------------|
-| Parallel execution (5 Claudes) | 10+ Haiku agents in parallel (SKILL.md:21) |
-| Model tiering | Opus/Sonnet/Haiku with explicit categories (SKILL.md:163-244) |
-| Background agents | run_in_background parameter (SKILL.md:247-267) |
-| Context compaction | COMPACTION_INTERVAL=25 (run.sh:140) |
-| Sub-agent isolation | Fresh context per sub-task (SKILL.md:920-928) |
-| Hooks system | Event-driven hooks (SKILL.md:758-792) |
-| CI/CD automation | 7 quality gates, deterministic outer loops (SKILL.md:540-558) |
+| External Pattern               | Loki Mode Implementation                                      |
+| ------------------------------ | ------------------------------------------------------------- |
+| Parallel execution (5 Claudes) | 10+ Haiku agents in parallel (SKILL.md:21)                    |
+| Model tiering                  | Opus/Sonnet/Haiku with explicit categories (SKILL.md:163-244) |
+| Background agents              | run_in_background parameter (SKILL.md:247-267)                |
+| Context compaction             | COMPACTION_INTERVAL=25 (run.sh:140)                           |
+| Sub-agent isolation            | Fresh context per sub-task (SKILL.md:920-928)                 |
+| Hooks system                   | Event-driven hooks (SKILL.md:758-792)                         |
+| CI/CD automation               | 7 quality gates, deterministic outer loops (SKILL.md:540-558) |
 
 #### Conclusion
 
@@ -13901,28 +14544,29 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Google Antigravity Features Analyzed
 
-| Feature | Antigravity | Loki Mode | Assessment |
-|---------|-------------|-----------|------------|
-| Manager Surface | Interactive agent control | Monitoring dashboard | Different purpose (human vs autonomous) |
-| Artifacts System | Screenshots, video, diagrams | Traces, tests | Enhanced: Artifact generation added |
-| Browser Subagents | Full recording, DOM capture | Playwright MCP | Equivalent + screenshots |
-| Outcome Verification | Trust artifacts | 7 quality gates | Loki Mode superior |
-| Knowledge Base | Simple snippets | 3-tier memory | Loki Mode superior |
-| Multi-Model | Gemini 3, Claude, GPT-OSS | Opus/Sonnet/Haiku | Both multi-model |
+| Feature              | Antigravity                  | Loki Mode            | Assessment                              |
+| -------------------- | ---------------------------- | -------------------- | --------------------------------------- |
+| Manager Surface      | Interactive agent control    | Monitoring dashboard | Different purpose (human vs autonomous) |
+| Artifacts System     | Screenshots, video, diagrams | Traces, tests        | Enhanced: Artifact generation added     |
+| Browser Subagents    | Full recording, DOM capture  | Playwright MCP       | Equivalent + screenshots                |
+| Outcome Verification | Trust artifacts              | 7 quality gates      | Loki Mode superior                      |
+| Knowledge Base       | Simple snippets              | 3-tier memory        | Loki Mode superior                      |
+| Multi-Model          | Gemini 3, Claude, GPT-OSS    | Opus/Sonnet/Haiku    | Both multi-model                        |
 
 #### Amazon Q Developer Features Analyzed
 
-| Feature | Amazon Q | Loki Mode | Assessment |
-|---------|----------|-----------|------------|
-| SWE-Bench | 66% verified | Uses Claude | Framework, not model |
-| Code Transformation | /transform (Java, SQL, .NET) | Not present | **ADOPTED** |
-| MCP Support | Full protocol | Playwright MCP | Equivalent |
-| Model Routing | Bedrock | 4-tier confidence | Loki Mode superior |
-| CLI Agent | Fast local | run.sh wrapper | Equivalent |
+| Feature             | Amazon Q                     | Loki Mode         | Assessment           |
+| ------------------- | ---------------------------- | ----------------- | -------------------- |
+| SWE-Bench           | 66% verified                 | Uses Claude       | Framework, not model |
+| Code Transformation | /transform (Java, SQL, .NET) | Not present       | **ADOPTED**          |
+| MCP Support         | Full protocol                | Playwright MCP    | Equivalent           |
+| Model Routing       | Bedrock                      | 4-tier confidence | Loki Mode superior   |
+| CLI Agent           | Fast local                   | run.sh wrapper    | Equivalent           |
 
 #### Patterns ADOPTED (HIGH/MEDIUM Priority)
 
 **1. Code Transformation Agent (Amazon Q):**
+
 - Dedicated workflows for legacy modernization
 - Language upgrades (Java 8->21, Python 2->3, Node 16->22)
 - Database migrations (Oracle->PostgreSQL, MySQL->PostgreSQL)
@@ -13930,6 +14574,7 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 - Deterministic success criteria: tests pass, benchmarks met
 
 **2. Artifact Generation (Antigravity):**
+
 - Auto-generate verifiable deliverables
 - Triggers: on_phase_complete, on_feature_complete, on_deployment
 - Types: verification_report, architecture_diff, screenshot_gallery
@@ -13937,11 +14582,11 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Patterns NOT Adopted (with justification)
 
-| Pattern | Source | Why Not Adopted |
-|---------|--------|-----------------|
+| Pattern                       | Source      | Why Not Adopted                                    |
+| ----------------------------- | ----------- | -------------------------------------------------- |
 | Manager Surface (interactive) | Antigravity | Requires human control, violates zero-intervention |
-| Video Recording | Antigravity | Requires human review |
-| Interactive Agent Spawning | Antigravity | Violates autonomous design |
+| Video Recording               | Antigravity | Requires human review                              |
+| Interactive Agent Spawning    | Antigravity | Violates autonomous design                         |
 
 #### Where Loki Mode is SUPERIOR
 
@@ -13962,39 +14607,42 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### OpenAI Codex Features Analyzed
 
-| Feature | Codex | Loki Mode | Assessment |
-|---------|-------|-----------|------------|
-| Skills System | SKILL.md + scripts/ + references/ | IS a SKILL.md | Already compatible |
-| Progressive Disclosure | Load name/desc first | Implicit via references/ | Already better |
-| Skill Precedence | 6 levels (repo to system) | Single directory | Simpler (autonomous) |
-| Sandbox | seccomp + landlock isolation | Claude Code environment | Different platforms |
-| $skill-creator | Interactive wizard | N/A | Not needed (autonomous) |
+| Feature                | Codex                             | Loki Mode                | Assessment              |
+| ---------------------- | --------------------------------- | ------------------------ | ----------------------- |
+| Skills System          | SKILL.md + scripts/ + references/ | IS a SKILL.md            | Already compatible      |
+| Progressive Disclosure | Load name/desc first              | Implicit via references/ | Already better          |
+| Skill Precedence       | 6 levels (repo to system)         | Single directory         | Simpler (autonomous)    |
+| Sandbox                | seccomp + landlock isolation      | Claude Code environment  | Different platforms     |
+| $skill-creator         | Interactive wizard                | N/A                      | Not needed (autonomous) |
 
 #### AWS Kiro Features Analyzed
 
-| Feature | Kiro | Loki Mode | Assessment |
-|---------|------|-----------|------------|
-| Spec Files | requirements.md, design.md, tasks.md | OpenAPI-first | Both valid approaches |
-| Agent Steering | .kiro/steering/ | CLAUDE.md + CONTINUITY.md + memory | Already more comprehensive |
-| Property-Based Testing | Extract from specs, random inputs | None | **ADOPTED** |
-| Hooks System | Event-driven automation | Phase-boundary only | **ADOPTED** |
-| Review Learning | Build knowledge from feedback | Memory system exists but not connected | **ADOPTED** |
-| Autonomous Agent | Frontier Agent, multi-repo | Single product focus | Different use case |
+| Feature                | Kiro                                 | Loki Mode                              | Assessment                 |
+| ---------------------- | ------------------------------------ | -------------------------------------- | -------------------------- |
+| Spec Files             | requirements.md, design.md, tasks.md | OpenAPI-first                          | Both valid approaches      |
+| Agent Steering         | .kiro/steering/                      | CLAUDE.md + CONTINUITY.md + memory     | Already more comprehensive |
+| Property-Based Testing | Extract from specs, random inputs    | None                                   | **ADOPTED**                |
+| Hooks System           | Event-driven automation              | Phase-boundary only                    | **ADOPTED**                |
+| Review Learning        | Build knowledge from feedback        | Memory system exists but not connected | **ADOPTED**                |
+| Autonomous Agent       | Frontier Agent, multi-repo           | Single product focus                   | Different use case         |
 
 #### Patterns ADOPTED from Kiro (HIGH Priority)
 
 **1. Property-Based Testing:**
+
 - Auto-extract properties from OpenAPI schema constraints
 - Run hundreds of random inputs with fast-check/hypothesis
 - Verify invariants: email format, price >= 0, timestamps ordered
 - Phase: QA, after unit tests, before integration
 
 **2. Event-Driven Hooks:**
+
 - Trigger on file write, task complete, phase complete
 - Catches issues 5-10x earlier than phase-end review
 - Examples: lint on save, typecheck on save, secrets scan
 
 **3. Review-to-Memory Learning:**
+
 - Pipe review findings (Critical/High/Medium) into semantic memory
 - Convert to anti-patterns with prevention strategies
 - Query anti-patterns before new implementations
@@ -14002,13 +14650,13 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Patterns NOT Adopted (with justification)
 
-| Pattern | Source | Why Not Adopted |
-|---------|--------|-----------------|
-| Progressive Skill Disclosure | Codex | Already implicit in references/ structure |
-| Multi-Level Precedence | Codex | Solves multi-developer problem (irrelevant) |
-| Agent Steering Files | Kiro | CLAUDE.md + memory already covers |
-| $skill-creator | Codex | Humans create skills beforehand |
-| Multi-Repository Agent | Kiro | Not aligned with single-product use case |
+| Pattern                      | Source | Why Not Adopted                             |
+| ---------------------------- | ------ | ------------------------------------------- |
+| Progressive Skill Disclosure | Codex  | Already implicit in references/ structure   |
+| Multi-Level Precedence       | Codex  | Solves multi-developer problem (irrelevant) |
+| Agent Steering Files         | Kiro   | CLAUDE.md + memory already covers           |
+| $skill-creator               | Codex  | Humans create skills beforehand             |
+| Multi-Repository Agent       | Kiro   | Not aligned with single-product use case    |
 
 #### Where Loki Mode is SUPERIOR
 
@@ -14030,36 +14678,36 @@ Added Parallel AI as recommended MCP server for enhanced web research:
 
 #### Cursor 2.0 Features Analyzed
 
-| Feature | Cursor | Loki Mode | Assessment |
-|---------|--------|-----------|------------|
-| Multi-Agent Parallel | 8 agents with worktree isolation | Sequential (was restricted) | ADOPTED: Worktree isolation |
-| Composer Model | Proprietary 250 tok/s | Uses Claude | Different architecture |
-| BugBot PR Review | GitHub integration | Pre-commit review | Loki Mode superior (prevent vs detect) |
-| Memories | Flat fact storage | 3-tier structured | Loki Mode superior |
-| YOLO Mode | Auto-apply with allowlist | Full autonomous | Already more comprehensive |
-| Tool Call Limits | 25 ops before approval | Guardrails/tripwires | Different approach (autonomous) |
+| Feature              | Cursor                           | Loki Mode                   | Assessment                             |
+| -------------------- | -------------------------------- | --------------------------- | -------------------------------------- |
+| Multi-Agent Parallel | 8 agents with worktree isolation | Sequential (was restricted) | ADOPTED: Worktree isolation            |
+| Composer Model       | Proprietary 250 tok/s            | Uses Claude                 | Different architecture                 |
+| BugBot PR Review     | GitHub integration               | Pre-commit review           | Loki Mode superior (prevent vs detect) |
+| Memories             | Flat fact storage                | 3-tier structured           | Loki Mode superior                     |
+| YOLO Mode            | Auto-apply with allowlist        | Full autonomous             | Already more comprehensive             |
+| Tool Call Limits     | 25 ops before approval           | Guardrails/tripwires        | Different approach (autonomous)        |
 
 #### Devin 2.0 Features Analyzed
 
-| Feature | Devin | Loki Mode | Assessment |
-|---------|-------|-----------|------------|
-| Task Dispatch | One agent dispatches to others | 37 agents in 7 swarms | Loki Mode more comprehensive |
-| Confidence Clarification | Asks user when unsure | Escalates to human | Both valid for different use cases |
-| DeepWiki | Auto-generate docs | techwriter agent | Similar capability |
-| Specialized Models | Kevin 32B for CUDA | Opus/Sonnet/Haiku tiering | Both optimize model selection |
-| Sandbox Environment | Full shell/browser/editor | Claude Code environment | Different platforms |
+| Feature                  | Devin                          | Loki Mode                 | Assessment                         |
+| ------------------------ | ------------------------------ | ------------------------- | ---------------------------------- |
+| Task Dispatch            | One agent dispatches to others | 37 agents in 7 swarms     | Loki Mode more comprehensive       |
+| Confidence Clarification | Asks user when unsure          | Escalates to human        | Both valid for different use cases |
+| DeepWiki                 | Auto-generate docs             | techwriter agent          | Similar capability                 |
+| Specialized Models       | Kevin 32B for CUDA             | Opus/Sonnet/Haiku tiering | Both optimize model selection      |
+| Sandbox Environment      | Full shell/browser/editor      | Claude Code environment   | Different platforms                |
 
 #### Patterns ADOPTED from Cursor
 
 **1. Git Worktree Isolation for Safe Parallel Development:**
+
 - Enables up to 4 implementation agents in parallel
 - Each agent works in isolated worktree (`.loki/worktrees/agent-{id}/`)
 - Tests run in isolation, merge only on success
 - Removes previous restriction: "NEVER dispatch multiple implementation subagents in parallel"
 
 ```yaml
-workflow:
-  1. git worktree add .loki/worktrees/agent-{id} -b agent-{id}-feature
+workflow: 1. git worktree add .loki/worktrees/agent-{id} -b agent-{id}-feature
   2. Agent implements in isolated directory
   3. Run tests within worktree
   4. Merge to main if tests pass
@@ -14067,18 +14715,19 @@ workflow:
 ```
 
 **2. Atomic Checkpoint/Rollback:**
+
 - Formalized checkpoint strategy before risky operations
 - Git stash for instant rollback
 - Clear recovery path on failure
 
 #### Patterns NOT Adopted (with justification)
 
-| Pattern | Source | Why Not Adopted |
-|---------|--------|-----------------|
-| Tool Call Limits (25 ops) | Cursor | Contradicts autonomous operation |
-| BugBot GitHub Comments | Cursor | Pre-commit review is superior |
-| Confidence-based Clarification | Devin | "NEVER ask questions" is core rule |
-| VM Isolation | Cursor | Infrastructure cost, marginal benefit |
+| Pattern                        | Source | Why Not Adopted                       |
+| ------------------------------ | ------ | ------------------------------------- |
+| Tool Call Limits (25 ops)      | Cursor | Contradicts autonomous operation      |
+| BugBot GitHub Comments         | Cursor | Pre-commit review is superior         |
+| Confidence-based Clarification | Devin  | "NEVER ask questions" is core rule    |
+| VM Isolation                   | Cursor | Infrastructure cost, marginal benefit |
 
 #### Where Loki Mode is SUPERIOR
 
@@ -14100,25 +14749,25 @@ workflow:
 
 #### OpenCode Features Analyzed
 
-| Feature | OpenCode | Loki Mode | Assessment |
-|---------|----------|-----------|------------|
-| Architecture | Client/server (Bun+Go) | CLI skill (bash) | Different design goals |
-| Provider Support | Multi-provider | Claude-only | Intentional for deep integration |
-| LSP Integration | Native (25+ langs) | None | Not adopted (violates deterministic validation) |
-| Agents | 4 built-in | 37 in 7 swarms | Loki Mode more comprehensive |
-| Plugin System | JS/TS hooks | Wrapper script | Not adopted (adds complexity) |
-| Skills | SKILL.md compatible | IS a SKILL.md | Aligned |
-| Quality Gates | Basic permissions | 7 gates + 3-reviewer + devil's advocate | Loki Mode superior |
-| Memory | Session-based | Episodic/Semantic/Procedural | Loki Mode more sophisticated |
+| Feature          | OpenCode               | Loki Mode                               | Assessment                                      |
+| ---------------- | ---------------------- | --------------------------------------- | ----------------------------------------------- |
+| Architecture     | Client/server (Bun+Go) | CLI skill (bash)                        | Different design goals                          |
+| Provider Support | Multi-provider         | Claude-only                             | Intentional for deep integration                |
+| LSP Integration  | Native (25+ langs)     | None                                    | Not adopted (violates deterministic validation) |
+| Agents           | 4 built-in             | 37 in 7 swarms                          | Loki Mode more comprehensive                    |
+| Plugin System    | JS/TS hooks            | Wrapper script                          | Not adopted (adds complexity)                   |
+| Skills           | SKILL.md compatible    | IS a SKILL.md                           | Aligned                                         |
+| Quality Gates    | Basic permissions      | 7 gates + 3-reviewer + devil's advocate | Loki Mode superior                              |
+| Memory           | Session-based          | Episodic/Semantic/Procedural            | Loki Mode more sophisticated                    |
 
 #### Patterns Evaluated and NOT Adopted
 
-| Pattern | Source | Why Not Adopted |
-|---------|--------|-----------------|
-| LSP Integration | OpenCode native | Violates deterministic validation principle |
-| Plugin/Hook System | OpenCode plugins | Adds complexity for human extensibility |
-| Multi-Provider | OpenCode design | Breaks Claude-specific optimizations |
-| Todo Continuation Enforcer | Oh-My-OpenCode | Already have superior wrapper enforcement |
+| Pattern                    | Source           | Why Not Adopted                             |
+| -------------------------- | ---------------- | ------------------------------------------- |
+| LSP Integration            | OpenCode native  | Violates deterministic validation principle |
+| Plugin/Hook System         | OpenCode plugins | Adds complexity for human extensibility     |
+| Multi-Provider             | OpenCode design  | Breaks Claude-specific optimizations        |
+| Todo Continuation Enforcer | Oh-My-OpenCode   | Already have superior wrapper enforcement   |
 
 #### Pattern ADOPTED: Proactive Context Management
 
@@ -14156,17 +14805,17 @@ LOKI_COMPACTION_INTERVAL=25  # Suggest compaction every N iterations
 
 Loki Mode already implements patterns from state-of-the-art research. Key papers validate our design choices:
 
-| Paper | Key Finding | Loki Mode Status |
-|-------|-------------|------------------|
-| **Scaling Agent Systems** | Centralized +80.8% on parallelizable tasks | HAVE: Centralized orchestrator |
-| **Scaling Agent Systems** | Sequential reasoning degrades 39-70% | HAVE: Parallel blind review |
-| **Scaling Agent Systems** | Capability saturation at ~45% baseline | HAVE: Model tiering (Opus/Sonnet/Haiku) |
-| **Talk Isn't Always Cheap** | Debate can decrease accuracy (sycophancy) | HAVE: Blind review + devil's advocate |
-| **More Agents is All You Need** | Voting scales with task difficulty | HAVE: 3-reviewer voting system |
-| **MALT** | Generation-verification-refinement | HAVE: RARV cycle |
-| **MetaGPT/ChatDev** | SOPs prevent hallucination cascades | HAVE: SDLC phases with procedures |
-| **TUMIX** | Confidence-based routing | HAVE: v2.36.0 confidence routing |
-| **AutoSafeCoder** | Multi-agent security review | HAVE: Security agent + static analysis |
+| Paper                           | Key Finding                                | Loki Mode Status                        |
+| ------------------------------- | ------------------------------------------ | --------------------------------------- |
+| **Scaling Agent Systems**       | Centralized +80.8% on parallelizable tasks | HAVE: Centralized orchestrator          |
+| **Scaling Agent Systems**       | Sequential reasoning degrades 39-70%       | HAVE: Parallel blind review             |
+| **Scaling Agent Systems**       | Capability saturation at ~45% baseline     | HAVE: Model tiering (Opus/Sonnet/Haiku) |
+| **Talk Isn't Always Cheap**     | Debate can decrease accuracy (sycophancy)  | HAVE: Blind review + devil's advocate   |
+| **More Agents is All You Need** | Voting scales with task difficulty         | HAVE: 3-reviewer voting system          |
+| **MALT**                        | Generation-verification-refinement         | HAVE: RARV cycle                        |
+| **MetaGPT/ChatDev**             | SOPs prevent hallucination cascades        | HAVE: SDLC phases with procedures       |
+| **TUMIX**                       | Confidence-based routing                   | HAVE: v2.36.0 confidence routing        |
+| **AutoSafeCoder**               | Multi-agent security review                | HAVE: Security agent + static analysis  |
 
 #### Patterns Confirmed Present
 
@@ -14183,12 +14832,12 @@ Loki Mode already implements patterns from state-of-the-art research. Key papers
 
 #### Additions Evaluated and Rejected
 
-| Pattern | Source | Why Rejected |
-|---------|--------|--------------|
-| Layered output aggregation | MoA | Sequential degrades 39-70% (Scaling paper) |
-| MCTS workflow optimization | AFlow/Optima | Over-engineering for CLI skill |
-| Evolutionary agent generation | EvoAgent | Requires training infrastructure |
-| K-Level strategic reasoning | K-R paper | Specialized for adversarial scenarios |
+| Pattern                       | Source       | Why Rejected                               |
+| ----------------------------- | ------------ | ------------------------------------------ |
+| Layered output aggregation    | MoA          | Sequential degrades 39-70% (Scaling paper) |
+| MCTS workflow optimization    | AFlow/Optima | Over-engineering for CLI skill             |
+| Evolutionary agent generation | EvoAgent     | Requires training infrastructure           |
+| K-Level strategic reasoning   | K-R paper    | Specialized for adversarial scenarios      |
 
 #### Key Papers Analyzed
 
@@ -14245,20 +14894,20 @@ Loki Mode already implements patterns from state-of-the-art research. Key papers
 
 #### Research Sources Integrated
 
-| Resource | Key Contribution |
-|----------|------------------|
-| [Vercel agent-skills](https://github.com/vercel-labs/agent-skills) | Modular skill architecture |
-| [ZeframLou/call-me](https://github.com/ZeframLou/call-me) | Async callback pattern for critical decisions |
-| [arXiv 2512.14982v1](https://arxiv.org/html/2512.14982v1) | Prompt repetition technique (4-5x accuracy boost) |
-| [UCP](https://ecomhint.com/blog/universal-commerce-protocol) | Commerce integration protocol (Google+Shopify) |
-| [buildwithpi.ai](https://buildwithpi.ai/) | Minimalism philosophy (lite mode consideration) |
-| [wplaces geocoder](https://jonready.com/blog/posts/geocoder-for-ai-agents.html) | Location services for agents |
-| [Tabstack (HN)](https://news.ycombinator.com/item?id=46620358) | Browser automation escalation logic |
-| [claude-mcp-poke](https://github.com/andrexibiza/claude-mcp-poke) | MCP server integration pattern |
-| [Claude Agent SDK Guide](https://nader.substack.com/p/the-complete-guide-to-building-agents) | Adaptive planning with backtracking |
-| [Tim Dettmers](https://timdettmers.com/2026/01/13/use-agents-or-be-left-behind/) | Selective autonomy pattern |
-| [codeusse](https://codeusse.wrbl.xyz/) | Mobile-first agent patterns |
-| [HN Production Patterns](https://news.ycombinator.com/item?id=44623207) | Confidence-based routing validation |
+| Resource                                                                                     | Key Contribution                                  |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [Vercel agent-skills](https://github.com/vercel-labs/agent-skills)                           | Modular skill architecture                        |
+| [ZeframLou/call-me](https://github.com/ZeframLou/call-me)                                    | Async callback pattern for critical decisions     |
+| [arXiv 2512.14982v1](https://arxiv.org/html/2512.14982v1)                                    | Prompt repetition technique (4-5x accuracy boost) |
+| [UCP](https://ecomhint.com/blog/universal-commerce-protocol)                                 | Commerce integration protocol (Google+Shopify)    |
+| [buildwithpi.ai](https://buildwithpi.ai/)                                                    | Minimalism philosophy (lite mode consideration)   |
+| [wplaces geocoder](https://jonready.com/blog/posts/geocoder-for-ai-agents.html)              | Location services for agents                      |
+| [Tabstack (HN)](https://news.ycombinator.com/item?id=46620358)                               | Browser automation escalation logic               |
+| [claude-mcp-poke](https://github.com/andrexibiza/claude-mcp-poke)                            | MCP server integration pattern                    |
+| [Claude Agent SDK Guide](https://nader.substack.com/p/the-complete-guide-to-building-agents) | Adaptive planning with backtracking               |
+| [Tim Dettmers](https://timdettmers.com/2026/01/13/use-agents-or-be-left-behind/)             | Selective autonomy pattern                        |
+| [codeusse](https://codeusse.wrbl.xyz/)                                                       | Mobile-first agent patterns                       |
+| [HN Production Patterns](https://news.ycombinator.com/item?id=44623207)                      | Confidence-based routing validation               |
 
 #### Environment Variables Added
 
@@ -14293,6 +14942,7 @@ LOKI_AUTONOMY_MODE=perpetual      # perpetual|checkpoint|supervised (Tim Dettmer
 ### Research Findings
 
 **What Loki Mode Already Does Excellently:**
+
 - RARV cycle with self-verification (Boris Cherny: 2-3x quality)
 - Blind code review (CONSENSAGENT anti-sycophancy)
 - Constitutional AI (Anthropic principles)
@@ -14300,12 +14950,14 @@ LOKI_AUTONOMY_MODE=perpetual      # perpetual|checkpoint|supervised (Tim Dettmer
 - Hierarchical orchestration (DeepMind pattern)
 
 **Top Improvements Implemented:**
+
 1. Prompt repetition (easiest win, 4-5x accuracy boost)
 2. Confidence-based routing (production-validated)
 3. Checkpoint mode (selective autonomy)
 4. Agent skills system (community extensibility)
 
 **Future Roadmap:**
+
 - MCP server integration (claude-mcp-poke pattern)
 - Browser automation escalation (Tabstack pattern)
 - Async callbacks (CallMe pattern)
@@ -14319,6 +14971,7 @@ LOKI_AUTONOMY_MODE=perpetual      # perpetual|checkpoint|supervised (Tim Dettmer
 ### Validated - External Research Audit
 
 **External resources analyzed (11 sources):**
+
 - [extremeclarity/claude-plugins/worldview](https://github.com/extremeclarity/claude-plugins/tree/master/plugins/worldview) - Context persistence plugin
 - [trails.pieterma.es](https://trails.pieterma.es/) - Context management
 - [Yeachan-Heo/oh-my-claude-sisyphus](https://github.com/Yeachan-Heo/oh-my-claude-sisyphus) - Multi-agent orchestration
@@ -14335,21 +14988,23 @@ LOKI_AUTONOMY_MODE=perpetual      # perpetual|checkpoint|supervised (Tim Dettmer
 
 Loki Mode already implements more comprehensive versions of:
 
-| Feature | Loki Mode | Best External |
-|---------|-----------|---------------|
-| Agent Types | 37 specialized | Sisyphus: 11 |
-| Memory System | Episodic/semantic/procedural + cross-project | Worldview: single-project |
-| Recovery | RARV + circuit breakers + git checkpoints | Sisyphus: session recovery |
-| Quality Gates | 7 gates + blind review + devil's advocate | None comparable |
-| Enterprise Security | Audit logging, staged autonomy, path restrictions | Atom: BYOK |
-| Benchmarks | 98.78% HumanEval, 99.67% SWE-bench | SETA: 46.5% Terminal-Bench |
+| Feature             | Loki Mode                                         | Best External              |
+| ------------------- | ------------------------------------------------- | -------------------------- |
+| Agent Types         | 37 specialized                                    | Sisyphus: 11               |
+| Memory System       | Episodic/semantic/procedural + cross-project      | Worldview: single-project  |
+| Recovery            | RARV + circuit breakers + git checkpoints         | Sisyphus: session recovery |
+| Quality Gates       | 7 gates + blind review + devil's advocate         | None comparable            |
+| Enterprise Security | Audit logging, staged autonomy, path restrictions | Atom: BYOK                 |
+| Benchmarks          | 98.78% HumanEval, 99.67% SWE-bench                | SETA: 46.5% Terminal-Bench |
 
 **Potential additions evaluated but rejected:**
+
 - LSP/AST integration (Sisyphus) - specialized feature, adds complexity without core value
 - Knowledge graph (Atom) - complex infrastructure, overkill for CLI skill
 - WAL-based storage (AgentFS) - over-engineering; git checkpoints serve same purpose
 
 **Validation:**
+
 - All existing tests pass (8/8 bootstrap, 8/8 task-queue)
 - SKILL.md syntax valid
 - run.sh functioning correctly
@@ -14362,6 +15017,7 @@ Loki Mode already implements more comprehensive versions of:
 ### Added - Anthropic Agent Harness Patterns & Claude Agent SDK
 
 **Sources:**
+
 - [Effective Harnesses for Long-Running Agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) - Anthropic Engineering
 - [Claude Agent SDK Overview](https://platform.claude.com/docs/en/agent-sdk/overview) - Anthropic Platform
 
@@ -14399,18 +15055,20 @@ Loki Mode already implements more comprehensive versions of:
 
 Two dispatch modes based on task complexity - reduces latency for simple tasks:
 
-| Mode | When to Use | Behavior |
-|------|-------------|----------|
-| **Direct Routing** | Simple, single-domain tasks | Route directly to specialist agent, skip orchestration |
-| **Supervisor Mode** | Complex, multi-step tasks | Full decomposition, coordination, result synthesis |
+| Mode                | When to Use                 | Behavior                                               |
+| ------------------- | --------------------------- | ------------------------------------------------------ |
+| **Direct Routing**  | Simple, single-domain tasks | Route directly to specialist agent, skip orchestration |
+| **Supervisor Mode** | Complex, multi-step tasks   | Full decomposition, coordination, result synthesis     |
 
 **Key Insights from AWS:**
+
 - Simple tasks → Direct dispatch to Haiku (faster, minimal context)
 - Complex tasks → Full supervisor orchestration (Sonnet coordination)
 - Context depth varies by routing mode (avoid confusing simple agents with complex history)
 - 10-agent limit per supervisor (validates our MAX_PARALLEL_AGENTS=10)
 
 **Files Updated:**
+
 - `SKILL.md` - Added Routing Mode pattern to Essential Patterns and new section with decision logic
 - `ACKNOWLEDGEMENTS.md` - Added AWS Bedrock section with 4 source citations
 
@@ -14422,15 +15080,16 @@ Two dispatch modes based on task complexity - reduces latency for simple tasks:
 
 **5 bugs fixed in autonomy/run.sh:**
 
-| Bug | Symptom | Root Cause | Fix |
-|-----|---------|------------|-----|
-| Dashboard crash on edit | Dashboard killed mid-session | Bash reads scripts incrementally; editing corrupts execution | Self-copy to `/tmp/loki-run-PID.sh` before exec |
-| Parse error: `name 'pattern' is not defined` | Python errors during PRD processing | PRD content with quotes breaking Python string literals | Pass context via `LOKI_CONTEXT` env var |
-| `datetime.utcnow()` deprecated | DeprecationWarning spam in logs | Python 3.12+ deprecation | Use `datetime.now(timezone.utc)` |
-| `log_warning: command not found` | Errors during resource monitoring | Function name mismatch (`log_warn` vs `log_warning`) | Added `log_warning()` as alias |
-| CPU showing 45226498% | False resource warnings | Summed process CPU instead of system-wide | Parse idle% from `top` header |
+| Bug                                          | Symptom                             | Root Cause                                                   | Fix                                             |
+| -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| Dashboard crash on edit                      | Dashboard killed mid-session        | Bash reads scripts incrementally; editing corrupts execution | Self-copy to `/tmp/loki-run-PID.sh` before exec |
+| Parse error: `name 'pattern' is not defined` | Python errors during PRD processing | PRD content with quotes breaking Python string literals      | Pass context via `LOKI_CONTEXT` env var         |
+| `datetime.utcnow()` deprecated               | DeprecationWarning spam in logs     | Python 3.12+ deprecation                                     | Use `datetime.now(timezone.utc)`                |
+| `log_warning: command not found`             | Errors during resource monitoring   | Function name mismatch (`log_warn` vs `log_warning`)         | Added `log_warning()` as alias                  |
+| CPU showing 45226498%                        | False resource warnings             | Summed process CPU instead of system-wide                    | Parse idle% from `top` header                   |
 
 **New Safeguards:**
+
 - **Protected Files section** in SKILL.md - Documents files that shouldn't be edited during active sessions
 - **Rule #6** in Core Autonomy Rules - "NEVER edit `autonomy/run.sh` while running"
 
@@ -14453,6 +15112,7 @@ Two dispatch modes based on task complexity - reduces latency for simple tasks:
 ### Added - Hacker News Production Patterns
 
 **Sources analyzed:**
+
 - [What Actually Works in Production for Autonomous Agents](https://news.ycombinator.com/item?id=44623207)
 - [Coding with LLMs in Summer 2025](https://news.ycombinator.com/item?id=44623953)
 - [Superpowers: How I'm Using Coding Agents](https://news.ycombinator.com/item?id=45547344)
@@ -14462,6 +15122,7 @@ Two dispatch modes based on task complexity - reduces latency for simple tasks:
 
 **New Reference File: `references/production-patterns.md`**
 Battle-tested patterns from practitioners:
+
 - **Human-in-the-Loop (HITL)**: "Zero companies without humans in loop"
 - **Narrow Scope Wins**: 3-5 steps max before human review
 - **Confidence-Based Routing**: Auto-approve high confidence, escalate low
@@ -14472,11 +15133,13 @@ Battle-tested patterns from practitioners:
 - **Policy-First Enforcement**: Runtime governance
 
 **New Patterns in SKILL.md:**
+
 - **Narrow Scope**: `3-5 steps max -> Human review -> Continue`
 - **Context Curation**: `Manual selection -> Focused context -> Fresh per task`
 - **Deterministic Validation**: `LLM output -> Rule-based checks -> Retry or approve`
 
 **New Section: Production Patterns (HN 2025)**
+
 - Narrow Scope Wins with task constraints
 - Confidence-Based Routing thresholds
 - Deterministic Outer Loops workflow
@@ -14485,15 +15148,16 @@ Battle-tested patterns from practitioners:
 
 ### Key Practitioner Insights
 
-| Insight | Source | Implementation |
-|---------|--------|----------------|
-| "Zero companies without HITL" | Amazon AI engineer | Confidence thresholds |
-| "3-5 steps max before review" | Multiple practitioners | Task scope constraints |
-| "Deterministic validation wins" | Production teams | Rule-based outer loops |
-| "Less context is more" | Simon Willison | Context curation |
-| "LLM-as-judge has blind spots" | Benchmark discussion | Objective metrics only |
+| Insight                         | Source                 | Implementation         |
+| ------------------------------- | ---------------------- | ---------------------- |
+| "Zero companies without HITL"   | Amazon AI engineer     | Confidence thresholds  |
+| "3-5 steps max before review"   | Multiple practitioners | Task scope constraints |
+| "Deterministic validation wins" | Production teams       | Rule-based outer loops |
+| "Less context is more"          | Simon Willison         | Context curation       |
+| "LLM-as-judge has blind spots"  | Benchmark discussion   | Objective metrics only |
 
 ### Changed
+
 - SKILL.md: Updated version to 2.32.0, ~600 lines
 - SKILL.md: Added 3 new patterns to Essential Patterns
 - SKILL.md: Added Production Patterns (HN 2025) section
@@ -14508,6 +15172,7 @@ Battle-tested patterns from practitioners:
 **Research sources analyzed:**
 
 **Google DeepMind:**
+
 - [SIMA 2: Generalist AI Agent](https://deepmind.google/blog/sima-2-an-agent-that-plays-reasons-and-learns-with-you-in-virtual-3d-worlds/)
 - [Gemini Robotics 1.5](https://deepmind.google/blog/gemini-robotics-15-brings-ai-agents-into-the-physical-world/)
 - [Dreamer 4: World Model Training](https://danijar.com/project/dreamer4/)
@@ -14516,6 +15181,7 @@ Battle-tested patterns from practitioners:
 - [Technical AGI Safety Approach](https://arxiv.org/html/2504.01849v1)
 
 **Anthropic:**
+
 - [Constitutional AI](https://www.anthropic.com/research/constitutional-ai-harmlessness-from-ai-feedback)
 - [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
@@ -14524,6 +15190,7 @@ Battle-tested patterns from practitioners:
 
 **New Reference File: `references/lab-research-patterns.md`**
 Comprehensive guide covering:
+
 - **World Model Training** (Dreamer 4): Train agents inside simulation for safety
 - **Self-Improvement Loop** (SIMA 2): Gemini-based teacher + learned reward model
 - **Hierarchical Reasoning** (Gemini Robotics): High-level planner + low-level executor
@@ -14534,16 +15201,19 @@ Comprehensive guide covering:
 - **Extended Thinking Levels**: think < think hard < ultrathink
 
 **New Patterns in SKILL.md:**
+
 - **Explore-Plan-Code**: `Research files -> Create plan (NO CODE) -> Execute plan`
 - **Constitutional Self-Critique**: `Generate -> Critique against principles -> Revise`
 - **Hierarchical Reasoning**: `High-level planner -> Skill selection -> Local executor`
 - **Debate Verification**: `Proponent defends -> Opponent challenges -> Synthesize`
 
 **New Sections in SKILL.md:**
+
 - **Constitutional AI Principles**: Loki Mode constitution with 8 core principles
 - **Debate-Based Verification**: For architecture decisions and security changes
 
 ### Changed
+
 - SKILL.md: Updated version to 2.31.0, ~530 lines
 - SKILL.md: Added 4 new patterns to Essential Patterns section
 - SKILL.md: Added Constitutional AI Principles section
@@ -14552,13 +15222,13 @@ Comprehensive guide covering:
 
 ### Research Insights Applied
 
-| Lab | Key Insight | Loki Mode Implementation |
-|-----|-------------|-------------------------|
-| DeepMind | "Hierarchical reasoning separates planning from execution" | Orchestrator = planner, agents = executors |
-| DeepMind | "Debate can verify beyond human capability" | Debate verification for critical changes |
-| Anthropic | "Self-critique against principles is more robust" | Constitutional AI workflow |
-| Anthropic | "Explore before planning, plan before coding" | Explore-Plan-Code pattern |
-| Anthropic | "Extended thinking levels for complexity" | Thinking mode in model selection |
+| Lab       | Key Insight                                                | Loki Mode Implementation                   |
+| --------- | ---------------------------------------------------------- | ------------------------------------------ |
+| DeepMind  | "Hierarchical reasoning separates planning from execution" | Orchestrator = planner, agents = executors |
+| DeepMind  | "Debate can verify beyond human capability"                | Debate verification for critical changes   |
+| Anthropic | "Self-critique against principles is more robust"          | Constitutional AI workflow                 |
+| Anthropic | "Explore before planning, plan before coding"              | Explore-Plan-Code pattern                  |
+| Anthropic | "Extended thinking levels for complexity"                  | Thinking mode in model selection           |
 
 ---
 
@@ -14567,6 +15237,7 @@ Comprehensive guide covering:
 ### Added - OpenAI Agent Patterns
 
 **Research sources analyzed:**
+
 - [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) - Core primitives
 - [Practical Guide to Building Agents](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
 - [Building Agents Track](https://developers.openai.com/tracks/building-agents/)
@@ -14577,6 +15248,7 @@ Comprehensive guide covering:
 
 **New Reference File: `references/openai-patterns.md`**
 Comprehensive guide covering:
+
 - **Tracing Spans Architecture**: Hierarchical event tracking with span types (agent_span, generation_span, function_span, guardrail_span, handoff_span)
 - **Guardrails & Tripwires**: Input/output validation with early termination
 - **Handoff Callbacks**: on_handoff for data preparation during agent transfers
@@ -14586,27 +15258,31 @@ Comprehensive guide covering:
 - **Session State Management**: Automatic state persistence
 
 **New Patterns in SKILL.md:**
+
 - **Guardrails**: `Input Guard (BLOCK) -> Execute -> Output Guard (VALIDATE)`
 - **Tripwires**: `Validation fails -> Halt execution -> Escalate or retry`
 - **Fallbacks**: `Try primary -> Model fallback -> Workflow fallback -> Human escalation`
 - **Handoff Callbacks**: `on_handoff -> Pre-fetch context -> Transfer with data`
 
 **Enhanced Quality Gates:**
+
 - Added Input Guardrails (validate scope, detect injection, check constraints)
 - Added Output Guardrails (validate code quality, spec compliance, no secrets)
 - Guardrails execution modes: Blocking vs Parallel
 - Tripwire handling with exception hierarchy
 
 **Human Escalation Triggers:**
-| Trigger | Action |
-|---------|--------|
-| retry_count > 3 | Pause and escalate |
-| domain in [payments, auth, pii] | Require approval |
-| confidence_score < 0.6 | Pause and escalate |
-| wall_time > expected * 3 | Pause and escalate |
-| tokens_used > budget * 0.8 | Pause and escalate |
+
+| Trigger                         | Action             |
+| ------------------------------- | ------------------ |
+| retry_count > 3                 | Pause and escalate |
+| domain in [payments, auth, pii] | Require approval   |
+| confidence_score < 0.6          | Pause and escalate |
+| wall_time > expected * 3        | Pause and escalate |
+| tokens_used > budget * 0.8      | Pause and escalate |
 
 ### Changed
+
 - SKILL.md: Updated version to 2.30.0, ~470 lines
 - SKILL.md: Added 4 new patterns to Essential Patterns section
 - SKILL.md: Added Multi-Tiered Fallback System section
@@ -14617,14 +15293,15 @@ Comprehensive guide covering:
 - tool-orchestration.md: Added OpenAI sources to references
 
 ### OpenAI Key Insights Applied
-| Insight | Implementation |
-|---------|----------------|
-| "Layered defense with multiple guardrails" | 4-layer guardrail system |
-| "Tripwires halt execution immediately" | Exception hierarchy for validation failures |
-| "on_handoff for data preparation" | Pre-fetch context during agent transfers |
-| "Model fallback chains" | opus -> sonnet -> haiku on failure |
-| "Confidence-based escalation" | Threshold-triggered human review |
-| "AGENTS.md for agent instructions" | Read target project's AGENTS.md |
+
+| Insight                                    | Implementation                              |
+| ------------------------------------------ | ------------------------------------------- |
+| "Layered defense with multiple guardrails" | 4-layer guardrail system                    |
+| "Tripwires halt execution immediately"     | Exception hierarchy for validation failures |
+| "on_handoff for data preparation"          | Pre-fetch context during agent transfers    |
+| "Model fallback chains"                    | opus -> sonnet -> haiku on failure          |
+| "Confidence-based escalation"              | Threshold-triggered human review            |
+| "AGENTS.md for agent instructions"         | Read target project's AGENTS.md             |
 
 ---
 
@@ -14633,6 +15310,7 @@ Comprehensive guide covering:
 ### Added - Research-Backed Multi-Agent Best Practices
 
 **Research sources analyzed (15+ papers/guides):**
+
 - [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [Stanford/Harvard: Demo-to-Deployment Gap](https://www.marktechpost.com/2025/12/24/)
 - [Maxim AI: Production Multi-Agent Systems](https://www.getmaxim.ai/articles/best-practices-for-building-production-ready-multi-agent-systems/)
@@ -14641,21 +15319,25 @@ Comprehensive guide covering:
 - [Measurement Imbalance in Agentic AI (arXiv 2506.02064)](https://arxiv.org/abs/2506.02064)
 
 **New Metrics & Schema Fields:**
+
 - `correlation_id`: Distributed tracing across multi-agent sessions (Maxim AI)
 - `tool_reliability_rate`: Separate from tool selection - key demo-to-deploy gap (Stanford/Harvard)
 - `recovery_rate`: Successful retries / total retries
 - `goal_adherence`: Did agent stay on task? (0.0-1.0)
 
 **New Principles:**
+
 - **Single-Responsibility Agents**: Each agent has ONE clear goal and narrow scope (UiPath)
 - **Multi-Dimensional Evaluation**: Technical + Human-Centered + Safety + Economic axes
 
 **Model Selection Clarification:**
+
 - **Opus**: Planning and architecture ONLY
 - **Sonnet**: Development and functional testing
 - **Haiku**: Unit tests, monitoring, and simple tasks
 
 ### Changed
+
 - SKILL.md: Added Single-Responsibility Principle to subagent guidance
 - SKILL.md: Clarified model selection (Opus=planning, Sonnet=dev, Haiku=tests)
 - SKILL.md: Dynamic Agent Selection table now shows Planning/Development/Testing columns
@@ -14664,15 +15346,17 @@ Comprehensive guide covering:
 - tool-orchestration.md: Expanded sources with 8 new research references
 
 ### Research Validation
+
 Loki Mode already implements most research-backed patterns:
-| Pattern | Research Source | Status |
-|---------|----------------|--------|
-| Evaluator-optimizer | Anthropic | RARV cycle |
-| Parallelization | Anthropic | Parallel review |
-| Routing | Anthropic | Model selection |
-| Failure handling | Maxim AI | Circuit breakers |
-| Skill library | Voyager | Procedural memory |
-| Four-pillar evaluation | arXiv 2512.12791 | Quality pillars |
+
+| Pattern                | Research Source  | Status            |
+| ---------------------- | ---------------- | ----------------- |
+| Evaluator-optimizer    | Anthropic        | RARV cycle        |
+| Parallelization        | Anthropic        | Parallel review   |
+| Routing                | Anthropic        | Model selection   |
+| Failure handling       | Maxim AI         | Circuit breakers  |
+| Skill library          | Voyager          | Procedural memory |
+| Four-pillar evaluation | arXiv 2512.12791 | Quality pillars   |
 
 ---
 
@@ -14681,10 +15365,12 @@ Loki Mode already implements most research-backed patterns:
 ### Added - ToolOrchestra-Inspired Efficiency & Reward System
 
 **Research source analyzed:**
+
 - [NVIDIA ToolOrchestra](https://github.com/NVlabs/ToolOrchestra) - #1 on GAIA benchmark, 37.1% on HLE
 - ToolOrchestra achieves 70% cost reduction vs GPT-5 through explicit efficiency optimization
 
 **New Tool Orchestration Reference (`references/tool-orchestration.md`):**
+
 - **Efficiency Metrics System**
   - Track wall time, agent count, retry count per task
   - Calculate efficiency scores against complexity baselines
@@ -14718,6 +15404,7 @@ Loki Mode already implements most research-backed patterns:
   - A/B testing for agent selection strategies
 
 **New Directory Structure:**
+
 ```
 .loki/metrics/
 ├── efficiency/     # Task efficiency scores
@@ -14726,6 +15413,7 @@ Loki Mode already implements most research-backed patterns:
 ```
 
 ### Changed
+
 - SKILL.md updated to v2.28.0 (~410 lines)
 - Quick Reference includes efficiency tracking step
 - Key Files includes `.loki/metrics/efficiency/`
@@ -14735,15 +15423,15 @@ Loki Mode already implements most research-backed patterns:
 
 ### Comparison: Loki Mode vs ToolOrchestra
 
-| Feature | ToolOrchestra | Loki Mode 2.28.0 |
-|---------|---------------|------------------|
-| Multi-turn reasoning | Orchestrator-8B | RARV cycle |
-| Efficiency tracking | [OK] 70% cost reduction | [OK] Now implemented |
-| Reward signals | 3 types | [OK] 3 types (same) |
-| Dynamic tool selection | 5/10/15/20/all | [OK] By complexity (5 levels) |
-| Memory system | None | [OK] Episodic/Semantic/Procedural |
-| Anti-sycophancy | None | [OK] Blind review + Devil's Advocate |
-| Benchmarks | GAIA #1, HLE 37.1% | HumanEval 98.78%, SWE-bench 99.67% |
+| Feature                | ToolOrchestra           | Loki Mode 2.28.0                     |
+| ---------------------- | ----------------------- | ------------------------------------ |
+| Multi-turn reasoning   | Orchestrator-8B         | RARV cycle                           |
+| Efficiency tracking    | [OK] 70% cost reduction | [OK] Now implemented                 |
+| Reward signals         | 3 types                 | [OK] 3 types (same)                  |
+| Dynamic tool selection | 5/10/15/20/all          | [OK] By complexity (5 levels)        |
+| Memory system          | None                    | [OK] Episodic/Semantic/Procedural    |
+| Anti-sycophancy        | None                    | [OK] Blind review + Devil's Advocate |
+| Benchmarks             | GAIA #1, HLE 37.1%      | HumanEval 98.78%, SWE-bench 99.67%   |
 
 ---
 
@@ -14752,6 +15440,7 @@ Loki Mode already implements most research-backed patterns:
 ### Added - 2025 Research-Backed Enhancements
 
 **Research sources analyzed:**
+
 - [Awesome Agentic Patterns](https://github.com/nibzard/awesome-agentic-patterns) - 105 production patterns
 - [Multi-Agent Collaboration Mechanisms Survey](https://arxiv.org/abs/2501.06322)
 - [CONSENSAGENT Anti-Sycophancy Framework](https://aclanthology.org/2025.findings-acl.1141/)
@@ -14761,6 +15450,7 @@ Loki Mode already implements most research-backed patterns:
 - [Iter-VF Verification](https://arxiv.org/html/2511.21734v1)
 
 **New Memory Architecture:**
+
 - **Episodic Memory** (`.loki/memory/episodic/`) - Specific interaction traces with timestamps
 - **Semantic Memory** (`.loki/memory/semantic/`) - Generalized patterns and anti-patterns
 - **Procedural Memory** (`.loki/memory/skills/`) - Learned action sequences
@@ -14768,39 +15458,45 @@ Loki Mode already implements most research-backed patterns:
 - **Zettelkasten-Style Linking** - Atomic notes with relation links (A-Mem pattern)
 
 **Anti-Sycophancy Protocol (CONSENSAGENT):**
+
 - **Blind Review Mode** - Reviewers cannot see each other's findings initially
 - **Devil's Advocate Reviewer** - Runs on unanimous approval to catch missed issues
 - **Heterogeneous Team Composition** - Different personalities/expertise per reviewer
 - **Research finding:** 30% fewer false positives with blind review + devil's advocate
 
 **Hierarchical Planning (GoalAct/TMS):**
+
 - **Global Planning** - Maintains overall goal and strategy
 - **High-Level Skills** - Decomposition into searching, coding, testing, writing, deploying
 - **Local Execution** - Specific actions within skill context
 - **Research finding:** 12% improvement in success rate
 
 **Iter-VF Verification Pattern:**
+
 - Verify extracted answer only (not whole reasoning chain)
 - Markovian retry process prevents context overflow
 - Fresh context with just error info on failure
 
 **New Reference Files:**
+
 - `references/advanced-patterns.md` (453 lines) - All 2025 research patterns
 - `references/memory-system.md` (437 lines) - Enhanced memory architecture
 
 ### Changed
+
 - SKILL.md updated to v2.27.0 with research citations
 - Quality gates now include anti-sycophancy checks
 - Directory structure includes episodic/semantic/skills memory layers
 - Essential patterns include Memory Consolidation and Hierarchical Planning
 
 ### Research Impact Summary
-| Enhancement | Source | Improvement |
-|-------------|--------|-------------|
-| Blind Review + Devil's Advocate | CONSENSAGENT | 30% fewer false positives |
-| Heterogeneous Teams | A-HMAD | 4-6% accuracy improvement |
-| Hierarchical Planning | GoalAct | 12% success rate improvement |
-| Episodic-to-Semantic | MemGPT | Genuine cross-session learning |
+
+| Enhancement                     | Source       | Improvement                    |
+| ------------------------------- | ------------ | ------------------------------ |
+| Blind Review + Devil's Advocate | CONSENSAGENT | 30% fewer false positives      |
+| Heterogeneous Teams             | A-HMAD       | 4-6% accuracy improvement      |
+| Hierarchical Planning           | GoalAct      | 12% success rate improvement   |
+| Episodic-to-Semantic            | MemGPT       | Genuine cross-session learning |
 
 ## [2.26.0] - 2026-01-05
 
@@ -14809,6 +15505,7 @@ Loki Mode already implements most research-backed patterns:
 **Full trajectory logging and submission preparation for official SWE-bench leaderboard!**
 
 **New Features:**
+
 - **Trajectory Logging**: Full reasoning traces saved to `trajs/` directory
   - Complete prompts and outputs for each agent step
   - Timestamps and durations for performance analysis
@@ -14826,6 +15523,7 @@ Loki Mode already implements most research-backed patterns:
   - Creates submission checklist
 
 **Usage:**
+
 ```bash
 # Run benchmark with trajectory logging
 ./benchmarks/run-benchmarks.sh swebench --execute --loki
@@ -14840,12 +15538,13 @@ Loki Mode already implements most research-backed patterns:
 
 **Full SWE-bench Lite Multi-Agent Benchmark** - 299/300 problems!
 
-| System | SWE-bench Patch Gen | Notes |
-|--------|---------------------|-------|
-| Direct Claude | 99.67% (299/300) | Single agent baseline |
+| System                      | SWE-bench Patch Gen  | Notes                      |
+| --------------------------- | -------------------- | -------------------------- |
+| Direct Claude               | 99.67% (299/300)     | Single agent baseline      |
 | **Loki Mode (multi-agent)** | **99.67%** (299/300) | 4-agent pipeline with RARV |
 
 **Key Results:**
+
 - 299/300 problems generated patches (matches single-agent baseline)
 - Multi-agent pipeline: Architect -> Engineer -> QA -> Reviewer
 - Time: 3.5 hours
@@ -14854,6 +15553,7 @@ Loki Mode already implements most research-backed patterns:
 **Key Finding:** After timeout optimization, multi-agent RARV matches single-agent performance on SWE-bench. The 4-agent pipeline adds verification without sacrificing coverage.
 
 ### Changed
+
 - Updated README with SWE-bench Loki Mode results
 - Updated competitive analysis with benchmark comparison
 - Increased Architect timeout from 60s to 120s for complex problems
@@ -14865,13 +15565,14 @@ Loki Mode already implements most research-backed patterns:
 
 **True Multi-Agent Benchmark Implementation** - Now benchmarks actually use the Loki Mode agent pipeline!
 
-| System | HumanEval Pass@1 | Agent Type |
-|--------|------------------|------------|
-| **Loki Mode (multi-agent)** | **98.78%** | Architect->Engineer->QA->Reviewer |
-| Direct Claude | 98.17% | Single agent |
-| MetaGPT | 85.9-87.7% | Multi-agent |
+| System                      | HumanEval Pass@1 | Agent Type                        |
+| --------------------------- | ---------------- | --------------------------------- |
+| **Loki Mode (multi-agent)** | **98.78%**       | Architect->Engineer->QA->Reviewer |
+| Direct Claude               | 98.17%           | Single agent                      |
+| MetaGPT                     | 85.9-87.7%       | Multi-agent                       |
 
 **Key Results:**
+
 - 162/164 problems passed (98.78%)
 - RARV cycle recovered 2 problems (HumanEval/38, HumanEval/132)
 - Only 2 problems failed after 3 RARV attempts (HumanEval/32, HumanEval/50)
@@ -14879,6 +15580,7 @@ Loki Mode already implements most research-backed patterns:
 - Time: 45.1 minutes
 
 ### Added
+
 - `--loki` flag for benchmark runner to use multi-agent system
 - `--retries N` flag to control RARV retry attempts
 - Architect agent (analyzes problem, designs approach)
@@ -14889,6 +15591,7 @@ Loki Mode already implements most research-backed patterns:
 - Three-way comparison in README and competitive analysis
 
 ### Changed
+
 - Updated README with Loki Mode badge (98.78%)
 - Updated competitive analysis with three-way comparison
 - Results stored in `benchmarks/results/humaneval-loki-results.json`
@@ -14899,15 +15602,16 @@ Loki Mode already implements most research-backed patterns:
 
 **99.67% Patch Generation on SWE-bench Lite** - 299/300 problems successfully generated patches!
 
-| Metric | Value |
-|--------|-------|
-| Patch Generation | 99.67% |
-| Generated | 299/300 |
-| Errors | 1 |
-| Model | Claude Opus 4.5 |
-| Time | 6.17 hours |
+| Metric           | Value           |
+| ---------------- | --------------- |
+| Patch Generation | 99.67%          |
+| Generated        | 299/300         |
+| Errors           | 1               |
+| Model            | Claude Opus 4.5 |
+| Time             | 6.17 hours      |
 
 ### Changed
+
 - Updated competitive analysis with full SWE-bench results
 - Full results stored in `benchmarks/results/2026-01-05-01-24-17/`
 
@@ -14917,20 +15621,22 @@ Loki Mode already implements most research-backed patterns:
 
 **100% Patch Generation on SWE-bench Lite** - Initial 50 problems successfully generated patches!
 
-| Metric | Value |
-|--------|-------|
-| Patch Generation | 100% |
-| Generated | 50/50 |
-| Errors | 0 |
-| Model | Claude Opus 4.5 |
-| Time | 56.9 minutes |
+| Metric           | Value           |
+| ---------------- | --------------- |
+| Patch Generation | 100%            |
+| Generated        | 50/50           |
+| Errors           | 0               |
+| Model            | Claude Opus 4.5 |
+| Time             | 56.9 minutes    |
 
 ### Added
+
 - Benchmark badge in README showing 98.17% HumanEval Pass@1
 - Benchmark Results section in README
 - SWE-bench results in competitive analysis
 
 ### Changed
+
 - Updated `docs/COMPETITIVE-ANALYSIS.md` with SWE-bench results
 - Results stored in `benchmarks/results/2026-01-05-01-35-39/`
 
@@ -14940,25 +15646,28 @@ Loki Mode already implements most research-backed patterns:
 
 **98.17% Pass@1 on HumanEval** - Beats MetaGPT by 10.5 percentage points!
 
-| Metric | Value |
-|--------|-------|
-| Pass Rate | 98.17% |
-| Passed | 161/164 |
-| Failed | 3 |
-| Model | Claude Opus 4.5 |
-| Time | 21.1 minutes |
+| Metric    | Value           |
+| --------- | --------------- |
+| Pass Rate | 98.17%          |
+| Passed    | 161/164         |
+| Failed    | 3               |
+| Model     | Claude Opus 4.5 |
+| Time      | 21.1 minutes    |
 
 **Competitor Comparison:**
+
 - MetaGPT: 85.9-87.7%
 - **Loki Mode: 98.17%** (+10.5%)
 
 ### Fixed
+
 - **Benchmark Indentation Bug** - Solutions now include complete function with proper indentation
   - Previous bug: Claude returned function body without indentation
   - Fix: Prompt now requests complete function and auto-fixes indentation
   - Result: Pass rate improved from ~2% to 98.17%
 
 ### Changed
+
 - Updated `docs/COMPETITIVE-ANALYSIS.md` with published benchmark results
 - Benchmark results stored in `benchmarks/results/2026-01-05-00-49-17/`
 
@@ -14967,9 +15676,11 @@ Loki Mode already implements most research-backed patterns:
 ### Added - Benchmark Execution Mode
 
 #### `--execute` Flag for Benchmarks
+
 Full implementation of benchmark execution that runs problems through Claude:
 
 **HumanEval Execution** (`benchmarks/run-benchmarks.sh humaneval --execute`):
+
 - Sends each of 164 Python problems to Claude
 - Receives solution code from Claude
 - Executes solution against HumanEval test cases
@@ -14978,12 +15689,14 @@ Full implementation of benchmark execution that runs problems through Claude:
 - Compares results to MetaGPT baseline (85.9-87.7%)
 
 **SWE-bench Execution** (`benchmarks/run-benchmarks.sh swebench --execute`):
+
 - Loads SWE-bench Lite dataset (300 real GitHub issues)
 - Generates git patches for each issue using Claude
 - Saves patches for SWE-bench evaluator
 - Outputs predictions file compatible with official harness
 
 **New Options**:
+
 - `--execute` - Actually run problems through Claude (vs setup only)
 - `--limit N` - Only run first N problems (useful for testing)
 - `--model MODEL` - Claude model to use (default: sonnet)
@@ -14991,6 +15704,7 @@ Full implementation of benchmark execution that runs problems through Claude:
 - `--parallel N` - Run N problems in parallel (default: 1)
 
 **Example Usage**:
+
 ```bash
 # Run first 10 HumanEval problems
 ./benchmarks/run-benchmarks.sh humaneval --execute --limit 10
@@ -15003,6 +15717,7 @@ Full implementation of benchmark execution that runs problems through Claude:
 ```
 
 ### Changed
+
 - Benchmark runner now has two modes: SETUP (default) and EXECUTE
 - Results include pass rates, timing, and competitor comparison
 - Summary generation includes actual benchmark results when available
@@ -15010,6 +15725,7 @@ Full implementation of benchmark execution that runs problems through Claude:
 ## [2.19.1] - 2026-01-05
 
 ### Fixed
+
 - **Enterprise Security Defaults** - All enterprise features now OFF by default
   - `LOKI_AUDIT_LOG` changed from `true` to `false`
   - Ensures Loki Mode works exactly as before with `--dangerously-skip-permissions`
@@ -15022,6 +15738,7 @@ Full implementation of benchmark execution that runs problems through Claude:
 Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), MetaGPT (62.4K stars), CrewAI (25K+ stars), Cursor Agent ($29B valuation), and Devin AI ($10.2B valuation).
 
 #### 1. Benchmark Runner Infrastructure (`benchmarks/run-benchmarks.sh`)
+
 - **HumanEval Benchmark** - 164 Python programming problems
   - Downloads official dataset from OpenAI
   - Creates results JSON with pass rates
@@ -15034,6 +15751,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 - **Summary Generation** - Markdown report with methodology explanation
 
 #### 2. Enterprise Security Features (run.sh:70-76, 923-983)
+
 - **Staged Autonomy Mode** (`LOKI_STAGED_AUTONOMY=true`)
   - Creates execution plan in `.loki/plans/current-plan.md`
   - Waits for `.loki/signals/PLAN_APPROVED` before proceeding
@@ -15053,6 +15771,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
   - Empty = all paths allowed (default)
 
 #### 3. Cross-Project Learnings Database (run.sh:986-1136)
+
 - **Global Learnings Directory** (`~/.loki/learnings/`)
   - `patterns.jsonl` - Successful patterns from past projects
   - `mistakes.jsonl` - Errors to avoid with prevention strategies
@@ -15063,6 +15782,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 - **Addresses Gap** - Competitors like Claude-Flow have AgentDB; now Loki Mode has cross-project memory
 
 #### 4. Competitive Analysis Documentation (`docs/COMPETITIVE-ANALYSIS.md`)
+
 - **Factual Comparison Table** - Real metrics vs competitors
   - GitHub stars, agent counts, benchmark scores
   - Enterprise security, observability, pricing
@@ -15073,6 +15793,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 - **Improvement Roadmap** - Phased plan for addressing gaps
 
 ### Changed
+
 - **RARV Cycle** - Enhanced to check cross-project learnings (run.sh:1430)
   - Reads `.loki/state/relevant-learnings.json` at REASON step
   - Avoids known mistakes from previous projects
@@ -15080,22 +15801,25 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 - **Main Function** - Initializes learnings DB and extracts learnings at session end
 
 ### Impact
+
 - **Credibility** - Benchmark infrastructure for verifiable claims
 - **Enterprise Ready** - Security features required for adoption
 - **Learning System** - Agents improve across projects, not just within sessions
 - **Competitive Positioning** - Clear documentation of advantages and gaps
 
 ### Competitive Position After This Release
-| Capability | Before | After |
-|------------|--------|-------|
-| Published Benchmarks | None | HumanEval + SWE-bench infrastructure |
-| Enterprise Security | `--dangerously-skip-permissions` | Staged autonomy, audit logs, command blocking |
-| Cross-Project Learning | None | Global learnings database |
-| Competitive Documentation | None | Detailed analysis with sources |
+
+| Capability                | Before                           | After                                         |
+| ------------------------- | -------------------------------- | --------------------------------------------- |
+| Published Benchmarks      | None                             | HumanEval + SWE-bench infrastructure          |
+| Enterprise Security       | `--dangerously-skip-permissions` | Staged autonomy, audit logs, command blocking |
+| Cross-Project Learning    | None                             | Global learnings database                     |
+| Competitive Documentation | None                             | Detailed analysis with sources                |
 
 ## [2.18.5] - 2026-01-04
 
 ### Added
+
 - **System Resource Monitoring** - Prevents computer overload from too many parallel agents (run.sh:786-899):
   - **Background Resource Monitor** checks CPU and memory usage every 5 minutes (configurable)
   - **Automatic Warnings** logged when CPU or memory exceeds thresholds (default: 80%)
@@ -15108,20 +15832,24 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
     - `LOKI_RESOURCE_MEM_THRESHOLD` (default: 80%)
 
 ### Changed
+
 - **RARV Cycle** - Updated REASON step to check `.loki/state/resources.json` for warnings (run.sh:1194)
   - If CPU or memory is high, Claude will reduce parallel agent spawning or pause non-critical tasks
   - Prevents system from becoming unusable due to too many agents
 - **Cleanup Handlers** - `stop_status_monitor()` now also stops resource monitor (run.sh:335)
 
 ### Why This Matters
+
 **User Problem:** "Loki Mode spinning agents made my computer unusable and I had to hard restart"
 **Solution:** Resource monitoring prevents this by:
+
 1. Continuously tracking CPU and memory usage every 5 minutes
 2. Warning when thresholds are exceeded
 3. Allowing Claude to self-throttle by reducing agent count
 4. User can configure thresholds based on their hardware
 
 ### Impact
+
 - **Prevents System Overload:** No more hard restarts due to too many parallel agents
 - **Self-Regulating:** Claude automatically reduces agent spawning when resources are constrained
 - **Transparent:** Resource status visible in `.loki/state/resources.json`
@@ -15132,6 +15860,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 ## [2.18.4] - 2026-01-04
 
 ### Changed
+
 - **README.md Complete Restructure** - Transformed README to focus on value proposition and user experience:
   - **New Hero Section:** Clear tagline "The First Truly Autonomous Multi-Agent Startup System" with compelling value prop
   - **"Why Loki Mode?" Section:** Direct comparison table showing what others do vs. what Loki Mode does
@@ -15143,6 +15872,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
   - **Better Structure:** Logical flow from "what it is" → "why it's better" → "how to use it" → "how it works"
 
 ### Added
+
 - **INSTALLATION.md** - Comprehensive installation guide with all platforms:
   - Table of contents for easy navigation
   - Quick install section (recommended approach)
@@ -15161,6 +15891,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
   - Guidelines for professional, clean screenshots
 
 ### Impact
+
 - **User Experience:** README now immediately conveys value and differentiators
 - **Clarity:** Installation details no longer clutter the main README
 - **Visual Appeal:** Dashboard screenshots section makes capabilities tangible
@@ -15173,6 +15904,7 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
 ## [2.18.3] - 2026-01-04
 
 ### Changed
+
 - **Clarified Agent Scaling Model** - Fixed misleading "37 agents" references across all documentation:
   - **README.md:** Badge changed to "Agent Types: 37", description now emphasizes dynamic scaling (few agents for simple projects, 100+ for complex startups)
   - **README.md:** Features table updated to "37 agent types across 6 swarms - dynamically spawned based on workload"
@@ -15186,7 +15918,9 @@ Based on comprehensive competitive analysis against Claude-Flow (10.7K stars), M
   - **integrations/vibe-kanban.md:** Changed "all 37 Loki agents" → "all active Loki agents"
 
 ### Why This Matters
+
 The previous "37 agents" messaging was misleading because:
+
 - **37 is the number of agent TYPES**, not the number of agents that spawn
 - Loki Mode **dynamically spawns** only the agents needed for your specific project
 - A simple todo app might use 5-10 agents total
@@ -15194,6 +15928,7 @@ The previous "37 agents" messaging was misleading because:
 - The system is designed for **functionality-based scaling**, not fixed counts
 
 ### Impact
+
 - **Clarity:** Eliminates confusion about how many agents will actually run
 - **Realistic Expectations:** Users understand the system scales to their needs
 - **Accuracy:** Documentation now reflects the actual dynamic agent spawning behavior
@@ -15202,6 +15937,7 @@ The previous "37 agents" messaging was misleading because:
 ## [2.18.2] - 2026-01-04
 
 ### Added
+
 - **Agent Monitoring Dashboard** - Real-time visibility into active agents (run.sh:330-735):
   - **Active Agents Section** with grid layout displaying all spawned agents
   - **Agent Cards** showing:
@@ -15223,6 +15959,7 @@ The previous "37 agents" messaging was misleading because:
   - Supports agent lineage schema from CONSTITUTION.md
 
 ### Changed
+
 - **Dashboard Layout** - Reorganized for agent monitoring (run.sh:622-630):
   - Added "Active Agents" section header above agent grid
   - Added "Task Queue" section header above task columns
@@ -15235,6 +15972,7 @@ The previous "37 agents" messaging was misleading because:
   - Provides real-time agent tracking data for dashboard
 
 ### Impact
+
 - **Visibility:** Real-time monitoring of all active agents, their models, and work
 - **Performance Tracking:** See which agents are using which models (Haiku vs Sonnet vs Opus)
 - **Debugging:** Quickly identify stuck agents or unbalanced workloads
@@ -15244,6 +15982,7 @@ The previous "37 agents" messaging was misleading because:
 ## [2.18.1] - 2026-01-04
 
 ### Fixed
+
 - **Model Selection Hierarchy** - Corrected default model documentation (SKILL.md:83-91):
   - **Sonnet 4.5** is now clearly marked as **DEFAULT** for all standard implementation work
   - **Haiku 4.5** changed to **OPTIMIZATION ONLY** for simple/parallelizable tasks
@@ -15261,6 +16000,7 @@ The previous "37 agents" messaging was misleading because:
   - run.sh now aligns with SKILL.md patterns
 
 ### Impact
+
 - **Clarity:** Eliminates confusion about which model to use by default
 - **Consistency:** run.sh now implements what SKILL.md documents
 - **Quality:** Self-verification loop now active in production runs (not just documentation)
@@ -15269,6 +16009,7 @@ The previous "37 agents" messaging was misleading because:
 ## [2.18.0] - 2026-01-04
 
 ### Added
+
 - **Self-Updating Learning System** - Agents learn from mistakes automatically (SKILL.md:253-278):
   - "Mistakes & Learnings" section in CONTINUITY.md template
   - Error → Learning → Prevention pattern
@@ -15293,6 +16034,7 @@ The previous "37 agents" messaging was misleading because:
   - How it works: Model shows reasoning in `<thinking>` tags
 
 ### Changed
+
 - **RARV Cycle** - Enhanced from RAR to include VERIFY step (SKILL.md:178):
   - Added "READ Mistakes & Learnings" to REASON step
   - Added "git checkpoint" note to ACT step
@@ -15312,25 +16054,31 @@ The previous "37 agents" messaging was misleading because:
   - Opus: "Use for architecture"
 
 ### Inspired By
+
 **Boris Cherny (Creator of Claude Code) - "Max Setup" Pattern:**
+
 - Self-updating CLAUDE.md based on mistakes (we adapted to CONTINUITY.md)
 - Let AI test its own work (2-3x quality improvement observed)
 - Extended thinking mode for complex problems
 - "Less prompting, more systems. Parallelize + standardize + verify."
 
 ### Impact
+
 - **Quality Improvement:** 2-3x (from automatic self-verification loop)
 - **Error Reduction:** Mistakes logged and prevented from repeating
 - **Learning System:** Agents build institutional knowledge over time
 - **Debugging Speed:** Extended thinking improves complex problem-solving
 
 ### Migration Notes
+
 Existing `.loki/` projects automatically benefit from:
+
 - Enhanced RARV cycle (no changes needed)
 - Self-verification loop (runs automatically on task completion)
 - Extended thinking (agents will use when appropriate)
 
 To fully utilize:
+
 1. Add "Mistakes & Learnings" section to CONTINUITY.md (see template)
 2. Enable automatic testing in VERIFY step
 3. Use extended thinking mode for complex tasks
@@ -15338,6 +16086,7 @@ To fully utilize:
 ## [2.17.0] - 2026-01-04
 
 ### Added
+
 - **Git Checkpoint System** - Automatic commit protocol for rollback safety (SKILL.md:479-578):
   - Automatic git commit after every completed task
   - Structured commit message format with agent metadata
@@ -15379,6 +16128,7 @@ To fully utilize:
   - `invariants.ts` - Runtime assertions
 
 ### Changed
+
 - **Directory Structure** - Enhanced with new agent and rules directories (SKILL.md:2475-2541):
   - Added `.agent/sub-agents/` for agent context tracking
   - Added `.agent/lineage.json` for spawn tree
@@ -15388,16 +16138,21 @@ To fully utilize:
 - **Quick Reference** - Added references to CONSTITUTION.md and agent lineage
 
 ### Inspired By
+
 This release incorporates best practices from AI infrastructure thought leaders:
+
 - **Ivan Steshov** - Centralized constitution, agent lineage tracking, structured artifacts as contracts
 - **Addy Osmani** - Git as checkpoint system, specification-first approach, visual aids (Mermaid diagrams)
 - **Community Consensus** - Machine-enforceable rules over advisory markdown
 
 ### Breaking Changes
+
 None - All additions are backward compatible with existing Loki Mode projects.
 
 ### Migration Guide
+
 For existing `.loki/` projects:
+
 1. Run updated bootstrap script to create new directories
 2. Copy `autonomy/CONSTITUTION.md` to your project
 3. Optional: Enable git checkpoint protocol in orchestrator
@@ -15406,6 +16161,7 @@ For existing `.loki/` projects:
 ## [2.16.0] - 2026-01-02
 
 ### Added
+
 - **Model Selection Strategy** - Performance and cost optimization (SKILL.md:78-119):
   - Comprehensive model selection table (Haiku/Sonnet/Opus)
   - Use Haiku 4.5 for simple tasks (tests, docs, commands, fixes)
@@ -15427,11 +16183,13 @@ For existing `.loki/` projects:
   - Updated UNIT_TESTS phase with parallel Haiku execution strategy (SKILL.md:2041-2084)
 
 ### Changed
+
 - **Quick Reference** - Added 5th critical step: "OPTIMIZE - Use Haiku for simple tasks" (SKILL.md:19)
 - **Agent Spawning Section** - Clarified model selection for implementation agents (SKILL.md:2744)
 - **Code Review** - Maintained Opus for security/architecture reviewers, Sonnet for performance
 
 ### Performance Impact
+
 - **Unit Testing**: 50 test files × 30s = 25 min (sequential Sonnet) → 3 min (parallel Haiku) = **8x faster**
 - **Cost Reduction**: Haiku is cheapest model, using it for 70% of tasks significantly reduces costs
 - **Throughput**: 10+ Haiku agents running concurrently vs sequential Sonnet agents
@@ -15439,6 +16197,7 @@ For existing `.loki/` projects:
 ## [2.15.0] - 2026-01-02
 
 ### Added
+
 - **Enhanced Quick Reference Section** - Immediate orientation for every turn:
   - Critical First Steps checklist (4-step workflow)
   - Key Files priority table with update frequency
@@ -15448,6 +16207,7 @@ For existing `.loki/` projects:
   - Common Issues & Solutions troubleshooting table
 
 ### Changed
+
 - **Consolidated Redundant Templates** - Improved maintainability:
   - CONTINUITY.md template: Single canonical version (lines 152-190), referenced in bootstrap
   - Task Completion Report: Single canonical template (lines 298-341), all duplicates now reference it
@@ -15458,6 +16218,7 @@ For existing `.loki/` projects:
   - Line number references for quick jumps
 
 ### Fixed
+
 - Removed duplicate CONTINUITY.md template from bootstrap script (was lines 2436-2470)
 - Removed duplicate Task Completion Report from subagent dispatch section (was lines 1731-1764)
 - Consolidated severity matrices (removed duplicates, kept one authoritative version)
@@ -15465,6 +16226,7 @@ For existing `.loki/` projects:
 ## [2.14.0] - 2026-01-02
 
 ### Added
+
 - **Claude Code Best Practices** - Integrated patterns from "Claude Code in Action" course:
 
   **CLAUDE.md Generation:**
@@ -15528,6 +16290,7 @@ For existing `.loki/` projects:
   - Real example: Chalk library 3.9x throughput improvement
 
 ### Changed
+
 - **Directory Structure** - Added:
   - `.loki/hooks/` - Pre/post tool-use hooks for quality gates
   - `.loki/plans/` - Implementation plans (Plan Mode output)
@@ -15540,6 +16303,7 @@ For existing `.loki/` projects:
   - REFLECT: Update CONTINUITY.md + CLAUDE.md
 
 ### Best Practices
+
 1. **Build incrementally** - Plan mode for architecture, small steps for implementation
 2. **Maintain context** - Update CLAUDE.md and CONTINUITY.md continuously
 3. **Verify outputs** - Use hooks for automated quality checks
@@ -15553,6 +16317,7 @@ For existing `.loki/` projects:
 ## [2.13.0] - 2026-01-02
 
 ### Added
+
 - **Spec-Driven Development (SDD)** - Specifications as source of truth BEFORE code:
 
   **Philosophy**: `Spec → Tests from Spec → Code to Satisfy Spec → Validation`
@@ -15620,6 +16385,7 @@ For existing `.loki/` projects:
   - Schemathesis integration for fuzz testing
 
 ### Changed
+
 - **Phase 2: Architecture** - Now SPEC-FIRST:
   1. Extract API requirements from PRD
   2. Generate OpenAPI 3.1 specification (BEFORE code)
@@ -15636,6 +16402,7 @@ For existing `.loki/` projects:
 - **Bootstrap Script** - Creates specs/ and mcp/ directories
 
 ### Philosophy
+
 **"Be the best"** - Integrating top approaches from 2025:
 
 1. **Agentic AI**: Autonomous agents that iterate, recognize errors, fix mistakes in real-time
@@ -15643,6 +16410,7 @@ For existing `.loki/` projects:
 3. **Spec-Driven Development**: Specifications as executable contracts, not afterthoughts
 
 Loki Mode now combines the best practices from GitHub's ecosystem:
+
 - **Speed**: Autonomous multi-agent development
 - **Control**: Static analysis + AI review + spec validation
 - **Interoperability**: MCP-compatible agents work with any AI platform
@@ -15653,6 +16421,7 @@ Loki Mode now combines the best practices from GitHub's ecosystem:
 ## [2.12.0] - 2026-01-02
 
 ### Added
+
 - **Quality Control Principles** - Integrated GitHub's "Speed Without Control" framework:
 
   **Principle 1: Guardrails, Not Just Acceleration**
@@ -15698,6 +16467,7 @@ Loki Mode now combines the best practices from GitHub's ecosystem:
   - Decision reports archived to `.loki/logs/decisions/`
 
 ### Changed
+
 - CODE_REVIEW phase now requires static analysis before AI reviewers
 - Subagent dispatch template updated with GOAL/CONSTRAINTS/CONTEXT/OUTPUT
 - Task completion requires decision documentation (not just code output)
@@ -15705,6 +16475,7 @@ Loki Mode now combines the best practices from GitHub's ecosystem:
 - Context-Aware Subagent Dispatch section rewritten for structured prompting
 
 ### Philosophy
+
 "Speed and control aren't trade-offs. They reinforce each other." - GitHub
 
 AI accelerates velocity but can introduce "AI slop" (semi-functional code accumulating technical debt). Loki Mode now pairs acceleration with visible guardrails: static analysis catches machine-detectable issues, structured prompting ensures intentional development, and decision documentation demonstrates thinking beyond shipping features.
@@ -15712,6 +16483,7 @@ AI accelerates velocity but can introduce "AI slop" (semi-functional code accumu
 ## [2.11.0] - 2026-01-02
 
 ### Added
+
 - **CONTINUITY.md Working Memory Protocol** - Inspired by OpenAI's persistent memory pattern:
   - Single working memory file at `.loki/CONTINUITY.md`
   - Read at START of every RAR (Reason-Act-Reflect) cycle
@@ -15734,6 +16506,7 @@ AI accelerates velocity but can introduce "AI slop" (semi-functional code accumu
   5. `rules/` - Permanent validated patterns
 
 ### Changed
+
 - RAR cycle now explicitly reads CONTINUITY.md in REASON phase
 - RAR cycle now explicitly updates CONTINUITY.md in REFLECT phase
 - Bootstrap script creates initial CONTINUITY.md
@@ -15741,11 +16514,13 @@ AI accelerates velocity but can introduce "AI slop" (semi-functional code accumu
 - Directory structure updated to show CONTINUITY.md at root of `.loki/`
 
 ### Philosophy
+
 CONTINUITY.md provides a simpler, more explicit "every turn" memory protocol that complements the existing sophisticated memory system. It ensures Claude always knows exactly what it's working on, what just happened, and what needs to happen next.
 
 ## [2.10.1] - 2026-01-01
 
 ### Fixed
+
 - **API Console Upload** - Added `loki-mode-api-X.X.X.zip` artifact for console.anthropic.com
   - API requires SKILL.md inside a folder wrapper (`loki-mode/SKILL.md`)
   - Claude.ai uses flat structure (`SKILL.md` at root)
@@ -15758,6 +16533,7 @@ CONTINUITY.md provides a simpler, more explicit "every turn" memory protocol tha
 ## [2.10.0] - 2025-12-31
 
 ### Added
+
 - **Context Memory Management System** - Inspired by Continuous-Claude-v2:
   - **Ledger-based state preservation** - Save state to `.loki/memory/ledgers/` instead of letting context degrade through compaction
   - **Agent Handoff System** - Clean context transfer between agents at `.loki/memory/handoffs/`
@@ -15766,6 +16542,7 @@ CONTINUITY.md provides a simpler, more explicit "every turn" memory protocol tha
   - **Context Clear Signals** - Agent can request context reset via `.loki/signals/CONTEXT_CLEAR_REQUESTED`
 
 - **Memory Directory Structure**:
+
   ```
   .loki/memory/
   ├── ledgers/     # Current state per agent
@@ -15778,16 +16555,19 @@ CONTINUITY.md provides a simpler, more explicit "every turn" memory protocol tha
 - **Context Injection on Resume** - Wrapper now loads ledger and handoff context when resuming iterations
 
 ### Changed
+
 - Prompts now include memory management instructions
 - Wrapper initializes memory directory structure
 - Build prompt includes ledger/handoff content for continuity
 
 ### Philosophy
+
 Instead of "degrade gracefully through compression", Loki Mode now uses "reset cleanly with memory preservation" - ensuring perfect context continuity across unlimited iterations.
 
 ## [2.9.1] - 2025-12-31
 
 ### Fixed
+
 - **Immediate continuation on success** - Successful iterations (exit code 0) now continue immediately
 - No more 17+ minute waits between successful iterations
 - Exponential backoff only applies to errors or rate limits
@@ -15795,6 +16575,7 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
 ## [2.9.0] - 2025-12-31
 
 ### Added
+
 - **Ralph Wiggum Mode** - True perpetual autonomous operation:
   - Reason-Act-Reflect (RAR) cycle for every iteration
   - Products are NEVER "complete" - always improvements to make
@@ -15816,6 +16597,7 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - Claude must explicitly output "COMPLETION PROMISE FULFILLED: ALL TESTS PASSING 100%"
 
 ### Changed
+
 - Default behavior now runs perpetually until max iterations
 - Removed auto-completion based on "finalized" phase (was allowing hallucinated completion)
 - Prompts now emphasize never stopping, always finding improvements
@@ -15824,17 +16606,20 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
 ## [2.8.1] - 2025-12-29
 
 ### Fixed
+
 - **Dashboard showing all 0s** - Added explicit instructions to SKILL.md to use queue JSON files instead of TodoWrite tool
 - Claude now properly populates `.loki/queue/*.json` files for live dashboard tracking
 - Added queue system usage guide with JSON format and examples
 
 ### Changed
+
 - SKILL.md now explicitly prohibits TodoWrite in favor of queue system
 - Added "Task Management: Use Queue System" section with clear examples
 
 ## [2.8.0] - 2025-12-29
 
 ### Added
+
 - **Smart Rate Limit Detection** - Automatically detects rate limit messages and waits until reset:
   - Parses "resets Xam/pm" from Claude output
   - Calculates exact wait time until reset (+ 2 min buffer)
@@ -15843,11 +16628,13 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - No more wasted retry attempts during rate limits
 
 ### Changed
+
 - Countdown display now shows human-readable format (e.g., "Resuming in 4h 28m...")
 
 ## [2.7.0] - 2025-12-28
 
 ### Added
+
 - **Codebase Analysis Mode** - When no PRD is provided, Loki Mode now:
   1. **Auto-detects PRD files** - Searches for `PRD.md`, `REQUIREMENTS.md`, `SPEC.md`, `PROJECT.md` and docs variants
   2. **Analyzes existing codebase** - If no PRD found, performs comprehensive codebase analysis:
@@ -15863,12 +16650,14 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   4. **Proceeds with SDLC** - Uses generated PRD as baseline for all testing phases
 
 ### Fixed
+
 - Dashboard 404 errors - Server now runs from `.loki/` root to properly serve queue/state JSON files
 - Updated dashboard URL to `/dashboard/index.html`
 
 ## [2.6.0] - 2025-12-28
 
 ### Added
+
 - **Complete SDLC Testing Phases** - 11 comprehensive testing phases (all enabled by default):
   - `UNIT_TESTS` - Run existing unit tests with coverage
   - `API_TESTS` - Functional API testing with real HTTP requests
@@ -15887,12 +16676,14 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - etc.
 
 ### Changed
+
 - Prompt now includes `SDLC_PHASES_ENABLED: [...]` to inform Claude which phases to execute
 - SKILL.md updated with detailed instructions for each SDLC phase
 
 ## [2.5.0] - 2025-12-28
 
 ### Added
+
 - **Real-time Streaming Output** - Claude's output now streams live using `--output-format stream-json`
   - Parses JSON stream in real-time to display text, tool calls, and results
   - Shows `[Tool: name]` when Claude uses a tool
@@ -15906,11 +16697,13 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - Configure port with `LOKI_DASHBOARD_PORT=<port>`
 
 ### Changed
+
 - Replaced `--print` mode with `--output-format stream-json --verbose` for proper streaming
 - Python-based JSON parser extracts and displays Claude's responses in real-time
 - Simple HTML dashboard replaces Vibe Kanban (no external dependencies)
 
 ### Fixed
+
 - Live output now actually streams (was buffered until completion in 2.4.0)
 - Completion detection now recognizes `finalized` and `growth-loop` phases
 - Prompt now explicitly instructs Claude to act autonomously without asking questions
@@ -15919,6 +16712,7 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
 ## [2.4.0] - 2025-12-28
 
 ### Added
+
 - **Live Output** - Claude's output now streams in real-time using pseudo-TTY
   - Uses `script` command to allocate PTY for proper streaming
   - Visual separator shows when Claude is working
@@ -15928,12 +16722,14 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - Monitor with: `watch -n 2 cat .loki/STATUS.txt`
 
 ### Changed
+
 - Replaced Vibe Kanban auto-launch with simpler status file monitor
 - Autonomy runner uses `script` for proper TTY output on macOS/Linux
 
 ## [2.3.0] - 2025-12-27
 
 ### Added
+
 - **Unified Autonomy Runner** (`autonomy/run.sh`) - Single script that does everything:
   - Prerequisite checks (Claude CLI, Python, Git, curl, Node.js, jq)
   - Skill installation verification
@@ -15945,16 +16741,19 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - See `autonomy/README.md` for detailed docs
 
 ### Changed
+
 - Moved autonomous execution to dedicated `autonomy/` folder (separate from skill)
 - Updated README with new Quick Start using `./autonomy/run.sh`
 - Release workflow now includes `autonomy/` folder
 
 ### Deprecated
+
 - `scripts/loki-wrapper.sh` still works but `autonomy/run.sh` is now recommended
 
 ## [2.2.0] - 2025-12-27
 
 ### Added
+
 - **Vibe Kanban Integration** - Optional visual dashboard for monitoring agents:
   - `integrations/vibe-kanban.md` - Full integration guide
   - `scripts/export-to-vibe-kanban.sh` - Export Loki tasks to Vibe Kanban format
@@ -15964,11 +16763,13 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - See [BloopAI/vibe-kanban](https://github.com/BloopAI/vibe-kanban)
 
 ### Documentation
+
 - README: Added Integrations section with Vibe Kanban setup
 
 ## [2.1.0] - 2025-12-27
 
 ### Added
+
 - **Autonomous Wrapper Script** (`scripts/loki-wrapper.sh`) - True autonomy with auto-resume:
   - Monitors Claude Code process and detects when session ends
   - Automatically resumes from checkpoint on rate limits or interruptions
@@ -15979,33 +16780,39 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - Configurable: `LOKI_MAX_RETRIES`, `LOKI_BASE_WAIT`, `LOKI_MAX_WAIT`
 
 ### Documentation
+
 - Added True Autonomy section to README explaining wrapper usage
 - Documented how wrapper detects session completion and rate limits
 
 ## [2.0.3] - 2025-12-27
 
 ### Fixed
+
 - **Proper Skill File Format** - Release artifacts now follow Claude's expected format:
   - `loki-mode-X.X.X.zip` / `.skill` - For Claude.ai (SKILL.md at root)
   - `loki-mode-claude-code-X.X.X.zip` - For Claude Code (loki-mode/ folder)
 
 ### Changed
+
 - **Installation Instructions** - Separate instructions for Claude.ai vs Claude Code
 - **SKILL.md** - Already has required YAML frontmatter with `name` and `description`
 
 ## [2.0.2] - 2025-12-27
 
 ### Fixed
+
 - **Release Artifact Structure** - Zip now contains `loki-mode/` folder (not `loki-mode-X.X.X/`)
   - Users can extract directly to skills directory without renaming
   - Only includes essential skill files (no .git or .github folders)
 
 ### Changed
+
 - **Installation Instructions** - Updated README with clearer extraction steps
 
 ## [2.0.1] - 2025-12-27
 
 ### Changed
+
 - **Installation Documentation** - Comprehensive installation guide:
   - Explains which file is the actual skill (`SKILL.md`)
   - Shows skill file structure and required files
@@ -16017,6 +16824,7 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
 ## [2.0.0] - 2025-12-27
 
 ### Added
+
 - **Example PRDs** - 4 test PRDs for users to try before implementing:
   - `examples/simple-todo-app.md` - Quick functionality test (~10 min)
   - `examples/api-only.md` - Backend agent testing
@@ -16040,12 +16848,14 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
   - Graceful termination handling with SIGTERM/SIGKILL
 
 ### Changed
+
 - Updated README with example PRDs and test instructions
 - Tests are macOS compatible (Perl-based timeout fallback when `timeout` command unavailable)
 
 ## [1.1.0] - 2025-12-27
 
 ### Fixed
+
 - **macOS Compatibility** - Bootstrap script now works on macOS:
   - Uses `uuidgen` on macOS, falls back to `/proc/sys/kernel/random/uuid` on Linux
   - Fixed `sed -i` syntax for macOS (uses `sed -i ''`)
@@ -16057,11 +16867,13 @@ Instead of "degrade gracefully through compression", Loki Mode now uses "reset c
 ## [1.0.1] - 2025-12-27
 
 ### Changed
+
 - Minor README formatting updates
 
 ## [1.0.0] - 2025-12-27
 
 ### Added
+
 - **Initial Release** of Loki Mode skill for Claude Code
 
 - **Multi-Agent Architecture** - 37 specialized agents across 6 swarms:

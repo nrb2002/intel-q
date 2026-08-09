@@ -17,12 +17,12 @@ This document outlines the architecture for a new enterprise-grade Loki Mode Das
 
 ### 1.1 Existing Components
 
-| Component | Location | Description | Limitations |
-|-----------|----------|-------------|-------------|
-| Static Dashboard | `autonomy/.loki/dashboard/index.html` | Single-file HTML/CSS/JS (~2000 lines) | No persistence, file-polling for updates |
-| Node.js API (legacy) | `autonomy/api-server.js` | Simple HTTP server (zero deps) - replaced by FastAPI | SSE polling, no database, single project |
-| Deno API | `api/server.ts` | TypeScript HTTP/SSE server | File-based state, no cross-project |
-| State Files | `.loki/dashboard-state.json` | JSON state written by run.sh | 2-second polling, no real-time |
+| Component            | Location                              | Description                                          | Limitations                              |
+| -------------------- | ------------------------------------- | ---------------------------------------------------- | ---------------------------------------- |
+| Static Dashboard     | `autonomy/.loki/dashboard/index.html` | Single-file HTML/CSS/JS (~2000 lines)                | No persistence, file-polling for updates |
+| Node.js API (legacy) | `autonomy/api-server.js`              | Simple HTTP server (zero deps) - replaced by FastAPI | SSE polling, no database, single project |
+| Deno API             | `api/server.ts`                       | TypeScript HTTP/SSE server                           | File-based state, no cross-project       |
+| State Files          | `.loki/dashboard-state.json`          | JSON state written by run.sh                         | 2-second polling, no real-time           |
 
 ### 1.2 Current Data Flow
 
@@ -79,15 +79,15 @@ run.sh --> .loki/dashboard-state.json --> Python HTTP server --> Static HTML
 
 ### 2.2 Technology Stack
 
-| Layer | Technology | Rationale |
-|-------|------------|-----------|
-| Backend | Python 3.11+ FastAPI | Async-first, type hints, auto-docs |
-| Database | SQLite (default) / PostgreSQL | Zero-config local, scale to enterprise |
-| ORM | SQLAlchemy 2.0 + Alembic | Async support, migrations |
-| Real-time | WebSockets (native FastAPI) | True real-time, not polling |
-| Frontend | React 18 + Vite + TailwindCSS | Fast dev, existing Anthropic design |
-| State | Zustand | Lightweight, no boilerplate |
-| CLI | Click (Python) | Integrate with existing `loki` CLI |
+| Layer     | Technology                    | Rationale                              |
+| --------- | ----------------------------- | -------------------------------------- |
+| Backend   | Python 3.11+ FastAPI          | Async-first, type hints, auto-docs     |
+| Database  | SQLite (default) / PostgreSQL | Zero-config local, scale to enterprise |
+| ORM       | SQLAlchemy 2.0 + Alembic      | Async support, migrations              |
+| Real-time | WebSockets (native FastAPI)   | True real-time, not polling            |
+| Frontend  | React 18 + Vite + TailwindCSS | Fast dev, existing Anthropic design    |
+| State     | Zustand                       | Lightweight, no boilerplate            |
+| CLI       | Click (Python)                | Integrate with existing `loki` CLI     |
 
 ---
 
@@ -279,8 +279,8 @@ WS  /ws                             # WebSocket connection for real-time
 ```typescript
 // Client -> Server
 interface WSClientMessage {
-  type: 'subscribe' | 'unsubscribe' | 'ping';
-  channels?: string[];  // e.g., ['project:abc', 'session:xyz']
+  type: "subscribe" | "unsubscribe" | "ping";
+  channels?: string[]; // e.g., ['project:abc', 'session:xyz']
 }
 
 // Server -> Client
@@ -293,12 +293,20 @@ interface WSServerMessage {
 
 // Event Types (matching existing SSE events)
 type EventType =
-  | 'session:started' | 'session:paused' | 'session:stopped' | 'session:completed'
-  | 'phase:started' | 'phase:completed'
-  | 'task:created' | 'task:updated' | 'task:moved' | 'task:completed'
-  | 'agent:spawned' | 'agent:completed'
-  | 'log:entry'
-  | 'heartbeat';
+  | "session:started"
+  | "session:paused"
+  | "session:stopped"
+  | "session:completed"
+  | "phase:started"
+  | "phase:completed"
+  | "task:created"
+  | "task:updated"
+  | "task:moved"
+  | "task:completed"
+  | "agent:spawned"
+  | "agent:completed"
+  | "log:entry"
+  | "heartbeat";
 ```
 
 ### 4.3 Authentication
@@ -397,7 +405,7 @@ dashboard/
 
 ```typescript
 // stores/taskStore.ts
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface TaskStore {
   tasks: Task[];
@@ -420,11 +428,11 @@ interface TaskStore {
 
 // WebSocket integration
 const useWebSocketSync = () => {
-  const { ws, lastMessage } = useWebSocket('/ws');
+  const { ws, lastMessage } = useWebSocket("/ws");
   const taskStore = useTaskStore();
 
   useEffect(() => {
-    if (lastMessage?.type === 'task:updated') {
+    if (lastMessage?.type === "task:updated") {
       taskStore.updateTask(lastMessage.data.id, lastMessage.data);
     }
   }, [lastMessage]);
@@ -725,7 +733,7 @@ docker run -d \
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 services:
   dashboard:
     image: asklokesh/loki-dashboard:latest
@@ -811,13 +819,13 @@ volumes:
 
 ## 11. Success Metrics
 
-| Metric | Current | Target |
-|--------|---------|--------|
-| Update latency | 2000ms (polling) | <100ms (WebSocket) |
-| Projects supported | 1 | Unlimited |
-| Task persistence | Session only | Permanent |
-| Cross-codebase | No | Yes |
-| Remote access | Limited | Full API |
+| Metric             | Current          | Target             |
+| ------------------ | ---------------- | ------------------ |
+| Update latency     | 2000ms (polling) | <100ms (WebSocket) |
+| Projects supported | 1                | Unlimited          |
+| Task persistence   | Session only     | Permanent          |
+| Cross-codebase     | No               | Yes                |
+| Remote access      | Limited          | Full API           |
 
 ---
 
@@ -889,4 +897,4 @@ dashboard/
 
 ---
 
-*End of Architecture Document*
+_End of Architecture Document_

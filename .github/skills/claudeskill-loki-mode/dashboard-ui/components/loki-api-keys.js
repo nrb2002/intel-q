@@ -7,8 +7,8 @@
  * <loki-api-keys api-url="http://localhost:57374" theme="dark"></loki-api-keys>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * Format a timestamp for display.
@@ -16,15 +16,15 @@ import { getApiClient } from '../core/loki-api-client.js';
  * @returns {string}
  */
 export function formatKeyTime(timestamp) {
-  if (!timestamp) return 'Never';
+  if (!timestamp) return "Never";
   try {
     const d = new Date(timestamp);
     return d.toLocaleString([], {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return String(timestamp);
@@ -37,8 +37,8 @@ export function formatKeyTime(timestamp) {
  * @returns {string}
  */
 export function maskToken(token) {
-  if (!token || token.length < 12) return '****';
-  return token.slice(0, 4) + '****' + token.slice(-4);
+  if (!token || token.length < 12) return "****";
+  return token.slice(0, 4) + "****" + token.slice(-4);
 }
 
 /**
@@ -49,7 +49,7 @@ export function maskToken(token) {
  */
 export class LokiApiKeys extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -62,12 +62,12 @@ export class LokiApiKeys extends LokiElement {
     this._newToken = null; // Token shown once after creation
     this._confirmDeleteId = null;
     this._rotateKeyId = null;
-    this._rotateGracePeriod = '24';
+    this._rotateGracePeriod = "24";
 
     // Create form fields
-    this._createName = '';
-    this._createRole = 'read';
-    this._createExpiration = '';
+    this._createName = "";
+    this._createRole = "read";
+    this._createExpiration = "";
   }
 
   connectedCallback() {
@@ -82,17 +82,17 @@ export class LokiApiKeys extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -101,8 +101,8 @@ export class LokiApiKeys extends LokiElement {
       this._loading = true;
       this.render();
 
-      const data = await this._api._get('/api/v2/api-keys');
-      this._keys = Array.isArray(data) ? data : (data?.keys || []);
+      const data = await this._api._get("/api/v2/api-keys");
+      this._keys = Array.isArray(data) ? data : data?.keys || [];
       this._error = null;
     } catch (err) {
       this._error = `Failed to load API keys: ${err.message}`;
@@ -115,7 +115,7 @@ export class LokiApiKeys extends LokiElement {
 
   async _createKey() {
     if (!this._createName.trim()) {
-      this._error = 'Key name is required.';
+      this._error = "Key name is required.";
       this.render();
       return;
     }
@@ -129,12 +129,12 @@ export class LokiApiKeys extends LokiElement {
         payload.expiration = this._createExpiration;
       }
 
-      const result = await this._api._post('/api/v2/api-keys', payload);
+      const result = await this._api._post("/api/v2/api-keys", payload);
       this._newToken = result?.token || result?.key || null;
       this._showCreateForm = false;
-      this._createName = '';
-      this._createRole = 'read';
-      this._createExpiration = '';
+      this._createName = "";
+      this._createRole = "read";
+      this._createExpiration = "";
       this._error = null;
       await this._loadData();
     } catch (err) {
@@ -173,12 +173,12 @@ export class LokiApiKeys extends LokiElement {
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getStyles() {
@@ -498,7 +498,7 @@ export class LokiApiKeys extends LokiElement {
     const keys = this._keys;
 
     // New token banner
-    let tokenBanner = '';
+    let tokenBanner = "";
     if (this._newToken) {
       tokenBanner = `
         <div class="new-token-banner">
@@ -511,7 +511,7 @@ export class LokiApiKeys extends LokiElement {
     }
 
     // Create form
-    let createForm = '';
+    let createForm = "";
     if (this._showCreateForm) {
       createForm = `
         <div class="create-form">
@@ -526,9 +526,9 @@ export class LokiApiKeys extends LokiElement {
             <div class="form-group">
               <label class="form-label">Role</label>
               <select class="form-select" id="create-role">
-                <option value="read" ${this._createRole === 'read' ? 'selected' : ''}>Read</option>
-                <option value="write" ${this._createRole === 'write' ? 'selected' : ''}>Write</option>
-                <option value="admin" ${this._createRole === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="read" ${this._createRole === "read" ? "selected" : ""}>Read</option>
+                <option value="write" ${this._createRole === "write" ? "selected" : ""}>Write</option>
+                <option value="admin" ${this._createRole === "admin" ? "selected" : ""}>Admin</option>
               </select>
             </div>
             <div class="form-group">
@@ -552,31 +552,37 @@ export class LokiApiKeys extends LokiElement {
     } else if (keys.length === 0) {
       content = '<div class="empty-state">No API keys configured. Create one to get started.</div>';
     } else {
-      const rows = keys.map(key => {
-        const keyId = key.id || key.key_id;
-        const status = (key.status || 'active').toLowerCase();
-        const statusClass = status === 'active' ? 'key-status-active'
-          : status === 'expired' ? 'key-status-expired'
-          : 'key-status-revoked';
-        const isConfirmingDelete = this._confirmDeleteId === keyId;
-        const isRotating = this._rotateKeyId === keyId;
+      const rows = keys
+        .map((key) => {
+          const keyId = key.id || key.key_id;
+          const status = (key.status || "active").toLowerCase();
+          const statusClass =
+            status === "active"
+              ? "key-status-active"
+              : status === "expired"
+                ? "key-status-expired"
+                : "key-status-revoked";
+          const isConfirmingDelete = this._confirmDeleteId === keyId;
+          const isRotating = this._rotateKeyId === keyId;
 
-        let actionsHtml;
-        if (isConfirmingDelete) {
-          actionsHtml = `
+          let actionsHtml;
+          if (isConfirmingDelete) {
+            actionsHtml = `
             <div class="confirm-delete">
               <span>Delete this key?</span>
               <button class="btn btn-sm btn-danger" data-action="confirm-delete" data-key-id="${keyId}">Yes</button>
               <button class="btn btn-sm" data-action="cancel-delete">No</button>
             </div>
           `;
-        } else {
-          actionsHtml = `
+          } else {
+            actionsHtml = `
             <div class="action-row">
               <button class="btn btn-sm btn-warn" data-action="rotate" data-key-id="${keyId}">Rotate</button>
               <button class="btn btn-sm btn-danger" data-action="delete" data-key-id="${keyId}">Delete</button>
             </div>
-            ${isRotating ? `
+            ${
+              isRotating
+                ? `
               <div class="rotate-inline">
                 <span class="rotate-label">Grace period:</span>
                 <input type="number" class="rotate-input" id="rotate-grace-${keyId}" value="${this._rotateGracePeriod}" min="0">
@@ -584,21 +590,24 @@ export class LokiApiKeys extends LokiElement {
                 <button class="btn btn-sm btn-primary" data-action="confirm-rotate" data-key-id="${keyId}">Go</button>
                 <button class="btn btn-sm" data-action="cancel-rotate">Cancel</button>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           `;
-        }
+          }
 
-        return `
+          return `
           <tr>
-            <td><span class="key-name">${this._escapeHtml(key.name || 'Unnamed')}</span></td>
-            <td><span class="key-role">${this._escapeHtml(key.role || key.scopes || '--')}</span></td>
+            <td><span class="key-name">${this._escapeHtml(key.name || "Unnamed")}</span></td>
+            <td><span class="key-role">${this._escapeHtml(key.role || key.scopes || "--")}</span></td>
             <td>${formatKeyTime(key.created_at || key.created)}</td>
             <td>${formatKeyTime(key.last_used_at || key.last_used)}</td>
             <td><span class="${statusClass}">${this._escapeHtml(status)}</span></td>
             <td><div class="actions-cell">${actionsHtml}</div></td>
           </tr>
         `;
-      }).join('');
+        })
+        .join("");
 
       content = `
         <div class="keys-table-wrapper">
@@ -624,12 +633,12 @@ export class LokiApiKeys extends LokiElement {
       <div class="api-keys">
         <div class="header">
           <h2 class="title">API Keys</h2>
-          ${!this._showCreateForm ? '<button class="btn btn-primary" id="show-create">Create Key</button>' : ''}
+          ${!this._showCreateForm ? '<button class="btn btn-primary" id="show-create">Create Key</button>' : ""}
         </div>
         ${tokenBanner}
         ${createForm}
         ${content}
-        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ''}
+        ${this._error ? `<div class="error-banner">${this._escapeHtml(this._error)}</div>` : ""}
       </div>
     `;
 
@@ -641,83 +650,83 @@ export class LokiApiKeys extends LokiElement {
     if (!s) return;
 
     // Show create form
-    const showCreateBtn = s.getElementById('show-create');
+    const showCreateBtn = s.getElementById("show-create");
     if (showCreateBtn) {
-      showCreateBtn.addEventListener('click', () => {
+      showCreateBtn.addEventListener("click", () => {
         this._showCreateForm = true;
         this.render();
       });
     }
 
     // Dismiss new token
-    const dismissBtn = s.getElementById('dismiss-token');
+    const dismissBtn = s.getElementById("dismiss-token");
     if (dismissBtn) {
-      dismissBtn.addEventListener('click', () => {
+      dismissBtn.addEventListener("click", () => {
         this._newToken = null;
         this.render();
       });
     }
 
     // Create form handlers
-    const submitCreate = s.getElementById('submit-create');
+    const submitCreate = s.getElementById("submit-create");
     if (submitCreate) {
-      submitCreate.addEventListener('click', () => {
-        const nameInput = s.getElementById('create-name');
-        const roleSelect = s.getElementById('create-role');
-        const expInput = s.getElementById('create-expiration');
-        this._createName = nameInput?.value || '';
-        this._createRole = roleSelect?.value || 'read';
-        this._createExpiration = expInput?.value || '';
+      submitCreate.addEventListener("click", () => {
+        const nameInput = s.getElementById("create-name");
+        const roleSelect = s.getElementById("create-role");
+        const expInput = s.getElementById("create-expiration");
+        this._createName = nameInput?.value || "";
+        this._createRole = roleSelect?.value || "read";
+        this._createExpiration = expInput?.value || "";
         this._createKey();
       });
     }
 
-    const cancelCreate = s.getElementById('cancel-create');
+    const cancelCreate = s.getElementById("cancel-create");
     if (cancelCreate) {
-      cancelCreate.addEventListener('click', () => {
+      cancelCreate.addEventListener("click", () => {
         this._showCreateForm = false;
         this.render();
       });
     }
 
     // Action buttons
-    s.querySelectorAll('[data-action="delete"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._confirmDeleteId = btn.dataset.keyId;
         this.render();
       });
     });
 
-    s.querySelectorAll('[data-action="confirm-delete"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="confirm-delete"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._deleteKey(btn.dataset.keyId);
       });
     });
 
-    s.querySelectorAll('[data-action="cancel-delete"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="cancel-delete"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._confirmDeleteId = null;
         this.render();
       });
     });
 
-    s.querySelectorAll('[data-action="rotate"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="rotate"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._rotateKeyId = btn.dataset.keyId;
         this.render();
       });
     });
 
-    s.querySelectorAll('[data-action="confirm-rotate"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="confirm-rotate"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         const graceInput = s.getElementById(`rotate-grace-${btn.dataset.keyId}`);
-        this._rotateGracePeriod = graceInput?.value || '24';
+        this._rotateGracePeriod = graceInput?.value || "24";
         this._rotateKey(btn.dataset.keyId);
       });
     });
 
-    s.querySelectorAll('[data-action="cancel-rotate"]').forEach(btn => {
-      btn.addEventListener('click', () => {
+    s.querySelectorAll('[data-action="cancel-rotate"]').forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._rotateKeyId = null;
         this.render();
       });
@@ -725,8 +734,8 @@ export class LokiApiKeys extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-api-keys')) {
-  customElements.define('loki-api-keys', LokiApiKeys);
+if (!customElements.get("loki-api-keys")) {
+  customElements.define("loki-api-keys", LokiApiKeys);
 }
 
 export default LokiApiKeys;

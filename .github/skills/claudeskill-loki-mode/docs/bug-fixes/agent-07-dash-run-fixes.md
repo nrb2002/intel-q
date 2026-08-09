@@ -7,19 +7,20 @@
 All 7 known bugs (BUG-RUN-001 through BUG-RUN-010) were already patched in the codebase
 with fix comments. Verified each is correctly addressed:
 
-| Bug ID | Description | Status |
-|--------|-------------|--------|
-| BUG-RUN-001 | Completion promise checks stale daily log | FIXED (line 9873: uses `$iter_output`) |
-| BUG-RUN-002 | Rate limit detection greps stale daily log | FIXED (line 9910: uses `$iter_output`) |
-| BUG-RUN-003 | ITERATION_COUNT never persisted across restarts | FIXED (line 7964: restored from state) |
-| BUG-RUN-004 | Inconsistent JSON formats in state files | FIXED (queue normalization via jq at line 3308) |
-| BUG-RUN-005 | OpenSpec queue has no deduplication | FIXED (line 8665: `existing_ids` check) |
-| BUG-RUN-009 | Gate escalation PAUSE writes to wrong path | FIXED (line 9804: `touch .loki/PAUSE`) |
-| BUG-RUN-010 | Retry counter increments on success | FIXED (lines 9852, 9898: `retry=0`) |
+| Bug ID      | Description                                     | Status                                          |
+| ----------- | ----------------------------------------------- | ----------------------------------------------- |
+| BUG-RUN-001 | Completion promise checks stale daily log       | FIXED (line 9873: uses `$iter_output`)          |
+| BUG-RUN-002 | Rate limit detection greps stale daily log      | FIXED (line 9910: uses `$iter_output`)          |
+| BUG-RUN-003 | ITERATION_COUNT never persisted across restarts | FIXED (line 7964: restored from state)          |
+| BUG-RUN-004 | Inconsistent JSON formats in state files        | FIXED (queue normalization via jq at line 3308) |
+| BUG-RUN-005 | OpenSpec queue has no deduplication             | FIXED (line 8665: `existing_ids` check)         |
+| BUG-RUN-009 | Gate escalation PAUSE writes to wrong path      | FIXED (line 9804: `touch .loki/PAUSE`)          |
+| BUG-RUN-010 | Retry counter increments on success             | FIXED (lines 9852, 9898: `retry=0`)             |
 
 ## New Bugs Found and Fixed
 
 ### BUG-NEW-001: WebSocket push inflates running_agents count
+
 - **File:** `dashboard/server.py` line 366
 - **Root cause:** `_push_loki_state_loop` counted `len(agents_list)` from the JSON
   without validating PIDs. Dead agents still appeared as running. The REST endpoint
@@ -28,6 +29,7 @@ with fix comments. Verified each is correctly addressed:
 - **Fix:** Added PID validation loop matching `get_status` behavior.
 
 ### BUG-NEW-002: Dashboard drops tasks in object-format queue files
+
 - **File:** `dashboard/server.py` line 1081
 - **Root cause:** `list_tasks` only handled plain array `[...]` queue files. If a queue
   file was written in `{"tasks": [...]}` format (which `load_queue_tasks` in run.sh
@@ -36,6 +38,7 @@ with fix comments. Verified each is correctly addressed:
 - **Fix:** Added dict-unwrapping: `raw_items.get("tasks", [])` before array check.
 
 ### BUG-NEW-003: Per-iteration temp files leak on success paths
+
 - **File:** `autonomy/run.sh` lines 9853 and 9899
 - **Root cause:** The success `continue` paths (perpetual mode + normal success) skip
   `rm -f "$iter_output"`. Only the terminal completion paths (council/promise fulfilled)
@@ -46,6 +49,7 @@ with fix comments. Verified each is correctly addressed:
 - **Fix:** Added `rm -f "$iter_output"` before both success `continue` statements.
 
 ### BUG-NEW-004: Event JSON emits floats as quoted strings
+
 - **File:** `autonomy/run.sh` line 951
 - **Root cause:** `emit_event_json` regex `^[0-9]+$` only matches integers. A value
   like `cost=3.14` is treated as a string and quoted (`"cost":"3.14"`), creating
@@ -55,6 +59,7 @@ with fix comments. Verified each is correctly addressed:
 - **Fix:** Changed regex to `^[0-9]+\.?[0-9]*$` to match both integers and floats.
 
 ### BUG-NEW-005: Dashboard stop leaves orphaned iter_output files
+
 - **File:** `dashboard/server.py` line 2907
 - **Root cause:** `stop_session` sends SIGTERM and marks session as stopped but does
   not clean up `.loki/logs/iter-output-*` temp files from the killed process.
@@ -62,6 +67,7 @@ with fix comments. Verified each is correctly addressed:
 - **Fix:** Added glob cleanup of `iter-output-*` files after SIGTERM.
 
 ### BUG-NEW-006: WebSocket broadcasts stale "running" status after crash
+
 - **File:** `dashboard/server.py` line 382
 - **Root cause:** `_push_loki_state_loop` determined status purely from
   `dashboard-state.json`'s `mode` field. If the process crashed (SIGKILL, OOM, etc.),

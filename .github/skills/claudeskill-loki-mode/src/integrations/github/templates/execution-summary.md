@@ -13,4 +13,5 @@
 - Duration: {{DURATION}}
 
 ---
+
 [View full run]({{RUN_URL}})

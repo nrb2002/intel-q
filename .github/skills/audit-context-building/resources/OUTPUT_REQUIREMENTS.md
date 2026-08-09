@@ -9,11 +9,13 @@ When performing ultra-granular analysis, Claude MUST structure output following 
 For EACH analyzed function, output MUST include:
 
 **1. Purpose** (mandatory)
+
 - Clear statement of function's role in the system
 - Impact on system state, security, or economics
 - Minimum 2-3 sentences
 
 **2. Inputs & Assumptions** (mandatory)
+
 - All parameters (explicit and implicit)
 - All preconditions
 - All trust assumptions
@@ -21,6 +23,7 @@ For EACH analyzed function, output MUST include:
 - Minimum 3 assumptions documented
 
 **3. Outputs & Effects** (mandatory)
+
 - Return values (or "void" if none)
 - All state writes
 - All external interactions
@@ -30,6 +33,7 @@ For EACH analyzed function, output MUST include:
 
 **4. Block-by-Block Analysis** (mandatory)
 For EACH logical code block, document:
+
 - **What:** What the block does (1 sentence)
 - **Why here:** Why this ordering/placement (1 sentence)
 - **Assumptions:** What must be true (1+ items)
@@ -37,11 +41,13 @@ For EACH logical code block, document:
 - **First Principles / 5 Whys / 5 Hows:** Apply at least ONE per block
 
 Minimum standards:
+
 - Analyze at minimum: ALL conditional branches, ALL external calls, ALL state modifications
 - For complex blocks (>5 lines): Apply First Principles AND 5 Whys or 5 Hows
 - For simple blocks (<5 lines): Minimum What + Why here + 1 Assumption
 
 **5. Cross-Function Dependencies** (mandatory)
+
 - Internal calls made (list all)
 - External calls made (list all with risk analysis)
 - Functions that call this function
@@ -54,6 +60,7 @@ Minimum standards:
 ## Quality Thresholds
 
 A complete micro-analysis MUST identify:
+
 - Minimum 3 invariants (per function)
 - Minimum 5 assumptions (across all sections)
 - Minimum 3 risk considerations (especially for external interactions)

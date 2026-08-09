@@ -47,27 +47,27 @@ module "autonomi" {
 
 ## Inputs
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| location | Azure region | string | eastus |
-| resource_group_name | Resource group name | string | autonomi-rg |
-| vnet_id | Existing VNet ID (empty = create new) | string | "" |
-| create_cluster | Create new AKS cluster | bool | true |
-| cluster_name | AKS cluster name | string | autonomi |
-| node_vm_size | VM size | string | Standard_D2s_v3 |
-| node_count | Node count | number | 3 |
-| storage_account_name | Storage account name prefix | string | autonomistorage |
-| domain_name | Dashboard domain | string | "" |
-| helm_values | Additional Helm values | map(string) | {} |
-| tags | Resource tags | map(string) | {ManagedBy=terraform} |
+| Name                 | Description                           | Type        | Default               |
+| -------------------- | ------------------------------------- | ----------- | --------------------- |
+| location             | Azure region                          | string      | eastus                |
+| resource_group_name  | Resource group name                   | string      | autonomi-rg           |
+| vnet_id              | Existing VNet ID (empty = create new) | string      | ""                    |
+| create_cluster       | Create new AKS cluster                | bool        | true                  |
+| cluster_name         | AKS cluster name                      | string      | autonomi              |
+| node_vm_size         | VM size                               | string      | Standard_D2s_v3       |
+| node_count           | Node count                            | number      | 3                     |
+| storage_account_name | Storage account name prefix           | string      | autonomistorage       |
+| domain_name          | Dashboard domain                      | string      | ""                    |
+| helm_values          | Additional Helm values                | map(string) | {}                    |
+| tags                 | Resource tags                         | map(string) | {ManagedBy=terraform} |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| cluster_name | AKS cluster name |
-| resource_group | Resource group name |
-| dashboard_url | Dashboard URL |
-| kubeconfig_command | kubectl config command |
-| storage_account_name | Storage account name |
-| storage_container_name | Blob container name |
+| Name                   | Description            |
+| ---------------------- | ---------------------- |
+| cluster_name           | AKS cluster name       |
+| resource_group         | Resource group name    |
+| dashboard_url          | Dashboard URL          |
+| kubeconfig_command     | kubectl config command |
+| storage_account_name   | Storage account name   |
+| storage_container_name | Blob container name    |

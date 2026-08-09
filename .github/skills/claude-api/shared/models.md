@@ -55,15 +55,16 @@ curl https://api.anthropic.com/v1/models/claude-opus-4-8 \
 
 ## Current Models (recommended)
 
-| Friendly Name     | Alias (use this)    | Full ID                       | Context        | Max Output | Status |
-|-------------------|---------------------|-------------------------------|----------------|------------|--------|
-| Claude Opus 4.8   | `claude-opus-4-8`   | —                             | 1M             | 128K       | Active |
-| Claude Opus 4.7   | `claude-opus-4-7`   | —                             | 1M             | 128K       | Active |
-| Claude Opus 4.6   | `claude-opus-4-6`   | —                             | 1M             | 128K       | Active |
-| Claude Sonnet 4.6 | `claude-sonnet-4-6` | -                             | 1M             | 64K        | Active |
-| Claude Haiku 4.5  | `claude-haiku-4-5`  | `claude-haiku-4-5-20251001`   | 200K           | 64K        | Active |
+| Friendly Name     | Alias (use this)    | Full ID                     | Context | Max Output | Status |
+| ----------------- | ------------------- | --------------------------- | ------- | ---------- | ------ |
+| Claude Opus 4.8   | `claude-opus-4-8`   | —                           | 1M      | 128K       | Active |
+| Claude Opus 4.7   | `claude-opus-4-7`   | —                           | 1M      | 128K       | Active |
+| Claude Opus 4.6   | `claude-opus-4-6`   | —                           | 1M      | 128K       | Active |
+| Claude Sonnet 4.6 | `claude-sonnet-4-6` | -                           | 1M      | 64K        | Active |
+| Claude Haiku 4.5  | `claude-haiku-4-5`  | `claude-haiku-4-5-20251001` | 200K    | 64K        | Active |
 
 ### Model Descriptions
+
 - **Claude Opus 4.8** — The most capable Claude model to date — highly autonomous, state-of-the-art on long-horizon agentic work, knowledge work, and memory; clearer, warmer writing. Same API surface as Opus 4.7 (adaptive thinking only; sampling parameters and `budget_tokens` removed). 1M context window at standard API pricing (no long-context premium). See `shared/model-migration.md` → Migrating to Opus 4.8 — a 4.7 → 4.8 move is a model-ID swap plus prompt re-tuning, no new breaking changes.
 - **Claude Opus 4.7** — Previous-generation Opus. Highly autonomous; strong on long-horizon agentic work, knowledge work, vision, and memory. Adaptive thinking only; sampling parameters and `budget_tokens` removed. 1M context window. See `shared/model-migration.md` → Migrating to Opus 4.7.
 - **Claude Opus 4.6** — Older Opus. Supports adaptive thinking (recommended), 128K max output tokens (requires streaming for large outputs). 1M context window.
@@ -72,53 +73,53 @@ curl https://api.anthropic.com/v1/models/claude-opus-4-8 \
 
 ## Legacy Models (still active)
 
-| Friendly Name     | Alias (use this)    | Full ID                       | Status |
-|-------------------|---------------------|-------------------------------|--------|
-| Claude Opus 4.5   | `claude-opus-4-5`   | `claude-opus-4-5-20251101`    | Active |
-| Claude Opus 4.1   | `claude-opus-4-1`   | `claude-opus-4-1-20250805`    | Active |
-| Claude Sonnet 4.5 | `claude-sonnet-4-5` | `claude-sonnet-4-5-20250929`  | Active |
+| Friendly Name     | Alias (use this)    | Full ID                      | Status |
+| ----------------- | ------------------- | ---------------------------- | ------ |
+| Claude Opus 4.5   | `claude-opus-4-5`   | `claude-opus-4-5-20251101`   | Active |
+| Claude Opus 4.1   | `claude-opus-4-1`   | `claude-opus-4-1-20250805`   | Active |
+| Claude Sonnet 4.5 | `claude-sonnet-4-5` | `claude-sonnet-4-5-20250929` | Active |
 
 ## Deprecated Models (retiring soon)
 
-| Friendly Name     | Alias (use this)    | Full ID                       | Status     | Retires      |
-|-------------------|---------------------|-------------------------------|------------|--------------|
-| Claude Sonnet 4   | `claude-sonnet-4-0` | `claude-sonnet-4-20250514`    | Deprecated | TBD          |
-| Claude Opus 4     | `claude-opus-4-0`   | `claude-opus-4-20250514`      | Deprecated | TBD          |
-| Claude Haiku 3    | —                   | `claude-3-haiku-20240307`     | Deprecated | Apr 19, 2026 |
+| Friendly Name   | Alias (use this)    | Full ID                    | Status     | Retires      |
+| --------------- | ------------------- | -------------------------- | ---------- | ------------ |
+| Claude Sonnet 4 | `claude-sonnet-4-0` | `claude-sonnet-4-20250514` | Deprecated | TBD          |
+| Claude Opus 4   | `claude-opus-4-0`   | `claude-opus-4-20250514`   | Deprecated | TBD          |
+| Claude Haiku 3  | —                   | `claude-3-haiku-20240307`  | Deprecated | Apr 19, 2026 |
 
 ## Retired Models (no longer available)
 
-| Friendly Name     | Full ID                       | Retired     |
-|-------------------|-------------------------------|-------------|
-| Claude Sonnet 3.7 | `claude-3-7-sonnet-20250219`  | Feb 19, 2026 |
-| Claude Haiku 3.5  | `claude-3-5-haiku-20241022`   | Feb 19, 2026 |
-| Claude Opus 3     | `claude-3-opus-20240229`      | Jan 5, 2026 |
-| Claude Sonnet 3.5 | `claude-3-5-sonnet-20241022`  | Oct 28, 2025 |
-| Claude Sonnet 3.5 | `claude-3-5-sonnet-20240620`  | Oct 28, 2025 |
-| Claude Sonnet 3   | `claude-3-sonnet-20240229`    | Jul 21, 2025 |
-| Claude 2.1        | `claude-2.1`                  | Jul 21, 2025 |
-| Claude 2.0        | `claude-2.0`                  | Jul 21, 2025 |
+| Friendly Name     | Full ID                      | Retired      |
+| ----------------- | ---------------------------- | ------------ |
+| Claude Sonnet 3.7 | `claude-3-7-sonnet-20250219` | Feb 19, 2026 |
+| Claude Haiku 3.5  | `claude-3-5-haiku-20241022`  | Feb 19, 2026 |
+| Claude Opus 3     | `claude-3-opus-20240229`     | Jan 5, 2026  |
+| Claude Sonnet 3.5 | `claude-3-5-sonnet-20241022` | Oct 28, 2025 |
+| Claude Sonnet 3.5 | `claude-3-5-sonnet-20240620` | Oct 28, 2025 |
+| Claude Sonnet 3   | `claude-3-sonnet-20240229`   | Jul 21, 2025 |
+| Claude 2.1        | `claude-2.1`                 | Jul 21, 2025 |
+| Claude 2.0        | `claude-2.0`                 | Jul 21, 2025 |
 
 ## Resolving User Requests
 
 When a user asks for a model by name, use this table to find the correct model ID:
 
-| User says...                              | Use this model ID              |
-|-------------------------------------------|--------------------------------|
-| "opus", "most powerful"                   | `claude-opus-4-8`              |
-| "opus 4.8"                                | `claude-opus-4-8`              |
-| "opus 4.7"                                | `claude-opus-4-7`              |
-| "opus 4.6"                                | `claude-opus-4-6`              |
-| "opus 4.5"                                | `claude-opus-4-5`              |
-| "opus 4.1"                                | `claude-opus-4-1`              |
-| "opus 4", "opus 4.0"                      | `claude-opus-4-0` (deprecated — suggest `claude-opus-4-8`) |
-| "sonnet", "balanced"                      | `claude-sonnet-4-6`            |
-| "sonnet 4.6"                              | `claude-sonnet-4-6`            |
-| "sonnet 4.5"                              | `claude-sonnet-4-5`            |
-| "sonnet 4", "sonnet 4.0"                  | `claude-sonnet-4-0` (deprecated — suggest `claude-sonnet-4-6`) |
-| "sonnet 3.7"                              | Retired — suggest `claude-sonnet-4-6` |
-| "sonnet 3.5"                              | Retired — suggest `claude-sonnet-4-6` |
-| "haiku", "fast", "cheap"                  | `claude-haiku-4-5`             |
-| "haiku 4.5"                               | `claude-haiku-4-5`             |
-| "haiku 3.5"                               | Retired — suggest `claude-haiku-4-5` |
-| "haiku 3"                                 | Deprecated — suggest `claude-haiku-4-5` |
+| User says...             | Use this model ID                                              |
+| ------------------------ | -------------------------------------------------------------- |
+| "opus", "most powerful"  | `claude-opus-4-8`                                              |
+| "opus 4.8"               | `claude-opus-4-8`                                              |
+| "opus 4.7"               | `claude-opus-4-7`                                              |
+| "opus 4.6"               | `claude-opus-4-6`                                              |
+| "opus 4.5"               | `claude-opus-4-5`                                              |
+| "opus 4.1"               | `claude-opus-4-1`                                              |
+| "opus 4", "opus 4.0"     | `claude-opus-4-0` (deprecated — suggest `claude-opus-4-8`)     |
+| "sonnet", "balanced"     | `claude-sonnet-4-6`                                            |
+| "sonnet 4.6"             | `claude-sonnet-4-6`                                            |
+| "sonnet 4.5"             | `claude-sonnet-4-5`                                            |
+| "sonnet 4", "sonnet 4.0" | `claude-sonnet-4-0` (deprecated — suggest `claude-sonnet-4-6`) |
+| "sonnet 3.7"             | Retired — suggest `claude-sonnet-4-6`                          |
+| "sonnet 3.5"             | Retired — suggest `claude-sonnet-4-6`                          |
+| "haiku", "fast", "cheap" | `claude-haiku-4-5`                                             |
+| "haiku 4.5"              | `claude-haiku-4-5`                                             |
+| "haiku 3.5"              | Retired — suggest `claude-haiku-4-5`                           |
+| "haiku 3"                | Deprecated — suggest `claude-haiku-4-5`                        |

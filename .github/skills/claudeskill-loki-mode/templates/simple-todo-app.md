@@ -1,21 +1,25 @@
 # PRD: Simple Todo App
 
 ## Overview
+
 A minimal todo application for testing Loki Mode with a simple, well-defined scope. A single-page app called "Todos" with a React frontend, Express API, and SQLite persistence.
 
 ## Target Users
+
 - Individual users who want a simple way to track tasks
 - Developers testing Loki Mode's core generation pipeline
 
 ## Features
 
 ### MVP Features
+
 1. **Add Todo** - Users can add a new todo item with a title
 2. **View Todos** - Display list of all todos with completion status
 3. **Complete Todo** - Mark a todo as done (toggle)
 4. **Delete Todo** - Remove a todo from the list with confirmation
 
 ### User Flow
+
 1. User opens app -> sees todo list (or empty state if none)
 2. Types a title in the input field -> presses Enter or clicks Add
 3. New todo appears at the top of the list, input clears
@@ -26,17 +30,20 @@ A minimal todo application for testing Loki Mode with a simple, well-defined sco
 ## Tech Stack
 
 ### Frontend
+
 - React 18 with TypeScript
 - Vite for bundling
 - TailwindCSS for styling
 
 ### Backend
+
 - Node.js 18+
 - Express.js
 - SQLite via better-sqlite3
 - zod for input validation
 
 ### Structure
+
 ```
 /
 ├── frontend/
@@ -84,17 +91,20 @@ CREATE TABLE todos (
 ## API Endpoints
 
 ### Todos
+
 - `GET /api/todos` - List all todos (ordered by created_at DESC)
 - `POST /api/todos` - Create todo (body: `{ title }`, returns created todo)
 - `PATCH /api/todos/:id` - Toggle completion (body: `{ completed }`)
 - `DELETE /api/todos/:id` - Delete todo (returns 204)
 
 ### Health
+
 - `GET /health` - Returns `{ status: "ok" }`
 
 ## Acceptance Criteria
 
 ### Add Todo
+
 - [ ] Input field for todo title
 - [ ] Submit on Enter key or button click
 - [ ] New todo appears in list
@@ -102,21 +112,25 @@ CREATE TABLE todos (
 - [ ] Empty title is rejected (frontend + backend validation)
 
 ### View Todos
+
 - [ ] Shows all todos in a list
 - [ ] Shows completion status (checkbox)
 - [ ] Empty state message when no todos exist
 
 ### Complete Todo
+
 - [ ] Checkbox toggles complete/incomplete
 - [ ] Visual strikethrough for completed items
 - [ ] Persists after page refresh
 
 ### Delete Todo
+
 - [ ] Delete button on each todo
 - [ ] Confirmation before delete
 - [ ] Removes from list and database
 
 ## Requirements
+
 - TypeScript throughout
 - Input validation on both frontend and backend
 - Proper HTTP status codes (201 for create, 204 for delete, 400 for validation errors)
@@ -124,11 +138,13 @@ CREATE TABLE todos (
 - Responsive design (usable on mobile)
 
 ## Testing
+
 - API tests: All 4 CRUD endpoints with valid and invalid input (Vitest + supertest)
 - Component tests: TodoItem renders correctly, AddTodo form submission works
 - Minimum 6 test cases covering happy path and error cases
 
 ## Out of Scope
+
 - User authentication
 - Due dates
 - Categories/tags
@@ -136,6 +152,7 @@ CREATE TABLE todos (
 - Cloud deployment
 
 ## Success Criteria
+
 - All 4 CRUD features functional end-to-end
 - All tests pass
 - No console errors

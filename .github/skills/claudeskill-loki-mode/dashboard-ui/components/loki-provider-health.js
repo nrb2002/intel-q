@@ -7,22 +7,22 @@
  * <loki-provider-health api-url="http://localhost:57374" theme="dark"></loki-provider-health>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {initial: string, color: string, bgColor: string}>} */
 const PROVIDER_ICONS = {
-  claude:  { initial: 'C', color: '#553DE9', bgColor: 'rgba(85, 61, 233, 0.12)' },
-  codex:   { initial: 'X', color: '#1FC5A8', bgColor: 'rgba(31, 197, 168, 0.12)' },
-  cline:   { initial: 'L', color: '#D4A03C', bgColor: 'rgba(212, 160, 60, 0.12)' },
-  aider:   { initial: 'A', color: '#C45B5B', bgColor: 'rgba(196, 91, 91, 0.12)' },
+  claude: { initial: "C", color: "#553DE9", bgColor: "rgba(85, 61, 233, 0.12)" },
+  codex: { initial: "X", color: "#1FC5A8", bgColor: "rgba(31, 197, 168, 0.12)" },
+  cline: { initial: "L", color: "#D4A03C", bgColor: "rgba(212, 160, 60, 0.12)" },
+  aider: { initial: "A", color: "#C45B5B", bgColor: "rgba(196, 91, 91, 0.12)" },
 };
 
 const STATUS_COLORS = {
-  healthy:  'var(--loki-green, #1FC5A8)',
-  degraded: 'var(--loki-yellow, #D4A03C)',
-  down:     'var(--loki-red, #C45B5B)',
-  unknown:  'var(--loki-text-muted, #939084)',
+  healthy: "var(--loki-green, #1FC5A8)",
+  degraded: "var(--loki-yellow, #D4A03C)",
+  down: "var(--loki-red, #C45B5B)",
+  unknown: "var(--loki-text-muted, #939084)",
 };
 
 /**
@@ -33,7 +33,7 @@ const STATUS_COLORS = {
  */
 export class LokiProviderHealth extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -58,17 +58,17 @@ export class LokiProviderHealth extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
@@ -85,7 +85,7 @@ export class LokiProviderHealth extends LokiElement {
 
   async _loadData() {
     try {
-      const data = await this._api._get('/api/v2/providers/health');
+      const data = await this._api._get("/api/v2/providers/health");
       this._providers = data.providers || [];
     } catch {
       // Use demo data if API unavailable
@@ -99,51 +99,63 @@ export class LokiProviderHealth extends LokiElement {
   _getDemoData() {
     return [
       {
-        name: 'claude', status: 'healthy', latency_ms: 245,
-        tokens_used: 125400, model: 'claude-opus-4-7',
-        api_version: 'v1', rate_limit: { remaining: 45, limit: 50 },
+        name: "claude",
+        status: "healthy",
+        latency_ms: 245,
+        tokens_used: 125400,
+        model: "claude-opus-4-7",
+        api_version: "v1",
+        rate_limit: { remaining: 45, limit: 50 },
         cost_usd: 3.42,
       },
       {
-        name: 'codex', status: 'degraded', latency_ms: 890,
-        tokens_used: 45200, model: 'gpt-5.3-codex',
-        api_version: 'v1', rate_limit: { remaining: 12, limit: 60 },
+        name: "codex",
+        status: "degraded",
+        latency_ms: 890,
+        tokens_used: 45200,
+        model: "gpt-5.3-codex",
+        api_version: "v1",
+        rate_limit: { remaining: 12, limit: 60 },
         cost_usd: 0.87,
       },
       {
-        name: 'cline', status: 'healthy', latency_ms: 320,
-        tokens_used: 78600, model: 'cline-default',
-        api_version: 'v1', rate_limit: { remaining: 55, limit: 60 },
+        name: "cline",
+        status: "healthy",
+        latency_ms: 320,
+        tokens_used: 78600,
+        model: "cline-default",
+        api_version: "v1",
+        rate_limit: { remaining: 55, limit: 60 },
         cost_usd: 1.15,
       },
     ];
   }
 
   _formatTokens(n) {
-    if (n == null) return '--';
-    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    if (n == null) return "--";
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1) + "K";
     return String(n);
   }
 
   _formatLatency(ms) {
-    if (ms == null) return '--';
-    if (ms < 1000) return ms + 'ms';
-    return (ms / 1000).toFixed(1) + 's';
+    if (ms == null) return "--";
+    if (ms < 1000) return ms + "ms";
+    return (ms / 1000).toFixed(1) + "s";
   }
 
   _formatCost(usd) {
-    if (usd == null) return '--';
-    return '$' + usd.toFixed(2);
+    if (usd == null) return "--";
+    return "$" + usd.toFixed(2);
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _toggleExpand(providerName) {
@@ -153,8 +165,8 @@ export class LokiProviderHealth extends LokiElement {
 
   _bindEvents() {
     const root = this.shadowRoot;
-    root.querySelectorAll('.provider-card').forEach(card => {
-      card.addEventListener('click', () => {
+    root.querySelectorAll(".provider-card").forEach((card) => {
+      card.addEventListener("click", () => {
         this._toggleExpand(card.dataset.provider);
       });
     });
@@ -351,19 +363,31 @@ export class LokiProviderHealth extends LokiElement {
     if (this._providers.length === 0) {
       content = '<div class="empty-state">No provider data available</div>';
     } else {
-      content = `<div class="provider-grid">${this._providers.map(p => {
-        const icon = PROVIDER_ICONS[p.name] || { initial: (p.name ?? '?').charAt(0).toUpperCase(), color: '#939084', bgColor: 'rgba(147, 144, 132, 0.12)' };
-        const statusColor = STATUS_COLORS[p.status] || STATUS_COLORS.unknown;
-        const isExpanded = this._expandedProvider === p.name;
-        const rateLimitPct = p.rate_limit ? ((p.rate_limit.remaining / p.rate_limit.limit) * 100) : 100;
-        const rateLimitColor = rateLimitPct > 50 ? 'var(--loki-green)' : rateLimitPct > 20 ? 'var(--loki-yellow)' : 'var(--loki-red)';
+      content = `<div class="provider-grid">${this._providers
+        .map((p) => {
+          const icon = PROVIDER_ICONS[p.name] || {
+            initial: (p.name ?? "?").charAt(0).toUpperCase(),
+            color: "#939084",
+            bgColor: "rgba(147, 144, 132, 0.12)",
+          };
+          const statusColor = STATUS_COLORS[p.status] || STATUS_COLORS.unknown;
+          const isExpanded = this._expandedProvider === p.name;
+          const rateLimitPct = p.rate_limit
+            ? (p.rate_limit.remaining / p.rate_limit.limit) * 100
+            : 100;
+          const rateLimitColor =
+            rateLimitPct > 50
+              ? "var(--loki-green)"
+              : rateLimitPct > 20
+                ? "var(--loki-yellow)"
+                : "var(--loki-red)";
 
-        return `
-          <div class="provider-card ${isExpanded ? 'expanded' : ''}" data-provider="${this._escapeHtml(p.name)}">
+          return `
+          <div class="provider-card ${isExpanded ? "expanded" : ""}" data-provider="${this._escapeHtml(p.name)}">
             <div class="card-header">
               <div class="provider-icon" style="background: ${icon.bgColor}; color: ${icon.color};">${icon.initial}</div>
               <span class="provider-name">${this._escapeHtml(p.name)}</span>
-              <div class="status-dot ${p.status === 'healthy' ? 'pulse' : ''}" style="background: ${statusColor};" title="${this._escapeHtml(p.status)}"></div>
+              <div class="status-dot ${p.status === "healthy" ? "pulse" : ""}" style="background: ${statusColor};" title="${this._escapeHtml(p.status)}"></div>
             </div>
             <div class="card-metrics">
               <div class="metric">
@@ -375,15 +399,17 @@ export class LokiProviderHealth extends LokiElement {
                 <span class="metric-value">${this._formatTokens(p.tokens_used)}</span>
               </div>
             </div>
-            ${isExpanded ? `
+            ${
+              isExpanded
+                ? `
               <div class="expand-details">
                 <div class="detail-row">
                   <span class="detail-label">Model</span>
-                  <span class="detail-value">${this._escapeHtml(p.model || '--')}</span>
+                  <span class="detail-value">${this._escapeHtml(p.model || "--")}</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">API Version</span>
-                  <span class="detail-value">${this._escapeHtml(p.api_version || '--')}</span>
+                  <span class="detail-value">${this._escapeHtml(p.api_version || "--")}</span>
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Cost</span>
@@ -391,18 +417,25 @@ export class LokiProviderHealth extends LokiElement {
                 </div>
                 <div class="detail-row">
                   <span class="detail-label">Rate Limit</span>
-                  <span class="detail-value">${p.rate_limit ? p.rate_limit.remaining + '/' + p.rate_limit.limit : '--'}</span>
-                  ${p.rate_limit ? `
+                  <span class="detail-value">${p.rate_limit ? p.rate_limit.remaining + "/" + p.rate_limit.limit : "--"}</span>
+                  ${
+                    p.rate_limit
+                      ? `
                     <div class="rate-limit-bar">
                       <div class="rate-limit-fill" style="width: ${rateLimitPct}%; background: ${rateLimitColor};"></div>
                     </div>
-                  ` : ''}
+                  `
+                      : ""
+                  }
                 </div>
               </div>
-            ` : ''}
+            `
+                : ""
+            }
           </div>
         `;
-      }).join('')}</div>`;
+        })
+        .join("")}</div>`;
     }
 
     s.innerHTML = `
@@ -420,8 +453,8 @@ export class LokiProviderHealth extends LokiElement {
   }
 }
 
-if (!customElements.get('loki-provider-health')) {
-  customElements.define('loki-provider-health', LokiProviderHealth);
+if (!customElements.get("loki-provider-health")) {
+  customElements.define("loki-provider-health", LokiProviderHealth);
 }
 
 export default LokiProviderHealth;

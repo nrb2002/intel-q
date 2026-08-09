@@ -6,14 +6,14 @@ The Autonomi Certified Developer certification validates your knowledge of Loki 
 
 ## Program Structure
 
-| Module | Topic | Questions |
-|--------|-------|-----------|
-| 1 | Core Concepts | 10 |
-| 2 | Enterprise Features | 10 |
-| 3 | Advanced Patterns | 10 |
-| 4 | Production Deployment | 10 |
-| 5 | Troubleshooting | 10 |
-| **Final Exam** | **All Modules** | **50** |
+| Module         | Topic                 | Questions |
+| -------------- | --------------------- | --------- |
+| 1              | Core Concepts         | 10        |
+| 2              | Enterprise Features   | 10        |
+| 3              | Advanced Patterns     | 10        |
+| 4              | Production Deployment | 10        |
+| 5              | Troubleshooting       | 10        |
+| **Final Exam** | **All Modules**       | **50**    |
 
 ## Passing Criteria
 

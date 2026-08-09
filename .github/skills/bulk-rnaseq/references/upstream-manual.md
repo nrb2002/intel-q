@@ -7,6 +7,7 @@ Install (bioconda): `conda create -n rnaseq -c bioconda -c conda-forge fastqc fa
 ## 0. Reference data
 
 You need, for your organism and a **pinned** annotation release:
+
 - genome FASTA (`genome.fa`) and matching annotation GTF (`annotation.gtf`) — for STAR/featureCounts.
 - transcriptome FASTA (`transcripts.fa`, cDNA) — for Salmon.
 
@@ -111,11 +112,11 @@ The wrong setting silently discards ~half the reads. Determine it once, then app
 
 Map the result to each tool:
 
-| Library | Salmon `-l` | featureCounts `-s` | STAR column (in `ReadsPerGene.out.tab`) |
-|---------|-------------|--------------------|------------------------------------------|
-| Unstranded | `IU` (auto `A`) | `0` | col 2 |
-| Forward (e.g. Ligation) | `ISF` (auto `A`) | `1` | col 3 |
-| Reverse (e.g. dUTP/TruSeq stranded) | `ISR` (auto `A`) | `2` | col 4 |
+| Library                             | Salmon `-l`      | featureCounts `-s` | STAR column (in `ReadsPerGene.out.tab`) |
+| ----------------------------------- | ---------------- | ------------------ | --------------------------------------- |
+| Unstranded                          | `IU` (auto `A`)  | `0`                | col 2                                   |
+| Forward (e.g. Ligation)             | `ISF` (auto `A`) | `1`                | col 3                                   |
+| Reverse (e.g. dUTP/TruSeq stranded) | `ISR` (auto `A`) | `2`                | col 4                                   |
 
 Illumina TruSeq Stranded mRNA — the most common kit — is **reverse** (`-s 2`, STAR col 4). When in doubt, let Salmon auto-detect and match the others to it.
 

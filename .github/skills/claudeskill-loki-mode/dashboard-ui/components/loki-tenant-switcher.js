@@ -8,8 +8,8 @@
  * <loki-tenant-switcher api-url="http://localhost:57374" theme="dark"></loki-tenant-switcher>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * Format a tenant for display.
@@ -17,11 +17,11 @@ import { getApiClient } from '../core/loki-api-client.js';
  * @returns {string} Display string
  */
 export function formatTenantLabel(tenant) {
-  if (!tenant) return 'Unknown';
+  if (!tenant) return "Unknown";
   if (tenant.slug && tenant.name) {
     return `${tenant.name} (${tenant.slug})`;
   }
-  return tenant.name || tenant.slug || 'Unknown';
+  return tenant.name || tenant.slug || "Unknown";
 }
 
 /**
@@ -33,7 +33,7 @@ export function formatTenantLabel(tenant) {
  */
 export class LokiTenantSwitcher extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -58,38 +58,38 @@ export class LokiTenantSwitcher extends LokiElement {
         this.render();
       }
     };
-    document.addEventListener('click', this._outsideClickHandler);
+    document.addEventListener("click", this._outsideClickHandler);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     if (this._outsideClickHandler) {
-      document.removeEventListener('click', this._outsideClickHandler);
+      document.removeEventListener("click", this._outsideClickHandler);
       this._outsideClickHandler = null;
     }
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url' && this._api) {
+    if (name === "api-url" && this._api) {
       this._api.baseUrl = newValue;
       this._loadData();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
   }
 
   async _loadData() {
     try {
       this._loading = true;
-      const data = await this._api._get('/api/v2/tenants');
-      this._tenants = Array.isArray(data) ? data : (data?.tenants || []);
+      const data = await this._api._get("/api/v2/tenants");
+      this._tenants = Array.isArray(data) ? data : data?.tenants || [];
       this._error = null;
     } catch (err) {
       this._error = `Failed to load tenants: ${err.message}`;
@@ -110,25 +110,27 @@ export class LokiTenantSwitcher extends LokiElement {
     this._dropdownOpen = false;
     this.render();
 
-    this.dispatchEvent(new CustomEvent('tenant-changed', {
-      detail: { tenantId, tenantName },
-      bubbles: true,
-      composed: true,
-    }));
+    this.dispatchEvent(
+      new CustomEvent("tenant-changed", {
+        detail: { tenantId, tenantName },
+        bubbles: true,
+        composed: true,
+      }),
+    );
   }
 
   _getSelectedTenant() {
     if (this._selectedTenantId == null) return null;
-    return this._tenants.find(t => (t.id || t.slug) === this._selectedTenantId) || null;
+    return this._tenants.find((t) => (t.id || t.slug) === this._selectedTenantId) || null;
   }
 
   _escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getStyles() {
@@ -274,10 +276,10 @@ export class LokiTenantSwitcher extends LokiElement {
     if (!s) return;
 
     const selected = this._getSelectedTenant();
-    const triggerText = selected ? formatTenantLabel(selected) : 'All Tenants';
+    const triggerText = selected ? formatTenantLabel(selected) : "All Tenants";
     const isOpen = this._dropdownOpen;
 
-    let dropdownHtml = '';
+    let dropdownHtml = "";
     if (isOpen) {
       let itemsHtml;
       if (this._loading) {
@@ -287,25 +289,27 @@ export class LokiTenantSwitcher extends LokiElement {
       } else {
         const allSelected = this._selectedTenantId == null;
         itemsHtml = `
-          <button class="dropdown-item all-tenants ${allSelected ? 'selected' : ''}" data-tenant-id="">
+          <button class="dropdown-item all-tenants ${allSelected ? "selected" : ""}" data-tenant-id="">
             <span class="tenant-name">All Tenants</span>
-            ${allSelected ? '<span class="check-mark">*</span>' : ''}
+            ${allSelected ? '<span class="check-mark">*</span>' : ""}
           </button>
-          ${this._tenants.map(t => {
-            const id = t.id || t.slug;
-            const isSelected = this._selectedTenantId === id;
-            return `
-              <button class="dropdown-item ${isSelected ? 'selected' : ''}"
+          ${this._tenants
+            .map((t) => {
+              const id = t.id || t.slug;
+              const isSelected = this._selectedTenantId === id;
+              return `
+              <button class="dropdown-item ${isSelected ? "selected" : ""}"
                       data-tenant-id="${this._escapeHtml(String(id))}"
-                      data-tenant-name="${this._escapeHtml(t.name || '')}">
+                      data-tenant-name="${this._escapeHtml(t.name || "")}">
                 <div class="tenant-info">
-                  <span class="tenant-name">${this._escapeHtml(t.name || 'Unnamed')}</span>
-                  ${t.slug ? `<span class="tenant-slug">${this._escapeHtml(t.slug)}</span>` : ''}
+                  <span class="tenant-name">${this._escapeHtml(t.name || "Unnamed")}</span>
+                  ${t.slug ? `<span class="tenant-slug">${this._escapeHtml(t.slug)}</span>` : ""}
                 </div>
-                ${isSelected ? '<span class="check-mark">*</span>' : ''}
+                ${isSelected ? '<span class="check-mark">*</span>' : ""}
               </button>
             `;
-          }).join('')}
+            })
+            .join("")}
         `;
       }
 
@@ -315,9 +319,9 @@ export class LokiTenantSwitcher extends LokiElement {
     s.innerHTML = `
       <style>${this.getBaseStyles()}${this._getStyles()}</style>
       <div class="tenant-switcher">
-        <button class="trigger ${isOpen ? 'open' : ''}" id="trigger-btn">
+        <button class="trigger ${isOpen ? "open" : ""}" id="trigger-btn">
           <span class="trigger-label">${this._escapeHtml(triggerText)}</span>
-          <span class="trigger-icon ${isOpen ? 'open' : ''}">&#9660;</span>
+          <span class="trigger-icon ${isOpen ? "open" : ""}">&#9660;</span>
         </button>
         ${dropdownHtml}
       </div>
@@ -330,27 +334,27 @@ export class LokiTenantSwitcher extends LokiElement {
     const s = this.shadowRoot;
     if (!s) return;
 
-    const triggerBtn = s.getElementById('trigger-btn');
+    const triggerBtn = s.getElementById("trigger-btn");
     if (triggerBtn) {
-      triggerBtn.addEventListener('click', (e) => {
+      triggerBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleDropdown();
       });
     }
 
-    s.querySelectorAll('.dropdown-item').forEach(item => {
-      item.addEventListener('click', (e) => {
+    s.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", (e) => {
         e.stopPropagation();
         const tenantId = item.dataset.tenantId || null;
         const tenantName = item.dataset.tenantName || null;
-        this._selectTenant(tenantId || null, tenantName || 'All Tenants');
+        this._selectTenant(tenantId || null, tenantName || "All Tenants");
       });
     });
   }
 }
 
-if (!customElements.get('loki-tenant-switcher')) {
-  customElements.define('loki-tenant-switcher', LokiTenantSwitcher);
+if (!customElements.get("loki-tenant-switcher")) {
+  customElements.define("loki-tenant-switcher", LokiTenantSwitcher);
 }
 
 export default LokiTenantSwitcher;

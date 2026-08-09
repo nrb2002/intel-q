@@ -5,6 +5,7 @@ Tasks complete top-to-bottom. New items found during work go at the
 bottom. Loop continues until status is "COMPLETE - APP DEPLOYED".
 
 Format:
+
 - [ ] open
 - [~] in progress (only one at a time)
 - [x] done (commit hash)
@@ -99,9 +100,9 @@ Last updated: 2026-05-18
 
 ## Phase F-5: SDK generation
 
-- [x] F-5.01 SDK codegen scaffolding (forge/sdk/{__init__,codegen}.py)
+- [x] F-5.01 SDK codegen scaffolding (forge/sdk/{**init**,codegen}.py)
 - [x] F-5.02 TypeScript SDK generator (types + client + index + package.json)
-- [x] F-5.03 Python SDK generator (types dataclasses + client + __init__)
+- [x] F-5.03 Python SDK generator (types dataclasses + client + **init**)
 - [~] F-5.04 Kotlin SDK generator (deferred; the shape is fixed and a follow-up adds the kotlin emit module)
 - [~] F-5.05 Swift SDK generator (deferred; same shape)
 - [~] F-5.06 Go SDK generator (deferred; same shape)
@@ -295,10 +296,10 @@ Phase F-1..F-5 + X-1..X-75 complete on claude/compare-litellm-loki-Y8Ke1.
       value in place (re-encrypt, bump version) instead of just
       writing the rotation policy
 - [~] X-86 OpenAPI signed-upload paths deferred (covered by X-81 + storage routes)
-      method PUT for signed-upload destinations (X-81 parity)
+  method PUT for signed-upload destinations (X-81 parity)
 - [~] X-87 forge.config schedule+secrets apply path covered by existing tests
-      missing the apply path for forge.yaml schedules + secrets
-      validation - tighten with a unit test
+  missing the apply path for forge.yaml schedules + secrets
+  validation - tighten with a unit test
 - [x] X-88 audit-chain idempotent on duplicate migrate_apply
       entry survives audit.verify even when migrate runs twice with
       the same spec (idempotency must not break the chain)

@@ -1,9 +1,11 @@
 # PRD: CLI File Organizer Tool
 
 ## Overview
+
 A Node.js command-line tool called `tidyfiles` that organizes files in a directory by type, date, or custom rules. Supports multiple subcommands, configuration files, colored terminal output, and generates a man page.
 
 ## Target Users
+
 - Developers who want to automate file organization
 - Power users managing downloads, screenshots, or project directories
 - System administrators maintaining file servers
@@ -11,6 +13,7 @@ A Node.js command-line tool called `tidyfiles` that organizes files in a directo
 ## Features
 
 ### MVP Features
+
 1. **Organize by Type** - Sort files into folders by extension (images/, documents/, videos/, etc.)
 2. **Organize by Date** - Sort files into YYYY/MM folders based on modification date
 3. **Custom Rules** - User-defined rules in a config file (e.g., move *.psd to design/)
@@ -21,6 +24,7 @@ A Node.js command-line tool called `tidyfiles` that organizes files in a directo
 8. **Verbose and Quiet Modes** - Control output verbosity
 
 ### CLI Interface
+
 ```
 tidyfiles <command> [options]
 
@@ -46,6 +50,7 @@ Options:
 ```
 
 ### User Flow
+
 1. User installs globally: `npm install -g tidyfiles`
 2. Initializes config: `tidyfiles config init`
 3. Previews: `tidyfiles sort ~/Downloads --dry-run`
@@ -54,6 +59,7 @@ Options:
 6. Undoes if needed: `tidyfiles undo`
 
 ## Tech Stack
+
 - Runtime: Node.js 18+
 - CLI framework: Commander.js
 - Colored output: chalk
@@ -64,6 +70,7 @@ Options:
 - Build: tsup (TypeScript to ESM/CJS)
 
 ### Structure
+
 ```
 /
 ├── src/
@@ -100,6 +107,7 @@ Options:
 ## Configuration File
 
 ### Default Config (.tidyfilesrc.json)
+
 ```json
 {
   "defaultMode": "type",
@@ -120,6 +128,7 @@ Options:
 ```
 
 ### Custom Rules Format
+
 ```json
 {
   "customRules": [
@@ -133,6 +142,7 @@ Options:
 ## Package Configuration
 
 ### package.json (required fields)
+
 ```json
 {
   "name": "tidyfiles",
@@ -145,20 +155,25 @@ Options:
 ```
 
 ### Entry Point Shebang
+
 The compiled entry point (`dist/index.js`) MUST include a shebang line as the first line:
+
 ```
 #!/usr/bin/env node
 ```
+
 Configure tsup to add this automatically via the `banner` option in `tsup.config.ts`:
+
 ```typescript
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm', 'cjs'],
-  banner: { js: '#!/usr/bin/env node' },
+  entry: ["src/index.ts"],
+  format: ["esm", "cjs"],
+  banner: { js: "#!/usr/bin/env node" },
 });
 ```
 
 ## Requirements
+
 - TypeScript throughout
 - Entry point must have `#!/usr/bin/env node` shebang for global CLI usage
 - package.json must include `bin` field mapping `tidyfiles` to the compiled entry point
@@ -172,6 +187,7 @@ export default defineConfig({
 - Man page installable via `npm install -g`
 
 ## Testing
+
 - Unit tests: Rule matching, config loading, file type detection (Vitest)
 - Integration tests: Sort operations on temp directory fixtures
 - Snapshot tests: CLI help output and stats output formatting
@@ -179,6 +195,7 @@ export default defineConfig({
 - All tests use temp directories (cleaned up after each test)
 
 ## Out of Scope
+
 - GUI or web interface
 - Cloud storage (S3, GCS) support
 - File deduplication
@@ -187,6 +204,7 @@ export default defineConfig({
 - Plugin system
 
 ## Success Criteria
+
 - All 7 CLI commands work correctly
 - Dry run accurately previews all operations
 - Undo fully reverses the last operation

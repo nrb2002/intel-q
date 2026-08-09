@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 
 /**
  * OAuth 2.1 + PKCE Authentication for MCP Server
@@ -12,7 +12,7 @@ const path = require('path');
  * accessible without authentication for backward compatibility.
  */
 
-const CONFIG_FILENAME = '.loki/mcp-auth.json';
+const CONFIG_FILENAME = ".loki/mcp-auth.json";
 
 class OAuthValidator {
   constructor(options) {
@@ -42,22 +42,21 @@ class OAuthValidator {
    */
   validate(request) {
     if (!this._enabled) {
-      return { valid: true, scope: '*' };
+      return { valid: true, scope: "*" };
     }
 
     // Extract token from params._meta.authorization or from request headers
     let token = null;
 
-    if (request && request.params && request.params._meta &&
-        request.params._meta.authorization) {
+    if (request && request.params && request.params._meta && request.params._meta.authorization) {
       const authHeader = request.params._meta.authorization;
-      if (authHeader.startsWith('Bearer ')) {
+      if (authHeader.startsWith("Bearer ")) {
         token = authHeader.slice(7);
       }
     }
 
     if (!token) {
-      return { valid: false, error: 'Missing or invalid authorization token' };
+      return { valid: false, error: "Missing or invalid authorization token" };
     }
 
     return this.validateToken(token);
@@ -68,24 +67,24 @@ class OAuthValidator {
    */
   validateToken(token) {
     if (!this._enabled) {
-      return { valid: true, scope: '*' };
+      return { valid: true, scope: "*" };
     }
 
-    if (!token || typeof token !== 'string') {
-      return { valid: false, error: 'Missing or invalid token' };
+    if (!token || typeof token !== "string") {
+      return { valid: false, error: "Missing or invalid token" };
     }
 
     const entry = this._tokens.get(token);
     if (!entry) {
-      return { valid: false, error: 'Invalid token' };
+      return { valid: false, error: "Invalid token" };
     }
 
     if (entry.expiresAt !== null && Date.now() >= entry.expiresAt) {
       this._tokens.delete(token);
-      return { valid: false, error: 'Token expired' };
+      return { valid: false, error: "Token expired" };
     }
 
-    return { valid: true, scope: entry.scope || '*' };
+    return { valid: true, scope: entry.scope || "*" };
   }
 
   /**
@@ -93,11 +92,11 @@ class OAuthValidator {
    */
   validateHeader(authorizationHeader) {
     if (!this._enabled) {
-      return { valid: true, scope: '*' };
+      return { valid: true, scope: "*" };
     }
 
-    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-      return { valid: false, error: 'Missing or invalid authorization header' };
+    if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+      return { valid: false, error: "Missing or invalid authorization header" };
     }
 
     return this.validateToken(authorizationHeader.slice(7));
@@ -108,9 +107,9 @@ class OAuthValidator {
    * In production, tokens come from an external OAuth provider.
    */
   issueToken(scope, ttlMs) {
-    const token = crypto.randomBytes(32).toString('hex');
+    const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = ttlMs ? Date.now() + ttlMs : null;
-    this._tokens.set(token, { scope: scope || '*', expiresAt });
+    this._tokens.set(token, { scope: scope || "*", expiresAt });
     return { token, expiresAt };
   }
 
@@ -129,10 +128,7 @@ class OAuthValidator {
     if (!codeVerifier || !codeChallenge) {
       return false;
     }
-    const computed = crypto
-      .createHash('sha256')
-      .update(codeVerifier)
-      .digest('base64url');
+    const computed = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
     return computed === codeChallenge;
   }
 
@@ -153,11 +149,11 @@ class OAuthValidator {
         this._enabled = false;
         return;
       }
-      const raw = fs.readFileSync(resolved, 'utf8');
+      const raw = fs.readFileSync(resolved, "utf8");
       const config = JSON.parse(raw);
       this._applyConfig(config);
     } catch (err) {
-      process.stderr.write('[mcp-auth] Failed to load config: ' + err.message + '\n');
+      process.stderr.write("[mcp-auth] Failed to load config: " + err.message + "\n");
       this._enabled = false;
     }
   }
@@ -174,8 +170,8 @@ class OAuthValidator {
     if (process.env.MCP_AUTH_TOKEN) {
       this._enabled = true;
       this._tokens.set(process.env.MCP_AUTH_TOKEN, {
-        scope: process.env.MCP_AUTH_SCOPE || '*',
-        expiresAt: null
+        scope: process.env.MCP_AUTH_SCOPE || "*",
+        expiresAt: null,
       });
       return;
     }
@@ -198,7 +194,7 @@ class OAuthValidator {
           this._clients.set(client.id, {
             secret: client.secret,
             redirectUri: client.redirectUri,
-            scopes: client.scopes || ['*']
+            scopes: client.scopes || ["*"],
           });
         }
       }
@@ -208,8 +204,8 @@ class OAuthValidator {
       for (const t of config.tokens) {
         if (t.value) {
           this._tokens.set(t.value, {
-            scope: t.scope || '*',
-            expiresAt: t.expiresAt ? new Date(t.expiresAt).getTime() : null
+            scope: t.scope || "*",
+            expiresAt: t.expiresAt ? new Date(t.expiresAt).getTime() : null,
           });
         }
       }

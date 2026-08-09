@@ -2,7 +2,7 @@
 
 `nf-core/rnaseq` is the field-standard, community-audited pipeline for the reads → counts stage. It chains FastQC → trimming (Trim Galore or fastp) → optional contaminant/rRNA removal → alignment + quantification (STAR+Salmon, STAR+RSEM, or HISAT2) → tximport gene/transcript count merging → extensive QC → MultiQC, with reviewed defaults and per-process containers.
 
-This file covers *how to run it and what comes out*. For the Nextflow engine itself — profiles, executors, containers (Docker/Singularity/Conda/Wave), HPC/cloud, `-resume` caching, offline/`nf-core pipelines download` — use the **`nextflow`** skill. Don't duplicate that here.
+This file covers _how to run it and what comes out_. For the Nextflow engine itself — profiles, executors, containers (Docker/Singularity/Conda/Wave), HPC/cloud, `-resume` caching, offline/`nf-core pipelines download` — use the **`nextflow`** skill. Don't duplicate that here.
 
 Current stable revision at time of writing: **3.26.0** (always pin with `-r`).
 
@@ -28,12 +28,12 @@ Validate before launching: `python scripts/validate_samplesheet.py --samplesheet
 
 Set with `--aligner` (genome alignment) or `--pseudo_aligner` (lightweight). Defaults are well chosen.
 
-| Option | What it does | When |
-|--------|--------------|------|
-| `--aligner star_salmon` (default) | STAR genome alignment, Salmon quantifies against the transcriptome from the BAM | The standard, defensible default — gives counts **and** a genome BAM for QC/IGV |
-| `--aligner star_rsem` | STAR + RSEM | You specifically need RSEM estimates |
-| `--aligner hisat2` | HISAT2 alignment (no built-in transcript quant) | Lower memory than STAR |
-| `--pseudo_aligner salmon` (+ `--skip_alignment`) | Salmon quasi-mapping only, no BAM | Fastest/lightest; you don't need a genome BAM |
+| Option                                           | What it does                                                                    | When                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `--aligner star_salmon` (default)                | STAR genome alignment, Salmon quantifies against the transcriptome from the BAM | The standard, defensible default — gives counts **and** a genome BAM for QC/IGV |
+| `--aligner star_rsem`                            | STAR + RSEM                                                                     | You specifically need RSEM estimates                                            |
+| `--aligner hisat2`                               | HISAT2 alignment (no built-in transcript quant)                                 | Lower memory than STAR                                                          |
+| `--pseudo_aligner salmon` (+ `--skip_alignment`) | Salmon quasi-mapping only, no BAM                                               | Fastest/lightest; you don't need a genome BAM                                   |
 
 `star_salmon` is recommended unless you have a specific reason otherwise. You can also add `--pseudo_aligner salmon` alongside an aligner to get both.
 

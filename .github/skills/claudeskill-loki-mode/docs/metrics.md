@@ -42,49 +42,49 @@ Returns metrics in OpenMetrics text format. No authentication required by defaul
 
 ### Session Metrics
 
-| Metric | Type | Description |
-|--------|------|-------------|
-| `loki_session_status` | gauge | Current session status: 0=stopped, 1=running, 2=paused |
-| `loki_iteration_current` | gauge | Current iteration number |
-| `loki_iteration_max` | gauge | Maximum configured iterations (from LOKI_MAX_ITERATIONS) |
-| `loki_uptime_seconds` | gauge | Seconds since session started |
+| Metric                   | Type  | Description                                              |
+| ------------------------ | ----- | -------------------------------------------------------- |
+| `loki_session_status`    | gauge | Current session status: 0=stopped, 1=running, 2=paused   |
+| `loki_iteration_current` | gauge | Current iteration number                                 |
+| `loki_iteration_max`     | gauge | Maximum configured iterations (from LOKI_MAX_ITERATIONS) |
+| `loki_uptime_seconds`    | gauge | Seconds since session started                            |
 
 ### Task Metrics
 
-| Metric | Type | Labels | Description |
-|--------|------|--------|-------------|
+| Metric             | Type  | Labels   | Description                                                        |
+| ------------------ | ----- | -------- | ------------------------------------------------------------------ |
 | `loki_tasks_total` | gauge | `status` | Number of tasks by status: pending, in_progress, completed, failed |
 
 ### Agent Metrics
 
-| Metric | Type | Description |
-|--------|------|-------------|
+| Metric               | Type  | Description                       |
+| -------------------- | ----- | --------------------------------- |
 | `loki_agents_active` | gauge | Number of currently active agents |
-| `loki_agents_total` | gauge | Total number of registered agents |
+| `loki_agents_total`  | gauge | Total number of registered agents |
 
 ### Cost Metrics
 
-| Metric | Type | Description |
-|--------|------|-------------|
+| Metric          | Type  | Description                         |
+| --------------- | ----- | ----------------------------------- |
 | `loki_cost_usd` | gauge | Estimated total session cost in USD |
 
 ### Event Metrics
 
-| Metric | Type | Description |
-|--------|------|-------------|
+| Metric              | Type    | Description                                     |
+| ------------------- | ------- | ----------------------------------------------- |
 | `loki_events_total` | counter | Total number of events recorded in events.jsonl |
 
 ## Data Sources
 
 Metrics are derived from `.loki/` flat files:
 
-| File | Metrics |
-|------|---------|
-| `dashboard-state.json` | session_status, iteration_current, iteration_max, tasks_total, agents_active |
-| `loki.pid` | session_status (PID alive check fallback), uptime_seconds |
-| `state/agents.json` | agents_total |
-| `metrics/efficiency/*.json` | cost_usd |
-| `events.jsonl` | events_total (line count) |
+| File                        | Metrics                                                                      |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `dashboard-state.json`      | session_status, iteration_current, iteration_max, tasks_total, agents_active |
+| `loki.pid`                  | session_status (PID alive check fallback), uptime_seconds                    |
+| `state/agents.json`         | agents_total                                                                 |
+| `metrics/efficiency/*.json` | cost_usd                                                                     |
+| `events.jsonl`              | events_total (line count)                                                    |
 
 ## CLI Usage
 
@@ -110,43 +110,43 @@ Add to `prometheus.yml`:
 
 ```yaml
 scrape_configs:
-  - job_name: 'loki-mode'
+  - job_name: "loki-mode"
     scrape_interval: 15s
     static_configs:
-      - targets: ['localhost:57374']
+      - targets: ["localhost:57374"]
         labels:
-          environment: 'production'
-          project: 'my-app'
+          environment: "production"
+          project: "my-app"
 ```
 
 ### With TLS/HTTPS
 
 ```yaml
 scrape_configs:
-  - job_name: 'loki-mode'
+  - job_name: "loki-mode"
     scheme: https
     tls_config:
-      insecure_skip_verify: true  # For self-signed certs
+      insecure_skip_verify: true # For self-signed certs
     static_configs:
-      - targets: ['localhost:57374']
+      - targets: ["localhost:57374"]
 ```
 
 ### With Authentication (via reverse proxy)
 
 ```yaml
 scrape_configs:
-  - job_name: 'loki-mode'
+  - job_name: "loki-mode"
     scheme: https
-    bearer_token: 'loki_xxx...'
+    bearer_token: "loki_xxx..."
     static_configs:
-      - targets: ['dashboard.example.com:443']
+      - targets: ["dashboard.example.com:443"]
 ```
 
 ### Service Discovery (Kubernetes)
 
 ```yaml
 scrape_configs:
-  - job_name: 'loki-mode'
+  - job_name: "loki-mode"
     kubernetes_sd_configs:
       - role: pod
         namespaces:
@@ -281,6 +281,7 @@ sudo systemctl restart datadog-agent
 ### Datadog Dashboards
 
 View metrics in Datadog:
+
 - Navigate to Dashboards > New Dashboard
 - Add widgets with queries like `loki.session_status`, `loki.cost_usd`
 - Set up monitors for cost thresholds and session failures
@@ -362,17 +363,18 @@ Configure alerts in Grafana panels:
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_METRICS_ENABLED` | `false` | Enable `/metrics` endpoint |
-| `LOKI_METRICS_PORT` | `57374` | Port for metrics endpoint (same as dashboard) |
-| `LOKI_METRICS_PATH` | `/metrics` | Endpoint path |
+| Variable               | Default    | Description                                   |
+| ---------------------- | ---------- | --------------------------------------------- |
+| `LOKI_METRICS_ENABLED` | `false`    | Enable `/metrics` endpoint                    |
+| `LOKI_METRICS_PORT`    | `57374`    | Port for metrics endpoint (same as dashboard) |
+| `LOKI_METRICS_PATH`    | `/metrics` | Endpoint path                                 |
 
 ## Best Practices
 
 ### Production Deployment
 
 1. Enable metrics in production:
+
 ```bash
 export LOKI_METRICS_ENABLED=true
 ```

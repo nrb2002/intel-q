@@ -21,305 +21,305 @@ export const THEMES = {
   // Standard light theme (Autonomi cream/editorial)
   light: {
     // Background layers
-    '--loki-bg-primary': '#FFFEFB',
-    '--loki-bg-secondary': '#F8F4F0',
-    '--loki-bg-tertiary': '#ECEAE3',
-    '--loki-bg-card': '#ffffff',
-    '--loki-bg-hover': '#F3EFE9',
-    '--loki-bg-active': '#E6E2DA',
-    '--loki-bg-overlay': 'rgba(32, 21, 21, 0.5)',
+    "--loki-bg-primary": "#FFFEFB",
+    "--loki-bg-secondary": "#F8F4F0",
+    "--loki-bg-tertiary": "#ECEAE3",
+    "--loki-bg-card": "#ffffff",
+    "--loki-bg-hover": "#F3EFE9",
+    "--loki-bg-active": "#E6E2DA",
+    "--loki-bg-overlay": "rgba(32, 21, 21, 0.5)",
 
     // Accent colors (violet)
-    '--loki-accent': '#553DE9',
-    '--loki-accent-hover': '#4432c4',
-    '--loki-accent-active': '#3828a0',
-    '--loki-accent-light': '#7B6BF0',
-    '--loki-accent-muted': 'rgba(85, 61, 233, 0.10)',
+    "--loki-accent": "#553DE9",
+    "--loki-accent-hover": "#4432c4",
+    "--loki-accent-active": "#3828a0",
+    "--loki-accent-light": "#7B6BF0",
+    "--loki-accent-muted": "rgba(85, 61, 233, 0.10)",
 
     // Text hierarchy
-    '--loki-text-primary': '#201515',
-    '--loki-text-secondary': '#36342E',
-    '--loki-text-muted': '#939084',
-    '--loki-text-disabled': '#C5C0B1',
-    '--loki-text-inverse': '#ffffff',
+    "--loki-text-primary": "#201515",
+    "--loki-text-secondary": "#36342E",
+    "--loki-text-muted": "#939084",
+    "--loki-text-disabled": "#C5C0B1",
+    "--loki-text-inverse": "#ffffff",
 
     // Border colors (warm)
-    '--loki-border': '#ECEAE3',
-    '--loki-border-light': '#C5C0B1',
-    '--loki-border-focus': '#553DE9',
+    "--loki-border": "#ECEAE3",
+    "--loki-border-light": "#C5C0B1",
+    "--loki-border-focus": "#553DE9",
 
     // Status colors - semantic
-    '--loki-success': '#1FC5A8',
-    '--loki-success-muted': 'rgba(31, 197, 168, 0.12)',
-    '--loki-warning': '#D4A03C',
-    '--loki-warning-muted': 'rgba(212, 160, 60, 0.12)',
-    '--loki-error': '#C45B5B',
-    '--loki-error-muted': 'rgba(196, 91, 91, 0.12)',
-    '--loki-info': '#2F71E3',
-    '--loki-info-muted': 'rgba(47, 113, 227, 0.12)',
+    "--loki-success": "#1FC5A8",
+    "--loki-success-muted": "rgba(31, 197, 168, 0.12)",
+    "--loki-warning": "#D4A03C",
+    "--loki-warning-muted": "rgba(212, 160, 60, 0.12)",
+    "--loki-error": "#C45B5B",
+    "--loki-error-muted": "rgba(196, 91, 91, 0.12)",
+    "--loki-info": "#2F71E3",
+    "--loki-info-muted": "rgba(47, 113, 227, 0.12)",
 
     // Legacy aliases (for backwards compatibility)
-    '--loki-green': '#1FC5A8',
-    '--loki-green-muted': 'rgba(31, 197, 168, 0.12)',
-    '--loki-yellow': '#D4A03C',
-    '--loki-yellow-muted': 'rgba(212, 160, 60, 0.12)',
-    '--loki-red': '#C45B5B',
-    '--loki-red-muted': 'rgba(196, 91, 91, 0.12)',
-    '--loki-blue': '#2F71E3',
-    '--loki-blue-muted': 'rgba(47, 113, 227, 0.12)',
-    '--loki-purple': '#553DE9',
-    '--loki-purple-muted': 'rgba(85, 61, 233, 0.10)',
+    "--loki-green": "#1FC5A8",
+    "--loki-green-muted": "rgba(31, 197, 168, 0.12)",
+    "--loki-yellow": "#D4A03C",
+    "--loki-yellow-muted": "rgba(212, 160, 60, 0.12)",
+    "--loki-red": "#C45B5B",
+    "--loki-red-muted": "rgba(196, 91, 91, 0.12)",
+    "--loki-blue": "#2F71E3",
+    "--loki-blue-muted": "rgba(47, 113, 227, 0.12)",
+    "--loki-purple": "#553DE9",
+    "--loki-purple-muted": "rgba(85, 61, 233, 0.10)",
 
     // Model-specific colors
-    '--loki-opus': '#d97706',
-    '--loki-sonnet': '#553DE9',
-    '--loki-haiku': '#1FC5A8',
+    "--loki-opus": "#d97706",
+    "--loki-sonnet": "#553DE9",
+    "--loki-haiku": "#1FC5A8",
 
     // Shadow definitions
-    '--loki-shadow-sm': '0 1px 2px rgba(32, 21, 21, 0.04)',
-    '--loki-shadow-md': '0 4px 6px rgba(32, 21, 21, 0.06)',
-    '--loki-shadow-lg': '0 10px 15px rgba(32, 21, 21, 0.08)',
-    '--loki-shadow-focus': '0 0 0 3px rgba(85, 61, 233, 0.25)',
+    "--loki-shadow-sm": "0 1px 2px rgba(32, 21, 21, 0.04)",
+    "--loki-shadow-md": "0 4px 6px rgba(32, 21, 21, 0.06)",
+    "--loki-shadow-lg": "0 10px 15px rgba(32, 21, 21, 0.08)",
+    "--loki-shadow-focus": "0 0 0 3px rgba(85, 61, 233, 0.25)",
   },
 
   // Standard dark theme (Autonomi midnight/Agent View)
   dark: {
     // Background layers (deep midnight purple)
-    '--loki-bg-primary': '#1A0F2E',
-    '--loki-bg-secondary': '#140B24',
-    '--loki-bg-tertiary': '#251842',
-    '--loki-bg-card': '#1F1338',
-    '--loki-bg-hover': '#2A1F4A',
-    '--loki-bg-active': '#352A55',
-    '--loki-bg-overlay': 'rgba(20, 11, 36, 0.85)',
+    "--loki-bg-primary": "#1A0F2E",
+    "--loki-bg-secondary": "#140B24",
+    "--loki-bg-tertiary": "#251842",
+    "--loki-bg-card": "#1F1338",
+    "--loki-bg-hover": "#2A1F4A",
+    "--loki-bg-active": "#352A55",
+    "--loki-bg-overlay": "rgba(20, 11, 36, 0.85)",
 
     // Accent colors (violet, brighter for dark bg)
-    '--loki-accent': '#7B6BF0',
-    '--loki-accent-hover': '#9488F5',
-    '--loki-accent-active': '#6258D0',
-    '--loki-accent-light': '#9488F5',
-    '--loki-accent-muted': 'rgba(123, 107, 240, 0.18)',
+    "--loki-accent": "#7B6BF0",
+    "--loki-accent-hover": "#9488F5",
+    "--loki-accent-active": "#6258D0",
+    "--loki-accent-light": "#9488F5",
+    "--loki-accent-muted": "rgba(123, 107, 240, 0.18)",
 
     // Text hierarchy
-    '--loki-text-primary': '#F0ECF8',
-    '--loki-text-secondary': '#C0B8D0',
-    '--loki-text-muted': '#8B7FA8',
-    '--loki-text-disabled': '#5A4E78',
-    '--loki-text-inverse': '#1A0F2E',
+    "--loki-text-primary": "#F0ECF8",
+    "--loki-text-secondary": "#C0B8D0",
+    "--loki-text-muted": "#8B7FA8",
+    "--loki-text-disabled": "#5A4E78",
+    "--loki-text-inverse": "#1A0F2E",
 
     // Border colors
-    '--loki-border': '#2A1F3E',
-    '--loki-border-light': '#3D3060',
-    '--loki-border-focus': '#7B6BF0',
+    "--loki-border": "#2A1F3E",
+    "--loki-border-light": "#3D3060",
+    "--loki-border-focus": "#7B6BF0",
 
     // Status colors - semantic
-    '--loki-success': '#2ED8B6',
-    '--loki-success-muted': 'rgba(46, 216, 182, 0.18)',
-    '--loki-warning': '#E8B84A',
-    '--loki-warning-muted': 'rgba(232, 184, 74, 0.18)',
-    '--loki-error': '#E07070',
-    '--loki-error-muted': 'rgba(224, 112, 112, 0.18)',
-    '--loki-info': '#5A9CF5',
-    '--loki-info-muted': 'rgba(90, 156, 245, 0.18)',
+    "--loki-success": "#2ED8B6",
+    "--loki-success-muted": "rgba(46, 216, 182, 0.18)",
+    "--loki-warning": "#E8B84A",
+    "--loki-warning-muted": "rgba(232, 184, 74, 0.18)",
+    "--loki-error": "#E07070",
+    "--loki-error-muted": "rgba(224, 112, 112, 0.18)",
+    "--loki-info": "#5A9CF5",
+    "--loki-info-muted": "rgba(90, 156, 245, 0.18)",
 
     // Legacy aliases
-    '--loki-green': '#2ED8B6',
-    '--loki-green-muted': 'rgba(46, 216, 182, 0.18)',
-    '--loki-yellow': '#E8B84A',
-    '--loki-yellow-muted': 'rgba(232, 184, 74, 0.18)',
-    '--loki-red': '#E07070',
-    '--loki-red-muted': 'rgba(224, 112, 112, 0.18)',
-    '--loki-blue': '#5A9CF5',
-    '--loki-blue-muted': 'rgba(90, 156, 245, 0.18)',
-    '--loki-purple': '#9488F5',
-    '--loki-purple-muted': 'rgba(148, 136, 245, 0.18)',
+    "--loki-green": "#2ED8B6",
+    "--loki-green-muted": "rgba(46, 216, 182, 0.18)",
+    "--loki-yellow": "#E8B84A",
+    "--loki-yellow-muted": "rgba(232, 184, 74, 0.18)",
+    "--loki-red": "#E07070",
+    "--loki-red-muted": "rgba(224, 112, 112, 0.18)",
+    "--loki-blue": "#5A9CF5",
+    "--loki-blue-muted": "rgba(90, 156, 245, 0.18)",
+    "--loki-purple": "#9488F5",
+    "--loki-purple-muted": "rgba(148, 136, 245, 0.18)",
 
     // Model colors
-    '--loki-opus': '#f59e0b',
-    '--loki-sonnet': '#7B6BF0',
-    '--loki-haiku': '#2ED8B6',
+    "--loki-opus": "#f59e0b",
+    "--loki-sonnet": "#7B6BF0",
+    "--loki-haiku": "#2ED8B6",
 
     // Shadows (subtle glows on dark)
-    '--loki-shadow-sm': '0 1px 2px rgba(0, 0, 0, 0.4)',
-    '--loki-shadow-md': '0 4px 12px rgba(0, 0, 0, 0.5)',
-    '--loki-shadow-lg': '0 10px 25px rgba(0, 0, 0, 0.6)',
-    '--loki-shadow-focus': '0 0 0 3px rgba(123, 107, 240, 0.30)',
+    "--loki-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.4)",
+    "--loki-shadow-md": "0 4px 12px rgba(0, 0, 0, 0.5)",
+    "--loki-shadow-lg": "0 10px 25px rgba(0, 0, 0, 0.6)",
+    "--loki-shadow-focus": "0 0 0 3px rgba(123, 107, 240, 0.30)",
   },
 
   // High contrast theme (accessibility)
-  'high-contrast': {
+  "high-contrast": {
     // Background layers - pure black/white
-    '--loki-bg-primary': '#000000',
-    '--loki-bg-secondary': '#0a0a0a',
-    '--loki-bg-tertiary': '#141414',
-    '--loki-bg-card': '#0a0a0a',
-    '--loki-bg-hover': '#1a1a1a',
-    '--loki-bg-active': '#242424',
-    '--loki-bg-overlay': 'rgba(0, 0, 0, 0.9)',
+    "--loki-bg-primary": "#000000",
+    "--loki-bg-secondary": "#0a0a0a",
+    "--loki-bg-tertiary": "#141414",
+    "--loki-bg-card": "#0a0a0a",
+    "--loki-bg-hover": "#1a1a1a",
+    "--loki-bg-active": "#242424",
+    "--loki-bg-overlay": "rgba(0, 0, 0, 0.9)",
 
     // High contrast accent (purple)
-    '--loki-accent': '#c084fc',
-    '--loki-accent-hover': '#d8b4fe',
-    '--loki-accent-active': '#e9d5ff',
-    '--loki-accent-light': '#d8b4fe',
-    '--loki-accent-muted': 'rgba(192, 132, 252, 0.25)',
+    "--loki-accent": "#c084fc",
+    "--loki-accent-hover": "#d8b4fe",
+    "--loki-accent-active": "#e9d5ff",
+    "--loki-accent-light": "#d8b4fe",
+    "--loki-accent-muted": "rgba(192, 132, 252, 0.25)",
 
     // High contrast text
-    '--loki-text-primary': '#ffffff',
-    '--loki-text-secondary': '#e0e0e0',
-    '--loki-text-muted': '#b0b0b0',
-    '--loki-text-disabled': '#666666',
-    '--loki-text-inverse': '#000000',
+    "--loki-text-primary": "#ffffff",
+    "--loki-text-secondary": "#e0e0e0",
+    "--loki-text-muted": "#b0b0b0",
+    "--loki-text-disabled": "#666666",
+    "--loki-text-inverse": "#000000",
 
     // High contrast borders
-    '--loki-border': '#ffffff',
-    '--loki-border-light': '#cccccc',
-    '--loki-border-focus': '#c084fc',
+    "--loki-border": "#ffffff",
+    "--loki-border-light": "#cccccc",
+    "--loki-border-focus": "#c084fc",
 
     // High contrast status colors
-    '--loki-success': '#4ade80',
-    '--loki-success-muted': 'rgba(74, 222, 128, 0.25)',
-    '--loki-warning': '#fde047',
-    '--loki-warning-muted': 'rgba(253, 224, 71, 0.25)',
-    '--loki-error': '#f87171',
-    '--loki-error-muted': 'rgba(248, 113, 113, 0.25)',
-    '--loki-info': '#60a5fa',
-    '--loki-info-muted': 'rgba(96, 165, 250, 0.25)',
+    "--loki-success": "#4ade80",
+    "--loki-success-muted": "rgba(74, 222, 128, 0.25)",
+    "--loki-warning": "#fde047",
+    "--loki-warning-muted": "rgba(253, 224, 71, 0.25)",
+    "--loki-error": "#f87171",
+    "--loki-error-muted": "rgba(248, 113, 113, 0.25)",
+    "--loki-info": "#60a5fa",
+    "--loki-info-muted": "rgba(96, 165, 250, 0.25)",
 
     // Legacy aliases
-    '--loki-green': '#4ade80',
-    '--loki-green-muted': 'rgba(74, 222, 128, 0.25)',
-    '--loki-yellow': '#fde047',
-    '--loki-yellow-muted': 'rgba(253, 224, 71, 0.25)',
-    '--loki-red': '#f87171',
-    '--loki-red-muted': 'rgba(248, 113, 113, 0.25)',
-    '--loki-blue': '#60a5fa',
-    '--loki-blue-muted': 'rgba(96, 165, 250, 0.25)',
-    '--loki-purple': '#c084fc',
-    '--loki-purple-muted': 'rgba(192, 132, 252, 0.25)',
+    "--loki-green": "#4ade80",
+    "--loki-green-muted": "rgba(74, 222, 128, 0.25)",
+    "--loki-yellow": "#fde047",
+    "--loki-yellow-muted": "rgba(253, 224, 71, 0.25)",
+    "--loki-red": "#f87171",
+    "--loki-red-muted": "rgba(248, 113, 113, 0.25)",
+    "--loki-blue": "#60a5fa",
+    "--loki-blue-muted": "rgba(96, 165, 250, 0.25)",
+    "--loki-purple": "#c084fc",
+    "--loki-purple-muted": "rgba(192, 132, 252, 0.25)",
 
     // Model colors
-    '--loki-opus': '#fbbf24',
-    '--loki-sonnet': '#818cf8',
-    '--loki-haiku': '#34d399',
+    "--loki-opus": "#fbbf24",
+    "--loki-sonnet": "#818cf8",
+    "--loki-haiku": "#34d399",
 
     // High contrast shadows (using outlines instead)
-    '--loki-shadow-sm': 'none',
-    '--loki-shadow-md': 'none',
-    '--loki-shadow-lg': 'none',
-    '--loki-shadow-focus': '0 0 0 3px #c084fc',
+    "--loki-shadow-sm": "none",
+    "--loki-shadow-md": "none",
+    "--loki-shadow-lg": "none",
+    "--loki-shadow-focus": "0 0 0 3px #c084fc",
   },
 
   // VS Code Light theme - maps VS Code variables
-  'vscode-light': {
-    '--loki-bg-primary': 'var(--vscode-editor-background, #ffffff)',
-    '--loki-bg-secondary': 'var(--vscode-sideBar-background, #f3f3f3)',
-    '--loki-bg-tertiary': 'var(--vscode-input-background, #ffffff)',
-    '--loki-bg-card': 'var(--vscode-editor-background, #ffffff)',
-    '--loki-bg-hover': 'var(--vscode-list-hoverBackground, #e8e8e8)',
-    '--loki-bg-active': 'var(--vscode-list-activeSelectionBackground, #0060c0)',
-    '--loki-bg-overlay': 'rgba(0, 0, 0, 0.4)',
+  "vscode-light": {
+    "--loki-bg-primary": "var(--vscode-editor-background, #ffffff)",
+    "--loki-bg-secondary": "var(--vscode-sideBar-background, #f3f3f3)",
+    "--loki-bg-tertiary": "var(--vscode-input-background, #ffffff)",
+    "--loki-bg-card": "var(--vscode-editor-background, #ffffff)",
+    "--loki-bg-hover": "var(--vscode-list-hoverBackground, #e8e8e8)",
+    "--loki-bg-active": "var(--vscode-list-activeSelectionBackground, #0060c0)",
+    "--loki-bg-overlay": "rgba(0, 0, 0, 0.4)",
 
-    '--loki-accent': 'var(--vscode-focusBorder, #0066cc)',
-    '--loki-accent-hover': 'var(--vscode-button-hoverBackground, #0055aa)',
-    '--loki-accent-active': 'var(--vscode-button-background, #007acc)',
-    '--loki-accent-light': 'var(--vscode-focusBorder, #0066cc)',
-    '--loki-accent-muted': 'var(--vscode-editor-selectionBackground, rgba(0, 102, 204, 0.2))',
+    "--loki-accent": "var(--vscode-focusBorder, #0066cc)",
+    "--loki-accent-hover": "var(--vscode-button-hoverBackground, #0055aa)",
+    "--loki-accent-active": "var(--vscode-button-background, #007acc)",
+    "--loki-accent-light": "var(--vscode-focusBorder, #0066cc)",
+    "--loki-accent-muted": "var(--vscode-editor-selectionBackground, rgba(0, 102, 204, 0.2))",
 
-    '--loki-text-primary': 'var(--vscode-foreground, #333333)',
-    '--loki-text-secondary': 'var(--vscode-descriptionForeground, #717171)',
-    '--loki-text-muted': 'var(--vscode-disabledForeground, #a0a0a0)',
-    '--loki-text-disabled': 'var(--vscode-disabledForeground, #cccccc)',
-    '--loki-text-inverse': 'var(--vscode-button-foreground, #ffffff)',
+    "--loki-text-primary": "var(--vscode-foreground, #333333)",
+    "--loki-text-secondary": "var(--vscode-descriptionForeground, #717171)",
+    "--loki-text-muted": "var(--vscode-disabledForeground, #a0a0a0)",
+    "--loki-text-disabled": "var(--vscode-disabledForeground, #cccccc)",
+    "--loki-text-inverse": "var(--vscode-button-foreground, #ffffff)",
 
-    '--loki-border': 'var(--vscode-widget-border, #c8c8c8)',
-    '--loki-border-light': 'var(--vscode-widget-border, #e0e0e0)',
-    '--loki-border-focus': 'var(--vscode-focusBorder, #0066cc)',
+    "--loki-border": "var(--vscode-widget-border, #c8c8c8)",
+    "--loki-border-light": "var(--vscode-widget-border, #e0e0e0)",
+    "--loki-border-focus": "var(--vscode-focusBorder, #0066cc)",
 
-    '--loki-success': 'var(--vscode-testing-iconPassed, #388a34)',
-    '--loki-success-muted': 'rgba(56, 138, 52, 0.15)',
-    '--loki-warning': 'var(--vscode-editorWarning-foreground, #bf8803)',
-    '--loki-warning-muted': 'rgba(191, 136, 3, 0.15)',
-    '--loki-error': 'var(--vscode-errorForeground, #e51400)',
-    '--loki-error-muted': 'rgba(229, 20, 0, 0.15)',
-    '--loki-info': 'var(--vscode-editorInfo-foreground, #1a85ff)',
-    '--loki-info-muted': 'rgba(26, 133, 255, 0.15)',
+    "--loki-success": "var(--vscode-testing-iconPassed, #388a34)",
+    "--loki-success-muted": "rgba(56, 138, 52, 0.15)",
+    "--loki-warning": "var(--vscode-editorWarning-foreground, #bf8803)",
+    "--loki-warning-muted": "rgba(191, 136, 3, 0.15)",
+    "--loki-error": "var(--vscode-errorForeground, #e51400)",
+    "--loki-error-muted": "rgba(229, 20, 0, 0.15)",
+    "--loki-info": "var(--vscode-editorInfo-foreground, #1a85ff)",
+    "--loki-info-muted": "rgba(26, 133, 255, 0.15)",
 
-    '--loki-green': 'var(--vscode-testing-iconPassed, #388a34)',
-    '--loki-green-muted': 'rgba(56, 138, 52, 0.15)',
-    '--loki-yellow': 'var(--vscode-editorWarning-foreground, #bf8803)',
-    '--loki-yellow-muted': 'rgba(191, 136, 3, 0.15)',
-    '--loki-red': 'var(--vscode-errorForeground, #e51400)',
-    '--loki-red-muted': 'rgba(229, 20, 0, 0.15)',
-    '--loki-blue': 'var(--vscode-editorInfo-foreground, #1a85ff)',
-    '--loki-blue-muted': 'rgba(26, 133, 255, 0.15)',
-    '--loki-purple': '#9333ea',
-    '--loki-purple-muted': 'rgba(147, 51, 234, 0.15)',
+    "--loki-green": "var(--vscode-testing-iconPassed, #388a34)",
+    "--loki-green-muted": "rgba(56, 138, 52, 0.15)",
+    "--loki-yellow": "var(--vscode-editorWarning-foreground, #bf8803)",
+    "--loki-yellow-muted": "rgba(191, 136, 3, 0.15)",
+    "--loki-red": "var(--vscode-errorForeground, #e51400)",
+    "--loki-red-muted": "rgba(229, 20, 0, 0.15)",
+    "--loki-blue": "var(--vscode-editorInfo-foreground, #1a85ff)",
+    "--loki-blue-muted": "rgba(26, 133, 255, 0.15)",
+    "--loki-purple": "#9333ea",
+    "--loki-purple-muted": "rgba(147, 51, 234, 0.15)",
 
-    '--loki-opus': '#d97706',
-    '--loki-sonnet': '#4f46e5',
-    '--loki-haiku': '#059669',
+    "--loki-opus": "#d97706",
+    "--loki-sonnet": "#4f46e5",
+    "--loki-haiku": "#059669",
 
-    '--loki-shadow-sm': '0 1px 2px rgba(0, 0, 0, 0.05)',
-    '--loki-shadow-md': '0 2px 4px rgba(0, 0, 0, 0.1)',
-    '--loki-shadow-lg': '0 4px 8px rgba(0, 0, 0, 0.15)',
-    '--loki-shadow-focus': '0 0 0 2px var(--vscode-focusBorder, #0066cc)',
+    "--loki-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.05)",
+    "--loki-shadow-md": "0 2px 4px rgba(0, 0, 0, 0.1)",
+    "--loki-shadow-lg": "0 4px 8px rgba(0, 0, 0, 0.15)",
+    "--loki-shadow-focus": "0 0 0 2px var(--vscode-focusBorder, #0066cc)",
   },
 
   // VS Code Dark theme
-  'vscode-dark': {
-    '--loki-bg-primary': 'var(--vscode-editor-background, #1e1e1e)',
-    '--loki-bg-secondary': 'var(--vscode-sideBar-background, #252526)',
-    '--loki-bg-tertiary': 'var(--vscode-input-background, #3c3c3c)',
-    '--loki-bg-card': 'var(--vscode-editor-background, #1e1e1e)',
-    '--loki-bg-hover': 'var(--vscode-list-hoverBackground, #2a2d2e)',
-    '--loki-bg-active': 'var(--vscode-list-activeSelectionBackground, #094771)',
-    '--loki-bg-overlay': 'rgba(0, 0, 0, 0.6)',
+  "vscode-dark": {
+    "--loki-bg-primary": "var(--vscode-editor-background, #1e1e1e)",
+    "--loki-bg-secondary": "var(--vscode-sideBar-background, #252526)",
+    "--loki-bg-tertiary": "var(--vscode-input-background, #3c3c3c)",
+    "--loki-bg-card": "var(--vscode-editor-background, #1e1e1e)",
+    "--loki-bg-hover": "var(--vscode-list-hoverBackground, #2a2d2e)",
+    "--loki-bg-active": "var(--vscode-list-activeSelectionBackground, #094771)",
+    "--loki-bg-overlay": "rgba(0, 0, 0, 0.6)",
 
-    '--loki-accent': 'var(--vscode-focusBorder, #007fd4)',
-    '--loki-accent-hover': 'var(--vscode-button-hoverBackground, #1177bb)',
-    '--loki-accent-active': 'var(--vscode-button-background, #0e639c)',
-    '--loki-accent-light': 'var(--vscode-focusBorder, #007fd4)',
-    '--loki-accent-muted': 'var(--vscode-editor-selectionBackground, rgba(0, 127, 212, 0.25))',
+    "--loki-accent": "var(--vscode-focusBorder, #007fd4)",
+    "--loki-accent-hover": "var(--vscode-button-hoverBackground, #1177bb)",
+    "--loki-accent-active": "var(--vscode-button-background, #0e639c)",
+    "--loki-accent-light": "var(--vscode-focusBorder, #007fd4)",
+    "--loki-accent-muted": "var(--vscode-editor-selectionBackground, rgba(0, 127, 212, 0.25))",
 
-    '--loki-text-primary': 'var(--vscode-foreground, #cccccc)',
-    '--loki-text-secondary': 'var(--vscode-descriptionForeground, #9d9d9d)',
-    '--loki-text-muted': 'var(--vscode-disabledForeground, #6b6b6b)',
-    '--loki-text-disabled': 'var(--vscode-disabledForeground, #4d4d4d)',
-    '--loki-text-inverse': 'var(--vscode-button-foreground, #ffffff)',
+    "--loki-text-primary": "var(--vscode-foreground, #cccccc)",
+    "--loki-text-secondary": "var(--vscode-descriptionForeground, #9d9d9d)",
+    "--loki-text-muted": "var(--vscode-disabledForeground, #6b6b6b)",
+    "--loki-text-disabled": "var(--vscode-disabledForeground, #4d4d4d)",
+    "--loki-text-inverse": "var(--vscode-button-foreground, #ffffff)",
 
-    '--loki-border': 'var(--vscode-widget-border, #454545)',
-    '--loki-border-light': 'var(--vscode-widget-border, #5a5a5a)',
-    '--loki-border-focus': 'var(--vscode-focusBorder, #007fd4)',
+    "--loki-border": "var(--vscode-widget-border, #454545)",
+    "--loki-border-light": "var(--vscode-widget-border, #5a5a5a)",
+    "--loki-border-focus": "var(--vscode-focusBorder, #007fd4)",
 
-    '--loki-success': 'var(--vscode-testing-iconPassed, #89d185)',
-    '--loki-success-muted': 'rgba(137, 209, 133, 0.2)',
-    '--loki-warning': 'var(--vscode-editorWarning-foreground, #cca700)',
-    '--loki-warning-muted': 'rgba(204, 167, 0, 0.2)',
-    '--loki-error': 'var(--vscode-errorForeground, #f48771)',
-    '--loki-error-muted': 'rgba(244, 135, 113, 0.2)',
-    '--loki-info': 'var(--vscode-editorInfo-foreground, #75beff)',
-    '--loki-info-muted': 'rgba(117, 190, 255, 0.2)',
+    "--loki-success": "var(--vscode-testing-iconPassed, #89d185)",
+    "--loki-success-muted": "rgba(137, 209, 133, 0.2)",
+    "--loki-warning": "var(--vscode-editorWarning-foreground, #cca700)",
+    "--loki-warning-muted": "rgba(204, 167, 0, 0.2)",
+    "--loki-error": "var(--vscode-errorForeground, #f48771)",
+    "--loki-error-muted": "rgba(244, 135, 113, 0.2)",
+    "--loki-info": "var(--vscode-editorInfo-foreground, #75beff)",
+    "--loki-info-muted": "rgba(117, 190, 255, 0.2)",
 
-    '--loki-green': 'var(--vscode-testing-iconPassed, #89d185)',
-    '--loki-green-muted': 'rgba(137, 209, 133, 0.2)',
-    '--loki-yellow': 'var(--vscode-editorWarning-foreground, #cca700)',
-    '--loki-yellow-muted': 'rgba(204, 167, 0, 0.2)',
-    '--loki-red': 'var(--vscode-errorForeground, #f48771)',
-    '--loki-red-muted': 'rgba(244, 135, 113, 0.2)',
-    '--loki-blue': 'var(--vscode-editorInfo-foreground, #75beff)',
-    '--loki-blue-muted': 'rgba(117, 190, 255, 0.2)',
-    '--loki-purple': '#c084fc',
-    '--loki-purple-muted': 'rgba(192, 132, 252, 0.2)',
+    "--loki-green": "var(--vscode-testing-iconPassed, #89d185)",
+    "--loki-green-muted": "rgba(137, 209, 133, 0.2)",
+    "--loki-yellow": "var(--vscode-editorWarning-foreground, #cca700)",
+    "--loki-yellow-muted": "rgba(204, 167, 0, 0.2)",
+    "--loki-red": "var(--vscode-errorForeground, #f48771)",
+    "--loki-red-muted": "rgba(244, 135, 113, 0.2)",
+    "--loki-blue": "var(--vscode-editorInfo-foreground, #75beff)",
+    "--loki-blue-muted": "rgba(117, 190, 255, 0.2)",
+    "--loki-purple": "#c084fc",
+    "--loki-purple-muted": "rgba(192, 132, 252, 0.2)",
 
-    '--loki-opus': '#f59e0b',
-    '--loki-sonnet': '#818cf8',
-    '--loki-haiku': '#34d399',
+    "--loki-opus": "#f59e0b",
+    "--loki-sonnet": "#818cf8",
+    "--loki-haiku": "#34d399",
 
-    '--loki-shadow-sm': '0 1px 2px rgba(0, 0, 0, 0.3)',
-    '--loki-shadow-md': '0 2px 4px rgba(0, 0, 0, 0.4)',
-    '--loki-shadow-lg': '0 4px 8px rgba(0, 0, 0, 0.5)',
-    '--loki-shadow-focus': '0 0 0 2px var(--vscode-focusBorder, #007fd4)',
+    "--loki-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.3)",
+    "--loki-shadow-md": "0 2px 4px rgba(0, 0, 0, 0.4)",
+    "--loki-shadow-lg": "0 4px 8px rgba(0, 0, 0, 0.5)",
+    "--loki-shadow-focus": "0 0 0 2px var(--vscode-focusBorder, #007fd4)",
   },
 };
 
@@ -331,25 +331,25 @@ export const THEMES = {
  * Consistent spacing scale (in pixels)
  */
 export const SPACING = {
-  xs: '4px',
-  sm: '8px',
-  md: '12px',
-  lg: '16px',
-  xl: '24px',
-  '2xl': '32px',
-  '3xl': '48px',
+  xs: "4px",
+  sm: "8px",
+  md: "12px",
+  lg: "16px",
+  xl: "24px",
+  "2xl": "32px",
+  "3xl": "48px",
 };
 
 /**
  * Consistent border radius scale
  */
 export const RADIUS = {
-  none: '0',
-  sm: '2px',
-  md: '4px',
-  lg: '5px',
-  xl: '5px',
-  full: '9999px',
+  none: "0",
+  sm: "2px",
+  md: "4px",
+  lg: "5px",
+  xl: "5px",
+  full: "9999px",
 };
 
 /**
@@ -362,25 +362,25 @@ export const TYPOGRAPHY = {
     mono: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
   },
   fontSize: {
-    xs: '10px',
-    sm: '11px',
-    base: '12px',
-    md: '13px',
-    lg: '14px',
-    xl: '16px',
-    '2xl': '18px',
-    '3xl': '24px',
+    xs: "10px",
+    sm: "11px",
+    base: "12px",
+    md: "13px",
+    lg: "14px",
+    xl: "16px",
+    "2xl": "18px",
+    "3xl": "24px",
   },
   fontWeight: {
-    normal: '400',
-    medium: '500',
-    semibold: '600',
-    bold: '700',
+    normal: "400",
+    medium: "500",
+    semibold: "600",
+    bold: "700",
   },
   lineHeight: {
-    tight: '1.25',
-    normal: '1.5',
-    relaxed: '1.75',
+    tight: "1.25",
+    normal: "1.5",
+    relaxed: "1.75",
   },
 };
 
@@ -389,16 +389,16 @@ export const TYPOGRAPHY = {
  */
 export const ANIMATION = {
   duration: {
-    fast: '100ms',
-    normal: '200ms',
-    slow: '300ms',
-    slower: '500ms',
+    fast: "100ms",
+    normal: "200ms",
+    slow: "300ms",
+    slower: "500ms",
   },
   easing: {
-    default: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    in: 'cubic-bezier(0.4, 0, 1, 1)',
-    out: 'cubic-bezier(0, 0, 0.2, 1)',
-    bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    default: "cubic-bezier(0.4, 0, 0.2, 1)",
+    in: "cubic-bezier(0.4, 0, 1, 1)",
+    out: "cubic-bezier(0, 0, 0.2, 1)",
+    bounce: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
   },
 };
 
@@ -406,24 +406,24 @@ export const ANIMATION = {
  * Responsive breakpoints
  */
 export const BREAKPOINTS = {
-  sm: '640px',
-  md: '768px',
-  lg: '1024px',
-  xl: '1280px',
-  '2xl': '1536px',
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
 };
 
 /**
  * Z-index scale
  */
 export const Z_INDEX = {
-  base: '0',
-  dropdown: '100',
-  sticky: '200',
-  modal: '300',
-  popover: '400',
-  tooltip: '500',
-  toast: '600',
+  base: "0",
+  dropdown: "100",
+  sticky: "200",
+  modal: "300",
+  popover: "400",
+  tooltip: "500",
+  toast: "600",
 };
 
 // =============================================================================
@@ -435,29 +435,29 @@ export const Z_INDEX = {
  */
 export const KEYBOARD_SHORTCUTS = {
   // Navigation
-  'navigation.nextItem': { key: 'ArrowDown', modifiers: [] },
-  'navigation.prevItem': { key: 'ArrowUp', modifiers: [] },
-  'navigation.nextSection': { key: 'Tab', modifiers: [] },
-  'navigation.prevSection': { key: 'Tab', modifiers: ['Shift'] },
-  'navigation.confirm': { key: 'Enter', modifiers: [] },
-  'navigation.cancel': { key: 'Escape', modifiers: [] },
+  "navigation.nextItem": { key: "ArrowDown", modifiers: [] },
+  "navigation.prevItem": { key: "ArrowUp", modifiers: [] },
+  "navigation.nextSection": { key: "Tab", modifiers: [] },
+  "navigation.prevSection": { key: "Tab", modifiers: ["Shift"] },
+  "navigation.confirm": { key: "Enter", modifiers: [] },
+  "navigation.cancel": { key: "Escape", modifiers: [] },
 
   // Actions
-  'action.refresh': { key: 'r', modifiers: ['Meta'] },
-  'action.search': { key: 'k', modifiers: ['Meta'] },
-  'action.save': { key: 's', modifiers: ['Meta'] },
-  'action.close': { key: 'w', modifiers: ['Meta'] },
+  "action.refresh": { key: "r", modifiers: ["Meta"] },
+  "action.search": { key: "k", modifiers: ["Meta"] },
+  "action.save": { key: "s", modifiers: ["Meta"] },
+  "action.close": { key: "w", modifiers: ["Meta"] },
 
   // Theme
-  'theme.toggle': { key: 'd', modifiers: ['Meta', 'Shift'] },
+  "theme.toggle": { key: "d", modifiers: ["Meta", "Shift"] },
 
   // Tasks
-  'task.create': { key: 'n', modifiers: ['Meta'] },
-  'task.complete': { key: 'Enter', modifiers: ['Meta'] },
+  "task.create": { key: "n", modifiers: ["Meta"] },
+  "task.complete": { key: "Enter", modifiers: ["Meta"] },
 
   // View
-  'view.toggleLogs': { key: 'l', modifiers: ['Meta', 'Shift'] },
-  'view.toggleMemory': { key: 'm', modifiers: ['Meta', 'Shift'] },
+  "view.toggleLogs": { key: "l", modifiers: ["Meta", "Shift"] },
+  "view.toggleMemory": { key: "m", modifiers: ["Meta", "Shift"] },
 };
 
 // =============================================================================
@@ -470,67 +470,67 @@ export const KEYBOARD_SHORTCUTS = {
 export const ARIA_PATTERNS = {
   // Button patterns
   button: {
-    role: 'button',
+    role: "button",
     tabIndex: 0,
   },
 
   // Tab patterns
   tablist: {
-    role: 'tablist',
+    role: "tablist",
   },
   tab: {
-    role: 'tab',
+    role: "tab",
     ariaSelected: false,
     tabIndex: -1,
   },
   tabpanel: {
-    role: 'tabpanel',
+    role: "tabpanel",
     tabIndex: 0,
   },
 
   // List patterns
   list: {
-    role: 'list',
+    role: "list",
   },
   listitem: {
-    role: 'listitem',
+    role: "listitem",
   },
 
   // Live regions
   livePolite: {
-    ariaLive: 'polite',
+    ariaLive: "polite",
     ariaAtomic: true,
   },
   liveAssertive: {
-    ariaLive: 'assertive',
+    ariaLive: "assertive",
     ariaAtomic: true,
   },
 
   // Dialog patterns
   dialog: {
-    role: 'dialog',
+    role: "dialog",
     ariaModal: true,
   },
   alertdialog: {
-    role: 'alertdialog',
+    role: "alertdialog",
     ariaModal: true,
   },
 
   // Status patterns
   status: {
-    role: 'status',
-    ariaLive: 'polite',
+    role: "status",
+    ariaLive: "polite",
   },
   alert: {
-    role: 'alert',
-    ariaLive: 'assertive',
+    role: "alert",
+    ariaLive: "assertive",
   },
 
   // Log pattern
   log: {
-    role: 'log',
-    ariaLive: 'polite',
-    ariaRelevant: 'additions',
+    role: "log",
+    ariaLive: "polite",
+    ariaRelevant: "additions",
   },
 };
 
@@ -545,11 +545,11 @@ export const ARIA_PATTERNS = {
  */
 export function generateThemeCSS(themeName) {
   const theme = THEMES[themeName];
-  if (!theme) return '';
+  if (!theme) return "";
 
   return Object.entries(theme)
     .map(([key, value]) => `${key}: ${value};`)
-    .join('\n    ');
+    .join("\n    ");
 }
 
 /**
@@ -563,8 +563,8 @@ export function generateTokensCSS() {
     --loki-space-md: ${SPACING.md};
     --loki-space-lg: ${SPACING.lg};
     --loki-space-xl: ${SPACING.xl};
-    --loki-space-2xl: ${SPACING['2xl']};
-    --loki-space-3xl: ${SPACING['3xl']};
+    --loki-space-2xl: ${SPACING["2xl"]};
+    --loki-space-3xl: ${SPACING["3xl"]};
 
     /* Border Radius */
     --loki-radius-none: ${RADIUS.none};
@@ -584,8 +584,8 @@ export function generateTokensCSS() {
     --loki-text-md: ${TYPOGRAPHY.fontSize.md};
     --loki-text-lg: ${TYPOGRAPHY.fontSize.lg};
     --loki-text-xl: ${TYPOGRAPHY.fontSize.xl};
-    --loki-text-2xl: ${TYPOGRAPHY.fontSize['2xl']};
-    --loki-text-3xl: ${TYPOGRAPHY.fontSize['3xl']};
+    --loki-text-2xl: ${TYPOGRAPHY.fontSize["2xl"]};
+    --loki-text-3xl: ${TYPOGRAPHY.fontSize["3xl"]};
 
     /* Animation */
     --loki-duration-fast: ${ANIMATION.duration.fast};
@@ -905,8 +905,8 @@ export const BASE_STYLES = `
  * Unified Theme Manager for all contexts
  */
 export class UnifiedThemeManager {
-  static STORAGE_KEY = 'loki-theme';
-  static CONTEXT_KEY = 'loki-context';
+  static STORAGE_KEY = "loki-theme";
+  static CONTEXT_KEY = "loki-context";
 
   /**
    * Detect current context
@@ -914,18 +914,20 @@ export class UnifiedThemeManager {
    */
   static detectContext() {
     // Check for VS Code webview
-    if (typeof acquireVsCodeApi !== 'undefined' ||
-        document.body.classList.contains('vscode-body') ||
-        getComputedStyle(document.documentElement).getPropertyValue('--vscode-editor-background')) {
-      return 'vscode';
+    if (
+      typeof acquireVsCodeApi !== "undefined" ||
+      document.body.classList.contains("vscode-body") ||
+      getComputedStyle(document.documentElement).getPropertyValue("--vscode-editor-background")
+    ) {
+      return "vscode";
     }
 
     // Check for CLI context (could be via env var or data attribute)
-    if (document.documentElement.dataset.lokiContext === 'cli') {
-      return 'cli';
+    if (document.documentElement.dataset.lokiContext === "cli") {
+      return "cli";
     }
 
-    return 'browser';
+    return "browser";
   }
 
   /**
@@ -935,24 +937,26 @@ export class UnifiedThemeManager {
   static detectVSCodeTheme() {
     const body = document.body;
 
-    if (body.classList.contains('vscode-high-contrast')) {
-      return 'high-contrast';
+    if (body.classList.contains("vscode-high-contrast")) {
+      return "high-contrast";
     }
-    if (body.classList.contains('vscode-dark')) {
-      return 'dark';
+    if (body.classList.contains("vscode-dark")) {
+      return "dark";
     }
-    if (body.classList.contains('vscode-light')) {
-      return 'light';
+    if (body.classList.contains("vscode-light")) {
+      return "light";
     }
 
     // Fallback: check background color
-    const bgColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--vscode-editor-background');
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue(
+      "--vscode-editor-background",
+    );
     if (bgColor) {
       const rgb = bgColor.match(/\d+/g);
       if (rgb) {
-        const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
-        return brightness > 128 ? 'light' : 'dark';
+        const brightness =
+          (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+        return brightness > 128 ? "light" : "dark";
       }
     }
 
@@ -966,10 +970,10 @@ export class UnifiedThemeManager {
   static getTheme() {
     const context = UnifiedThemeManager.detectContext();
 
-    if (context === 'vscode') {
+    if (context === "vscode") {
       const vsTheme = UnifiedThemeManager.detectVSCodeTheme();
-      if (vsTheme === 'high-contrast') return 'high-contrast';
-      return vsTheme === 'dark' ? 'vscode-dark' : 'vscode-light';
+      if (vsTheme === "high-contrast") return "high-contrast";
+      return vsTheme === "dark" ? "vscode-dark" : "vscode-light";
     }
 
     // Browser/CLI: check localStorage, then system preference
@@ -977,7 +981,7 @@ export class UnifiedThemeManager {
     if (saved && THEMES[saved]) return saved;
 
     // Light-first: default to light unless system explicitly prefers dark
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   /**
@@ -991,12 +995,14 @@ export class UnifiedThemeManager {
     }
 
     localStorage.setItem(UnifiedThemeManager.STORAGE_KEY, theme);
-    document.documentElement.setAttribute('data-loki-theme', theme);
+    document.documentElement.setAttribute("data-loki-theme", theme);
 
     // Dispatch event for components
-    window.dispatchEvent(new CustomEvent('loki-theme-change', {
-      detail: { theme, context: UnifiedThemeManager.detectContext() }
-    }));
+    window.dispatchEvent(
+      new CustomEvent("loki-theme-change", {
+        detail: { theme, context: UnifiedThemeManager.detectContext() },
+      }),
+    );
   }
 
   /**
@@ -1007,10 +1013,10 @@ export class UnifiedThemeManager {
     const current = UnifiedThemeManager.getTheme();
     let next;
 
-    if (current.includes('dark') || current === 'high-contrast') {
-      next = current.startsWith('vscode') ? 'vscode-light' : 'light';
+    if (current.includes("dark") || current === "high-contrast") {
+      next = current.startsWith("vscode") ? "vscode-light" : "light";
     } else {
-      next = current.startsWith('vscode') ? 'vscode-dark' : 'dark';
+      next = current.startsWith("vscode") ? "vscode-dark" : "dark";
     }
 
     UnifiedThemeManager.setTheme(next);
@@ -1048,28 +1054,30 @@ export class UnifiedThemeManager {
    */
   static init() {
     const theme = UnifiedThemeManager.getTheme();
-    document.documentElement.setAttribute('data-loki-theme', theme);
+    document.documentElement.setAttribute("data-loki-theme", theme);
 
     // Listen for system preference changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
       if (!localStorage.getItem(UnifiedThemeManager.STORAGE_KEY)) {
         UnifiedThemeManager.setTheme(UnifiedThemeManager.getTheme());
       }
     });
 
     // VS Code theme change observer
-    if (UnifiedThemeManager.detectContext() === 'vscode') {
+    if (UnifiedThemeManager.detectContext() === "vscode") {
       const observer = new MutationObserver(() => {
         const newTheme = UnifiedThemeManager.getTheme();
-        document.documentElement.setAttribute('data-loki-theme', newTheme);
-        window.dispatchEvent(new CustomEvent('loki-theme-change', {
-          detail: { theme: newTheme, context: 'vscode' }
-        }));
+        document.documentElement.setAttribute("data-loki-theme", newTheme);
+        window.dispatchEvent(
+          new CustomEvent("loki-theme-change", {
+            detail: { theme: newTheme, context: "vscode" },
+          }),
+        );
       });
 
       observer.observe(document.body, {
         attributes: true,
-        attributeFilter: ['class']
+        attributeFilter: ["class"],
       });
     }
   }
@@ -1151,9 +1159,9 @@ export class KeyboardHandler {
 
     if (key !== shortcut.key.toLowerCase()) return false;
 
-    const hasCtrl = modifiers.includes('Ctrl') || modifiers.includes('Meta');
-    const hasShift = modifiers.includes('Shift');
-    const hasAlt = modifiers.includes('Alt');
+    const hasCtrl = modifiers.includes("Ctrl") || modifiers.includes("Meta");
+    const hasShift = modifiers.includes("Shift");
+    const hasAlt = modifiers.includes("Alt");
 
     const ctrlMatch = (event.ctrlKey || event.metaKey) === hasCtrl;
     const shiftMatch = event.shiftKey === hasShift;
@@ -1170,7 +1178,7 @@ export class KeyboardHandler {
     if (!this._boundHandler) {
       this._boundHandler = (e) => this.handleEvent(e);
     }
-    element.addEventListener('keydown', this._boundHandler);
+    element.addEventListener("keydown", this._boundHandler);
   }
 
   /**
@@ -1179,7 +1187,7 @@ export class KeyboardHandler {
    */
   detach(element) {
     if (this._boundHandler) {
-      element.removeEventListener('keydown', this._boundHandler);
+      element.removeEventListener("keydown", this._boundHandler);
     }
   }
 }

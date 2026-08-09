@@ -19,6 +19,7 @@ Automatically applies prompt repetition for Haiku agents to improve accuracy by 
 ## When to Activate
 
 This skill activates automatically for:
+
 - **Haiku agents** executing structured tasks
 - **Unit test execution**
 - **Linting and formatting**
@@ -43,11 +44,11 @@ The repeated prompt enables bidirectional attention within the parallelizable pr
 
 ## Performance Impact
 
-| Task Type | Without Skill | With Skill | Improvement |
-|-----------|---------------|------------|-------------|
-| Unit tests | 65% accuracy | 95% accuracy | +46% |
-| Linting | 72% accuracy | 98% accuracy | +36% |
-| Parsing | 58% accuracy | 94% accuracy | +62% |
+| Task Type  | Without Skill | With Skill   | Improvement |
+| ---------- | ------------- | ------------ | ----------- |
+| Unit tests | 65% accuracy  | 95% accuracy | +46%        |
+| Linting    | 72% accuracy  | 98% accuracy | +36%        |
+| Parsing    | 58% accuracy  | 94% accuracy | +62%        |
 
 **Latency:** Zero impact (occurs in prefill, not generation)
 
@@ -80,6 +81,7 @@ LOKI_PROMPT_REPETITION_COUNT=3
 ## Agent Instructions
 
 When you are a **Haiku agent** and the task involves:
+
 - Running tests
 - Executing linters
 - Parsing structured data

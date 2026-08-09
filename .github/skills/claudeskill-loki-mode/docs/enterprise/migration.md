@@ -18,12 +18,12 @@ v5.50.0 introduced the enterprise protocol layer (P0-1 through P0-9) as foundati
 
 Real-time notifications for execution events, approval requests, and quality gate results.
 
-| Feature | Env Var |
-|---------|---------|
-| Slack bot notifications | `LOKI_SLACK_BOT_TOKEN` |
-| Slack webhook verification | `LOKI_SLACK_SIGNING_SECRET` |
-| Teams webhook notifications | `LOKI_TEAMS_WEBHOOK_URL` |
-| Teams webhook verification | `LOKI_TEAMS_WEBHOOK_SECRET` |
+| Feature                     | Env Var                     |
+| --------------------------- | --------------------------- |
+| Slack bot notifications     | `LOKI_SLACK_BOT_TOKEN`      |
+| Slack webhook verification  | `LOKI_SLACK_SIGNING_SECRET` |
+| Teams webhook notifications | `LOKI_TEAMS_WEBHOOK_URL`    |
+| Teams webhook verification  | `LOKI_TEAMS_WEBHOOK_SECRET` |
 
 See `docs/enterprise/integration-cookbook.md` for setup guides.
 
@@ -31,20 +31,20 @@ See `docs/enterprise/integration-cookbook.md` for setup guides.
 
 New `/api/v2/` endpoints provide tenant-scoped resource management, run lifecycle control, and structured event timelines.
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v2/tenants` | GET, POST | List and create tenants |
-| `/api/v2/tenants/:id` | GET, DELETE | Get or delete a tenant |
-| `/api/v2/runs` | GET | List runs (filterable by project, status) |
-| `/api/v2/runs/:id` | GET | Get run details |
-| `/api/v2/runs/:id/cancel` | POST | Cancel a running execution |
-| `/api/v2/runs/:id/replay` | POST | Replay a previous run |
-| `/api/v2/runs/:id/timeline` | GET | Get run event timeline |
-| `/api/v2/keys` | GET, POST | List and create API keys |
-| `/api/v2/keys/:id/rotate` | POST | Rotate an API key |
-| `/api/v2/keys/:id` | DELETE | Revoke an API key |
-| `/api/v2/audit` | GET | Query audit logs |
-| `/api/v2/audit/verify` | GET | Verify audit chain integrity |
+| Endpoint                    | Method      | Description                               |
+| --------------------------- | ----------- | ----------------------------------------- |
+| `/api/v2/tenants`           | GET, POST   | List and create tenants                   |
+| `/api/v2/tenants/:id`       | GET, DELETE | Get or delete a tenant                    |
+| `/api/v2/runs`              | GET         | List runs (filterable by project, status) |
+| `/api/v2/runs/:id`          | GET         | Get run details                           |
+| `/api/v2/runs/:id/cancel`   | POST        | Cancel a running execution                |
+| `/api/v2/runs/:id/replay`   | POST        | Replay a previous run                     |
+| `/api/v2/runs/:id/timeline` | GET         | Get run event timeline                    |
+| `/api/v2/keys`              | GET, POST   | List and create API keys                  |
+| `/api/v2/keys/:id/rotate`   | POST        | Rotate an API key                         |
+| `/api/v2/keys/:id`          | DELETE      | Revoke an API key                         |
+| `/api/v2/audit`             | GET         | Query audit logs                          |
+| `/api/v2/audit/verify`      | GET         | Verify audit chain integrity              |
 
 The v1 API (`/api/`) continues to work unchanged. The v2 API adds tenant isolation, pagination, and structured error responses.
 
@@ -53,11 +53,13 @@ The v1 API (`/api/`) continues to work unchanged. The v2 API adds tenant isolati
 Official SDKs for programmatic access to the Control Plane API.
 
 **Python SDK (`loki-mode-sdk`):**
+
 - Zero external dependencies (stdlib only)
 - Synchronous client using `urllib`
 - Type-safe dataclasses for all API resources
 
 **TypeScript SDK (`loki-mode-sdk`):**
+
 - Zero external dependencies (uses Node.js built-in `fetch`)
 - Async/await API
 - TypeScript interfaces for all resources
@@ -66,48 +68,48 @@ See `docs/enterprise/sdk-guide.md` for installation and usage.
 
 ### New Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_SLACK_BOT_TOKEN` | (unset) | Slack Bot User OAuth Token |
-| `LOKI_SLACK_SIGNING_SECRET` | (unset) | Slack request signing secret |
-| `LOKI_SLACK_CHANNEL` | (unset) | Default Slack channel |
-| `LOKI_SLACK_WEBHOOK_URL` | (unset) | Slack Incoming Webhook URL |
-| `LOKI_TEAMS_WEBHOOK_URL` | (unset) | Teams Incoming Webhook URL |
-| `LOKI_TEAMS_WEBHOOK_SECRET` | (unset) | Teams webhook shared secret |
-| `LOKI_OIDC_ISSUER` | (unset) | OIDC identity provider URL |
-| `LOKI_OIDC_CLIENT_ID` | (unset) | OIDC client ID |
-| `LOKI_OIDC_CLIENT_SECRET` | (unset) | OIDC client secret |
-| `LOKI_OIDC_REDIRECT_URI` | (unset) | OIDC redirect URI |
-| `LOKI_CORS_ORIGINS` | localhost | Allowed CORS origins |
-| `LOKI_API_RATE_LIMIT` | 100 | API rate limit (requests/min) |
+| Variable                    | Default   | Description                   |
+| --------------------------- | --------- | ----------------------------- |
+| `LOKI_SLACK_BOT_TOKEN`      | (unset)   | Slack Bot User OAuth Token    |
+| `LOKI_SLACK_SIGNING_SECRET` | (unset)   | Slack request signing secret  |
+| `LOKI_SLACK_CHANNEL`        | (unset)   | Default Slack channel         |
+| `LOKI_SLACK_WEBHOOK_URL`    | (unset)   | Slack Incoming Webhook URL    |
+| `LOKI_TEAMS_WEBHOOK_URL`    | (unset)   | Teams Incoming Webhook URL    |
+| `LOKI_TEAMS_WEBHOOK_SECRET` | (unset)   | Teams webhook shared secret   |
+| `LOKI_OIDC_ISSUER`          | (unset)   | OIDC identity provider URL    |
+| `LOKI_OIDC_CLIENT_ID`       | (unset)   | OIDC client ID                |
+| `LOKI_OIDC_CLIENT_SECRET`   | (unset)   | OIDC client secret            |
+| `LOKI_OIDC_REDIRECT_URI`    | (unset)   | OIDC redirect URI             |
+| `LOKI_CORS_ORIGINS`         | localhost | Allowed CORS origins          |
+| `LOKI_API_RATE_LIMIT`       | 100       | API rate limit (requests/min) |
 
 ### Existing Environment Variables (Unchanged)
 
 These variables from v5.50.0 continue to work identically:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_OTEL_ENDPOINT` | (unset) | OTLP/HTTP endpoint for traces and metrics |
-| `LOKI_SERVICE_NAME` | `loki-mode` | Service name for OTEL resource |
-| `LOKI_ENTERPRISE_AUTH` | (unset) | Enable token authentication |
-| `LOKI_ENTERPRISE_AUDIT` | (unset) | Force-enable audit logging |
-| `LOKI_AUDIT_DISABLED` | `false` | Disable audit logging |
-| `LOKI_AUDIT_NO_INTEGRITY` | `false` | Disable hash chain integrity |
-| `LOKI_AUDIT_MAX_SIZE_MB` | `10` | Audit log rotation size |
-| `LOKI_AUDIT_MAX_FILES` | `10` | Max rotated audit files |
-| `LOKI_AUDIT_SYSLOG_HOST` | (unset) | Syslog forwarding host |
-| `LOKI_AUDIT_SYSLOG_PORT` | `514` | Syslog forwarding port |
-| `LOKI_AUDIT_SYSLOG_PROTO` | `udp` | Syslog protocol |
-| `LOKI_TLS_CERT` | (unset) | TLS certificate path |
-| `LOKI_TLS_KEY` | (unset) | TLS key path |
-| `LOKI_JIRA_URL` | (unset) | Jira Cloud base URL |
-| `LOKI_JIRA_EMAIL` | (unset) | Jira user email |
-| `LOKI_JIRA_TOKEN` | (unset) | Jira API token |
-| `LOKI_JIRA_PROJECT_KEY` | (unset) | Default Jira project key |
-| `LOKI_LINEAR_API_KEY` | (unset) | Linear API key |
-| `LOKI_LINEAR_TEAM_ID` | (unset) | Linear team ID |
-| `LOKI_LINEAR_WEBHOOK_SECRET` | (unset) | Linear webhook secret |
-| `LOKI_GITHUB_SYNC` | (unset) | Enable GitHub sync |
+| Variable                     | Default     | Description                               |
+| ---------------------------- | ----------- | ----------------------------------------- |
+| `LOKI_OTEL_ENDPOINT`         | (unset)     | OTLP/HTTP endpoint for traces and metrics |
+| `LOKI_SERVICE_NAME`          | `loki-mode` | Service name for OTEL resource            |
+| `LOKI_ENTERPRISE_AUTH`       | (unset)     | Enable token authentication               |
+| `LOKI_ENTERPRISE_AUDIT`      | (unset)     | Force-enable audit logging                |
+| `LOKI_AUDIT_DISABLED`        | `false`     | Disable audit logging                     |
+| `LOKI_AUDIT_NO_INTEGRITY`    | `false`     | Disable hash chain integrity              |
+| `LOKI_AUDIT_MAX_SIZE_MB`     | `10`        | Audit log rotation size                   |
+| `LOKI_AUDIT_MAX_FILES`       | `10`        | Max rotated audit files                   |
+| `LOKI_AUDIT_SYSLOG_HOST`     | (unset)     | Syslog forwarding host                    |
+| `LOKI_AUDIT_SYSLOG_PORT`     | `514`       | Syslog forwarding port                    |
+| `LOKI_AUDIT_SYSLOG_PROTO`    | `udp`       | Syslog protocol                           |
+| `LOKI_TLS_CERT`              | (unset)     | TLS certificate path                      |
+| `LOKI_TLS_KEY`               | (unset)     | TLS key path                              |
+| `LOKI_JIRA_URL`              | (unset)     | Jira Cloud base URL                       |
+| `LOKI_JIRA_EMAIL`            | (unset)     | Jira user email                           |
+| `LOKI_JIRA_TOKEN`            | (unset)     | Jira API token                            |
+| `LOKI_JIRA_PROJECT_KEY`      | (unset)     | Default Jira project key                  |
+| `LOKI_LINEAR_API_KEY`        | (unset)     | Linear API key                            |
+| `LOKI_LINEAR_TEAM_ID`        | (unset)     | Linear team ID                            |
+| `LOKI_LINEAR_WEBHOOK_SECRET` | (unset)     | Linear webhook secret                     |
+| `LOKI_GITHUB_SYNC`           | (unset)     | Enable GitHub sync                        |
 
 ### API Changes
 
@@ -115,18 +117,18 @@ These variables from v5.50.0 continue to work identically:
 
 The v2 API is a superset of v1 with additional capabilities:
 
-| v1 Endpoint | v2 Endpoint | Changes |
-|-------------|-------------|---------|
-| `/api/projects` | `/api/v2/projects` | Adds `tenant_id` filter |
-| `/api/tasks` | `/api/v2/tasks` | Adds pagination (`limit`, `offset`) |
-| `/api/status` | `/api/v2/status` | Adds enterprise feature status |
-| (new) | `/api/v2/tenants` | Tenant management |
-| (new) | `/api/v2/runs` | Run lifecycle management |
-| (new) | `/api/v2/runs/:id/timeline` | Structured event timeline |
-| (new) | `/api/v2/keys` | API key management |
-| (new) | `/api/v2/keys/:id/rotate` | Key rotation with grace period |
-| (new) | `/api/v2/audit` | Audit log queries |
-| (new) | `/api/v2/audit/verify` | Chain integrity verification |
+| v1 Endpoint     | v2 Endpoint                 | Changes                             |
+| --------------- | --------------------------- | ----------------------------------- |
+| `/api/projects` | `/api/v2/projects`          | Adds `tenant_id` filter             |
+| `/api/tasks`    | `/api/v2/tasks`             | Adds pagination (`limit`, `offset`) |
+| `/api/status`   | `/api/v2/status`            | Adds enterprise feature status      |
+| (new)           | `/api/v2/tenants`           | Tenant management                   |
+| (new)           | `/api/v2/runs`              | Run lifecycle management            |
+| (new)           | `/api/v2/runs/:id/timeline` | Structured event timeline           |
+| (new)           | `/api/v2/keys`              | API key management                  |
+| (new)           | `/api/v2/keys/:id/rotate`   | Key rotation with grace period      |
+| (new)           | `/api/v2/audit`             | Audit log queries                   |
+| (new)           | `/api/v2/audit/verify`      | Chain integrity verification        |
 
 #### v1 API Compatibility
 

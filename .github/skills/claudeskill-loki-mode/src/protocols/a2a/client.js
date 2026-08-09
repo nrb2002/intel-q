@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-var https = require('https');
-var http = require('http');
-var EventEmitter = require('events');
-var url = require('url');
+var https = require("https");
+var http = require("http");
+var EventEmitter = require("events");
+var url = require("url");
 
 /**
  * A2A Client - discovers and communicates with external A2A agents.
@@ -28,8 +28,8 @@ class A2AClient {
    * @returns {Promise<object>} Agent card JSON
    */
   discover(agentUrl) {
-    var cardUrl = agentUrl.replace(/\/+$/, '') + '/.well-known/agent.json';
-    return this._request('GET', cardUrl);
+    var cardUrl = agentUrl.replace(/\/+$/, "") + "/.well-known/agent.json";
+    return this._request("GET", cardUrl);
   }
 
   /**
@@ -39,24 +39,25 @@ class A2AClient {
    * @returns {Promise<object>} Created task
    */
   submitTask(agentUrl, taskParams) {
-    var taskUrl = agentUrl.replace(/\/+$/, '') + '/tasks';
-    return this._request('POST', taskUrl, taskParams);
+    var taskUrl = agentUrl.replace(/\/+$/, "") + "/tasks";
+    return this._request("POST", taskUrl, taskParams);
   }
 
   /**
    * Get task status from a remote agent.
    */
   getTaskStatus(agentUrl, taskId) {
-    var statusUrl = agentUrl.replace(/\/+$/, '') + '/tasks/' + encodeURIComponent(taskId);
-    return this._request('GET', statusUrl);
+    var statusUrl = agentUrl.replace(/\/+$/, "") + "/tasks/" + encodeURIComponent(taskId);
+    return this._request("GET", statusUrl);
   }
 
   /**
    * Cancel a task on a remote agent.
    */
   cancelTask(agentUrl, taskId) {
-    var cancelUrl = agentUrl.replace(/\/+$/, '') + '/tasks/' + encodeURIComponent(taskId) + '/cancel';
-    return this._request('POST', cancelUrl);
+    var cancelUrl =
+      agentUrl.replace(/\/+$/, "") + "/tasks/" + encodeURIComponent(taskId) + "/cancel";
+    return this._request("POST", cancelUrl);
   }
 
   /**
@@ -66,33 +67,42 @@ class A2AClient {
    * @returns {EventEmitter} Emits 'event', 'error', 'end'
    */
   streamTask(agentUrl, taskId) {
-    var streamUrl = agentUrl.replace(/\/+$/, '') + '/tasks/' + encodeURIComponent(taskId) + '/stream';
+    var streamUrl =
+      agentUrl.replace(/\/+$/, "") + "/tasks/" + encodeURIComponent(taskId) + "/stream";
     var emitter = new EventEmitter();
     var parsed = new url.URL(streamUrl);
-    var mod = parsed.protocol === 'https:' ? https : http;
-    var headers = { 'Accept': 'text/event-stream' };
-    if (this._authToken) headers['Authorization'] = 'Bearer ' + this._authToken;
+    var mod = parsed.protocol === "https:" ? https : http;
+    var headers = { Accept: "text/event-stream" };
+    if (this._authToken) headers["Authorization"] = "Bearer " + this._authToken;
 
     var req = mod.get(streamUrl, { headers: headers, timeout: this._timeoutMs }, function (res) {
       if (res.statusCode !== 200) {
-        emitter.emit('error', new Error('Stream failed with status ' + res.statusCode));
+        emitter.emit("error", new Error("Stream failed with status " + res.statusCode));
         return;
       }
-      var buffer = '';
-      res.on('data', function (chunk) {
+      var buffer = "";
+      res.on("data", function (chunk) {
         buffer += chunk.toString();
-        var parts = buffer.split('\n\n');
+        var parts = buffer.split("\n\n");
         buffer = parts.pop();
         for (var i = 0; i < parts.length; i++) {
           var event = _parseSSE(parts[i]);
-          if (event) emitter.emit('event', event);
+          if (event) emitter.emit("event", event);
         }
       });
-      res.on('end', function () { emitter.emit('end'); });
-      res.on('error', function (err) { emitter.emit('error', err); });
+      res.on("end", function () {
+        emitter.emit("end");
+      });
+      res.on("error", function (err) {
+        emitter.emit("error", err);
+      });
     });
-    req.on('error', function (err) { emitter.emit('error', err); });
-    emitter.abort = function () { req.destroy(); };
+    req.on("error", function (err) {
+      emitter.emit("error", err);
+    });
+    emitter.abort = function () {
+      req.destroy();
+    };
     return emitter;
   }
 
@@ -100,14 +110,14 @@ class A2AClient {
     var self = this;
     return new Promise(function (resolve, reject) {
       var parsed = new url.URL(reqUrl);
-      var mod = parsed.protocol === 'https:' ? https : http;
-      var headers = { 'Accept': 'application/json' };
-      if (self._authToken) headers['Authorization'] = 'Bearer ' + self._authToken;
+      var mod = parsed.protocol === "https:" ? https : http;
+      var headers = { Accept: "application/json" };
+      if (self._authToken) headers["Authorization"] = "Bearer " + self._authToken;
       var bodyStr = null;
       if (body) {
         bodyStr = JSON.stringify(body);
-        headers['Content-Type'] = 'application/json';
-        headers['Content-Length'] = Buffer.byteLength(bodyStr);
+        headers["Content-Type"] = "application/json";
+        headers["Content-Length"] = Buffer.byteLength(bodyStr);
       }
       var opts = {
         method: method,
@@ -121,29 +131,35 @@ class A2AClient {
       var req = mod.request(opts, function (res) {
         var chunks = [];
         var totalSize = 0;
-        res.on('data', function (c) {
+        res.on("data", function (c) {
           totalSize += c.length;
           if (totalSize > maxSize) {
             req.destroy();
-            reject(new Error('Response exceeded maxResponseSize (' + maxSize + ' bytes)'));
+            reject(new Error("Response exceeded maxResponseSize (" + maxSize + " bytes)"));
             return;
           }
           chunks.push(c);
         });
-        res.on('end', function () {
+        res.on("end", function () {
           var raw = Buffer.concat(chunks).toString();
           if (res.statusCode >= 400) {
-            var err = new Error('HTTP ' + res.statusCode + ': ' + raw.slice(0, 200));
+            var err = new Error("HTTP " + res.statusCode + ": " + raw.slice(0, 200));
             err.statusCode = res.statusCode;
             reject(err);
             return;
           }
-          try { resolve(JSON.parse(raw)); }
-          catch (_) { resolve(raw); }
+          try {
+            resolve(JSON.parse(raw));
+          } catch (_) {
+            resolve(raw);
+          }
         });
       });
-      req.on('error', reject);
-      req.on('timeout', function () { req.destroy(); reject(new Error('Request timeout')); });
+      req.on("error", reject);
+      req.on("timeout", function () {
+        req.destroy();
+        reject(new Error("Request timeout"));
+      });
       if (bodyStr) req.write(bodyStr);
       req.end();
     });
@@ -153,14 +169,16 @@ class A2AClient {
 function _parseSSE(text) {
   var event = null;
   var data = null;
-  var lines = text.split('\n');
+  var lines = text.split("\n");
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
-    if (line.indexOf('event: ') === 0) event = line.slice(7);
-    else if (line.indexOf('data: ') === 0) data = line.slice(6);
+    if (line.indexOf("event: ") === 0) event = line.slice(7);
+    else if (line.indexOf("data: ") === 0) data = line.slice(6);
   }
   if (!data) return null;
-  try { data = JSON.parse(data); } catch (_) {}
+  try {
+    data = JSON.parse(data);
+  } catch (_) {}
   return { event: event, data: data };
 }
 

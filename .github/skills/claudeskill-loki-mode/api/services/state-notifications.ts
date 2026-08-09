@@ -5,10 +5,7 @@
  * Integrates with the centralized state manager and event bus.
  */
 
-import {
-  eventBus,
-  emitLogEvent,
-} from "./event-bus.ts";
+import { eventBus, emitLogEvent } from "./event-bus.ts";
 import type { EventFilter } from "../types/events.ts";
 
 /**
@@ -79,7 +76,7 @@ class StateNotificationsManager {
           type: "state_change",
           id: event.id,
           timestamp: event.timestamp,
-          filePath: (event.data as Record<string, unknown>)?.filePath as string || "unknown",
+          filePath: ((event.data as Record<string, unknown>)?.filePath as string) || "unknown",
           changeType: "update",
           source: "event-bus",
         });
@@ -167,7 +164,10 @@ class StateNotificationsManager {
         this.handleUnsubscribe(client);
         break;
       default:
-        this.sendError(clientId, `Unknown message type: ${(message as Record<string, unknown>).type}`);
+        this.sendError(
+          clientId,
+          `Unknown message type: ${(message as Record<string, unknown>).type}`,
+        );
     }
   }
 
@@ -285,7 +285,7 @@ class StateNotificationsManager {
       added: Record<string, unknown>;
       removed: Record<string, unknown>;
       changed: Record<string, unknown>;
-    }
+    },
   ): void {
     const notification: StateNotification = {
       type: "state_change",
@@ -408,7 +408,7 @@ export function notifyStateChange(
     added: Record<string, unknown>;
     removed: Record<string, unknown>;
     changed: Record<string, unknown>;
-  }
+  },
 ): void {
   stateNotifications.broadcastStateChange(filePath, changeType, source, diff);
 }

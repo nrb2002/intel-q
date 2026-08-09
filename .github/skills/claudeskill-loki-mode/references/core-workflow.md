@@ -9,6 +9,7 @@ Full RARV cycle, CONTINUITY.md template, and autonomy rules.
 **This system runs with minimal human intervention.** Human oversight is expected for deployment credentials, domain setup, API keys, and critical business decisions.
 
 ### Core Rules
+
 1. **NEVER ask questions** - Do not say "Would you like me to...", "Should I...", or "What would you prefer?"
 2. **NEVER wait for confirmation** - Take immediate action. If something needs to be done, do it.
 3. **NEVER stop voluntarily** - Continue until completion promise is fulfilled or max iterations reached
@@ -65,6 +66,7 @@ Every iteration follows this cycle:
 ```
 
 **Key Enhancement (VERIFY):** The VERIFY step creates a feedback loop where the AI:
+
 - Tests every change automatically
 - Learns from failures by updating CONTINUITY.md
 - Retries with learned context
@@ -81,11 +83,13 @@ The RARV cycle now closes with an explicit Critique step (RARV-C). After VERIFY,
 **CRITICAL:** You have a persistent working memory file at `.loki/CONTINUITY.md` that maintains state across all turns of execution.
 
 ### AT THE START OF EVERY TURN:
+
 1. Read `.loki/CONTINUITY.md` to orient yourself to the current state
 2. Reference it throughout your reasoning
 3. Never make decisions without checking CONTINUITY.md first
 
 ### AT THE END OF EVERY TURN:
+
 1. Update `.loki/CONTINUITY.md` with any important new information
 2. Record what was accomplished
 3. Note what needs to happen next
@@ -95,39 +99,48 @@ The RARV cycle now closes with an explicit Critique step (RARV-C). After VERIFY,
 
 ```markdown
 # Loki Mode Working Memory
+
 Last Updated: [ISO timestamp]
 Current Phase: [bootstrap|discovery|architecture|development|qa|deployment|growth]
 Current Iteration: [number]
 
 ## Active Goal
+
 [What we're currently trying to accomplish - 1-2 sentences]
 
 ## Current Task
+
 - ID: [task-id from queue]
 - Description: [what we're doing]
 - Status: [in-progress|blocked|reviewing]
 - Started: [timestamp]
 
 ## Just Completed
+
 - [Most recent accomplishment with file:line references]
 - [Previous accomplishment]
 - [etc - last 5 items]
 
 ## Next Actions (Priority Order)
+
 1. [Immediate next step]
 2. [Following step]
 3. [etc]
 
 ## Active Blockers
+
 - [Any current blockers or waiting items]
 
 ## Key Decisions This Session
+
 - [Decision]: [Rationale] - [timestamp]
 
 ## Mistakes & Learnings (Self-Updating)
+
 **CRITICAL:** When errors occur, agents MUST update this section to prevent repeating mistakes.
 
 ### Pattern: Error -> Learning -> Prevention
+
 - **What Failed:** [Specific error that occurred]
 - **Why It Failed:** [Root cause analysis]
 - **How to Prevent:** [Concrete action to avoid this in future]
@@ -135,6 +148,7 @@ Current Iteration: [number]
 - **Agent:** [Which agent learned this]
 
 ### Example:
+
 - **What Failed:** TypeScript compilation error - missing return type annotation
 - **Why It Failed:** Express route handlers need explicit `: void` return type in strict mode
 - **How to Prevent:** Always add `: void` to route handlers: `(req, res): void =>`
@@ -143,12 +157,15 @@ Current Iteration: [number]
 
 **Self-Update Protocol:**
 ```
+
 ON_ERROR:
-  1. Capture error details (stack trace, context)
-  2. Analyze root cause
-  3. Write learning to CONTINUITY.md "Mistakes & Learnings"
-  4. Update approach based on learning
-  5. Retry with corrected approach
+
+1. Capture error details (stack trace, context)
+2. Analyze root cause
+3. Write learning to CONTINUITY.md "Mistakes & Learnings"
+4. Update approach based on learning
+5. Retry with corrected approach
+
 ```
 
 ## Working Context
@@ -216,6 +233,7 @@ Git-Checkpoint: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 ### Commit Message Format
 
 **Template:**
+
 ```
 [Loki] ${agent_type}-${task_id}: ${task_title}
 
@@ -229,6 +247,7 @@ Git-Checkpoint: ${timestamp}
 ```
 
 **Example:**
+
 ```
 [Loki] eng-005-backend: Implement POST /api/todos endpoint
 
@@ -248,12 +267,14 @@ Git-Checkpoint: 2026-01-04T05:45:00Z
 ### Rollback Strategy
 
 **When to Rollback:**
+
 - Quality gates fail after merge
 - Integration tests fail
 - Security vulnerabilities detected
 - Breaking changes discovered
 
 **Rollback Command:**
+
 ```bash
 # Find last good checkpoint
 last_good_commit=$(git log --grep="\[Loki\].*task-${last_good_task_id}" --format=%H -n 1)

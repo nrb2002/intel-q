@@ -8,18 +8,18 @@
  * <loki-log-stream api-url="http://localhost:57374" max-lines="500" auto-scroll theme="dark"></loki-log-stream>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient, ApiEvents } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient, ApiEvents } from "../core/loki-api-client.js";
 
 /** @type {Object<string, {color: string, label: string}>} Log level display configuration */
 const LOG_LEVELS = {
-  info: { color: 'var(--loki-blue)', label: 'INFO' },
-  success: { color: 'var(--loki-green)', label: 'SUCCESS' },
-  warning: { color: 'var(--loki-yellow)', label: 'WARN' },
-  error: { color: 'var(--loki-red)', label: 'ERROR' },
-  step: { color: 'var(--loki-purple)', label: 'STEP' },
-  agent: { color: 'var(--loki-accent)', label: 'AGENT' },
-  debug: { color: 'var(--loki-text-muted)', label: 'DEBUG' },
+  info: { color: "var(--loki-blue)", label: "INFO" },
+  success: { color: "var(--loki-green)", label: "SUCCESS" },
+  warning: { color: "var(--loki-yellow)", label: "WARN" },
+  error: { color: "var(--loki-red)", label: "ERROR" },
+  step: { color: "var(--loki-purple)", label: "STEP" },
+  agent: { color: "var(--loki-accent)", label: "AGENT" },
+  debug: { color: "var(--loki-text-muted)", label: "DEBUG" },
 };
 
 /**
@@ -35,7 +35,7 @@ const LOG_LEVELS = {
  */
 export class LokiLogStream extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'max-lines', 'auto-scroll', 'theme', 'log-file'];
+    return ["api-url", "max-lines", "auto-scroll", "theme", "log-file"];
   }
 
   constructor() {
@@ -43,8 +43,8 @@ export class LokiLogStream extends LokiElement {
     this._logs = [];
     this._maxLines = 500;
     this._autoScroll = true;
-    this._filter = '';
-    this._levelFilter = 'all';
+    this._filter = "";
+    this._levelFilter = "all";
     this._api = null;
     this._pollInterval = null;
     this._logMessageHandler = null;
@@ -52,8 +52,8 @@ export class LokiLogStream extends LokiElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._maxLines = parseInt(this.getAttribute('max-lines')) || 500;
-    this._autoScroll = this.hasAttribute('auto-scroll');
+    this._maxLines = parseInt(this.getAttribute("max-lines")) || 500;
+    this._autoScroll = this.hasAttribute("auto-scroll");
     this._setupApi();
     this._startLogPolling();
   }
@@ -70,28 +70,28 @@ export class LokiLogStream extends LokiElement {
     if (oldValue === newValue) return;
 
     switch (name) {
-      case 'api-url':
+      case "api-url":
         if (this._api) {
           this._api.baseUrl = newValue;
         }
         break;
-      case 'max-lines':
+      case "max-lines":
         this._maxLines = parseInt(newValue) || 500;
         this._trimLogs();
         this.render();
         break;
-      case 'auto-scroll':
-        this._autoScroll = this.hasAttribute('auto-scroll');
+      case "auto-scroll":
+        this._autoScroll = this.hasAttribute("auto-scroll");
         this.render();
         break;
-      case 'theme':
+      case "theme":
         this._applyTheme();
         break;
     }
   }
 
   _setupApi() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     this._api = getApiClient({ baseUrl: apiUrl });
 
     this._logMessageHandler = (e) => this._addLog(e.detail);
@@ -99,7 +99,7 @@ export class LokiLogStream extends LokiElement {
   }
 
   _startLogPolling() {
-    const logFile = this.getAttribute('log-file');
+    const logFile = this.getAttribute("log-file");
     if (logFile) {
       this._pollLogFile(logFile);
     } else {
@@ -121,7 +121,7 @@ export class LokiLogStream extends LokiElement {
             if (entry.message && entry.message.trim()) {
               this._addLog({
                 message: entry.message,
-                level: entry.level || 'info',
+                level: entry.level || "info",
                 timestamp: entry.timestamp || new Date().toLocaleTimeString(),
               });
             }
@@ -142,11 +142,11 @@ export class LokiLogStream extends LokiElement {
 
     const poll = async () => {
       try {
-        const response = await fetch(`${logFile}?t=${Date.now()}`, { credentials: 'include' });
+        const response = await fetch(`${logFile}?t=${Date.now()}`, { credentials: "include" });
         if (!response.ok) return;
 
         const text = await response.text();
-        const lines = text.split('\n');
+        const lines = text.split("\n");
 
         // Only process new lines
         if (lines.length > lastSize) {
@@ -202,7 +202,7 @@ export class LokiLogStream extends LokiElement {
     // Default: treat as info message
     return {
       timestamp: new Date().toLocaleTimeString(),
-      level: 'info',
+      level: "info",
       message: line,
     };
   }
@@ -213,14 +213,14 @@ export class LokiLogStream extends LokiElement {
     const entry = {
       id: Date.now() + Math.random(),
       timestamp: log.timestamp || new Date().toLocaleTimeString(),
-      level: (log.level || 'info').toLowerCase(),
+      level: (log.level || "info").toLowerCase(),
       message: log.message || log,
     };
 
     this._logs.push(entry);
     this._trimLogs();
 
-    this.dispatchEvent(new CustomEvent('log-received', { detail: entry }));
+    this.dispatchEvent(new CustomEvent("log-received", { detail: entry }));
 
     this._renderLogs();
 
@@ -237,7 +237,7 @@ export class LokiLogStream extends LokiElement {
 
   _clearLogs() {
     this._logs = [];
-    this.dispatchEvent(new CustomEvent('logs-cleared'));
+    this.dispatchEvent(new CustomEvent("logs-cleared"));
     this._renderLogs();
   }
 
@@ -251,7 +251,7 @@ export class LokiLogStream extends LokiElement {
 
   _scrollToBottom() {
     requestAnimationFrame(() => {
-      const output = this.shadowRoot.getElementById('log-output');
+      const output = this.shadowRoot.getElementById("log-output");
       if (output) {
         output.scrollTop = output.scrollHeight;
       }
@@ -260,14 +260,14 @@ export class LokiLogStream extends LokiElement {
 
   _downloadLogs() {
     const content = this._logs
-      .map(log => `[${log.timestamp}] [${log.level.toUpperCase()}] ${log.message}`)
-      .join('\n');
+      .map((log) => `[${log.timestamp}] [${log.level.toUpperCase()}] ${log.message}`)
+      .join("\n");
 
-    const blob = new Blob([content], { type: 'text/plain' });
+    const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `loki-logs-${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `loki-logs-${new Date().toISOString().split("T")[0]}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -283,9 +283,9 @@ export class LokiLogStream extends LokiElement {
   }
 
   _getFilteredLogs() {
-    return this._logs.filter(log => {
+    return this._logs.filter((log) => {
       // Level filter
-      if (this._levelFilter !== 'all' && log.level !== this._levelFilter) {
+      if (this._levelFilter !== "all" && log.level !== this._levelFilter) {
         return false;
       }
 
@@ -299,26 +299,29 @@ export class LokiLogStream extends LokiElement {
   }
 
   _renderLogs() {
-    const output = this.shadowRoot.getElementById('log-output');
+    const output = this.shadowRoot.getElementById("log-output");
     if (!output) return;
 
     const filteredLogs = this._getFilteredLogs();
 
     if (filteredLogs.length === 0) {
-      output.innerHTML = '<div class="log-empty">No log output yet. Terminal will update when Loki Mode is running.</div>';
+      output.innerHTML =
+        '<div class="log-empty">No log output yet. Terminal will update when Loki Mode is running.</div>';
       return;
     }
 
-    output.innerHTML = filteredLogs.map(log => {
-      const levelConfig = LOG_LEVELS[log.level] || LOG_LEVELS.info;
-      return `
+    output.innerHTML = filteredLogs
+      .map((log) => {
+        const levelConfig = LOG_LEVELS[log.level] || LOG_LEVELS.info;
+        return `
         <div class="log-line">
           <span class="timestamp">${this._escapeHtml(log.timestamp)}</span>
           <span class="level" style="color: ${levelConfig.color}">[${this._escapeHtml(levelConfig.label)}]</span>
           <span class="message">${this._escapeHtml(log.message)}</span>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
     if (this._autoScroll) {
       this._scrollToBottom();
@@ -326,7 +329,7 @@ export class LokiLogStream extends LokiElement {
   }
 
   _escapeHtml(text) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
@@ -515,7 +518,7 @@ export class LokiLogStream extends LokiElement {
               <option value="agent">Agent</option>
               <option value="debug">Debug</option>
             </select>
-            <button class="terminal-btn ${this._autoScroll ? 'active' : ''}" id="auto-scroll-btn" aria-label="Toggle auto-scroll" aria-pressed="${this._autoScroll}">Auto-scroll</button>
+            <button class="terminal-btn ${this._autoScroll ? "active" : ""}" id="auto-scroll-btn" aria-label="Toggle auto-scroll" aria-pressed="${this._autoScroll}">Auto-scroll</button>
             <button class="terminal-btn" id="clear-btn" aria-label="Clear all logs">Clear</button>
             <button class="terminal-btn" id="download-btn" aria-label="Download logs as text file">Download</button>
           </div>
@@ -534,39 +537,39 @@ export class LokiLogStream extends LokiElement {
   }
 
   _attachEventListeners() {
-    const filterInput = this.shadowRoot.getElementById('filter-input');
-    const levelSelect = this.shadowRoot.getElementById('level-select');
-    const autoScrollBtn = this.shadowRoot.getElementById('auto-scroll-btn');
-    const clearBtn = this.shadowRoot.getElementById('clear-btn');
-    const downloadBtn = this.shadowRoot.getElementById('download-btn');
+    const filterInput = this.shadowRoot.getElementById("filter-input");
+    const levelSelect = this.shadowRoot.getElementById("level-select");
+    const autoScrollBtn = this.shadowRoot.getElementById("auto-scroll-btn");
+    const clearBtn = this.shadowRoot.getElementById("clear-btn");
+    const downloadBtn = this.shadowRoot.getElementById("download-btn");
 
     if (filterInput) {
       filterInput.value = this._filter;
-      filterInput.addEventListener('input', (e) => this._setFilter(e.target.value));
+      filterInput.addEventListener("input", (e) => this._setFilter(e.target.value));
     }
 
     if (levelSelect) {
       levelSelect.value = this._levelFilter;
-      levelSelect.addEventListener('change', (e) => this._setLevelFilter(e.target.value));
+      levelSelect.addEventListener("change", (e) => this._setLevelFilter(e.target.value));
     }
 
     if (autoScrollBtn) {
-      autoScrollBtn.addEventListener('click', () => this._toggleAutoScroll());
+      autoScrollBtn.addEventListener("click", () => this._toggleAutoScroll());
     }
 
     if (clearBtn) {
-      clearBtn.addEventListener('click', () => this._clearLogs());
+      clearBtn.addEventListener("click", () => this._clearLogs());
     }
 
     if (downloadBtn) {
-      downloadBtn.addEventListener('click', () => this._downloadLogs());
+      downloadBtn.addEventListener("click", () => this._downloadLogs());
     }
   }
 
   /**
    * Public API to add a log entry programmatically
    */
-  addLog(message, level = 'info') {
+  addLog(message, level = "info") {
     this._addLog({ message, level, timestamp: new Date().toLocaleTimeString() });
   }
 
@@ -579,8 +582,8 @@ export class LokiLogStream extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-log-stream')) {
-  customElements.define('loki-log-stream', LokiLogStream);
+if (!customElements.get("loki-log-stream")) {
+  customElements.define("loki-log-stream", LokiLogStream);
 }
 
 export default LokiLogStream;

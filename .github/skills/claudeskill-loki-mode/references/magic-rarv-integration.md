@@ -8,6 +8,7 @@ normal RARV-C phase execution.
 This reference describes which phase does what.
 
 ## BOOTSTRAP (before iteration 1)
+
 - `analyze_git_intelligence()` runs (from v6.75.0).
 - Magic-specific bootstrap:
   - `magic.core.design_tokens.DesignTokens.extract_from_codebase(save=True)`
@@ -21,6 +22,7 @@ This reference describes which phase does what.
   stubs during REASON and ACT phases.
 
 ## REASON (start of each iteration)
+
 - Agents read existing specs from `.loki/magic/specs/` as part of the
   context injected by `build_prompt()`.
 - `magic.core.memory_bridge.recall_similar_components()` surfaces prior
@@ -28,6 +30,7 @@ This reference describes which phase does what.
   patterns rather than designing from scratch.
 
 ## ACT (the agent does work)
+
 - Agents do NOT need to invoke `loki magic generate` manually. The build
   prompt tells them: write or update the markdown spec at
   `.loki/magic/specs/<Name>.md` and the orchestrator regenerates
@@ -36,6 +39,7 @@ This reference describes which phase does what.
   the spec and the next VERIFY pass picks it up.
 
 ## VERIFY (end of each iteration)
+
 - `run_magic_debate_gate()` runs as Gate 12 (after Gate 11 documentation).
 - Sequence:
   1. `loki magic update` regenerates any components whose specs are newer
@@ -48,16 +52,18 @@ This reference describes which phase does what.
 - Controllable via `LOKI_GATE_MAGIC_DEBATE=false` for prototyping.
 
 ## COMPOUND (after iteration or run completes)
+
 - `_magic_compound_capture()` calls
   `magic.core.memory_bridge.capture_iteration_compound()`.
 - Memory writes:
   - Episodic: each generated component with its debate result and timing
   - Semantic: tag clusters that consistently pass debate (3+ components,
-    >=80% pass rate) become "stable patterns" future iterations reuse
+    > =80% pass rate) become "stable patterns" future iterations reuse
   - Procedural: refinements to design tokens that survived multiple
     iterations become promoted defaults
 
 ## Human in the loop escalation
+
 Only one path requires human attention: when Gate 12 returns a block and
 the agent's spec refinement does not resolve it after 2 additional
 iterations. Orchestrator writes `.loki/signals/MAGIC_HITL_NEEDED` with
@@ -65,6 +71,7 @@ the component name and block reasons; dashboard surfaces this in the
 Magic Page review queue.
 
 ## End-to-end example
+
 PRD says: "Add a login form with email, password, and submit button."
 
 1. BOOTSTRAP: design tokens extracted (primary=#553DE9, etc.).
@@ -81,6 +88,7 @@ PRD says: "Add a login form with email, password, and submit button."
    12.4s"). Tag cluster `[form, auth]` now tracked with 2/2 pass rate.
 
 ## Related
+
 - `skills/magic-modules.md` -- skill module for agents
 - `references/magic-modules-patterns.md` -- full API and pattern reference
 - `references/memory-system.md` -- memory engine details

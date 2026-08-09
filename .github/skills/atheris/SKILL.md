@@ -12,13 +12,14 @@ Atheris is a coverage-guided Python fuzzer built on libFuzzer. It enables fuzzin
 
 ## When to Use
 
-| Fuzzer | Best For | Complexity |
-|--------|----------|------------|
-| Atheris | Python code and C extensions | Low-Medium |
-| Hypothesis | Property-based testing | Low |
-| python-afl | AFL-style fuzzing | Medium |
+| Fuzzer     | Best For                     | Complexity |
+| ---------- | ---------------------------- | ---------- |
+| Atheris    | Python code and C extensions | Low-Medium |
+| Hypothesis | Property-based testing       | Low        |
+| python-afl | AFL-style fuzzing            | Medium     |
 
 **Choose Atheris when:**
+
 - Fuzzing pure Python code with coverage guidance
 - Testing Python C extensions for memory corruption
 - Integration with libFuzzer ecosystem is desired
@@ -48,6 +49,7 @@ if __name__ == "__main__":
 ```
 
 Run:
+
 ```bash
 python fuzz.py
 ```
@@ -131,6 +133,7 @@ CMD ["/bin/bash"]
 ```
 
 Build and run:
+
 ```bash
 docker build -t atheris .
 docker run -it atheris
@@ -180,12 +183,12 @@ if __name__ == "__main__":
 
 ### Harness Rules
 
-| Do | Don't |
-|----|-------|
-| Use `@atheris.instrument_func` for coverage | Forget to instrument target code |
-| Catch expected exceptions | Catch all exceptions indiscriminately |
+| Do                                               | Don't                                  |
+| ------------------------------------------------ | -------------------------------------- |
+| Use `@atheris.instrument_func` for coverage      | Forget to instrument target code       |
+| Catch expected exceptions                        | Catch all exceptions indiscriminately  |
 | Use `atheris.instrument_imports()` for libraries | Import modules after `atheris.Setup()` |
-| Keep harness deterministic | Use randomness or time-based behavior |
+| Keep harness deterministic                       | Use randomness or time-based behavior  |
 
 > **See Also:** For detailed harness writing techniques, patterns for handling complex inputs,
 > and advanced strategies, see the **fuzz-harness-writing** technique skill.
@@ -208,6 +211,7 @@ atheris.Fuzz()
 ```
 
 **Instrumentation Options:**
+
 - `atheris.instrument_func` - Decorator for single function instrumentation
 - `atheris.instrument_imports()` - Context manager for instrumenting all imported modules
 - `atheris.instrument_all()` - Instrument all Python code system-wide
@@ -231,6 +235,7 @@ export LDSHARED="clang -shared"
 ### Example: Fuzzing cbor2
 
 Install the extension from source:
+
 ```bash
 CBOR2_BUILD_C_EXTENSION=1 python -m pip install --no-binary cbor2 cbor2==5.6.4
 ```
@@ -238,6 +243,7 @@ CBOR2_BUILD_C_EXTENSION=1 python -m pip install --no-binary cbor2 cbor2==5.6.4
 The `--no-binary` flag ensures the C extension is compiled locally with instrumentation.
 
 Create `cbor2-fuzz.py`:
+
 ```python
 import sys
 import atheris
@@ -261,6 +267,7 @@ if __name__ == "__main__":
 ```
 
 Run:
+
 ```bash
 python cbor2-fuzz.py
 ```
@@ -279,6 +286,7 @@ echo '{"key": "value"}' > corpus/seed2
 ```
 
 Run with corpus:
+
 ```bash
 python fuzz.py corpus/
 ```
@@ -286,6 +294,7 @@ python fuzz.py corpus/
 ### Corpus Minimization
 
 Atheris inherits corpus minimization from libFuzzer:
+
 ```bash
 python fuzz.py -merge=1 new_corpus/ old_corpus/
 ```
@@ -322,13 +331,13 @@ python fuzz.py -workers=4 -jobs=4
 
 ### Interpreting Output
 
-| Output | Meaning |
-|--------|---------|
-| `NEW    cov: X` | Found new coverage, corpus expanded |
-| `pulse  cov: X` | Periodic status update |
-| `exec/s: X` | Executions per second (throughput) |
-| `corp: X/Yb` | Corpus size: X inputs, Y bytes total |
-| `ERROR: libFuzzer` | Crash detected |
+| Output             | Meaning                              |
+| ------------------ | ------------------------------------ |
+| `NEW    cov: X`    | Found new coverage, corpus expanded  |
+| `pulse  cov: X`    | Periodic status update               |
+| `exec/s: X`        | Executions per second (throughput)   |
+| `corp: X/Yb`       | Corpus size: X inputs, Y bytes total |
+| `ERROR: libFuzzer` | Crash detected                       |
 
 ## Sanitizer Integration
 
@@ -337,12 +346,14 @@ python fuzz.py -workers=4 -jobs=4
 AddressSanitizer is automatically integrated when using the provided Docker environment or when compiling with appropriate flags.
 
 For local setup:
+
 ```bash
 export CFLAGS="-fsanitize=address,fuzzer-no-link"
 export CXXFLAGS="-fsanitize=address,fuzzer-no-link"
 ```
 
 Configure ASan behavior:
+
 ```bash
 export ASAN_OPTIONS="allocator_may_return_null=1,detect_leaks=0"
 ```
@@ -350,6 +361,7 @@ export ASAN_OPTIONS="allocator_may_return_null=1,detect_leaks=0"
 ### LD_PRELOAD Configuration
 
 For native extension fuzzing:
+
 ```bash
 export LD_PRELOAD="$(python -c 'import atheris; import os; print(os.path.join(os.path.dirname(atheris.__file__), "asan_with_fuzzer.so"))')"
 ```
@@ -359,27 +371,28 @@ export LD_PRELOAD="$(python -c 'import atheris; import os; print(os.path.join(os
 
 ### Common Sanitizer Issues
 
-| Issue | Solution |
-|-------|----------|
-| `LD_PRELOAD` not set | Export `LD_PRELOAD` to point to `asan_with_fuzzer.so` |
-| Memory allocation failures | Set `ASAN_OPTIONS=allocator_may_return_null=1` |
-| Leak detection noise | Set `ASAN_OPTIONS=detect_leaks=0` |
-| Missing symbolizer | Set `ASAN_SYMBOLIZER_PATH` to `llvm-symbolizer` |
+| Issue                      | Solution                                              |
+| -------------------------- | ----------------------------------------------------- |
+| `LD_PRELOAD` not set       | Export `LD_PRELOAD` to point to `asan_with_fuzzer.so` |
+| Memory allocation failures | Set `ASAN_OPTIONS=allocator_may_return_null=1`        |
+| Leak detection noise       | Set `ASAN_OPTIONS=detect_leaks=0`                     |
+| Missing symbolizer         | Set `ASAN_SYMBOLIZER_PATH` to `llvm-symbolizer`       |
 
 ## Advanced Usage
 
 ### Tips and Tricks
 
-| Tip | Why It Helps |
-|-----|--------------|
+| Tip                                      | Why It Helps                                      |
+| ---------------------------------------- | ------------------------------------------------- |
 | Use `atheris.instrument_imports()` early | Ensures all imports are instrumented for coverage |
-| Start with small `max_len` | Faster initial fuzzing, gradually increase |
-| Use dictionaries for structured formats | Helps fuzzer understand format tokens |
-| Run multiple parallel instances | Better coverage exploration |
+| Start with small `max_len`               | Faster initial fuzzing, gradually increase        |
+| Use dictionaries for structured formats  | Helps fuzzer understand format tokens             |
+| Run multiple parallel instances          | Better coverage exploration                       |
 
 ### Custom Instrumentation
 
 Fine-tune what gets instrumented:
+
 ```python
 import atheris
 
@@ -394,15 +407,16 @@ def test_one_input(data: bytes):
 
 ### Performance Tuning
 
-| Setting | Impact |
-|---------|--------|
-| `-max_len=N` | Smaller values = faster execution |
-| `-workers=N -jobs=N` | Parallel fuzzing for faster coverage |
+| Setting                                | Impact                                |
+| -------------------------------------- | ------------------------------------- |
+| `-max_len=N`                           | Smaller values = faster execution     |
+| `-workers=N -jobs=N`                   | Parallel fuzzing for faster coverage  |
 | `ASAN_OPTIONS=fast_unwind_on_malloc=0` | Better stack traces, slower execution |
 
 ### UndefinedBehaviorSanitizer (UBSan)
 
 Add UBSan to catch additional bugs:
+
 ```bash
 export CFLAGS="-fsanitize=address,undefined,fuzzer-no-link"
 export CXXFLAGS="-fsanitize=address,undefined,fuzzer-no-link"
@@ -467,31 +481,31 @@ if __name__ == "__main__":
 
 ## Troubleshooting
 
-| Problem | Cause | Solution |
-|---------|-------|----------|
-| No coverage increase | Poor seed corpus or target not instrumented | Add better seeds, verify `instrument_imports()` |
-| Slow execution | ASan overhead or large inputs | Reduce `max_len`, use `ASAN_OPTIONS=fast_unwind_on_malloc=1` |
-| Import errors | Modules imported before instrumentation | Move imports inside `instrument_imports()` context |
-| Segfault without ASan output | Missing `LD_PRELOAD` | Set `LD_PRELOAD` to `asan_with_fuzzer.so` path |
-| Build failures | Wrong compiler or missing flags | Verify `CC`, `CFLAGS`, and clang version |
+| Problem                      | Cause                                       | Solution                                                     |
+| ---------------------------- | ------------------------------------------- | ------------------------------------------------------------ |
+| No coverage increase         | Poor seed corpus or target not instrumented | Add better seeds, verify `instrument_imports()`              |
+| Slow execution               | ASan overhead or large inputs               | Reduce `max_len`, use `ASAN_OPTIONS=fast_unwind_on_malloc=1` |
+| Import errors                | Modules imported before instrumentation     | Move imports inside `instrument_imports()` context           |
+| Segfault without ASan output | Missing `LD_PRELOAD`                        | Set `LD_PRELOAD` to `asan_with_fuzzer.so` path               |
+| Build failures               | Wrong compiler or missing flags             | Verify `CC`, `CFLAGS`, and clang version                     |
 
 ## Related Skills
 
 ### Technique Skills
 
-| Skill | Use Case |
-|-------|----------|
-| **fuzz-harness-writing** | Detailed guidance on writing effective harnesses |
-| **address-sanitizer** | Memory error detection during fuzzing |
-| **undefined-behavior-sanitizer** | Catching undefined behavior in C extensions |
-| **coverage-analysis** | Measuring and improving code coverage |
-| **fuzzing-corpus** | Building and managing seed corpora |
+| Skill                            | Use Case                                         |
+| -------------------------------- | ------------------------------------------------ |
+| **fuzz-harness-writing**         | Detailed guidance on writing effective harnesses |
+| **address-sanitizer**            | Memory error detection during fuzzing            |
+| **undefined-behavior-sanitizer** | Catching undefined behavior in C extensions      |
+| **coverage-analysis**            | Measuring and improving code coverage            |
+| **fuzzing-corpus**               | Building and managing seed corpora               |
 
 ### Related Fuzzers
 
-| Skill | When to Consider |
-|-------|------------------|
-| **hypothesis** | Property-based testing with type-aware generation |
+| Skill          | When to Consider                                          |
+| -------------- | --------------------------------------------------------- |
+| **hypothesis** | Property-based testing with type-aware generation         |
 | **python-afl** | AFL-style fuzzing for Python when Atheris isn't available |
 
 ## Resources

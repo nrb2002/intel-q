@@ -23,6 +23,7 @@
 **Purpose:** Prevent accidental removal of institutional logic or behavioral changes to legacy code without explicit documentation.
 
 **Checks:**
+
 1. **Friction Safety** - If modified code matches a friction-map entry, verify `safe_to_remove` is true or `classification` is `true_bug`
 2. **Characterization Test Coverage** - Modified legacy components must have characterization tests in `.loki/healing/characterization-tests/`
 3. **Comment Preservation** - Deleted comments containing business rule keywords (hack, workaround, compliance, per requirement) must be extracted to `institutional-knowledge.md` first
@@ -30,6 +31,7 @@
 5. **Behavioral Baseline** - If a baseline exists in `.loki/healing/behavioral-baseline/`, outputs must match or differences must be documented as intentional
 
 **Severity:**
+
 - Removing friction point classified as `business_rule` or `unknown` without approval = **Critical** (BLOCK)
 - Missing characterization test for modified legacy component = **High** (BLOCK)
 - Deleted business rule comment without knowledge extraction = **Medium** (BLOCK)
@@ -48,18 +50,21 @@ project, set `LOKI_HEAL_MODE=false`.
 **Triggers when:** Diff touches public APIs, new files added, library/package releases
 
 **Checks:**
+
 - Every exported function/class/endpoint has a doc entry in `.loki/docs/`
 - README.md exists and is non-empty in project root
 - Documentation SHA is within 10 commits of HEAD
 - CLAUDE.md (if exists) references current key files
 
 **Severity:**
+
 - Missing API docs = Medium (BLOCK for npm/pip packages)
 - Stale docs = Low (TODO)
 
 **Skip:** Internal-only changes, test-only changes, config changes
 
 **Disabling (not recommended for packages):**
+
 ```bash
 LOKI_GATE_DOC_COVERAGE=false  # Disable gate 11
 ```
@@ -71,6 +76,7 @@ LOKI_GATE_DOC_COVERAGE=false  # Disable gate 11
 Gates 8 (Mock Detector) and 9 (Test Mutation Detector) run during the VERIFY phase and are enabled by default.
 
 **How they run:**
+
 - Gate 8 runs `tests/detect-mock-problems.sh` against all test files in the project
 - Gate 9 runs `tests/detect-test-mutations.sh` against recent commits (default: last 5, or use `--commit HASH` for targeted checks)
 - Both produce findings at HIGH/MEDIUM/LOW severity levels
@@ -340,14 +346,16 @@ Step 1: DRAFT          Step 2: PLAN           Step 3: EXECUTE        Step 4: REV
 ### Step-by-Step Implementation
 
 **Step 1: Draft Initial Response**
+
 ```yaml
 draft_phase:
   action: "Generate initial code/response"
-  model: "sonnet"  # Fast drafting
+  model: "sonnet" # Fast drafting
   output: "baseline_response"
 ```
 
 **Step 2: Plan Verification Questions**
+
 ```yaml
 verification_planning:
   prompt: |
@@ -360,6 +368,7 @@ verification_planning:
 ```
 
 **Step 3: Execute Verifications INDEPENDENTLY (Critical)**
+
 ```yaml
 factored_execution:
   critical: "Each verification runs in isolation"
@@ -368,7 +377,7 @@ factored_execution:
   # Launch in parallel - each is independent
   verifications:
     - question: "Does the function handle null inputs?"
-      context: "Function signature and spec only"  # NOT the implementation
+      context: "Function signature and spec only" # NOT the implementation
       verifier: "sonnet"
     - question: "Is the SQL query injection-safe?"
       context: "Query requirements only"
@@ -379,6 +388,7 @@ factored_execution:
 ```
 
 **Step 4: Generate Final Verified Response**
+
 ```yaml
 revision_phase:
   inputs:
@@ -432,18 +442,21 @@ factor_revise_pattern:
 ### Why Factored Execution Matters
 
 The paper tested 4 execution variants:
+
 - **Joint**: Questions and answers in one prompt (worst - repeats hallucinations)
 - **2-Step**: Separate prompts for questions vs answers (better)
 - **Factored**: Each question answered separately (recommended)
 - **Factor+Revise**: Factored + explicit cross-check step (best for longform)
 
 Without factoring (naive verification):
+
 ```
 Model: "Here's the code"
 Model: "Let me check my code... looks correct!"  # Confirmation bias
 ```
 
 With factored verification:
+
 ```
 Model: "Here's the code"
 Model: "Question: Does function handle nulls?"
@@ -465,6 +478,7 @@ Developer Code --> CoVe (self-verification) --> Blind Review (3 parallel)
 ```
 
 **Combined workflow:**
+
 ```yaml
 quality_pipeline:
   phase_1_cove:
@@ -489,6 +503,7 @@ quality_pipeline:
 ### Metrics
 
 Track CoVe effectiveness:
+
 ```
 .loki/metrics/cove/
 +-- corrections.json     # Issues caught by CoVe before review
@@ -504,11 +519,11 @@ Track CoVe effectiveness:
 
 ### Key Findings
 
-| Metric | Finding | Implication |
-|--------|---------|-------------|
-| Initial Velocity | +281% lines added | Impressive but TRANSIENT |
-| Quality Degradation | +30% static warnings, +41% complexity | PERSISTENT problem |
-| Cancellation Point | 3.28x complexity OR 4.94x warnings | Completely negates velocity gains |
+| Metric              | Finding                               | Implication                       |
+| ------------------- | ------------------------------------- | --------------------------------- |
+| Initial Velocity    | +281% lines added                     | Impressive but TRANSIENT          |
+| Quality Degradation | +30% static warnings, +41% complexity | PERSISTENT problem                |
+| Cancellation Point  | 3.28x complexity OR 4.94x warnings    | Completely negates velocity gains |
 
 ### The Trap to Avoid
 
@@ -534,9 +549,9 @@ velocity_quality_balance:
     - test_coverage: "Coverage must not decrease"
 
   thresholds:
-    max_new_warnings: 0  # Zero tolerance for new warnings
-    max_complexity_increase: 10%  # Per file, per commit
-    min_coverage: 80%  # Never drop below
+    max_new_warnings: 0 # Zero tolerance for new warnings
+    max_complexity_increase: 10% # Per file, per commit
+    min_coverage: 80% # Never drop below
 
   if_threshold_violated:
     action: "BLOCK commit, fix before proceeding"
@@ -562,14 +577,14 @@ velocity_quality_balance:
 
 **Inspired by:** Compound Engineering Plugin's 14 named review agents -- specialized expertise catches more issues than generic reviewers.
 
-| Specialist | Focus Area | Trigger Keywords |
-|-----------|-----------|-----------------|
-| **security-sentinel** | OWASP Top 10, injection, auth, secrets, input validation | auth, login, password, token, api, sql, query, cookie, cors, csrf |
-| **performance-oracle** | N+1 queries, memory leaks, caching, bundle size, lazy loading | database, query, cache, render, loop, fetch, load, index, join, pool |
-| **architecture-strategist** | SOLID, coupling, cohesion, patterns, abstraction, dependency direction | *(always included -- design quality affects everything)* |
-| **test-coverage-auditor** | Missing tests, edge cases, error paths, boundary conditions | test, spec, coverage, assert, mock, fixture, expect, describe |
-| **dependency-analyst** | Outdated packages, CVEs, bloat, unused deps, license issues | package, import, require, dependency, npm, pip, yarn, lock |
-| **legacy-healing-auditor** | Behavioral preservation, friction safety, institutional knowledge | legacy, heal, migrate, cobol, fortran, refactor, modernize, deprecat |
+| Specialist                  | Focus Area                                                             | Trigger Keywords                                                     |
+| --------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **security-sentinel**       | OWASP Top 10, injection, auth, secrets, input validation               | auth, login, password, token, api, sql, query, cookie, cors, csrf    |
+| **performance-oracle**      | N+1 queries, memory leaks, caching, bundle size, lazy loading          | database, query, cache, render, loop, fetch, load, index, join, pool |
+| **architecture-strategist** | SOLID, coupling, cohesion, patterns, abstraction, dependency direction | _(always included -- design quality affects everything)_             |
+| **test-coverage-auditor**   | Missing tests, edge cases, error paths, boundary conditions            | test, spec, coverage, assert, mock, fixture, expect, describe        |
+| **dependency-analyst**      | Outdated packages, CVEs, bloat, unused deps, license issues            | package, import, require, dependency, npm, pip, yarn, lock           |
+| **legacy-healing-auditor**  | Behavioral preservation, friction safety, institutional knowledge      | legacy, heal, migrate, cobol, fortran, refactor, modernize, deprecat |
 
 ### Selection Rules
 
@@ -660,6 +675,7 @@ Task(
 ### Why Separate Stages Matter
 
 Mixing stages causes these problems:
+
 - **"Technically correct but wrong feature"** - Code is clean, well-tested, maintainable, but doesn't implement what the spec requires
 - **Spec drift goes undetected** - Quality reviewers approve beautiful code that solves the wrong problem
 - **False confidence** - "3 reviewers approved" means nothing if none checked spec compliance
@@ -715,17 +731,17 @@ Output: PASS/FAIL with specific issues listed by severity.
 ```yaml
 two_stage_review:
   stage_1_spec:
-    reviewer_count: 1  # Spec compliance is objective
+    reviewer_count: 1 # Spec compliance is objective
     model: "sonnet"
     must_pass: true
     blocks: "stage_2"
 
   stage_2_quality:
-    reviewer_count: 3  # Quality is subjective, use blind review
+    reviewer_count: 3 # Quality is subjective, use blind review
     model: "sonnet"
     must_pass: true
     follows: "stage_1"
-    anti_sycophancy: true  # Devil's advocate on unanimous
+    anti_sycophancy: true # Devil's advocate on unanimous
 
   on_stage_1_fail:
     action: "Return to implementation, DO NOT proceed to Stage 2"
@@ -752,13 +768,13 @@ Task(prompt="Stage 2: Check code quality ONLY...")
 
 ## Severity-Based Blocking
 
-| Severity | Action |
-|----------|--------|
-| Critical | BLOCK - fix immediately |
-| High | BLOCK - fix before commit |
-| Medium | BLOCK - fix before merge |
-| Low | TODO comment, fix later |
-| Cosmetic | Note, optional fix |
+| Severity | Action                    |
+| -------- | ------------------------- |
+| Critical | BLOCK - fix immediately   |
+| High     | BLOCK - fix before commit |
+| Medium   | BLOCK - fix before merge  |
+| Low      | TODO comment, fix later   |
+| Cosmetic | Note, optional fix        |
 
 See `references/quality-control.md` for complete details.
 
@@ -774,17 +790,17 @@ At high agent counts, full 3-reviewer blind review for every change creates bott
 
 ```yaml
 review_scaling:
-  low_scale:  # <10 agents
+  low_scale: # <10 agents
     all_changes: "Full 3-reviewer blind review"
     rationale: "Quality critical, throughput acceptable"
 
-  medium_scale:  # 10-50 agents
+  medium_scale: # 10-50 agents
     high_risk: "Full 3-reviewer blind review"
     medium_risk: "2-reviewer review"
     low_risk: "1 reviewer + automated checks"
     rationale: "Balance quality and throughput"
 
-  high_scale:  # 50+ agents
+  high_scale: # 50+ agents
     critical_changes: "Full 3-reviewer blind review"
     standard_changes: "Automated checks + spot review"
     trivial_changes: "Automated checks only"

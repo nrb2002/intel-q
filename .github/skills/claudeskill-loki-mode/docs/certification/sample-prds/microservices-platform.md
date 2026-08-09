@@ -9,12 +9,14 @@ A multi-service e-commerce platform with independent microservices communicating
 ## Services
 
 ### User Service
+
 - Registration and authentication (OAuth2 + JWT)
 - User profile management
 - Role-based access control (admin, seller, buyer)
 - Rate limiting on auth endpoints
 
 ### Product Service
+
 - CRUD operations for products
 - Category and tag management
 - Full-text search with Elasticsearch
@@ -22,18 +24,21 @@ A multi-service e-commerce platform with independent microservices communicating
 - Inventory tracking with optimistic locking
 
 ### Order Service
+
 - Shopping cart management (Redis-backed)
 - Order creation with inventory reservation
 - Order status tracking (created, paid, shipped, delivered, cancelled)
 - Saga pattern for distributed transactions
 
 ### Payment Service
+
 - Stripe integration for payment processing
 - Webhook handling for payment events
 - Refund processing
 - Payment status reconciliation
 
 ### Notification Service
+
 - Email notifications (order confirmation, shipping updates)
 - Event-driven via message queue consumption
 - Template-based email rendering
@@ -42,17 +47,20 @@ A multi-service e-commerce platform with independent microservices communicating
 ## Architecture
 
 ### Communication
+
 - Synchronous: REST APIs between services (via API gateway)
 - Asynchronous: RabbitMQ message queues for event-driven flows
 - Events: OrderCreated, PaymentCompleted, OrderShipped, UserRegistered
 
 ### Data Storage
+
 - PostgreSQL per service (database-per-service pattern)
 - Redis for session storage and shopping cart
 - Elasticsearch for product search
 - S3-compatible object storage for images
 
 ### Infrastructure
+
 - Docker containers for all services
 - Kubernetes manifests (Deployment, Service, Ingress, ConfigMap, Secret)
 - Helm chart for parameterized deployment

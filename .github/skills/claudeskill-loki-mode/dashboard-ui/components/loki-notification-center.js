@@ -8,18 +8,18 @@
  * <loki-notification-center api-url="http://localhost:57374" theme="dark"></loki-notification-center>
  */
 
-import { LokiElement } from '../core/loki-theme.js';
-import { getApiClient } from '../core/loki-api-client.js';
+import { LokiElement } from "../core/loki-theme.js";
+import { getApiClient } from "../core/loki-api-client.js";
 
 /**
  * Severity color mapping used for dots and badges.
  * @type {Object<string, string>}
  */
 const SEVERITY_COLORS = {
-  critical: 'var(--loki-red, #ef4444)',
-  warning:  'var(--loki-yellow, #eab308)',
-  info:     'var(--loki-blue, #3b82f6)',
-  success:  'var(--loki-green, #1FC5A8)',
+  critical: "var(--loki-red, #ef4444)",
+  warning: "var(--loki-yellow, #eab308)",
+  info: "var(--loki-blue, #3b82f6)",
+  success: "var(--loki-green, #1FC5A8)",
 };
 
 /**
@@ -27,10 +27,10 @@ const SEVERITY_COLORS = {
  * @type {Object<string, {label: string, icon: string}>}
  */
 const CATEGORIES = {
-  build:    { label: 'Build',    icon: 'B' },
-  quality:  { label: 'Quality',  icon: 'Q' },
-  system:   { label: 'System',   icon: 'S' },
-  security: { label: 'Security', icon: '!' },
+  build: { label: "Build", icon: "B" },
+  quality: { label: "Quality", icon: "Q" },
+  system: { label: "System", icon: "S" },
+  security: { label: "Security", icon: "!" },
 };
 
 /**
@@ -41,7 +41,7 @@ const CATEGORIES = {
  */
 export class LokiNotificationCenter extends LokiElement {
   static get observedAttributes() {
-    return ['api-url', 'theme'];
+    return ["api-url", "theme"];
   }
 
   constructor() {
@@ -50,8 +50,8 @@ export class LokiNotificationCenter extends LokiElement {
     this._triggers = [];
     this._summary = {};
     this._connected = false;
-    this._activeTab = 'feed';
-    this._categoryFilter = 'all';
+    this._activeTab = "feed";
+    this._categoryFilter = "all";
     this._panelOpen = true;
     this._pollInterval = null;
   }
@@ -70,11 +70,11 @@ export class LokiNotificationCenter extends LokiElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
-    if (name === 'api-url') {
+    if (name === "api-url") {
       this._loadNotifications();
       this._loadTriggers();
     }
-    if (name === 'theme') {
+    if (name === "theme") {
       this._applyTheme();
     }
   }
@@ -83,8 +83,8 @@ export class LokiNotificationCenter extends LokiElement {
 
   async _loadNotifications() {
     try {
-      const apiUrl = this.getAttribute('api-url') || window.location.origin;
-      const resp = await fetch(apiUrl + '/api/notifications');
+      const apiUrl = this.getAttribute("api-url") || window.location.origin;
+      const resp = await fetch(apiUrl + "/api/notifications");
       if (resp.ok) {
         const data = await resp.json();
         this._notifications = data.notifications || [];
@@ -99,8 +99,8 @@ export class LokiNotificationCenter extends LokiElement {
 
   async _loadTriggers() {
     try {
-      const apiUrl = this.getAttribute('api-url') || window.location.origin;
-      const resp = await fetch(apiUrl + '/api/notifications/triggers');
+      const apiUrl = this.getAttribute("api-url") || window.location.origin;
+      const resp = await fetch(apiUrl + "/api/notifications/triggers");
       if (resp.ok) {
         const data = await resp.json();
         this._triggers = data.triggers || [];
@@ -111,9 +111,11 @@ export class LokiNotificationCenter extends LokiElement {
   }
 
   async _acknowledgeNotification(id) {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
     try {
-      await fetch(apiUrl + '/api/notifications/' + encodeURIComponent(id) + '/acknowledge', { method: 'POST' });
+      await fetch(apiUrl + "/api/notifications/" + encodeURIComponent(id) + "/acknowledge", {
+        method: "POST",
+      });
     } catch {
       // Network/abort failure on acknowledge is non-fatal; the reload below
       // (also guarded) reflects the true server state. Swallow so it does not
@@ -124,26 +126,30 @@ export class LokiNotificationCenter extends LokiElement {
 
   async _unacknowledgeNotification(id) {
     // Mark as unread by toggling acknowledge state
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
-    await fetch(apiUrl + '/api/notifications/' + encodeURIComponent(id) + '/unacknowledge', { method: 'POST' });
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
+    await fetch(apiUrl + "/api/notifications/" + encodeURIComponent(id) + "/unacknowledge", {
+      method: "POST",
+    });
     this._loadNotifications();
   }
 
   async _acknowledgeAll() {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
-    const unacked = this._notifications.filter(n => !n.acknowledged);
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
+    const unacked = this._notifications.filter((n) => !n.acknowledged);
     for (const n of unacked) {
-      await fetch(apiUrl + '/api/notifications/' + encodeURIComponent(n.id) + '/acknowledge', { method: 'POST' });
+      await fetch(apiUrl + "/api/notifications/" + encodeURIComponent(n.id) + "/acknowledge", {
+        method: "POST",
+      });
     }
     this._loadNotifications();
   }
 
   async _toggleTrigger(triggerId, enabled) {
-    const apiUrl = this.getAttribute('api-url') || window.location.origin;
-    const triggers = this._triggers.map(t => t.id === triggerId ? { ...t, enabled } : t);
-    await fetch(apiUrl + '/api/notifications/triggers', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+    const apiUrl = this.getAttribute("api-url") || window.location.origin;
+    const triggers = this._triggers.map((t) => (t.id === triggerId ? { ...t, enabled } : t));
+    await fetch(apiUrl + "/api/notifications/triggers", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ triggers }),
     });
     this._triggers = triggers;
@@ -169,7 +175,7 @@ export class LokiNotificationCenter extends LokiElement {
   // -- Helpers --
 
   _formatTime(timestamp) {
-    if (!timestamp) return '';
+    if (!timestamp) return "";
     try {
       const date = new Date(timestamp);
       const now = new Date();
@@ -179,10 +185,10 @@ export class LokiNotificationCenter extends LokiElement {
       const diffHr = Math.floor(diffMin / 60);
       const diffDay = Math.floor(diffHr / 24);
 
-      if (diffSec < 60) return diffSec + 's ago';
-      if (diffMin < 60) return diffMin + 'm ago';
-      if (diffHr < 24) return diffHr + 'h ago';
-      if (diffDay < 7) return diffDay + 'd ago';
+      if (diffSec < 60) return diffSec + "s ago";
+      if (diffMin < 60) return diffMin + "m ago";
+      if (diffHr < 24) return diffHr + "h ago";
+      if (diffDay < 7) return diffDay + "d ago";
       return date.toLocaleDateString();
     } catch {
       return String(timestamp);
@@ -190,7 +196,7 @@ export class LokiNotificationCenter extends LokiElement {
   }
 
   _getTimeGroup(timestamp) {
-    if (!timestamp) return 'Other';
+    if (!timestamp) return "Other";
     try {
       const date = new Date(timestamp);
       const now = new Date();
@@ -200,22 +206,22 @@ export class LokiNotificationCenter extends LokiElement {
       const weekAgo = new Date(today);
       weekAgo.setDate(weekAgo.getDate() - 7);
 
-      if (date >= today) return 'Today';
-      if (date >= yesterday) return 'Yesterday';
-      if (date >= weekAgo) return 'This Week';
-      return 'Earlier';
+      if (date >= today) return "Today";
+      if (date >= yesterday) return "Yesterday";
+      if (date >= weekAgo) return "This Week";
+      return "Earlier";
     } catch {
-      return 'Other';
+      return "Other";
     }
   }
 
   _escapeHTML(str) {
-    if (!str) return '';
+    if (!str) return "";
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   _getSeverityColor(severity) {
@@ -223,7 +229,7 @@ export class LokiNotificationCenter extends LokiElement {
   }
 
   _getCategory(notification) {
-    return notification.category || notification.type || 'system';
+    return notification.category || notification.type || "system";
   }
 
   // -- Tab switching --
@@ -249,61 +255,61 @@ export class LokiNotificationCenter extends LokiElement {
     const root = this.shadowRoot;
 
     // Tab buttons
-    root.querySelectorAll('.tab').forEach(btn => {
-      btn.addEventListener('click', () => {
+    root.querySelectorAll(".tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._switchTab(btn.dataset.tab);
       });
     });
 
     // Category filter buttons
-    root.querySelectorAll('.cat-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    root.querySelectorAll(".cat-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         this._setCategoryFilter(btn.dataset.cat);
       });
     });
 
     // Acknowledge buttons
-    root.querySelectorAll('.ack-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    root.querySelectorAll(".ack-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._acknowledgeNotification(btn.dataset.id);
       });
     });
 
     // Mark as unread buttons
-    root.querySelectorAll('.unread-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    root.querySelectorAll(".unread-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._unacknowledgeNotification(btn.dataset.id);
       });
     });
 
     // Acknowledge All / Mark all as read button
-    const ackAllBtn = root.querySelector('.ack-all-btn');
+    const ackAllBtn = root.querySelector(".ack-all-btn");
     if (ackAllBtn) {
-      ackAllBtn.addEventListener('click', () => {
+      ackAllBtn.addEventListener("click", () => {
         this._acknowledgeAll();
       });
     }
 
     // Bell icon toggle
-    const bellBtn = root.querySelector('.bell-icon');
+    const bellBtn = root.querySelector(".bell-icon");
     if (bellBtn) {
-      bellBtn.addEventListener('click', () => {
+      bellBtn.addEventListener("click", () => {
         this._togglePanel();
       });
     }
 
     // Toggle switches
-    root.querySelectorAll('.toggle input').forEach(input => {
-      input.addEventListener('change', () => {
+    root.querySelectorAll(".toggle input").forEach((input) => {
+      input.addEventListener("change", () => {
         this._toggleTrigger(input.dataset.triggerId, input.checked);
       });
     });
 
     // Dismiss buttons
-    root.querySelectorAll('.dismiss-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    root.querySelectorAll(".dismiss-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.stopPropagation();
         this._acknowledgeNotification(btn.dataset.id);
       });
@@ -321,7 +327,7 @@ export class LokiNotificationCenter extends LokiElement {
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
-          ${unread > 0 ? `<span class="badge">${unread > 99 ? '99+' : unread}</span>` : ''}
+          ${unread > 0 ? `<span class="badge">${unread > 99 ? "99+" : unread}</span>` : ""}
         </button>
       </div>
     `;
@@ -348,22 +354,28 @@ export class LokiNotificationCenter extends LokiElement {
             <div class="card-value" style="color: ${SEVERITY_COLORS.critical}">${critical}</div>
           </div>
         </div>
-        ${unack > 0 ? `
+        ${
+          unack > 0
+            ? `
           <button class="ack-all-btn">Mark All as Read</button>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
     `;
   }
 
   _renderCategoryFilter() {
-    const cats = ['all', 'build', 'quality', 'system', 'security'];
+    const cats = ["all", "build", "quality", "system", "security"];
     return `
       <div class="category-bar">
-        ${cats.map(cat => {
-          const isActive = this._categoryFilter === cat;
-          const label = cat === 'all' ? 'All' : (CATEGORIES[cat]?.label || cat);
-          return `<button class="cat-btn ${isActive ? 'active' : ''}" data-cat="${cat}">${label}</button>`;
-        }).join('')}
+        ${cats
+          .map((cat) => {
+            const isActive = this._categoryFilter === cat;
+            const label = cat === "all" ? "All" : CATEGORIES[cat]?.label || cat;
+            return `<button class="cat-btn ${isActive ? "active" : ""}" data-cat="${cat}">${label}</button>`;
+          })
+          .join("")}
       </div>
     `;
   }
@@ -373,8 +385,8 @@ export class LokiNotificationCenter extends LokiElement {
       return new Date(b.timestamp) - new Date(a.timestamp);
     });
 
-    if (this._categoryFilter !== 'all') {
-      filtered = filtered.filter(n => this._getCategory(n) === this._categoryFilter);
+    if (this._categoryFilter !== "all") {
+      filtered = filtered.filter((n) => this._getCategory(n) === this._categoryFilter);
     }
 
     if (filtered.length === 0) {
@@ -389,34 +401,38 @@ export class LokiNotificationCenter extends LokiElement {
       groups[group].push(n);
     }
 
-    const groupOrder = ['Today', 'Yesterday', 'This Week', 'Earlier', 'Other'];
-    let html = '';
+    const groupOrder = ["Today", "Yesterday", "This Week", "Earlier", "Other"];
+    let html = "";
 
     for (const group of groupOrder) {
       if (!groups[group] || groups[group].length === 0) continue;
       html += `<div class="time-group-label">${group}</div>`;
-      html += groups[group].map(n => {
-        const acked = n.acknowledged;
-        const severityColor = this._getSeverityColor(n.severity);
-        const category = this._getCategory(n);
-        const catCfg = CATEGORIES[category] || { label: category, icon: '?' };
+      html += groups[group]
+        .map((n) => {
+          const acked = n.acknowledged;
+          const severityColor = this._getSeverityColor(n.severity);
+          const category = this._getCategory(n);
+          const catCfg = CATEGORIES[category] || { label: category, icon: "?" };
 
-        return `
-          <div class="notif-row ${acked ? 'acknowledged' : ''}">
+          return `
+          <div class="notif-row ${acked ? "acknowledged" : ""}">
             <span class="severity-dot" style="background: ${severityColor};" title="${this._escapeHTML(n.severity)}"></span>
             <span class="cat-icon" title="${catCfg.label}">${catCfg.icon}</span>
             <span class="notif-time">${this._formatTime(n.timestamp)}</span>
             <span class="notif-message">${this._escapeHTML(n.message)}</span>
-            ${n.iteration != null ? `<span class="notif-iteration">iter ${n.iteration}</span>` : ''}
+            ${n.iteration != null ? `<span class="notif-iteration">iter ${n.iteration}</span>` : ""}
             <span class="notif-actions">
-              ${!acked
-                ? `<button class="ack-btn" data-id="${this._escapeHTML(n.id)}" title="Mark as read">Read</button>`
-                : `<button class="unread-btn" data-id="${this._escapeHTML(n.id)}" title="Mark as unread">Unread</button>`}
+              ${
+                !acked
+                  ? `<button class="ack-btn" data-id="${this._escapeHTML(n.id)}" title="Mark as read">Read</button>`
+                  : `<button class="unread-btn" data-id="${this._escapeHTML(n.id)}" title="Mark as unread">Unread</button>`
+              }
               <button class="dismiss-btn" data-id="${this._escapeHTML(n.id)}" title="Dismiss">&#10005;</button>
             </span>
           </div>
         `;
-      }).join('');
+        })
+        .join("");
     }
 
     return html;
@@ -427,25 +443,26 @@ export class LokiNotificationCenter extends LokiElement {
       return '<div class="empty-state">No triggers configured</div>';
     }
 
-    return this._triggers.map(t => {
-      const severityColor = this._getSeverityColor(t.severity);
-      const thresholdInfo = t.threshold_pct != null
-        ? `Threshold: ${t.threshold_pct}%`
-        : (t.pattern || '');
+    return this._triggers
+      .map((t) => {
+        const severityColor = this._getSeverityColor(t.severity);
+        const thresholdInfo =
+          t.threshold_pct != null ? `Threshold: ${t.threshold_pct}%` : t.pattern || "";
 
-      return `
+        return `
         <div class="trigger-row">
           <label class="toggle">
-            <input type="checkbox" data-trigger-id="${this._escapeHTML(t.id)}" ${t.enabled ? 'checked' : ''}>
+            <input type="checkbox" data-trigger-id="${this._escapeHTML(t.id)}" ${t.enabled ? "checked" : ""}>
             <span class="toggle-slider"></span>
           </label>
           <span class="trigger-name">${this._escapeHTML(t.id)}</span>
-          <span class="trigger-badge type-badge">${this._escapeHTML(t.type || 'custom')}</span>
-          <span class="trigger-badge severity-badge" style="background: ${severityColor}; color: #fff;">${this._escapeHTML(t.severity || 'info')}</span>
-          ${thresholdInfo ? `<span class="trigger-info">${this._escapeHTML(thresholdInfo)}</span>` : ''}
+          <span class="trigger-badge type-badge">${this._escapeHTML(t.type || "custom")}</span>
+          <span class="trigger-badge severity-badge" style="background: ${severityColor}; color: #fff;">${this._escapeHTML(t.severity || "info")}</span>
+          ${thresholdInfo ? `<span class="trigger-info">${this._escapeHTML(thresholdInfo)}</span>` : ""}
         </div>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   // -- Main render --
@@ -885,31 +902,43 @@ export class LokiNotificationCenter extends LokiElement {
       <div class="notif-container">
         ${this._renderBellIcon()}
 
-        ${!this._connected ? '<div class="offline-notice">Connecting to notifications API...</div>' : ''}
+        ${!this._connected ? '<div class="offline-notice">Connecting to notifications API...</div>' : ""}
 
-        ${this._panelOpen ? `
+        ${
+          this._panelOpen
+            ? `
           <!-- Tabs -->
           <div class="tabs">
-            <button class="tab ${this._activeTab === 'feed' ? 'active' : ''}" data-tab="feed">Feed</button>
-            <button class="tab ${this._activeTab === 'triggers' ? 'active' : ''}" data-tab="triggers">Triggers</button>
+            <button class="tab ${this._activeTab === "feed" ? "active" : ""}" data-tab="feed">Feed</button>
+            <button class="tab ${this._activeTab === "triggers" ? "active" : ""}" data-tab="triggers">Triggers</button>
           </div>
 
           <!-- Feed Tab -->
-          ${this._activeTab === 'feed' ? `
+          ${
+            this._activeTab === "feed"
+              ? `
             ${this._renderSummaryBar()}
             ${this._renderCategoryFilter()}
             <div class="notif-list">
               ${this._renderNotificationList()}
             </div>
-          ` : ''}
+          `
+              : ""
+          }
 
           <!-- Triggers Tab -->
-          ${this._activeTab === 'triggers' ? `
+          ${
+            this._activeTab === "triggers"
+              ? `
             <div class="trigger-list">
               ${this._renderTriggerList()}
             </div>
-          ` : ''}
-        ` : ''}
+          `
+              : ""
+          }
+        `
+            : ""
+        }
       </div>
     `;
 
@@ -918,8 +947,8 @@ export class LokiNotificationCenter extends LokiElement {
 }
 
 // Register the component
-if (!customElements.get('loki-notification-center')) {
-  customElements.define('loki-notification-center', LokiNotificationCenter);
+if (!customElements.get("loki-notification-center")) {
+  customElements.define("loki-notification-center", LokiNotificationCenter);
 }
 
 export default LokiNotificationCenter;

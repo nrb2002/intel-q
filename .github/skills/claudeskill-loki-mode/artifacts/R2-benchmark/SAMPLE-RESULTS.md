@@ -10,11 +10,11 @@
 
 **Winner: loki** (highest grader success-rate 3/3 (100%)).
 
-| Tool | Model | Success k/N | Cost USD (median) | Wall-clock (median) | Iterations (median) | Quality (median) | Provenance |
-|---|---|---|---|---|---|---|---|
-| loki | claude-opus-4 | 3/3 | $0.42 | 10.0s | 3 | 0.90 | automated (verified) |
-| aider | claude-opus-4 | 1/3 | not recorded | 10.0s | 3 | 0.10 | automated (verified) |
-| cursor | (manual) | 2/3 | not recorded | 10.0s | 3 | 0.90 | manual (unverified) |
+| Tool   | Model         | Success k/N | Cost USD (median) | Wall-clock (median) | Iterations (median) | Quality (median) | Provenance           |
+| ------ | ------------- | ----------- | ----------------- | ------------------- | ------------------- | ---------------- | -------------------- |
+| loki   | claude-opus-4 | 3/3         | $0.42             | 10.0s               | 3                   | 0.90             | automated (verified) |
+| aider  | claude-opus-4 | 1/3         | not recorded      | 10.0s               | 3                   | 0.10             | automated (verified) |
+| cursor | (manual)      | 2/3         | not recorded      | 10.0s               | 3                   | 0.90             | manual (unverified)  |
 
 > Unverified rows (cursor) are operator-supplied manual entries (provenance verified=false) and are EXCLUDED from the winner computation. Treat them as anecdotes with provenance, not measured results.
 

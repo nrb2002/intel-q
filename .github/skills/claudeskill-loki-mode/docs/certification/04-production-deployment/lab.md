@@ -19,6 +19,7 @@ cat docker-compose.yml
 ```
 
 Key elements to note:
+
 - The service mounts your current directory as `/workspace` (read-write)
 - Git config and SSH keys are mounted read-only
 - The dashboard port 57374 is exposed
@@ -31,6 +32,7 @@ docker-compose build
 ```
 
 This builds from the `Dockerfile` which installs:
+
 - Ubuntu 24.04 base
 - Node.js 20 LTS
 - Python 3 with venv support

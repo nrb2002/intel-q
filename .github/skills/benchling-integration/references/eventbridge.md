@@ -3,6 +3,7 @@
 Real-time integrations that react to Benchling changes (entity registration, inventory transfers, workflow updates, and more).
 
 **Official docs:**
+
 - [Getting Started with Events](https://docs.benchling.com/docs/events-getting-started)
 - [Events Reference (payloads and event types)](https://docs.benchling.com/docs/events-reference)
 - [Events FAQs](https://docs.benchling.com/docs/events-faqs)
@@ -245,11 +246,11 @@ for page in events:
 
 ## EventBridge vs Webhooks
 
-| | EventBridge | Webhooks |
-|---|-------------|----------|
-| Setup | Benchling console + AWS bus/rules | Benchling App configuration |
-| Payload | Hydrated v2 API objects | Thin IDs + metadata |
-| Filtering | EventBridge `EventPattern` | App code |
-| Permissions | Not permissioned at delivery | Inherited from app |
+|             | EventBridge                       | Webhooks                    |
+| ----------- | --------------------------------- | --------------------------- |
+| Setup       | Benchling console + AWS bus/rules | Benchling App configuration |
+| Payload     | Hydrated v2 API objects           | Thin IDs + metadata         |
+| Filtering   | EventBridge `EventPattern`        | App code                    |
+| Permissions | Not permissioned at delivery      | Inherited from app          |
 
 For new Benchling Apps, Benchling recommends **webhooks** unless you already standardize on EventBridge in AWS. See [Getting Started with Webhooks](https://docs.benchling.com/docs/getting-started-with-webhooks).

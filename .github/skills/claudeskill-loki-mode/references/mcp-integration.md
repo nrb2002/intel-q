@@ -11,11 +11,13 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities with spec
 **Purpose:** Browser automation for end-to-end testing and visual verification.
 
 **When to use:**
+
 - Feature verification (visual confirmation)
 - E2E test automation
 - Screenshot capture for artifacts
 
 **Configuration:**
+
 ```json
 {
   "mcpServers": {
@@ -28,6 +30,7 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities with spec
 ```
 
 **Tools provided:**
+
 - `browser_navigate` - Navigate to URL
 - `browser_click` - Click elements
 - `browser_type` - Type text
@@ -44,17 +47,20 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities with spec
 **Purpose:** Production-grade web research with evidence-based results and provenance.
 
 **Why Parallel AI:**
+
 - 48% accuracy on complex research tasks (vs native LLM search)
 - Evidence-based results with provenance for every atomic output
 - Monitor API for tracking web changes (dependencies, competitors)
 - Task API with custom input/output schemas for structured research
 
 **When to use:**
+
 - Discovery phase: PRD gap analysis, competitor research
 - Web Research phase: Feature comparisons, market analysis
 - Dependency Management: Security advisory monitoring
 
 **Configuration:**
+
 ```json
 {
   "mcpServers": {
@@ -78,12 +84,12 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities with spec
 
 **Tools provided:**
 
-| Tool | Purpose | Use Case |
-|------|---------|----------|
-| `parallel_search` | Web search with LLM-optimized excerpts | Quick lookups, fact-checking |
-| `parallel_extract` | Extract content from specific URLs | Documentation parsing |
-| `parallel_task` | Complex research with custom schemas | Competitor analysis, market research |
-| `parallel_monitor` | Track web changes with webhooks | Dependency updates, security alerts |
+| Tool               | Purpose                                | Use Case                             |
+| ------------------ | -------------------------------------- | ------------------------------------ |
+| `parallel_search`  | Web search with LLM-optimized excerpts | Quick lookups, fact-checking         |
+| `parallel_extract` | Extract content from specific URLs     | Documentation parsing                |
+| `parallel_task`    | Complex research with custom schemas   | Competitor analysis, market research |
+| `parallel_monitor` | Track web changes with webhooks        | Dependency updates, security alerts  |
 
 **SDLC Phases:** Discovery, Web Research, Continuous Monitoring
 
@@ -98,18 +104,21 @@ Model Context Protocol (MCP) servers extend Claude Code's capabilities with spec
 **Purpose:** Deep codebase intelligence through 8 MCP tools. When installed, Loki Mode automatically uses its tools for richer context during builds.
 
 **When to use:**
+
 - First encounter with an unfamiliar codebase
 - Before modifying files with many dependents
 - Architecture documentation and decision history
 - Semantic code search (natural language)
 
 **Setup:**
+
 ```bash
 pip install repowise
 repowise init .  # One-time indexing (~25 min)
 ```
 
 **Configuration:**
+
 ```json
 {
   "mcpServers": {
@@ -123,21 +132,22 @@ repowise init .  # One-time indexing (~25 min)
 
 **Tools provided:**
 
-| Tool | Purpose | Use Case |
-|------|---------|----------|
-| `get_overview()` | Architecture summary | First call on unfamiliar codebase |
-| `get_context(targets)` | Docs, ownership, decisions | Before modifying files |
-| `get_risk(targets)` | Hotspots, dependents, co-changes | Before modifying files |
-| `get_why(query)` | Decision history | Before architectural changes |
-| `search_codebase(query)` | Natural language code search | Finding code semantically |
-| `get_dependency_path(from, to)` | Trace connections between files | Dependency analysis |
-| `get_dead_code()` | Find unreachable code | Cleanup and refactoring |
-| `get_architecture_diagram(module)` | Generate Mermaid diagrams | Documentation generation |
+| Tool                               | Purpose                          | Use Case                          |
+| ---------------------------------- | -------------------------------- | --------------------------------- |
+| `get_overview()`                   | Architecture summary             | First call on unfamiliar codebase |
+| `get_context(targets)`             | Docs, ownership, decisions       | Before modifying files            |
+| `get_risk(targets)`                | Hotspots, dependents, co-changes | Before modifying files            |
+| `get_why(query)`                   | Decision history                 | Before architectural changes      |
+| `search_codebase(query)`           | Natural language code search     | Finding code semantically         |
+| `get_dependency_path(from, to)`    | Trace connections between files  | Dependency analysis               |
+| `get_dead_code()`                  | Find unreachable code            | Cleanup and refactoring           |
+| `get_architecture_diagram(module)` | Generate Mermaid diagrams        | Documentation generation          |
 
 **SDLC Phases:** Bootstrap (overview), Development (context/risk), Documentation (diagrams)
 
 **Integration with Loki Mode:**
 When Repowise MCP is detected (via `.claude/mcp.json`), Loki Mode automatically:
+
 1. Calls `get_overview()` during the BOOTSTRAP phase
 2. Calls `get_risk()` before modifying hotspot files
 3. Calls `get_context()` when loading relevant file context
@@ -197,13 +207,13 @@ loki code search "save state" --json             # machine-readable output
 
 Flags (see `loki code search --help`):
 
-| Flag | Default | Effect |
-|------|---------|--------|
-| `--grep-only` | off | lexical search only (skip semantic) |
-| `--semantic-only` | off | semantic search only (skip grep) |
-| `--budget N` | 3000 | token budget for the merged result set |
-| `--top N` | 10 | maximum number of results |
-| `--json` | off | emit JSON instead of formatted output |
+| Flag              | Default | Effect                                 |
+| ----------------- | ------- | -------------------------------------- |
+| `--grep-only`     | off     | lexical search only (skip semantic)    |
+| `--semantic-only` | off     | semantic search only (skip grep)       |
+| `--budget N`      | 3000    | token budget for the merged result set |
+| `--top N`         | 10      | maximum number of results              |
+| `--json`          | off     | emit JSON instead of formatted output  |
 
 `loki code search` is one of the `loki code` codebase-intelligence subcommands
 (alongside `overview`, `symbols`, `deps`, `hotspots`, and `diff`). It falls back to
@@ -220,6 +230,7 @@ Claude Code reads MCP configuration from:
 2. **User-level:** `~/.claude/mcp.json` (for global tools)
 
 Example full configuration:
+
 ```json
 {
   "mcpServers": {

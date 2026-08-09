@@ -67,8 +67,7 @@ ensemble_approach:
     - Security-sensitive implementations
     - Refactoring with multiple strategies
 
-  workflow:
-    1. Generate 3 distinct solutions (different approaches)
+  workflow: 1. Generate 3 distinct solutions (different approaches)
     2. Evaluate each against criteria (performance, maintainability, security)
     3. Select by consensus or weighted scoring
     4. Document why alternatives were rejected
@@ -138,8 +137,7 @@ constitution:
     - "Maintain state consistency"
     - "Protect user data and secrets"
 
-self_critique_workflow:
-  1. Generate solution
+self_critique_workflow: 1. Generate solution
   2. Critique against principles
   3. Identify violations
   4. Revise to address violations

@@ -57,13 +57,13 @@ paths:
       description: Returns the health status of the API server
       operationId: healthCheck
       responses:
-        '200':
+        "200":
           description: Server is healthy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
-        '503':
+                $ref: "#/components/schemas/HealthResponse"
+        "503":
           description: Server is unhealthy or degraded
 
   /health/ready:
@@ -73,9 +73,9 @@ paths:
       description: Kubernetes-style readiness probe
       operationId: readinessCheck
       responses:
-        '200':
+        "200":
           description: Server is ready
-        '503':
+        "503":
           description: Server is not ready
 
   /health/live:
@@ -85,7 +85,7 @@ paths:
       description: Kubernetes-style liveness probe
       operationId: livenessCheck
       responses:
-        '200':
+        "200":
           description: Server is alive
 
   /api/status:
@@ -95,7 +95,7 @@ paths:
       description: Returns detailed status information including system metrics
       operationId: detailedStatus
       responses:
-        '200':
+        "200":
           description: Status information
           content:
             application/json:
@@ -109,7 +109,7 @@ paths:
       description: Returns all sessions
       operationId: listSessions
       responses:
-        '200':
+        "200":
           description: List of sessions
           content:
             application/json:
@@ -119,7 +119,7 @@ paths:
                   sessions:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Session'
+                      $ref: "#/components/schemas/Session"
                   total:
                     type: integer
                   running:
@@ -134,26 +134,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StartSessionRequest'
+              $ref: "#/components/schemas/StartSessionRequest"
       responses:
-        '201':
+        "201":
           description: Session started
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StartSessionResponse'
-        '409':
+                $ref: "#/components/schemas/StartSessionResponse"
+        "409":
           description: Session already running
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '422':
+                $ref: "#/components/schemas/ApiError"
+        "422":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
 
   /api/sessions/{sessionId}:
     get:
@@ -168,13 +168,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Session details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SessionStatusResponse'
-        '404':
+                $ref: "#/components/schemas/SessionStatusResponse"
+        "404":
           description: Session not found
 
     delete:
@@ -189,11 +189,11 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Session deleted
-        '404':
+        "404":
           description: Session not found
-        '409':
+        "409":
           description: Cannot delete running session
 
   /api/sessions/{sessionId}/stop:
@@ -209,11 +209,11 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Stop signal sent
-        '404':
+        "404":
           description: Session not found
-        '409':
+        "409":
           description: Session not running
 
   /api/sessions/{sessionId}/input:
@@ -242,11 +242,11 @@ paths:
                   type: string
                   description: Optional context for the input
       responses:
-        '200':
+        "200":
           description: Input injected
-        '404':
+        "404":
           description: Session not found
-        '409':
+        "409":
           description: Session not accepting input
 
   /api/sessions/{sessionId}/tasks:
@@ -277,7 +277,7 @@ paths:
             type: integer
             default: 0
       responses:
-        '200':
+        "200":
           description: Task list
           content:
             application/json:
@@ -287,12 +287,12 @@ paths:
                   tasks:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Task'
+                      $ref: "#/components/schemas/Task"
                   pagination:
                     type: object
                   summary:
                     type: object
-        '404':
+        "404":
           description: Session not found
 
   /api/tasks:
@@ -317,7 +317,7 @@ paths:
             type: integer
             default: 0
       responses:
-        '200':
+        "200":
           description: Task list
 
   /api/tasks/active:
@@ -327,7 +327,7 @@ paths:
       description: Returns currently running tasks
       operationId: getActiveTasks
       responses:
-        '200':
+        "200":
           description: Active tasks
           content:
             application/json:
@@ -337,7 +337,7 @@ paths:
                   tasks:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Task'
+                      $ref: "#/components/schemas/Task"
                   count:
                     type: integer
 
@@ -348,7 +348,7 @@ paths:
       description: Returns pending/queued tasks
       operationId: getQueuedTasks
       responses:
-        '200':
+        "200":
           description: Queued tasks
 
   /api/events:
@@ -383,7 +383,7 @@ paths:
             type: string
             enum: [debug, info, warn, error]
       responses:
-        '200':
+        "200":
           description: SSE stream
           content:
             text/event-stream:
@@ -411,7 +411,7 @@ paths:
             type: integer
             default: 100
       responses:
-        '200':
+        "200":
           description: Event history
           content:
             application/json:
@@ -430,7 +430,7 @@ paths:
       description: Returns event system statistics
       operationId: getEventStats
       responses:
-        '200':
+        "200":
           description: Event statistics
 
   /api/suggestions:
@@ -468,24 +468,24 @@ paths:
             maximum: 50
             default: 5
       responses:
-        '200':
+        "200":
           description: Suggestions retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuggestionsResponse'
-        '400':
+                $ref: "#/components/schemas/SuggestionsResponse"
+        "400":
           description: Validation error (missing context, context too long, or rate limit exceeded)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
-        '503':
+                $ref: "#/components/schemas/ApiError"
+        "503":
           description: Memory system unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
 
   /api/memory:
     get:
@@ -494,12 +494,12 @@ paths:
       description: Returns a summary of the memory system including counts and token economics
       operationId: getMemorySummary
       responses:
-        '200':
+        "200":
           description: Memory summary
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MemorySummary'
+                $ref: "#/components/schemas/MemorySummary"
 
   /api/memory/retrieve:
     post:
@@ -533,18 +533,18 @@ paths:
                   maximum: 50
                   default: 5
       responses:
-        '200':
+        "200":
           description: Retrieved memories
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RetrieveResponse'
-        '400':
+                $ref: "#/components/schemas/RetrieveResponse"
+        "400":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: "#/components/schemas/ApiError"
 
   /api/learning/metrics:
     get:
@@ -558,14 +558,15 @@ paths:
           description: Time range for metrics
           schema:
             type: string
-            enum: ['1h', '24h', '7d', '30d']
-            default: '7d'
+            enum: ["1h", "24h", "7d", "30d"]
+            default: "7d"
         - name: signalType
           in: query
           description: Filter by signal type
           schema:
             type: string
-            enum: [user_preference, error_pattern, success_pattern, tool_efficiency, context_relevance]
+            enum:
+              [user_preference, error_pattern, success_pattern, tool_efficiency, context_relevance]
         - name: source
           in: query
           description: Filter by signal source
@@ -573,12 +574,12 @@ paths:
             type: string
             enum: [cli, api, vscode, mcp, dashboard]
       responses:
-        '200':
+        "200":
           description: Learning metrics
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningMetrics'
+                $ref: "#/components/schemas/LearningMetrics"
 
   /api/learning/trends:
     get:
@@ -592,8 +593,8 @@ paths:
           description: Time range for trends
           schema:
             type: string
-            enum: ['1h', '24h', '7d', '30d']
-            default: '7d'
+            enum: ["1h", "24h", "7d", "30d"]
+            default: "7d"
         - name: signalType
           in: query
           description: Filter by signal type
@@ -605,12 +606,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Trend data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LearningTrends'
+                $ref: "#/components/schemas/LearningTrends"
 
   /api/learning/signals:
     get:
@@ -624,7 +625,7 @@ paths:
           description: Time range
           schema:
             type: string
-            default: '7d'
+            default: "7d"
         - name: limit
           in: query
           description: Max signals to return
@@ -638,7 +639,7 @@ paths:
             type: integer
             default: 0
       responses:
-        '200':
+        "200":
           description: Learning signals
           content:
             application/json:
@@ -648,9 +649,9 @@ paths:
                   signals:
                     type: array
                     items:
-                      $ref: '#/components/schemas/LearningSignal'
+                      $ref: "#/components/schemas/LearningSignal"
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
+                    $ref: "#/components/schemas/Pagination"
 
   /api/learning/aggregate:
     post:
@@ -674,7 +675,7 @@ paths:
                   type: number
                   default: 0.5
       responses:
-        '200':
+        "200":
           description: Aggregation result
           content:
             application/json:
@@ -796,7 +797,7 @@ components:
       type: object
       properties:
         session:
-          $ref: '#/components/schemas/Session'
+          $ref: "#/components/schemas/Session"
         tasks:
           type: object
           properties:
@@ -897,7 +898,7 @@ components:
         suggestions:
           type: array
           items:
-            $ref: '#/components/schemas/Suggestion'
+            $ref: "#/components/schemas/Suggestion"
         context:
           type: string
           description: The original context (truncated to 200 chars)
@@ -931,19 +932,19 @@ components:
             preferences:
               type: array
               items:
-                $ref: '#/components/schemas/AggregatedPreference'
+                $ref: "#/components/schemas/AggregatedPreference"
             error_patterns:
               type: array
               items:
-                $ref: '#/components/schemas/AggregatedErrorPattern'
+                $ref: "#/components/schemas/AggregatedErrorPattern"
             success_patterns:
               type: array
               items:
-                $ref: '#/components/schemas/AggregatedSuccessPattern'
+                $ref: "#/components/schemas/AggregatedSuccessPattern"
             tool_efficiencies:
               type: array
               items:
-                $ref: '#/components/schemas/AggregatedToolEfficiency'
+                $ref: "#/components/schemas/AggregatedToolEfficiency"
         timeRange:
           type: string
         since:
@@ -981,7 +982,8 @@ components:
           type: string
         type:
           type: string
-          enum: [user_preference, error_pattern, success_pattern, tool_efficiency, context_relevance]
+          enum:
+            [user_preference, error_pattern, success_pattern, tool_efficiency, context_relevance]
         source:
           type: string
           enum: [cli, api, vscode, mcp, dashboard]

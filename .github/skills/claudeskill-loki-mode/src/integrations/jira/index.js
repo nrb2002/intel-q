@@ -1,9 +1,13 @@
-'use strict';
+"use strict";
 
-var { JiraApiClient, JiraApiError } = require('./api-client');
-var { JiraSyncManager, mapLokiStatusToJira, STATUS_MAP } = require('./sync-manager');
-var { WebhookHandler } = require('./webhook-handler');
-var { convertEpicToPrd, extractAcceptanceCriteria, generatePrdMetadata } = require('./epic-converter');
+var { JiraApiClient, JiraApiError } = require("./api-client");
+var { JiraSyncManager, mapLokiStatusToJira, STATUS_MAP } = require("./sync-manager");
+var { WebhookHandler } = require("./webhook-handler");
+var {
+  convertEpicToPrd,
+  extractAcceptanceCriteria,
+  generatePrdMetadata,
+} = require("./epic-converter");
 
 /**
  * Create a configured Jira sync manager.

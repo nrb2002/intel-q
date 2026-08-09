@@ -11,6 +11,7 @@ After VERIFY passes, evaluate whether the task produced a **novel insight** wort
 ### When to Compound
 
 Extract a solution when the task involved:
+
 - Fixing a bug with a non-obvious root cause
 - Solving a problem that required research or multiple attempts
 - Discovering a reusable pattern or anti-pattern
@@ -20,6 +21,7 @@ Extract a solution when the task involved:
 ### When NOT to Compound
 
 Skip compounding for:
+
 - Trivial changes (typos, formatting, renaming)
 - Standard CRUD operations
 - Changes with no novel insight
@@ -66,30 +68,30 @@ for ~200ms. Fix: pool_size = 2 * max_concurrent_requests.
 
 Solutions are organized into 7 fixed categories:
 
-| Category | What Goes Here |
-|----------|---------------|
-| `security` | Auth bugs, injection fixes, secret handling, OWASP findings |
-| `performance` | N+1 queries, memory leaks, caching strategies, bundle optimization |
+| Category       | What Goes Here                                                              |
+| -------------- | --------------------------------------------------------------------------- |
+| `security`     | Auth bugs, injection fixes, secret handling, OWASP findings                 |
+| `performance`  | N+1 queries, memory leaks, caching strategies, bundle optimization          |
 | `architecture` | Design patterns, coupling fixes, abstraction improvements, SOLID violations |
-| `testing` | Test strategies, flaky test fixes, coverage improvements, mocking patterns |
-| `debugging` | Root cause analysis techniques, diagnostic approaches, logging patterns |
-| `deployment` | CI/CD fixes, Docker issues, environment config, infrastructure patterns |
-| `general` | Anything that doesn't fit above categories |
+| `testing`      | Test strategies, flaky test fixes, coverage improvements, mocking patterns  |
+| `debugging`    | Root cause analysis techniques, diagnostic approaches, logging patterns     |
+| `deployment`   | CI/CD fixes, Docker issues, environment config, infrastructure patterns     |
+| `general`      | Anything that doesn't fit above categories                                  |
 
 ### YAML Frontmatter Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `title` | Yes | Concise description of the problem/solution |
-| `category` | Yes | One of the 7 categories above |
-| `tags` | Yes | Array of keywords for search/matching |
-| `symptoms` | Yes | Observable indicators of the problem |
-| `root_cause` | Yes | Underlying cause (not just the symptom) |
-| `prevention` | Yes | How to avoid this in future projects |
-| `confidence` | No | 0.0-1.0, how broadly applicable (default 0.7) |
-| `source_project` | No | Project where this was discovered |
-| `created` | Yes | ISO 8601 timestamp |
-| `applied_count` | No | Times this solution was loaded for a task (default 0) |
+| Field            | Required | Description                                           |
+| ---------------- | -------- | ----------------------------------------------------- |
+| `title`          | Yes      | Concise description of the problem/solution           |
+| `category`       | Yes      | One of the 7 categories above                         |
+| `tags`           | Yes      | Array of keywords for search/matching                 |
+| `symptoms`       | Yes      | Observable indicators of the problem                  |
+| `root_cause`     | Yes      | Underlying cause (not just the symptom)               |
+| `prevention`     | Yes      | How to avoid this in future projects                  |
+| `confidence`     | No       | 0.0-1.0, how broadly applicable (default 0.7)         |
+| `source_project` | No       | Project where this was discovered                     |
+| `created`        | Yes      | ISO 8601 timestamp                                    |
+| `applied_count`  | No       | Times this solution was loaded for a task (default 0) |
 
 ---
 
@@ -238,20 +240,24 @@ Task(
 ## Plan Deepening Results (4 agents, 2m 14s)
 
 ### Repo Analysis
+
 - Found existing auth middleware at src/middleware/auth.ts -- reuse for new endpoints
 - Logging pattern uses winston with structured JSON -- follow same pattern
 - Database queries use repository pattern -- add new repository for feature
 
 ### Dependencies
+
 - React Query v5 requires explicit cache invalidation -- don't rely on auto-refetch
 - Prisma 6.x has breaking change in nested writes -- use transactions instead
 
 ### Edge Cases (3 Critical, 5 High)
+
 - [Critical] Concurrent user edits can cause data loss -- add optimistic locking
 - [Critical] File upload >100MB causes OOM -- add streaming upload
 - [High] Network timeout during payment creates orphaned transaction
 
 ### Threat Model
+
 - [Critical] API endpoint /admin/* missing rate limiting
 - [High] User-uploaded filenames not sanitized -- path traversal risk
 ```
@@ -262,13 +268,13 @@ Task(
 
 These phases can be invoked individually or as part of the full RARV+C cycle:
 
-| Phase | Maps To | What It Does |
-|-------|---------|-------------|
-| `plan` | REASON (first pass) | Analyze PRD, generate architecture, create task queue |
-| `deepen` | REASON (enhanced) | 4 research agents enhance the plan |
-| `work` | ACT | Execute highest-priority task |
-| `review` | REFLECT + VERIFY | 3 specialist reviewers on recent changes |
-| `compound` | COMPOUND | Extract structured solutions from learnings |
+| Phase      | Maps To             | What It Does                                          |
+| ---------- | ------------------- | ----------------------------------------------------- |
+| `plan`     | REASON (first pass) | Analyze PRD, generate architecture, create task queue |
+| `deepen`   | REASON (enhanced)   | 4 research agents enhance the plan                    |
+| `work`     | ACT                 | Execute highest-priority task                         |
+| `review`   | REFLECT + VERIFY    | 3 specialist reviewers on recent changes              |
+| `compound` | COMPOUND            | Extract structured solutions from learnings           |
 
 When running via `autonomy/run.sh`, the full cycle executes automatically.
 When running via Claude Code skill directly, invoke phases as needed.

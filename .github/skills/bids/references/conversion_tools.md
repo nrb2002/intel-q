@@ -34,15 +34,16 @@ heudiconv --files dicom/001 -o data -f reproin --bids --minmeta
 
 Protocol names encode BIDS entities directly. Format: `<seqtype>[-<suffix>][_<entity>-<label>]...`
 
-| Protocol name at scanner | BIDS output |
-|--------------------------|-------------|
-| `anat-T1w` or just `anat` | `sub-XX/anat/sub-XX_T1w.nii.gz` |
+| Protocol name at scanner                  | BIDS output                                |
+| ----------------------------------------- | ------------------------------------------ |
+| `anat-T1w` or just `anat`                 | `sub-XX/anat/sub-XX_T1w.nii.gz`            |
 | `func-bold_task-rest` or `func_task-rest` | `sub-XX/func/sub-XX_task-rest_bold.nii.gz` |
-| `dwi_dir-AP` | `sub-XX/dwi/sub-XX_dir-AP_dwi.nii.gz` |
-| `fmap_dir-PA` or `fmap-epi_dir-PA` | `sub-XX/fmap/sub-XX_dir-PA_epi.nii.gz` |
-| `fmap_acq-4mm` | `sub-XX/fmap/sub-XX_acq-4mm_epi.nii.gz` |
+| `dwi_dir-AP`                              | `sub-XX/dwi/sub-XX_dir-AP_dwi.nii.gz`      |
+| `fmap_dir-PA` or `fmap-epi_dir-PA`        | `sub-XX/fmap/sub-XX_dir-PA_epi.nii.gz`     |
+| `fmap_acq-4mm`                            | `sub-XX/fmap/sub-XX_acq-4mm_epi.nii.gz`    |
 
 **Key features:**
+
 - **Default suffixes**: `anat` defaults to `T1w`, `func` to `bold`, `fmap` to `epi` — so they can be omitted
 - **Subject ID**: extracted automatically from DICOM metadata (Patient ID)
 - **Session**: set once on any sequence (e.g., `anat-scout_ses-pre`) and ReproIn propagates it to all sequences in that scanner Program/Patient
@@ -54,6 +55,7 @@ Protocol names encode BIDS entities directly. Format: `<seqtype>[-<suffix>][_<en
 #### ReproIn Overview
 
 See also:
+
 - [ReproIn Walkthrough](https://github.com/repronim/reproin#walkthrough) for scanner setup
 - [ReproNim Webinar slides and recording](https://github.com/repronim/reproin#presentations) on HeuDiConv + ReproIn
 
@@ -83,6 +85,7 @@ heudiconv \
 ```
 
 This creates `.heudiconv/219/info/dicominfo.tsv` containing one row per DICOM series with columns:
+
 - `series_id`, `sequence_name`, `protocol_name`, `series_description`
 - `dim1`-`dim4` (image dimensions), `TR`, `TE`, `image_type`
 - `is_derived`, `is_motion_corrected` — important for filtering
@@ -229,6 +232,7 @@ heudiconv \
 ### The .heudiconv Directory
 
 Every conversion creates/updates a `.heudiconv/` hidden directory alongside the output:
+
 - `.heudiconv/<subject>/info/dicominfo.tsv` — DICOM series metadata
 - `.heudiconv/<subject>/info/<heuristic>.py` — copy of the heuristic used
 - Conversion records for each subject/session
@@ -285,72 +289,73 @@ Creates `tmp_dcm2bids/helper/` with converted NIfTI files and JSON sidecars. Rev
 
 ```json
 {
-    "descriptions": [
-        {
-            "id": "id_t1w",
-            "datatype": "anat",
-            "suffix": "T1w",
-            "criteria": {
-                "SeriesDescription": "*MPRAGE*",
-                "ImageType": ["ORIGINAL", "PRIMARY", "M", "ND", "NORM"]
-            }
-        },
-        {
-            "id": "id_bold_rest",
-            "datatype": "func",
-            "suffix": "bold",
-            "custom_entities": "task-rest",
-            "criteria": {
-                "SeriesDescription": "*REST*BOLD*",
-                "ImageType": ["ORIGINAL", "PRIMARY", "M", "ND", "MOSAIC"]
-            },
-            "sidecar_changes": {
-                "TaskName": "rest"
-            }
-        },
-        {
-            "id": "id_bold_nback",
-            "datatype": "func",
-            "suffix": "bold",
-            "custom_entities": "task-nback",
-            "criteria": {
-                "SeriesDescription": "*NBACK*",
-                "EchoTime": 0.03
-            },
-            "sidecar_changes": {
-                "TaskName": "nback"
-            }
-        },
-        {
-            "id": "id_dwi",
-            "datatype": "dwi",
-            "suffix": "dwi",
-            "custom_entities": "dir-AP",
-            "criteria": {
-                "SeriesDescription": "*DTI*AP*"
-            }
-        },
-        {
-            "id": "id_fmap_phasediff",
-            "datatype": "fmap",
-            "suffix": "phasediff",
-            "criteria": {
-                "SeriesDescription": "*field*map*",
-                "EchoTime1": 0.00492,
-                "EchoTime2": 0.00738
-            },
-            "sidecar_changes": {
-                "IntendedFor": [
-                    "bids::sub-{subject}/func/sub-{subject}_task-rest_bold.nii.gz",
-                    "bids::sub-{subject}/func/sub-{subject}_task-nback_bold.nii.gz"
-                ]
-            }
-        }
-    ]
+  "descriptions": [
+    {
+      "id": "id_t1w",
+      "datatype": "anat",
+      "suffix": "T1w",
+      "criteria": {
+        "SeriesDescription": "*MPRAGE*",
+        "ImageType": ["ORIGINAL", "PRIMARY", "M", "ND", "NORM"]
+      }
+    },
+    {
+      "id": "id_bold_rest",
+      "datatype": "func",
+      "suffix": "bold",
+      "custom_entities": "task-rest",
+      "criteria": {
+        "SeriesDescription": "*REST*BOLD*",
+        "ImageType": ["ORIGINAL", "PRIMARY", "M", "ND", "MOSAIC"]
+      },
+      "sidecar_changes": {
+        "TaskName": "rest"
+      }
+    },
+    {
+      "id": "id_bold_nback",
+      "datatype": "func",
+      "suffix": "bold",
+      "custom_entities": "task-nback",
+      "criteria": {
+        "SeriesDescription": "*NBACK*",
+        "EchoTime": 0.03
+      },
+      "sidecar_changes": {
+        "TaskName": "nback"
+      }
+    },
+    {
+      "id": "id_dwi",
+      "datatype": "dwi",
+      "suffix": "dwi",
+      "custom_entities": "dir-AP",
+      "criteria": {
+        "SeriesDescription": "*DTI*AP*"
+      }
+    },
+    {
+      "id": "id_fmap_phasediff",
+      "datatype": "fmap",
+      "suffix": "phasediff",
+      "criteria": {
+        "SeriesDescription": "*field*map*",
+        "EchoTime1": 0.00492,
+        "EchoTime2": 0.00738
+      },
+      "sidecar_changes": {
+        "IntendedFor": [
+          "bids::sub-{subject}/func/sub-{subject}_task-rest_bold.nii.gz",
+          "bids::sub-{subject}/func/sub-{subject}_task-nback_bold.nii.gz"
+        ]
+      }
+    }
+  ]
 }
 ```
 
 **Configuration file fields:**
+
 - `datatype`: BIDS datatype (`anat`, `func`, `dwi`, `fmap`, etc.)
 - `suffix`: BIDS suffix (`T1w`, `bold`, `dwi`, etc.)
 - `custom_entities`: additional BIDS entities (`task-rest`, `dir-AP`, `acq-highres`, etc.)
@@ -422,16 +427,16 @@ bidscoiner /path/to/raw /path/to/bids
 
 ## Comparison
 
-| Feature | HeuDiConv | dcm2bids | BIDScoin |
-|---------|-----------|----------|----------|
-| Configuration | Python heuristic | JSON config | YAML + GUI |
-| Flexibility | Highest (full Python) | Medium (criteria matching) | Medium (plugin system) |
-| Learning curve | Steeper (Python) | Moderate | Gentlest (GUI) |
-| Batch processing | Excellent | Good | Good |
-| ReproIn support | Built-in | No | No |
-| DataLad integration | Built-in | No | No |
-| Best for | Complex studies, automation | Simple-to-moderate studies | Visual learners, multi-site |
-| Active development | Yes | Yes | Yes |
+| Feature             | HeuDiConv                   | dcm2bids                   | BIDScoin                    |
+| ------------------- | --------------------------- | -------------------------- | --------------------------- |
+| Configuration       | Python heuristic            | JSON config                | YAML + GUI                  |
+| Flexibility         | Highest (full Python)       | Medium (criteria matching) | Medium (plugin system)      |
+| Learning curve      | Steeper (Python)            | Moderate                   | Gentlest (GUI)              |
+| Batch processing    | Excellent                   | Good                       | Good                        |
+| ReproIn support     | Built-in                    | No                         | No                          |
+| DataLad integration | Built-in                    | No                         | No                          |
+| Best for            | Complex studies, automation | Simple-to-moderate studies | Visual learners, multi-site |
+| Active development  | Yes                         | Yes                        | Yes                         |
 
 ## Post-Conversion Checklist
 
@@ -450,26 +455,31 @@ After converting DICOM to BIDS with any tool:
 ## Common DICOM-to-BIDS Pitfalls
 
 ### Multiband/SMS sequences
+
 - dcm2niix may split slices incorrectly for multiband data
 - Check `dim4` (number of volumes) matches expectations
 - Verify `SliceTiming` is correct for the multiband factor
 
 ### Dual-echo fieldmaps
+
 - Siemens stores both echoes in one series; dcm2niix splits them
 - GE/Philips may store them as separate series
 - Verify `EchoTime1` < `EchoTime2` in the phasediff sidecar
 
 ### Phase encoding direction
+
 - DICOM `InPlanePhaseEncodingDirection` → BIDS `PhaseEncodingDirection`
 - Mapping depends on acquisition orientation and NIfTI axis conventions
 - **Always verify** by checking the actual distortion pattern in the images
 
 ### Multi-run numbering
+
 - Ensure runs are numbered sequentially (`run-01`, `run-02`)
 - HeuDiConv: use `{item:02d}` placeholder
 - dcm2bids: use `--auto_extract_entities` or manually specify runs
 
 ### Derived/processed series
+
 - Scanners may export inline-processed data (e.g., motion-corrected, distortion-corrected)
 - These should NOT be converted to BIDS raw data
 - Filter by `ImageType` containing `DERIVED` or `is_derived` flag in HeuDiConv

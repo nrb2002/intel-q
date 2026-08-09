@@ -10,11 +10,11 @@ This guide covers network-level security controls for restricting outbound netwo
 
 The following environment variables control network egress policy enforcement:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOKI_NETWORK_EGRESS_POLICY` | `unrestricted` | `unrestricted` (default), `ai-only` (restrict to AI APIs), `none` (block all outbound) |
-| `LOKI_ALLOWED_HOSTS` | (empty) | Comma-separated list of additional hostnames to allow when egress policy is `ai-only` |
-| `LOKI_BLOCK_METADATA_ENDPOINT` | `false` | Block cloud metadata endpoint (169.254.169.254) from within the application |
+| Variable                       | Default        | Description                                                                            |
+| ------------------------------ | -------------- | -------------------------------------------------------------------------------------- |
+| `LOKI_NETWORK_EGRESS_POLICY`   | `unrestricted` | `unrestricted` (default), `ai-only` (restrict to AI APIs), `none` (block all outbound) |
+| `LOKI_ALLOWED_HOSTS`           | (empty)        | Comma-separated list of additional hostnames to allow when egress policy is `ai-only`  |
+| `LOKI_BLOCK_METADATA_ENDPOINT` | `false`        | Block cloud metadata endpoint (169.254.169.254) from within the application            |
 
 Note: These variables are reserved for future application-level enforcement. Currently, network security is implemented at the infrastructure level using Docker networks or Kubernetes NetworkPolicy.
 

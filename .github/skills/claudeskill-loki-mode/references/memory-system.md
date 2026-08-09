@@ -6,37 +6,39 @@ Enhanced memory architecture based on 2025 research (MIRIX, A-Mem, MemGPT, AriGr
 
 ## Implementation Status (introduced v5.15.0, current as of v7.5.x)
 
-| Feature | Status | Location |
-|---------|--------|----------|
-| Episodic Memory | Implemented | memory/engine.py, memory/schemas.py |
-| Semantic Memory | Implemented | memory/engine.py, memory/schemas.py |
-| Procedural Memory | Implemented | memory/engine.py, memory/schemas.py |
-| Progressive Disclosure | Implemented | memory/layers/ |
-| Token Economics | Implemented | memory/token_economics.py |
-| Vector Search | Implemented (optional) | memory/embeddings.py, memory/vector_index.py |
-| Task-Aware Retrieval | Implemented | memory/retrieval.py |
-| Consolidation Pipeline | Implemented | memory/consolidation.py |
-| Zettelkasten Links | Implemented | memory/consolidation.py |
-| CLI Commands | Implemented | autonomy/loki |
-| API Endpoints | Implemented | api/routes/memory.ts |
-| RARV Integration | Implemented | autonomy/run.sh |
+| Feature                | Status                 | Location                                     |
+| ---------------------- | ---------------------- | -------------------------------------------- |
+| Episodic Memory        | Implemented            | memory/engine.py, memory/schemas.py          |
+| Semantic Memory        | Implemented            | memory/engine.py, memory/schemas.py          |
+| Procedural Memory      | Implemented            | memory/engine.py, memory/schemas.py          |
+| Progressive Disclosure | Implemented            | memory/layers/                               |
+| Token Economics        | Implemented            | memory/token_economics.py                    |
+| Vector Search          | Implemented (optional) | memory/embeddings.py, memory/vector_index.py |
+| Task-Aware Retrieval   | Implemented            | memory/retrieval.py                          |
+| Consolidation Pipeline | Implemented            | memory/consolidation.py                      |
+| Zettelkasten Links     | Implemented            | memory/consolidation.py                      |
+| CLI Commands           | Implemented            | autonomy/loki                                |
+| API Endpoints          | Implemented            | api/routes/memory.ts                         |
+| RARV Integration       | Implemented            | autonomy/run.sh                              |
 
 ---
 
 ## Core Insight: Memory Over Reasoning
 
-> *"Your Agent's Reasoning Is Fine - Its Memory Isn't"*
+> _"Your Agent's Reasoning Is Fine - Its Memory Isn't"_
 > -- Cursor Scaling Blog, January 2026
 
 **The fundamental bottleneck in production AI systems is not reasoning capability but context retrieval.**
 
 Production incidents aren't slowed by inability to fix problems - they're slowed by fragmented context. An agent with perfect reasoning but poor memory will:
+
 - Re-discover the same patterns repeatedly
 - Miss relevant prior experiences
 - Fail to apply learned anti-patterns
 - Lose context across session boundaries
 
 An agent with good reasoning and excellent memory will:
+
 - Retrieve relevant patterns before acting
 - Avoid previously-encountered failures
 - Build on successful approaches
@@ -142,11 +144,11 @@ Each task execution creates an episodic trace:
     "files_involved": ["src/routes/todos.ts", "src/db/todos.ts"]
   },
   "action_log": [
-    {"t": 0, "action": "read_file", "target": "openapi.yaml"},
-    {"t": 5, "action": "write_file", "target": "src/routes/todos.ts"},
-    {"t": 120, "action": "run_test", "result": "fail", "error": "missing return type"},
-    {"t": 140, "action": "edit_file", "target": "src/routes/todos.ts"},
-    {"t": 180, "action": "run_test", "result": "pass"}
+    { "t": 0, "action": "read_file", "target": "openapi.yaml" },
+    { "t": 5, "action": "write_file", "target": "src/routes/todos.ts" },
+    { "t": 120, "action": "run_test", "result": "fail", "error": "missing return type" },
+    { "t": 140, "action": "edit_file", "target": "src/routes/todos.ts" },
+    { "t": 180, "action": "run_test", "result": "pass" }
   ],
   "outcome": "success",
   "errors_encountered": [
@@ -184,8 +186,8 @@ Generalized patterns extracted from episodic memory:
   "usage_count": 8,
   "last_used": "2026-01-06T14:00:00Z",
   "links": [
-    {"to": "sem-005", "relation": "related_to"},
-    {"to": "sem-012", "relation": "supersedes"}
+    { "to": "sem-005", "relation": "related_to" },
+    { "to": "sem-012", "relation": "supersedes" }
   ]
 }
 ```
@@ -248,25 +250,25 @@ Each memory note can link to related notes:
 ```json
 {
   "links": [
-    {"to": "sem-005", "relation": "derived_from"},
-    {"to": "sem-012", "relation": "contradicts"},
-    {"to": "sem-018", "relation": "elaborates"},
-    {"to": "sem-023", "relation": "example_of"},
-    {"to": "sem-031", "relation": "superseded_by"}
+    { "to": "sem-005", "relation": "derived_from" },
+    { "to": "sem-012", "relation": "contradicts" },
+    { "to": "sem-018", "relation": "elaborates" },
+    { "to": "sem-023", "relation": "example_of" },
+    { "to": "sem-031", "relation": "superseded_by" }
   ]
 }
 ```
 
 ### Link Relations
 
-| Relation | Meaning |
-|----------|---------|
-| `derived_from` | This pattern was extracted from that episode |
-| `related_to` | Conceptually similar, often used together |
-| `contradicts` | These patterns conflict - need resolution |
-| `elaborates` | Provides more detail on the linked pattern |
-| `example_of` | Specific instance of a general pattern |
-| `supersedes` | This pattern replaces an older one |
+| Relation        | Meaning                                      |
+| --------------- | -------------------------------------------- |
+| `derived_from`  | This pattern was extracted from that episode |
+| `related_to`    | Conceptually similar, often used together    |
+| `contradicts`   | These patterns conflict - need resolution    |
+| `elaborates`    | Provides more detail on the linked pattern   |
+| `example_of`    | Specific instance of a general pattern       |
+| `supersedes`    | This pattern replaces an older one           |
 | `superseded_by` | This pattern is outdated, use the linked one |
 
 ---
@@ -279,10 +281,12 @@ Reusable action sequences:
 # Skill: API Endpoint Implementation
 
 ## Prerequisites
+
 - OpenAPI spec exists at .loki/specs/openapi.yaml
 - Database schema defined
 
 ## Steps
+
 1. Read endpoint spec from openapi.yaml
 2. Create route handler in src/routes/{resource}.ts
 3. Implement request validation using spec schema
@@ -293,10 +297,12 @@ Reusable action sequences:
 8. Run tests, verify passing
 
 ## Common Errors & Fixes
+
 - Missing return type: Add `: void` to handler
 - Schema mismatch: Regenerate types from spec
 
 ## Exit Criteria
+
 - All contract tests pass
 - Response matches OpenAPI spec
 - No TypeScript errors
@@ -386,41 +392,41 @@ task_memory_strategies:
   exploration:
     description: "Understanding codebase, researching options, investigating architecture"
     weights:
-      episodic: 0.6    # Breadth of past experiences - what was tried before
-      semantic: 0.3    # General patterns - how things usually work
-      skills: 0.1      # Less relevant - not yet executing
+      episodic: 0.6 # Breadth of past experiences - what was tried before
+      semantic: 0.3 # General patterns - how things usually work
+      skills: 0.1 # Less relevant - not yet executing
     rationale: "Exploration benefits from breadth over depth"
 
   implementation:
     description: "Writing code, building features, creating new functionality"
     weights:
-      semantic: 0.5    # Proven patterns - what works
-      skills: 0.35     # Action sequences - how to do it
-      episodic: 0.15   # Similar implementations - specific examples
+      semantic: 0.5 # Proven patterns - what works
+      skills: 0.35 # Action sequences - how to do it
+      episodic: 0.15 # Similar implementations - specific examples
     rationale: "Implementation needs patterns and procedures"
 
   debugging:
     description: "Fixing bugs, investigating issues, resolving errors"
     weights:
-      anti_patterns: 0.4   # What NOT to do - critical for debugging
-      episodic: 0.4        # Similar error cases - what worked before
-      semantic: 0.2        # General error patterns
+      anti_patterns: 0.4 # What NOT to do - critical for debugging
+      episodic: 0.4 # Similar error cases - what worked before
+      semantic: 0.2 # General error patterns
     rationale: "Debugging requires knowing what fails and past solutions"
 
   review:
     description: "Code review, quality checks, validation"
     weights:
-      semantic: 0.5        # Quality patterns - standards to enforce
-      episodic: 0.3        # Past review outcomes - what was caught
-      anti_patterns: 0.2   # Common mistakes to flag
+      semantic: 0.5 # Quality patterns - standards to enforce
+      episodic: 0.3 # Past review outcomes - what was caught
+      anti_patterns: 0.2 # Common mistakes to flag
     rationale: "Review needs quality criteria and historical issues"
 
   refactoring:
     description: "Improving code structure without changing behavior"
     weights:
-      semantic: 0.45   # Design patterns - target structure
-      skills: 0.3      # Refactoring procedures - safe transformations
-      episodic: 0.25   # Past refactoring success/failure
+      semantic: 0.45 # Design patterns - target structure
+      skills: 0.3 # Refactoring procedures - safe transformations
+      episodic: 0.25 # Past refactoring success/failure
     rationale: "Refactoring needs clear patterns and safe procedures"
 ```
 
@@ -611,17 +617,20 @@ def before_task_execution_with_strategy(task):
 #### Limitations and Future Work
 
 **What this IS:**
+
 - Pre-defined strategy selection based on task type detection
 - Static weight configurations applied dynamically
 - Simple keyword/phase-based task classification
 
 **What this is NOT (future work):**
+
 - Meta-evolution: System does NOT learn to modify its own strategies
 - Online learning: Weights are NOT updated based on outcomes
 - Adaptive threshold adjustment: Detection thresholds are fixed
 - Cross-task transfer: Learned patterns don't automatically propagate
 
 **Future enhancements (not yet implemented):**
+
 1. Track retrieval effectiveness per strategy -> adjust weights
 2. Learn task type detection from outcomes
 3. Implement full MemEvolve meta-learning loop
@@ -735,6 +744,7 @@ The Progressive Disclosure pattern reduces token usage by 60-80% by structuring 
 ### The Problem
 
 Traditional memory systems load full context every time:
+
 - 10,000 tokens of episodic memory loaded
 - Agent only needed 500 tokens of relevant context
 - 9,500 tokens wasted on discovery
@@ -864,6 +874,7 @@ Compressed recent history. Loaded when context is needed but full details are no
 Complete context loaded only when a specific topic is needed.
 
 **Files:**
+
 - `.loki/memory/episodic/*.json` - Full interaction traces
 - `.loki/memory/semantic/*.json` - Complete pattern definitions
 
@@ -903,37 +914,38 @@ Track the efficiency of memory access patterns:
 
 **Key Metrics:**
 
-| Metric | Definition | Target |
-|--------|------------|--------|
-| `discovery_tokens` | Tokens spent finding what exists (L1 + L2 scanning) | Minimize |
-| `read_tokens` | Tokens spent reading full context (L3) | Necessary cost |
-| `ratio` | discovery_tokens / read_tokens | < 0.1 (10%) |
-| `savings_vs_full_load` | % tokens saved vs loading everything | > 60% |
+| Metric                 | Definition                                          | Target         |
+| ---------------------- | --------------------------------------------------- | -------------- |
+| `discovery_tokens`     | Tokens spent finding what exists (L1 + L2 scanning) | Minimize       |
+| `read_tokens`          | Tokens spent reading full context (L3)              | Necessary cost |
+| `ratio`                | discovery_tokens / read_tokens                      | < 0.1 (10%)    |
+| `savings_vs_full_load` | % tokens saved vs loading everything                | > 60%          |
 
 ### Action Thresholds
 
 When metrics exceed thresholds, take corrective action:
 
-| Metric | Threshold | Action | Rationale |
-|--------|-----------|--------|-----------|
-| `ratio` | > 0.15 (15%) | Compress Layer 3 entries | Discovery overhead too high; reduce L3 volume by archiving old entries or merging related topics |
-| `savings_vs_full_load` | < 50% | Review topic relevance scoring | Progressive loading not providing sufficient benefit; topic boundaries may be too broad |
-| `layer3_loads` | > 3 in single task | Create specialized index | Frequent cross-topic access indicates missing abstraction; create composite topic entry |
-| `discovery_tokens` | > 200 | Reorganize topic index | Layer 1 index bloated or poorly structured; prune stale topics, merge overlapping entries |
-| `layer2_tokens_scanned` | > 100 per query | Split large timelines | Timeline entries too verbose or topic too broad; consider sub-topic decomposition |
-| `tokens_saved` | < 1000 per session | Evaluate memory ROI | Memory system overhead may exceed benefit for this session type; consider bypass mode |
+| Metric                  | Threshold          | Action                         | Rationale                                                                                        |
+| ----------------------- | ------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `ratio`                 | > 0.15 (15%)       | Compress Layer 3 entries       | Discovery overhead too high; reduce L3 volume by archiving old entries or merging related topics |
+| `savings_vs_full_load`  | < 50%              | Review topic relevance scoring | Progressive loading not providing sufficient benefit; topic boundaries may be too broad          |
+| `layer3_loads`          | > 3 in single task | Create specialized index       | Frequent cross-topic access indicates missing abstraction; create composite topic entry          |
+| `discovery_tokens`      | > 200              | Reorganize topic index         | Layer 1 index bloated or poorly structured; prune stale topics, merge overlapping entries        |
+| `layer2_tokens_scanned` | > 100 per query    | Split large timelines          | Timeline entries too verbose or topic too broad; consider sub-topic decomposition                |
+| `tokens_saved`          | < 1000 per session | Evaluate memory ROI            | Memory system overhead may exceed benefit for this session type; consider bypass mode            |
 
 #### Evaluation Frequency
 
 Thresholds should be evaluated at specific checkpoints rather than continuously:
 
-| Checkpoint | Evaluation Type | Rationale |
-|------------|-----------------|-----------|
-| After each task completion | Lightweight check | Per-task evaluation is cheap (~10 token overhead). Catches issues early before they compound. Only checks `ratio` and `layer3_loads`. |
-| At session boundaries | Full evaluation | Comprehensive check of all thresholds. Session end is natural pause point for maintenance. Evaluates all 6 metrics. |
-| When Layer 3 load count exceeds 2 | Triggered check | Prevents runaway costs mid-session. If hitting L3 frequently, stop and evaluate before continuing. Checks `layer3_loads` and `ratio`. |
+| Checkpoint                        | Evaluation Type   | Rationale                                                                                                                             |
+| --------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| After each task completion        | Lightweight check | Per-task evaluation is cheap (~10 token overhead). Catches issues early before they compound. Only checks `ratio` and `layer3_loads`. |
+| At session boundaries             | Full evaluation   | Comprehensive check of all thresholds. Session end is natural pause point for maintenance. Evaluates all 6 metrics.                   |
+| When Layer 3 load count exceeds 2 | Triggered check   | Prevents runaway costs mid-session. If hitting L3 frequently, stop and evaluate before continuing. Checks `layer3_loads` and `ratio`. |
 
 **Why this pattern:**
+
 - Per-task checks are lightweight (~10 tokens overhead) and catch issues early before they compound into expensive sessions
 - Session boundary checks are comprehensive but infrequent, amortizing evaluation cost across all session work
 - Triggered checks act as circuit breakers, preventing runaway token costs when access patterns degrade mid-session
@@ -964,14 +976,14 @@ def should_evaluate_thresholds(checkpoint_type, breakdown):
 
 When multiple thresholds are exceeded simultaneously, process corrective actions in this order:
 
-| Priority | Metric | Action | Rationale |
-|----------|--------|--------|-----------|
-| 1 (HIGHEST) | `ratio > 0.15` | Compress Layer 3 entries | Cost control - discovery overhead directly impacts every query |
-| 2 | `savings_vs_full_load < 50%` | Review topic relevance scoring | ROI validation - progressive loading must justify its complexity |
-| 3 | `layer3_loads > 3` | Create specialized index | Structure issue - frequent cross-topic access indicates architectural gap |
-| 4 | `discovery_tokens > 200` | Reorganize topic index | Index bloat - Layer 1 should remain lean for fast scanning |
-| 5 | `layer2_tokens_scanned > 100` | Split large timelines | Timeline bloat - Layer 2 scanning becoming expensive |
-| 6 (LOWEST) | `tokens_saved < 1000` | Evaluate memory ROI | Informational - may indicate memory system not needed for this session type |
+| Priority    | Metric                        | Action                         | Rationale                                                                   |
+| ----------- | ----------------------------- | ------------------------------ | --------------------------------------------------------------------------- |
+| 1 (HIGHEST) | `ratio > 0.15`                | Compress Layer 3 entries       | Cost control - discovery overhead directly impacts every query              |
+| 2           | `savings_vs_full_load < 50%`  | Review topic relevance scoring | ROI validation - progressive loading must justify its complexity            |
+| 3           | `layer3_loads > 3`            | Create specialized index       | Structure issue - frequent cross-topic access indicates architectural gap   |
+| 4           | `discovery_tokens > 200`      | Reorganize topic index         | Index bloat - Layer 1 should remain lean for fast scanning                  |
+| 5           | `layer2_tokens_scanned > 100` | Split large timelines          | Timeline bloat - Layer 2 scanning becoming expensive                        |
+| 6 (LOWEST)  | `tokens_saved < 1000`         | Evaluate memory ROI            | Informational - may indicate memory system not needed for this session type |
 
 **Prioritization rationale:** Cost-impacting issues (ratio, savings) take precedence over structural issues (loads, bloat). Token spend is the primary optimization target; structural improvements support that goal.
 
@@ -1178,12 +1190,12 @@ MemEvolve proposes a 4-component framework for decomposing and analyzing agent m
 
 ### The Four Components
 
-| Component | Function | Loki Mode Implementation |
-|-----------|----------|--------------------------|
-| **Encode** | How raw experience is structured | Episodic traces with action_log, context, artifacts |
-| **Store** | How it is integrated into memory | JSON files in `.loki/memory/`, consolidation pipeline |
-| **Retrieve** | How it is recalled | Similarity search, temporal index, keyword search |
-| **Manage** | Offline processes | Pruning, merging duplicates, archiving |
+| Component    | Function                         | Loki Mode Implementation                              |
+| ------------ | -------------------------------- | ----------------------------------------------------- |
+| **Encode**   | How raw experience is structured | Episodic traces with action_log, context, artifacts   |
+| **Store**    | How it is integrated into memory | JSON files in `.loki/memory/`, consolidation pipeline |
+| **Retrieve** | How it is recalled               | Similarity search, temporal index, keyword search     |
+| **Manage**   | Offline processes                | Pruning, merging duplicates, archiving                |
 
 ### Encode: Structuring Raw Experience
 
@@ -1192,6 +1204,7 @@ MemEvolve identifies encoding as the first critical decision: how raw observatio
 **Loki Mode Implementation:**
 
 Episodic memory entries encode experience with:
+
 - `action_log`: Timestamped sequence of actions taken
 - `context`: Phase, goal, constraints, files involved
 - `errors_encountered`: Structured error types, messages, resolutions
@@ -1207,8 +1220,8 @@ Episodic memory entries encode experience with:
     "files_involved": ["src/routes/todos.ts", "src/db/todos.ts"]
   },
   "action_log": [
-    {"t": 0, "action": "read_file", "target": "openapi.yaml"},
-    {"t": 5, "action": "write_file", "target": "src/routes/todos.ts"}
+    { "t": 0, "action": "read_file", "target": "openapi.yaml" },
+    { "t": 5, "action": "write_file", "target": "src/routes/todos.ts" }
   ],
   "artifacts_produced": ["src/routes/todos.ts", "tests/todos.test.ts"]
 }
@@ -1246,6 +1259,7 @@ MemEvolve analyzes how memories are located and retrieved at inference time.
 **Loki Mode Implementation:**
 
 1. **Similarity Search:** Vector-based retrieval
+
    ```python
    semantic_matches = vector_search(
        collection="semantic",
@@ -1259,6 +1273,7 @@ MemEvolve analyzes how memories are located and retrieved at inference time.
    - Enables queries like "what happened last week"
 
 3. **Keyword Search:** Skill matching by keywords
+
    ```python
    skill_matches = keyword_search(
        collection="skills",
@@ -1284,6 +1299,7 @@ MemEvolve identifies management operations that maintain memory quality over tim
    - Older: archived unless referenced by semantic memory
 
 2. **Merging Duplicates:** Semantic deduplication
+
    ```python
    clusters = cluster_by_embedding_similarity(all_patterns, threshold=0.9)
    # Keep highest confidence, merge source episodes
@@ -1306,13 +1322,13 @@ MemEvolve identifies management operations that maintain memory quality over tim
 
 MemEvolve's key contribution is the meta-evolution mechanism: using search algorithms (evolutionary strategies, random search) to automatically discover optimal memory architectures for specific tasks.
 
-| MemEvolve Feature | Loki Mode Status |
-|-------------------|------------------|
-| Encode component | Implemented (fixed design) |
-| Store component | Implemented (fixed design) |
+| MemEvolve Feature  | Loki Mode Status           |
+| ------------------ | -------------------------- |
+| Encode component   | Implemented (fixed design) |
+| Store component    | Implemented (fixed design) |
 | Retrieve component | Implemented (fixed design) |
-| Manage component | Implemented (fixed design) |
-| **Meta-evolution** | **NOT IMPLEMENTED** |
+| Manage component   | Implemented (fixed design) |
+| **Meta-evolution** | **NOT IMPLEMENTED**        |
 
 **What Loki Mode lacks:**
 
@@ -1325,12 +1341,14 @@ MemEvolve's key contribution is the meta-evolution mechanism: using search algor
 **Potential Future Work:**
 
 If meta-evolution were added, it could optimize:
+
 - Encoding granularity (action-level vs. session-level traces)
 - Storage hierarchy depth (2 layers vs. 3 layers)
 - Retrieval weighting (semantic vs. episodic emphasis)
 - Pruning thresholds (retention periods, confidence cutoffs)
 
 However, this would require infrastructure for:
+
 - Generating architecture variants
 - Evaluating variant performance on benchmark tasks
 - Selecting and propagating successful variants
@@ -1339,7 +1357,7 @@ This represents a significant architectural change beyond current scope.
 
 ### Meta-Evolution Roadmap (Speculative)
 
-**Important Disclaimer:** This roadmap is speculative. Loki Mode may **NEVER** implement full meta-evolution. The pragmatic approach is to optimize the fixed architecture based on observed usage patterns rather than invest in automated architecture search. The phases below represent what *could* be built, not what *will* be built.
+**Important Disclaimer:** This roadmap is speculative. Loki Mode may **NEVER** implement full meta-evolution. The pragmatic approach is to optimize the fixed architecture based on observed usage patterns rather than invest in automated architecture search. The phases below represent what _could_ be built, not what _will_ be built.
 
 #### Phase 1: Strategy Logging (v6.x) - Effort: Low (~2 weeks)
 
@@ -1348,18 +1366,20 @@ This represents a significant architectural change beyond current scope.
 Track which memory strategies perform best in practice without any automated adjustment.
 
 **What it would add:**
+
 - Log retrieval strategy used per query (vector, temporal, keyword)
 - Record outcome signal (did the retrieved memory help?)
 - Store success/failure rates per strategy in `.loki/metrics/memory-strategy/`
 
 **Example logging format:**
+
 ```json
 {
   "query_id": "q-20260125-001",
   "timestamp": "2026-01-25T10:30:00Z",
   "retrieval_strategies": [
-    {"type": "vector", "results": 3, "latency_ms": 45},
-    {"type": "temporal", "results": 2, "latency_ms": 12}
+    { "type": "vector", "results": 3, "latency_ms": 45 },
+    { "type": "temporal", "results": 2, "latency_ms": 12 }
   ],
   "selected_memories": ["sem-042", "ep-2026-01-20-007"],
   "outcome": "success",
@@ -1380,11 +1400,13 @@ Track which memory strategies perform best in practice without any automated adj
 Enable comparison of different weight configurations without automated selection.
 
 **What it would add:**
+
 - Define named weight profiles (e.g., "semantic-heavy", "episodic-heavy", "balanced")
 - Randomly assign sessions to profiles for controlled comparison
 - Dashboard/report comparing profile performance metrics
 
 **Example profile definitions:**
+
 ```yaml
 profiles:
   semantic-heavy:
@@ -1404,6 +1426,7 @@ profiles:
 ```
 
 **Metrics to compare:**
+
 - Task completion rate per profile
 - Average retrieval latency
 - Context token usage
@@ -1422,11 +1445,13 @@ profiles:
 Automatically adjust retrieval weights based on observed outcomes.
 
 **What it would add:**
+
 - Bandit algorithm (Thompson Sampling or UCB) over weight configurations
 - Gradual weight adjustment based on success signals
 - Guardrails to prevent catastrophic configuration drift
 
 **Algorithm sketch:**
+
 ```python
 # Thompson Sampling over discrete weight buckets
 class MemoryWeightOptimizer:
@@ -1455,6 +1480,7 @@ class MemoryWeightOptimizer:
 ```
 
 **Guardrails required:**
+
 - Minimum exploration rate (never drop below 10% for any strategy)
 - Maximum update rate (no more than 5% weight shift per day)
 - Automatic rollback if task completion rate drops >20%
@@ -1472,23 +1498,26 @@ class MemoryWeightOptimizer:
 True architecture search over the design space of memory configurations.
 
 **What it would add:**
+
 - Define architecture search space (component variants, hyperparameters)
 - Evolutionary algorithm over architecture configurations
 - Fitness function based on composite performance metrics
 - Population-based training with crossover and mutation
 
 **Search space dimensions:**
-| Component | Variants |
-|-----------|----------|
-| Encoding | Action-level, Session-level, Hierarchical |
-| Storage layers | 2, 3, or 4 layers |
-| Retrieval modes | Vector-only, Hybrid, Graph-based |
-| Pruning policy | Time-based, Usage-based, Importance-based |
-| Compression | 5:1, 10:1, 20:1 ratios |
+
+| Component       | Variants                                  |
+| --------------- | ----------------------------------------- |
+| Encoding        | Action-level, Session-level, Hierarchical |
+| Storage layers  | 2, 3, or 4 layers                         |
+| Retrieval modes | Vector-only, Hybrid, Graph-based          |
+| Pruning policy  | Time-based, Usage-based, Importance-based |
+| Compression     | 5:1, 10:1, 20:1 ratios                    |
 
 **Search space size:** ~300+ distinct configurations
 
 **Fitness function (example):**
+
 ```python
 def fitness(architecture, benchmark_tasks):
     task_score = evaluate_task_completion(architecture, benchmark_tasks)
@@ -1515,6 +1544,7 @@ def fitness(architecture, benchmark_tasks):
 5. **Sufficient without it:** The current fixed design handles Loki Mode's use cases well. Investment is better spent on other features.
 
 **Honest assessment:** Full meta-evolution is academically interesting but likely not worth the investment for Loki Mode. The pragmatic path is:
+
 - Implement Phase 1 (logging) to understand patterns
 - Maybe implement Phase 2 (A/B testing) if data suggests significant improvement potential
 - Stop there unless clear evidence justifies further investment
@@ -1523,15 +1553,15 @@ def fitness(architecture, benchmark_tasks):
 
 ### Summary: Gap Mitigation Strategy
 
-| Gap | Mitigation | Status |
-|-----|------------|--------|
-| No architecture search | Use well-researched fixed design | Current |
-| No fitness evaluation | Observability + manual tuning | Current |
-| No weight optimization | Sensible defaults from literature | Current |
-| Strategy logging | Phase 1 candidate | NOT PLANNED |
-| A/B testing | Phase 2 candidate | NOT PLANNED |
-| Online learning | Phase 3 candidate | NOT PLANNED |
-| Full meta-evolution | Phase 4 candidate | PROBABLY NEVER |
+| Gap                    | Mitigation                        | Status         |
+| ---------------------- | --------------------------------- | -------------- |
+| No architecture search | Use well-researched fixed design  | Current        |
+| No fitness evaluation  | Observability + manual tuning     | Current        |
+| No weight optimization | Sensible defaults from literature | Current        |
+| Strategy logging       | Phase 1 candidate                 | NOT PLANNED    |
+| A/B testing            | Phase 2 candidate                 | NOT PLANNED    |
+| Online learning        | Phase 3 candidate                 | NOT PLANNED    |
+| Full meta-evolution    | Phase 4 candidate                 | PROBABLY NEVER |
 
 The current fixed architecture is a reasonable tradeoff. Meta-evolution would be valuable for systems with diverse, well-benchmarked task distributions. Loki Mode's primary value is in autonomous code generation, where other factors (model capability, prompt engineering, tool integration) likely dominate over memory architecture optimization.
 
@@ -1570,11 +1600,13 @@ CONTINUITY.md references but doesn't duplicate long-term memory:
 
 ```markdown
 ## Relevant Memories (Auto-Retrieved)
+
 - [sem-001] Express handlers need explicit return types
 - [ep-2026-01-05-012] Similar endpoint implementation succeeded
 - [skill: api-implementation] Standard API implementation flow
 
 ## Mistakes to Avoid (From Learnings)
+
 - Don't forget return type annotations
 - Run contract tests before marking complete
 ```

@@ -1,6 +1,7 @@
 # Agent 03: Dashboard API Functional Testing - Bug Fix Report
 
 ## Scope
+
 File: `dashboard/server.py` (~5,259 lines, FastAPI)
 Focus: All API routes, WebSocket handlers, task board features, security audit
 
@@ -8,36 +9,36 @@ Focus: All API routes, WebSocket handlers, task board features, security audit
 
 ### Already Fixed (verified in current codebase)
 
-| Bug ID | Description | Status |
-|--------|-------------|--------|
-| BUG-DASH-001 | Token creation endpoint has no authentication | FIXED - `require_scope("admin")` dependency at line 1719 |
-| BUG-DASH-002 | WebSocket rate-limit calls close() on unaccepted connection | FIXED - `accept()` then `close()` at lines 1396-1397 |
-| BUG-DASH-003 | WebSocket connection limit rejection enters receive loop | FIXED - `connect()` returns False, caller returns at line 1421-1422 |
-| BUG-DASH-004 | `create_project` doesn't validate tenant_id | FIXED - Tenant existence check + `Field(..., gt=0)` validation |
-| BUG-DASH-005 | `update_task` doesn't clear completed_at on reopen | FIXED - `completed_at = None` in else branch at line 1254 |
-| BUG-DASH-006 | Task state machine missing DONE transitions | FIXED - `DONE: {IN_PROGRESS, REVIEW}` at line 1316 |
-| BUG-DASH-009 | ProjectUpdate.status allows arbitrary strings | FIXED - `Literal["active", "archived", "completed", "paused"]` at line 179 |
-| BUG-DASH-010 | Audit log offset allows negative values | FIXED - `ge=0` constraint at line 1824 |
-| BUG-DASH-011 | Learning signals offset allows negative values | FIXED - `ge=0` constraint at line 2443 |
-| BUG-DASH-012 | WebSocket idle timeout doesn't call disconnect | FIXED - `finally: manager.disconnect(websocket)` at line 1469 |
-| BUG-DASH-013 | GET /api/tasks ignores project_id parameter | FIXED - Filter applied at lines 1132-1134 |
+| Bug ID       | Description                                                 | Status                                                                     |
+| ------------ | ----------------------------------------------------------- | -------------------------------------------------------------------------- |
+| BUG-DASH-001 | Token creation endpoint has no authentication               | FIXED - `require_scope("admin")` dependency at line 1719                   |
+| BUG-DASH-002 | WebSocket rate-limit calls close() on unaccepted connection | FIXED - `accept()` then `close()` at lines 1396-1397                       |
+| BUG-DASH-003 | WebSocket connection limit rejection enters receive loop    | FIXED - `connect()` returns False, caller returns at line 1421-1422        |
+| BUG-DASH-004 | `create_project` doesn't validate tenant_id                 | FIXED - Tenant existence check + `Field(..., gt=0)` validation             |
+| BUG-DASH-005 | `update_task` doesn't clear completed_at on reopen          | FIXED - `completed_at = None` in else branch at line 1254                  |
+| BUG-DASH-006 | Task state machine missing DONE transitions                 | FIXED - `DONE: {IN_PROGRESS, REVIEW}` at line 1316                         |
+| BUG-DASH-009 | ProjectUpdate.status allows arbitrary strings               | FIXED - `Literal["active", "archived", "completed", "paused"]` at line 179 |
+| BUG-DASH-010 | Audit log offset allows negative values                     | FIXED - `ge=0` constraint at line 1824                                     |
+| BUG-DASH-011 | Learning signals offset allows negative values              | FIXED - `ge=0` constraint at line 2443                                     |
+| BUG-DASH-012 | WebSocket idle timeout doesn't call disconnect              | FIXED - `finally: manager.disconnect(websocket)` at line 1469              |
+| BUG-DASH-013 | GET /api/tasks ignores project_id parameter                 | FIXED - Filter applied at lines 1132-1134                                  |
 
 ### Not Applicable (code removed)
 
-| Bug ID | Description | Status |
-|--------|-------------|--------|
-| BUG-PL-001 | Dead code after stop_session return | N/A - Purple Lab code removed from server.py |
-| BUG-PL-002 | session.reset() never called on stop | N/A - Purple Lab code removed from server.py |
-| BUG-PL-003 | Reader task sets running=False without lock | N/A - Purple Lab code removed |
-| BUG-PL-004 | Chat/fix/auto-fix missing secrets injection | N/A - Purple Lab code removed |
-| BUG-PL-005 | Pause state never tracked | N/A - Purple Lab code removed |
-| BUG-PL-006 | delete_session can delete active directory | N/A - Purple Lab code removed |
-| BUG-PL-007 | Chat PIDs tracked but never untracked | N/A - Purple Lab code removed |
-| BUG-DS-002 | Auto-fix restart double-wraps command | N/A - Dev server code removed |
-| BUG-DS-003 | Overly broad port regex | N/A - Dev server code removed |
-| BUG-DS-004 | pip install into server's own environment | N/A - Dev server code removed |
-| BUG-DS-005 | Docker Compose port parsing crash | N/A - Dev server code removed |
-| BUG-DASH-007 | pause_session polling loop is dead code | N/A - pause_session rewritten (no polling loop) |
+| Bug ID       | Description                                 | Status                                          |
+| ------------ | ------------------------------------------- | ----------------------------------------------- |
+| BUG-PL-001   | Dead code after stop_session return         | N/A - Purple Lab code removed from server.py    |
+| BUG-PL-002   | session.reset() never called on stop        | N/A - Purple Lab code removed from server.py    |
+| BUG-PL-003   | Reader task sets running=False without lock | N/A - Purple Lab code removed                   |
+| BUG-PL-004   | Chat/fix/auto-fix missing secrets injection | N/A - Purple Lab code removed                   |
+| BUG-PL-005   | Pause state never tracked                   | N/A - Purple Lab code removed                   |
+| BUG-PL-006   | delete_session can delete active directory  | N/A - Purple Lab code removed                   |
+| BUG-PL-007   | Chat PIDs tracked but never untracked       | N/A - Purple Lab code removed                   |
+| BUG-DS-002   | Auto-fix restart double-wraps command       | N/A - Dev server code removed                   |
+| BUG-DS-003   | Overly broad port regex                     | N/A - Dev server code removed                   |
+| BUG-DS-004   | pip install into server's own environment   | N/A - Dev server code removed                   |
+| BUG-DS-005   | Docker Compose port parsing crash           | N/A - Dev server code removed                   |
+| BUG-DASH-007 | pause_session polling loop is dead code     | N/A - pause_session rewritten (no polling loop) |
 
 ## Fixes Applied in This Session
 
@@ -52,6 +53,7 @@ Focus: All API routes, WebSocket handlers, task board features, security audit
 **Problem**: The `/api/focus` POST and DELETE endpoints had no auth dependency. Any network-reachable client could redirect the dashboard to read from an arbitrary project directory, potentially exposing data from other projects or causing the dashboard to process attacker-controlled state files.
 
 **Fix**:
+
 - Added `dependencies=[Depends(auth.require_scope("control"))]` to both POST and DELETE
 - Added validation requiring the target directory to contain a `.loki/` subdirectory to prevent pointing the dashboard at arbitrary filesystem locations
 - Changed to resolve path before checking, preventing TOCTOU issues
@@ -88,22 +90,23 @@ Focus: All API routes, WebSocket handlers, task board features, security audit
 
 ## Security Audit Summary (OWASP Top 10)
 
-| OWASP Category | Status | Notes |
-|----------------|--------|-------|
-| A01: Broken Access Control | FIXED | Added auth to /api/focus, /api/enterprise/tokens |
-| A02: Cryptographic Failures | OK | Token generation uses `secrets` module |
-| A03: Injection | OK | SQLAlchemy ORM prevents SQL injection; list-form subprocess calls prevent shell injection; realpath + regex prevent path traversal |
-| A04: Insecure Design | FIXED | Focus endpoint now requires .loki/ subdirectory |
-| A05: Security Misconfiguration | OK | CORS restricted to localhost; default bind to 127.0.0.1; TLS optional |
-| A06: Vulnerable Components | N/A | Dependency audit out of scope |
-| A07: Auth Failures | OK | Rate limiting on sensitive endpoints; token management requires admin |
-| A08: Data Integrity | OK | Atomic file writes for state mutations (tmp + rename) |
-| A09: Logging Failures | OK | Audit logging on destructive operations (delete, stop, kill) |
-| A10: SSRF | MITIGATED | Focus endpoint restricted to dirs with .loki/ subdirectory |
+| OWASP Category                 | Status    | Notes                                                                                                                              |
+| ------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| A01: Broken Access Control     | FIXED     | Added auth to /api/focus, /api/enterprise/tokens                                                                                   |
+| A02: Cryptographic Failures    | OK        | Token generation uses `secrets` module                                                                                             |
+| A03: Injection                 | OK        | SQLAlchemy ORM prevents SQL injection; list-form subprocess calls prevent shell injection; realpath + regex prevent path traversal |
+| A04: Insecure Design           | FIXED     | Focus endpoint now requires .loki/ subdirectory                                                                                    |
+| A05: Security Misconfiguration | OK        | CORS restricted to localhost; default bind to 127.0.0.1; TLS optional                                                              |
+| A06: Vulnerable Components     | N/A       | Dependency audit out of scope                                                                                                      |
+| A07: Auth Failures             | OK        | Rate limiting on sensitive endpoints; token management requires admin                                                              |
+| A08: Data Integrity            | OK        | Atomic file writes for state mutations (tmp + rename)                                                                              |
+| A09: Logging Failures          | OK        | Audit logging on destructive operations (delete, stop, kill)                                                                       |
+| A10: SSRF                      | MITIGATED | Focus endpoint restricted to dirs with .loki/ subdirectory                                                                         |
 
 ## Route Coverage Audit
 
 Verified all 100+ routes in server.py for:
+
 - Authentication requirements (auth scope dependencies)
 - Input validation (Pydantic models, Query constraints, regex patterns)
 - Error handling (try/except with proper HTTP status codes)

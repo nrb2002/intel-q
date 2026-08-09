@@ -20,11 +20,11 @@ Native C/C++ application security review: memory safety, integer overflow, races
 
 ## Subagents
 
-| Subagent type | Purpose | Tool set |
-|---|---|---|
-| `c-review:c-review-worker` | Run assigned cluster, write findings | Read, Write, Edit, Grep, Glob, Bash |
-| `c-review:c-review-dedup-judge` | Merge duplicates (runs **first**) | Read, Write, Edit, Glob |
-| `c-review:c-review-fp-judge` | FP + severity + final reports (runs **second**) | Read, Write, Edit, Grep, Glob, Bash |
+| Subagent type                   | Purpose                                         | Tool set                            |
+| ------------------------------- | ----------------------------------------------- | ----------------------------------- |
+| `c-review:c-review-worker`      | Run assigned cluster, write findings            | Read, Write, Edit, Grep, Glob, Bash |
+| `c-review:c-review-dedup-judge` | Merge duplicates (runs **first**)               | Read, Write, Edit, Glob             |
+| `c-review:c-review-fp-judge`    | FP + severity + final reports (runs **second**) | Read, Write, Edit, Grep, Glob, Bash |
 
 Tools come from each agent's frontmatter at spawn time. The orchestrator's `Task*`/`Agent`/`Bash`/etc. come from this skill's `allowed-tools`.
 
@@ -72,12 +72,12 @@ The skill is invoked directly (no command wrapper). Parse any free-text argument
 
 Required parameters:
 
-| Parameter | Values | How to infer from args |
-|---|---|---|
-| `threat_model` | `REMOTE` / `LOCAL_UNPRIVILEGED` / `BOTH` | Words like "remote", "network", "attacker" → `REMOTE`; "local", "unprivileged" → `LOCAL_UNPRIVILEGED`; otherwise ask. |
-| `worker_model` | `haiku` / `sonnet` / `opus` | Explicit model name in args. Otherwise ask (no silent default). |
-| `severity_filter` | `all` / `medium` / `high` | "all", "every", "noisy" → `all`; "medium and above" → `medium`; "high only", "criticals only" → `high`. Otherwise ask — **no silent default**. |
-| `scope_subpath` | repo-relative directory (optional) | Phrases like "X only", "just audit X/", "review subdirectory X" → `src/X/` or the matching subdir. Apply fuzzy matching against top-level subdirectories of the repo. If absent, set `"."`; if ambiguous, ask. |
+| Parameter         | Values                                   | How to infer from args                                                                                                                                                                                         |
+| ----------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `threat_model`    | `REMOTE` / `LOCAL_UNPRIVILEGED` / `BOTH` | Words like "remote", "network", "attacker" → `REMOTE`; "local", "unprivileged" → `LOCAL_UNPRIVILEGED`; otherwise ask.                                                                                          |
+| `worker_model`    | `haiku` / `sonnet` / `opus`              | Explicit model name in args. Otherwise ask (no silent default).                                                                                                                                                |
+| `severity_filter` | `all` / `medium` / `high`                | "all", "every", "noisy" → `all`; "medium and above" → `medium`; "high only", "criticals only" → `high`. Otherwise ask — **no silent default**.                                                                 |
+| `scope_subpath`   | repo-relative directory (optional)       | Phrases like "X only", "just audit X/", "review subdirectory X" → `src/X/` or the matching subdir. Apply fuzzy matching against top-level subdirectories of the repo. If absent, set `"."`; if ambiguous, ask. |
 
 Call `AskUserQuestion` exactly once with only unresolved required parameters (`threat_model`, `worker_model`, `severity_filter`) plus `scope_subpath` only when the user explicitly requested a narrowed scope but it is ambiguous. If the required parameters were all pre-filled and scope is absent or resolved, skip the question.
 
@@ -173,7 +173,7 @@ Foreground spawn already serializes — no `sleep` needed before Phase 6b. Skip 
 > **STOP — read this before composing the spawn message.**
 >
 > Workers MUST be spawned **foreground** (no `run_in_background` field, or `run_in_background=false`).
-> "Parallel" here means *one assistant message containing M `Agent` calls* — that already runs them concurrently. **Background spawns are NOT how you parallelize this skill.**
+> "Parallel" here means _one assistant message containing M `Agent` calls_ — that already runs them concurrently. **Background spawns are NOT how you parallelize this skill.**
 >
 > Background spawns defeat Phase 6a's primer cache: every worker pays full cache-creation on its first turn (`cache_read_input_tokens=0`), and the primer's ~15 K tokens are wasted M times over. Two real runs (audit logs available) had exactly this symptom — every worker started with `first_cr=0`.
 >
@@ -186,12 +186,12 @@ For each worker `N ∈ [1..M]`:
 1. `Read: ${output_dir}/worker-prompts/worker-N.txt`
 2. Pass the file contents **verbatim** as the `Agent` tool's `prompt` argument:
 
-| Parameter | Value |
-|-----------|-------|
-| `subagent_type` | `c-review:c-review-worker` |
-| `model` | `${worker_model}` (haiku / sonnet / opus) |
-| `description` | `C review worker N` |
-| `prompt` | the full text of `worker-N.txt` (no edits) |
+| Parameter           | Value                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
+| `subagent_type`     | `c-review:c-review-worker`                                                                          |
+| `model`             | `${worker_model}` (haiku / sonnet / opus)                                                           |
+| `description`       | `C review worker N`                                                                                 |
+| `prompt`            | the full text of `worker-N.txt` (no edits)                                                          |
 | `run_in_background` | **field MUST be omitted, OR set to `false`.** Never `true`. See the foreground-spawn warning above. |
 
 The spawn prompt is the single authority. Pass it verbatim — every field is required by the worker's self-check; any deviation triggers `worker-N abort: spawn prompt malformed`.
@@ -209,12 +209,12 @@ The spawn prompt is the single authority. Pass it verbatim — every field is re
 
 The Phase-6 `Agent` invocations block until each worker returns. Inspect each worker's return text and apply this classifier in order — first match wins:
 
-| # | Match (in return text) | Outcome | Action |
-|---|---|---|---|
-| 1 | `worker-N complete:` | **success** | `TaskUpdate` to `completed`. |
-| 2 | `abort: spawn prompt malformed`, `abort: pre-work budget exceeded`, or `abort: TaskList unavailable` (legacy) | **non-retryable orchestrator bug** | Stop the run, surface the abort + spawn-prompt path. Re-running the same prompt repeats the failure — pre-work-budget exhaustion always means the worker couldn't pass its self-check, which a retry won't fix. |
-| 3 | other `worker-N abort:` | **retryable** | Mark `pending`, set `metadata.abort_reason`, `needs_respawn=true`, increment `attempt`. |
-| 4 | `Agent` errored or no `complete:`/`abort:` token | **retryable** | Same as #3 (transient worker crash). |
+| #   | Match (in return text)                                                                                        | Outcome                            | Action                                                                                                                                                                                                          |
+| --- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `worker-N complete:`                                                                                          | **success**                        | `TaskUpdate` to `completed`.                                                                                                                                                                                    |
+| 2   | `abort: spawn prompt malformed`, `abort: pre-work budget exceeded`, or `abort: TaskList unavailable` (legacy) | **non-retryable orchestrator bug** | Stop the run, surface the abort + spawn-prompt path. Re-running the same prompt repeats the failure — pre-work-budget exhaustion always means the worker couldn't pass its self-check, which a retry won't fix. |
+| 3   | other `worker-N abort:`                                                                                       | **retryable**                      | Mark `pending`, set `metadata.abort_reason`, `needs_respawn=true`, increment `attempt`.                                                                                                                         |
+| 4   | `Agent` errored or no `complete:`/`abort:` token                                                              | **retryable**                      | Same as #3 (transient worker crash).                                                                                                                                                                            |
 
 If any non-retryable, stop. Otherwise re-spawn each `pending` retryable with `attempt < 2` in one parallel block (cap = 2 attempts per cluster). Replacement workers can safely overwrite partial files — finding IDs are deterministic per prefix.
 

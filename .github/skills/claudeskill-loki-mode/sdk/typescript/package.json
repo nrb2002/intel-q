@@ -15,9 +15,16 @@
     "test": "node --test tests/client.test.js"
   },
   "keywords": [
-    "loki-mode", "autonomous", "ai-agents", "multi-agent",
-    "developer-tools", "sdk", "devtools", "automation",
-    "claude", "anthropic"
+    "loki-mode",
+    "autonomous",
+    "ai-agents",
+    "multi-agent",
+    "developer-tools",
+    "sdk",
+    "devtools",
+    "automation",
+    "claude",
+    "anthropic"
   ],
   "author": "Lokesh Mure <lokesh@autonomi.dev>",
   "license": "BUSL-1.1",

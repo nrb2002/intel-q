@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-const https = require('https');
+const https = require("https");
 
-const LINEAR_API_URL = 'https://api.linear.app/graphql';
-const LINEAR_HOST = 'api.linear.app';
-const LINEAR_PATH = '/graphql';
+const LINEAR_API_URL = "https://api.linear.app/graphql";
+const LINEAR_HOST = "api.linear.app";
+const LINEAR_PATH = "/graphql";
 
 /** Default rate limit retry-after fallback when no retry-after header is present (ms). */
 const DEFAULT_RATE_LIMIT_RETRY_MS = 60000;
@@ -23,8 +23,8 @@ class LinearClient {
    * @param {number} [options.timeout=15000] - Request timeout in ms
    */
   constructor(apiKey, options = {}) {
-    if (!apiKey || typeof apiKey !== 'string') {
-      throw new Error('Linear API key is required');
+    if (!apiKey || typeof apiKey !== "string") {
+      throw new Error("Linear API key is required");
     }
     this.apiKey = apiKey;
     this.timeout = options.timeout ?? 15000;
@@ -46,7 +46,7 @@ class LinearClient {
         const waitMs = this._rateLimitReset - now;
         throw new RateLimitError(
           `Linear API rate limit exceeded. Resets in ${Math.ceil(waitMs / 1000)}s`,
-          waitMs
+          waitMs,
         );
       }
     }
@@ -57,8 +57,8 @@ class LinearClient {
 
     // Track rate limit headers
     if (response.headers) {
-      const remaining = response.headers['x-ratelimit-remaining'];
-      const reset = response.headers['x-ratelimit-reset'];
+      const remaining = response.headers["x-ratelimit-remaining"];
+      const reset = response.headers["x-ratelimit-reset"];
       if (remaining !== undefined) {
         this._rateLimitRemaining = parseInt(remaining, 10);
       }
@@ -68,20 +68,19 @@ class LinearClient {
     }
 
     if (response.statusCode === 429) {
-      const retryAfter = response.headers['retry-after'];
-      const waitMs = retryAfter
-        ? parseInt(retryAfter, 10) * 1000
-        : DEFAULT_RATE_LIMIT_RETRY_MS;
-      throw new RateLimitError('Linear API rate limit exceeded', waitMs);
+      const retryAfter = response.headers["retry-after"];
+      const waitMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : DEFAULT_RATE_LIMIT_RETRY_MS;
+      throw new RateLimitError("Linear API rate limit exceeded", waitMs);
     }
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      const truncatedBody = response.body && response.body.length > MAX_ERROR_BODY_LENGTH
-        ? response.body.slice(0, MAX_ERROR_BODY_LENGTH) + '...'
-        : response.body;
+      const truncatedBody =
+        response.body && response.body.length > MAX_ERROR_BODY_LENGTH
+          ? response.body.slice(0, MAX_ERROR_BODY_LENGTH) + "..."
+          : response.body;
       throw new LinearApiError(
         `Linear API returned HTTP ${response.statusCode}: ${truncatedBody}`,
-        response.statusCode
+        response.statusCode,
       );
     }
 
@@ -89,11 +88,11 @@ class LinearClient {
     try {
       data = JSON.parse(response.body);
     } catch (e) {
-      throw new LinearApiError('Failed to parse Linear API response as JSON', 0);
+      throw new LinearApiError("Failed to parse Linear API response as JSON", 0);
     }
 
     if (data.errors && data.errors.length > 0) {
-      const msg = data.errors.map((e) => e.message).join('; ');
+      const msg = data.errors.map((e) => e.message).join("; ");
       throw new LinearApiError(`Linear GraphQL error: ${msg}`, response.statusCode);
     }
 
@@ -323,31 +322,31 @@ class LinearClient {
       const options = {
         hostname: LINEAR_HOST,
         path: LINEAR_PATH,
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': this.apiKey,
-          'Content-Length': Buffer.byteLength(body),
+          "Content-Type": "application/json",
+          Authorization: this.apiKey,
+          "Content-Length": Buffer.byteLength(body),
         },
         timeout: this.timeout,
       };
 
       const req = https.request(options, (res) => {
         const chunks = [];
-        res.on('data', (chunk) => chunks.push(chunk));
-        res.on('end', () => {
+        res.on("data", (chunk) => chunks.push(chunk));
+        res.on("end", () => {
           resolve({
             statusCode: res.statusCode,
             headers: res.headers,
-            body: Buffer.concat(chunks).toString('utf8'),
+            body: Buffer.concat(chunks).toString("utf8"),
           });
         });
       });
 
-      req.on('error', (err) => reject(new LinearApiError(`Network error: ${err.message}`, 0)));
-      req.on('timeout', () => {
+      req.on("error", (err) => reject(new LinearApiError(`Network error: ${err.message}`, 0)));
+      req.on("timeout", () => {
         req.destroy();
-        reject(new LinearApiError('Request timed out', 0));
+        reject(new LinearApiError("Request timed out", 0));
       });
 
       req.write(body);
@@ -359,7 +358,7 @@ class LinearClient {
 class LinearApiError extends Error {
   constructor(message, statusCode) {
     super(message);
-    this.name = 'LinearApiError';
+    this.name = "LinearApiError";
     this.statusCode = statusCode;
   }
 }
@@ -367,7 +366,7 @@ class LinearApiError extends Error {
 class RateLimitError extends LinearApiError {
   constructor(message, retryAfterMs) {
     super(message, 429);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
     this.retryAfterMs = retryAfterMs;
   }
 }

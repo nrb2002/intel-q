@@ -32,13 +32,13 @@ LOKI_MANAGED_AGENTS=false              <- parent (required for any managed path)
 
 Loki's local schemas map 1:1 to paths inside a Managed Agents memory store:
 
-| Local schema (memory/schemas.py) | Store path | Default scope |
-|----------------------------------|------------|---------------|
-| `EpisodeTrace` | `/episodic/{date}/{task_id}.json` | user read_write |
-| `SemanticPattern` | `/patterns/{pattern_id}.json` | org read_only |
-| `ProceduralSkill` | `/skills/{skill_id}.json` | org read_only |
-| `FrictionPoint` | `/anti_patterns/{id}.json` | org read_only |
-| `FailureMode` | `/anti_patterns/{id}.json` | org read_only |
+| Local schema (memory/schemas.py) | Store path                        | Default scope   |
+| -------------------------------- | --------------------------------- | --------------- |
+| `EpisodeTrace`                   | `/episodic/{date}/{task_id}.json` | user read_write |
+| `SemanticPattern`                | `/patterns/{pattern_id}.json`     | org read_only   |
+| `ProceduralSkill`                | `/skills/{skill_id}.json`         | org read_only   |
+| `FrictionPoint`                  | `/anti_patterns/{id}.json`        | org read_only   |
+| `FailureMode`                    | `/anti_patterns/{id}.json`        | org read_only   |
 
 **Never ship a read_write `semantic` store.** Prompt injection into a
 read_write shared store poisons every future session.
@@ -105,6 +105,7 @@ Both are **research preview**. Expect beta-header churn. Never default on.
 ## Cross-session learning
 
 With managed memory on, a new project gets access to:
+
 - `.loki/memory/semantic/patterns.json` from prior projects (org store, RO)
 - `.loki/memory/skills/*.json` (org store, RO)
 - `.loki/memory/anti_patterns/*.json` (org store, RO)
@@ -129,6 +130,7 @@ rotated at 10 MB). Single writer:
 `memory/managed_memory/events.py::emit_managed_event`.
 
 Events:
+
 - `managed_memory_retrieve`, `managed_memory_retrieve_empty`
 - `managed_memory_shadow_write`, `managed_memory_shadow_write_409`
 - `managed_memory_hydrate`, `managed_memory_hydrate_timeout`
@@ -139,6 +141,7 @@ Events:
 - `managed_agent_materialized`
 
 Dashboard endpoints (read-only, view-layer merge):
+
 - `GET /api/managed/events?limit&since&type`
 - `GET /api/managed/status`
 - `GET /api/managed/memory_versions/:memory_id`
@@ -167,12 +170,12 @@ Dashboard endpoints (read-only, view-layer merge):
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| `ERROR: ... requires LOKI_MANAGED_AGENTS=true` | Set parent flag to true. |
+| Symptom                                            | Fix                                                                                            |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `ERROR: ... requires LOKI_MANAGED_AGENTS=true`     | Set parent flag to true.                                                                       |
 | No managed events in `.loki/managed/events.ndjson` | Check all flags on; check `ANTHROPIC_API_KEY` set; check SDK installed (`pip show anthropic`). |
-| 400 on startup beta-header probe | Beta header rotated by Anthropic. Update `memory/managed_memory/_beta.py::BETA_HEADER`. |
-| Hydrate runs every iteration instead of once | Sentinel file `.loki/managed/hydrate.lock` missing write permission. |
+| 400 on startup beta-header probe                   | Beta header rotated by Anthropic. Update `memory/managed_memory/_beta.py::BETA_HEADER`.        |
+| Hydrate runs every iteration instead of once       | Sentinel file `.loki/managed/hydrate.lock` missing write permission.                           |
 
 ## References
 
