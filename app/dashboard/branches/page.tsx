@@ -41,9 +41,7 @@ export default function BranchesPage() {
     <section className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#1E293B]">
-          Branches
-        </h1>
+        <h1 className="text-3xl font-bold text-[#1E293B]">Branches</h1>
 
         <p className="mt-2 text-[#64748B]">
           View and manage Intel-Q branches and their queue activity.
@@ -56,20 +54,13 @@ export default function BranchesPage() {
         <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#64748B]">
-                Total Branches
-              </p>
+              <p className="text-sm font-medium text-[#64748B]">Total Branches</p>
 
-              <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-                {branches.length}
-              </p>
+              <p className="mt-2 text-3xl font-bold text-[#1E293B]">{branches.length}</p>
             </div>
 
             <div className="rounded-lg bg-[#EFF6FF] p-3">
-              <Building2
-                size={24}
-                className="text-[#2563EB]"
-              />
+              <Building2 size={24} className="text-[#2563EB]" />
             </div>
           </div>
         </div>
@@ -78,22 +69,15 @@ export default function BranchesPage() {
         <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#64748B]">
-                Active Branches
-              </p>
+              <p className="text-sm font-medium text-[#64748B]">Active Branches</p>
 
               <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-                {branches.filter(
-                  (branch) => branch.status === "Active"
-                ).length}
+                {branches.filter((branch) => branch.status === "Active").length}
               </p>
             </div>
 
             <div className="rounded-lg bg-[#F0FDF4] p-3">
-              <Building2
-                size={24}
-                className="text-green-600"
-              />
+              <Building2 size={24} className="text-green-600" />
             </div>
           </div>
         </div>
@@ -102,23 +86,15 @@ export default function BranchesPage() {
         <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#64748B]">
-                Customers Waiting
-              </p>
+              <p className="text-sm font-medium text-[#64748B]">Customers Waiting</p>
 
               <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-                {branches.reduce(
-                  (total, branch) => total + branch.customers,
-                  0
-                )}
+                {branches.reduce((total, branch) => total + branch.customers, 0)}
               </p>
             </div>
 
             <div className="rounded-lg bg-[#FFF7ED] p-3">
-              <Users
-                size={24}
-                className="text-orange-500"
-              />
+              <Users size={24} className="text-orange-500" />
             </div>
           </div>
         </div>
@@ -127,13 +103,9 @@ export default function BranchesPage() {
       {/* Branch List */}
       <div>
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-[#1E293B]">
-            All Branches
-          </h2>
+          <h2 className="text-xl font-semibold text-[#1E293B]">All Branches</h2>
 
-          <p className="mt-1 text-sm text-[#64748B]">
-            Select a branch to view its queue.
-          </p>
+          <p className="mt-1 text-sm text-[#64748B]">Select a branch to view its queue.</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -154,9 +126,7 @@ export default function BranchesPage() {
               {/* Branch Header */}
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-[#1E293B]">
-                    {branch.name}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-[#1E293B]">{branch.name}</h3>
 
                   <span
                     className="
@@ -176,41 +146,27 @@ export default function BranchesPage() {
                 </div>
 
                 <div className="rounded-lg bg-[#EFF6FF] p-3">
-                  <Building2
-                    size={22}
-                    className="text-[#2563EB]"
-                  />
+                  <Building2 size={22} className="text-[#2563EB]" />
                 </div>
               </div>
 
               {/* Address */}
               <div className="mt-6 flex items-start gap-3">
-                <MapPin
-                  size={20}
-                  className="mt-0.5 shrink-0 text-[#64748B]"
-                />
+                <MapPin size={20} className="mt-0.5 shrink-0 text-[#64748B]" />
 
                 <div>
-                  <p className="text-sm text-[#1E293B]">
-                    {branch.address}
-                  </p>
+                  <p className="text-sm text-[#1E293B]">{branch.address}</p>
 
-                  <p className="text-sm text-[#64748B]">
-                    {branch.city}
-                  </p>
+                  <p className="text-sm text-[#64748B]">{branch.city}</p>
                 </div>
               </div>
 
               {/* Queue Information */}
               <div className="mt-6 flex items-center justify-between border-t border-[#E2E8F0] pt-5">
                 <div>
-                  <p className="text-sm text-[#64748B]">
-                    Customers waiting
-                  </p>
+                  <p className="text-sm text-[#64748B]">Customers waiting</p>
 
-                  <p className="mt-1 text-2xl font-bold text-[#1E293B]">
-                    {branch.customers}
-                  </p>
+                  <p className="mt-1 text-2xl font-bold text-[#1E293B]">{branch.customers}</p>
                 </div>
 
                 <Link

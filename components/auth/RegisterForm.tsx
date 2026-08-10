@@ -2,7 +2,7 @@
 
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -31,7 +31,7 @@ export default function RegisterForm() {
     }));
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError("");
@@ -82,20 +82,22 @@ export default function RegisterForm() {
 
       router.push("/login?registered=true");
     } catch {
-      setError(
-        "Something went wrong. Please try again."
-      );
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
+  const inputClassName =
+    "w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 text-sm text-[#1E293B] placeholder:text-[#94A3B8] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20";
+
   return (
-    <div className="w-full max-w-md">
-      <div className="rounded-2xl border border-[#E2E8F0] bg-white p-8 shadow-lg">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[#F8FAFC] px-4 py-4">
+      <div className="w-full max-w-md rounded-2xl border border-[#E2E8F0] bg-white p-8 shadow-lg">
+        {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-[#1E293B]">
-            Create your account
+          <h1 className="text-3xl font-bold text-[#1E293B]">
+            Register
           </h1>
 
           <p className="mt-2 text-sm text-[#64748B]">
@@ -103,6 +105,7 @@ export default function RegisterForm() {
           </p>
         </div>
 
+        {/* Error */}
         {error && (
           <div
             role="alert"
@@ -112,10 +115,9 @@ export default function RegisterForm() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Names */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label
@@ -133,7 +135,7 @@ export default function RegisterForm() {
                 onChange={handleChange}
                 autoComplete="given-name"
                 required
-                className="w-full rounded-lg border border-[#CBD5E1] px-4 py-3 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+                className={inputClassName}
               />
             </div>
 
@@ -153,11 +155,12 @@ export default function RegisterForm() {
                 onChange={handleChange}
                 autoComplete="family-name"
                 required
-                className="w-full rounded-lg border border-[#CBD5E1] px-4 py-3 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+                className={inputClassName}
               />
             </div>
           </div>
 
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -174,10 +177,11 @@ export default function RegisterForm() {
               onChange={handleChange}
               autoComplete="email"
               required
-              className="w-full rounded-lg border border-[#CBD5E1] px-4 py-3 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+              className={inputClassName}
             />
           </div>
 
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -195,7 +199,7 @@ export default function RegisterForm() {
               autoComplete="new-password"
               required
               minLength={8}
-              className="w-full rounded-lg border border-[#CBD5E1] px-4 py-3 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+              className={inputClassName}
             />
 
             <p className="mt-1 text-xs text-[#64748B]">
@@ -203,6 +207,7 @@ export default function RegisterForm() {
             </p>
           </div>
 
+          {/* Confirm Password */}
           <div>
             <label
               htmlFor="confirmPassword"
@@ -220,10 +225,11 @@ export default function RegisterForm() {
               autoComplete="new-password"
               required
               minLength={8}
-              className="w-full rounded-lg border border-[#CBD5E1] px-4 py-3 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+              className={inputClassName}
             />
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -233,6 +239,7 @@ export default function RegisterForm() {
           </button>
         </form>
 
+        {/* Login link */}
         <p className="mt-6 text-center text-sm text-[#64748B]">
           Already have an account?{" "}
           <Link

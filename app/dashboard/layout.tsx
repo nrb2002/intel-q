@@ -4,31 +4,25 @@ import MobileSidebar from "@/components/layout/MobileSidebar";
 import Footer from "@/components/layout/Footer";
 import MobileSidebarButton from "@/components/layout/MobileSidebarButton";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-
       <MobileSidebar />
 
-      <div className="flex">       
-
+      <div className="flex">
         <Sidebar />
 
-        <main className="
+        <main
+          className="
           flex-1
           p-6
-        ">
+        "
+        >
           {children}
         </main>
-
       </div>
 
       <Footer />
-
     </div>
   );
 }

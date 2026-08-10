@@ -9,12 +9,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-    } = body;
+    const { firstName, lastName, email, password } = body;
 
     // Validate required fields
     if (
@@ -29,7 +24,7 @@ export async function POST(request: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -38,19 +33,14 @@ export async function POST(request: Request) {
     const cleanEmail = email.trim().toLowerCase();
 
     // Basic validation
-    if (
-      !cleanFirstName ||
-      !cleanLastName ||
-      !cleanEmail ||
-      !password
-    ) {
+    if (!cleanFirstName || !cleanLastName || !cleanEmail || !password) {
       return NextResponse.json(
         {
           error: "All fields are required.",
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -61,7 +51,7 @@ export async function POST(request: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -79,7 +69,7 @@ export async function POST(request: Request) {
         },
         {
           status: 409,
-        }
+        },
       );
     }
 
@@ -111,7 +101,7 @@ export async function POST(request: Request) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     console.error("Registration error:", error);
@@ -122,7 +112,7 @@ export async function POST(request: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
