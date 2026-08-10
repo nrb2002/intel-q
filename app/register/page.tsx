@@ -1,7 +1,5 @@
 // app/register/page.tsx
 
-"use client";
-
 import RegisterForm from "@/components/auth/RegisterForm";
 
 export const metadata = {
