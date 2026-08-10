@@ -6,7 +6,12 @@ import bcrypt from "bcrypt";
 
 import { prisma } from "@/lib/db";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const {
+  handlers,
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
   providers: [
     Credentials({
       name: "Credentials",
@@ -32,7 +37,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const email = credentials.email.trim().toLowerCase();
+        const email = credentials.email
+          .trim()
+          .toLowerCase();
 
         const user = await prisma.user.findUnique({
           where: {
@@ -44,10 +51,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const passwordMatches = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        const passwordMatches =
+          await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
 
         if (!passwordMatches) {
           return null;
@@ -83,7 +91,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = token.id;
         session.user.role = token.role;
       }
 
