@@ -1,5 +1,5 @@
 // app/api/test-connection/route.ts
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 
 export async function GET() {
   const testBranch = await prisma.branch.create({

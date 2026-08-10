@@ -1,10 +1,9 @@
-//As of Next.js 16, middleware.ts has been renamed to proxy.ts
-export { auth as proxy } from "@/auth"
+// proxy.ts
 
-// Run the auth proxy on everything except Next internals, the auth API
-// routes, and static assets. Real role-based authorization still belongs
-// in server components / server actions via `auth()` — the proxy is only
-// an optimistic gate.
+import { auth } from "@/lib/auth";
+
+export const proxy = auth;
+
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-}
+  matcher: ["/dashboard/:path*"],
+};
