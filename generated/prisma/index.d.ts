@@ -4862,6 +4862,7 @@ export namespace Prisma {
 
   export type QueueTicketWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    branchId_ticketNumber?: QueueTicketBranchIdTicketNumberCompoundUniqueInput
     AND?: QueueTicketWhereInput | QueueTicketWhereInput[]
     OR?: QueueTicketWhereInput[]
     NOT?: QueueTicketWhereInput | QueueTicketWhereInput[]
@@ -4875,7 +4876,7 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"QueueTicket"> | Date | string | null
     customer?: XOR<UserScalarRelationFilter, UserWhereInput>
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
-  }, "id">
+  }, "id" | "branchId_ticketNumber">
 
   export type QueueTicketOrderByWithAggregationInput = {
     id?: SortOrder
@@ -5353,6 +5354,11 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type QueueTicketBranchIdTicketNumberCompoundUniqueInput = {
+    branchId: string
+    ticketNumber: number
   }
 
   export type QueueTicketCountOrderByAggregateInput = {

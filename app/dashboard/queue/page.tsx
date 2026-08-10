@@ -1,29 +1,46 @@
-import { QueueList } from "@/components/queue/QueueList";
+// app/dashboard/queue/page.tsx
 
-const tickets = [
+import { QueueList } from "@/components/queue/QueueList";
+import type { QueueTicket } from "@/types/queue";
+
+const tickets: QueueTicket[] = [
   {
     id: "Q001",
-    customer: "John Smith",
-    service: "Account Opening",
+    ticketNumber: 1,
+    customerName: "John Smith",
+    branchName: "Main Branch",
+    serviceType: "Account Opening",
     status: "WAITING",
+    createdAt: "2026-08-10T09:00:00",
   },
   {
     id: "Q002",
-    customer: "Mary Jones",
-    service: "Loan Application",
+    ticketNumber: 2,
+    customerName: "Mary Jones",
+    branchName: "Main Branch",
+    serviceType: "Loan Application",
     status: "IN_SERVICE",
+    createdAt: "2026-08-10T09:05:00",
+    calledAt: "2026-08-10T09:20:00",
   },
   {
     id: "Q003",
-    customer: "David Brown",
-    service: "Support",
+    ticketNumber: 3,
+    customerName: "David Brown",
+    branchName: "Main Branch",
+    serviceType: "Support",
     status: "COMPLETED",
+    createdAt: "2026-08-10T08:45:00",
+    calledAt: "2026-08-10T09:00:00",
   },
   {
     id: "Q004",
-    customer: "Sarah Wilson",
-    service: "Account Enquiry",
+    ticketNumber: 4,
+    customerName: "Sarah Wilson",
+    branchName: "Main Branch",
+    serviceType: "Account Enquiry",
     status: "WAITING",
+    createdAt: "2026-08-10T09:15:00",
   },
 ];
 
@@ -36,9 +53,13 @@ export default function QueuePage() {
 
   return (
     <section className="space-y-8">
+      {/* Page Header */}
       <div>
-        <h2 className="text-3xl font-bold text-[#1E293B]">Queue Management</h2>
-        <hr />
+        <h1 className="text-3xl font-bold text-[#1E293B]">Queue Management</h1>
+
+        <p className="mt-2 text-[#64748B]">
+          Monitor customer tickets and manage the current queue.
+        </p>
       </div>
 
       {/* Queue Statistics */}
