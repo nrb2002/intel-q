@@ -38,9 +38,10 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "eslint-config-prettier": "^10.1.8",
+    "postcss": "^8.5.26",
     "prettier": "^3.9.6",
     "prisma": "^7.9.1",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }
