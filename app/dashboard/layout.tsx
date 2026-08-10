@@ -2,7 +2,7 @@ import Header from "@/components/layout/Header";
 import Sidebar from "@/components/layout/Sidebar";
 import MobileSidebar from "@/components/layout/MobileSidebar";
 import Footer from "@/components/layout/Footer";
-import MobileSidebarButton from "@/components/layout/MobileSidebarButton";
+import MobileSidebarButton from "@/components/layout/MobileSidebar";
 
 export default function DashboardLayout({
   children,
