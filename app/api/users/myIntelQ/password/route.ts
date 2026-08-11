@@ -1,4 +1,4 @@
-// app/api/users/myAccount/password/route.ts
+// app/api/users/myIntelQ/password/route.ts
 
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
@@ -21,12 +21,10 @@ export async function PATCH(request: Request) {
 
     const currentPassword = body.currentPassword;
     const newPassword = body.newPassword;
-    const confirmPassword = body.confirmPassword;
 
     if (
       typeof currentPassword !== "string" ||
-      typeof newPassword !== "string" ||
-      typeof confirmPassword !== "string"
+      typeof newPassword !== "string"
     ) {
       return NextResponse.json(
         { error: "Invalid password data." },
@@ -34,13 +32,12 @@ export async function PATCH(request: Request) {
       );
     }
 
-    if (
-      !currentPassword ||
-      !newPassword ||
-      !confirmPassword
-    ) {
+    if (!currentPassword || !newPassword) {
       return NextResponse.json(
-        { error: "Please complete all password fields." },
+        {
+          error:
+            "Please provide your current and new password.",
+        },
         { status: 400 }
       );
     }
@@ -51,13 +48,6 @@ export async function PATCH(request: Request) {
           error:
             "New password must be at least 8 characters.",
         },
-        { status: 400 }
-      );
-    }
-
-    if (newPassword !== confirmPassword) {
-      return NextResponse.json(
-        { error: "New passwords do not match." },
         { status: 400 }
       );
     }
@@ -96,7 +86,9 @@ export async function PATCH(request: Request) {
 
     if (!passwordMatches) {
       return NextResponse.json(
-        { error: "Current password is incorrect." },
+        {
+          error: "Current password is incorrect.",
+        },
         { status: 400 }
       );
     }
@@ -120,7 +112,7 @@ export async function PATCH(request: Request) {
     });
   } catch (error) {
     console.error(
-      "PATCH /api/users/me/password error:",
+      "PATCH /api/users/myIntelQ/password error:",
       error
     );
 

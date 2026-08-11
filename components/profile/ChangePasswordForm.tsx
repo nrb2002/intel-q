@@ -1,4 +1,4 @@
-//  components/profile/ChangePasswordForm.tsx
+// components/profile/ChangePasswordForm.tsx
 
 "use client";
 
@@ -67,7 +67,7 @@ export function ChangePasswordForm({
       setLoading(true);
 
       const response = await fetch(
-        "/api/users/me/password",
+        "/api/users/myIntelQ/password",
         {
           method: "PATCH",
           headers: {
@@ -76,7 +76,6 @@ export function ChangePasswordForm({
           body: JSON.stringify({
             currentPassword,
             newPassword,
-            confirmPassword,
           }),
         }
       );
