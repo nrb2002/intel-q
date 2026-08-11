@@ -37,15 +37,15 @@ export const {
           return null;
         }
 
-        const email = credentials.email
-          .trim()
-          .toLowerCase();
+        const email =
+          credentials.email.trim().toLowerCase();
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
-        });
+        const user =
+          await prisma.user.findUnique({
+            where: {
+              email,
+            },
+          });
 
         if (!user) {
           return null;
@@ -80,6 +80,10 @@ export const {
   },
 
   callbacks: {
+    async authorized({ auth }) {
+      return !!auth?.user;
+    },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
