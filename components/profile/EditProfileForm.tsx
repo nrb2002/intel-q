@@ -45,7 +45,7 @@ export function EditProfileForm({
     try {
       setLoading(true);
 
-      const response = await fetch("/api/users/myIntelQ", {
+      const response = await fetch("/api/users/me", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -67,7 +67,7 @@ export function ChangePasswordForm({
       setLoading(true);
 
       const response = await fetch(
-        "/api/users/myIntelQ/password",
+        "/api/users/me/password",
         {
           method: "PATCH",
           headers: {

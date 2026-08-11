@@ -5,11 +5,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,13 +27,16 @@ export default function LoginForm() {
   }
 
   async function handleSubmit(
-    event: React.SubmitEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
     setError("");
 
-    if (!formData.email.trim() || !formData.password) {
+    const email = formData.email.trim().toLowerCase();
+    const password = formData.password;
+
+    if (!email || !password) {
       setError("Please enter your email and password.");
       return;
     }
@@ -44,22 +44,19 @@ export default function LoginForm() {
     try {
       setLoading(true);
 
-      const result = await signIn("credentials", {
-        email: formData.email.trim().toLowerCase(),
-        password: formData.password,
-        redirect: false,
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: "/dashboard",
       });
+    } catch (error) {
+      console.error("Login error:", error);
 
-      if (!result || result.error) {
-        setError("Invalid email or password.");
-        return;
-      }
+      setError(
+        "Unable to sign in. Please check your email and password."
+      );
 
-      router.push("/dashboard");
-      router.refresh();
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   }
@@ -73,7 +70,7 @@ export default function LoginForm() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[#1E293B]">
-            Welcome back
+            Controlled Access
           </h1>
 
           <p className="mt-2 text-sm text-[#64748B]">
@@ -92,7 +89,11 @@ export default function LoginForm() {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -114,15 +115,14 @@ export default function LoginForm() {
             />
           </div>
 
+          {/* Password */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-[#1E293B]"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-medium text-[#1E293B]"
+            >
+              Password
+            </label>
 
             <input
               id="password"
@@ -137,6 +137,7 @@ export default function LoginForm() {
             />
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
