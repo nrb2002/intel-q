@@ -6,15 +6,19 @@ import { AuthError } from "next-auth";
 export type LoginState = { error?: string } | undefined;
 
 export async function loginUser(
-    _prevState: LoginState,
-    formData: FormData
-): Promise<LoginState> {
+    // _prevState: LoginState,
+    email: string,
+    password: string,
+    callbackUrl: string
+) {
     try {
         await signIn("credentials", {
-            email: formData.get("email"),
-            password: formData.get("password"),
-            redirectTo: "/",
+            redirect: false,
+            email,
+            password,
+            callbackUrl,
         });
+
     } catch (error) {
         if (error instanceof AuthError) {
             if (error.type === "CredentialsSignin") {

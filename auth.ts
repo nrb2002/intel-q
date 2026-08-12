@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { prisma } from "./lib/prisma" 
+import { prisma } from "./lib/prisma"
 import { PasswordHasher } from "@/util"
 import NeonAdapter from "@auth/neon-adapter"
 import { Pool } from "@neondatabase/serverless"
@@ -11,11 +11,14 @@ import type { UserRole } from "@/src/generated/prisma"
 
 
 export const { handlers, auth, signIn, signOut } = NextAuth(() => {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+  // const pool = new Pool({ connectionString: process.env.DATABASE_URL })
   return {
-    adapter: NeonAdapter(pool),
+    // adapter: NeonAdapter(pool),
     pages: {
       signIn: "/login",
+    },
+    session: {
+      strategy: "jwt",
     },
     providers: [
       Credentials({
@@ -35,14 +38,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
 
 
           if (!user || !user.password) {
-            throw new Error("Invalid email or password.");
+            return null;
           }
 
           // logic to compare hash password
           const pwHash = await PasswordHasher.compare(password, user.password)
 
           if (!pwHash) {
-            throw new Error("Invalid email or password.");
+            return null;
           }
 
           // Strip the password hash before returning — anything returned
