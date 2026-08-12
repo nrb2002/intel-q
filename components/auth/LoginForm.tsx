@@ -70,11 +70,11 @@ export default function LoginForm() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[#1E293B]">
-            Controlled Access
+            User Login
           </h1>
 
           <p className="mt-2 text-sm text-[#64748B]">
-            Sign in to your Intel-Q account.
+            Sign in as a regular to manage queues.
           </p>
         </div>
 

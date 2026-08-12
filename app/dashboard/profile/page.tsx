@@ -23,9 +23,7 @@ export default function ProfilePage() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          "/api/users/myIntelQ"
-        );
+        const response = await fetch("/api/users/me");
 
         const data = await response.json();
 
