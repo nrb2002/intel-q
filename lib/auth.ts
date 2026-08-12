@@ -5,6 +5,15 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
 import { prisma } from "@/lib/db";
+import type { UserRole } from "@/types/user";
+
+function isUserRole(value: unknown): value is UserRole {
+  return (
+    value === "CUSTOMER" ||
+    value === "STAFF" ||
+    value === "ADMIN"
+  );
+}
 
 export const {
   handlers,
@@ -37,25 +46,22 @@ export const {
           return null;
         }
 
-        const email =
-          credentials.email.trim().toLowerCase();
+        const email = credentials.email.trim().toLowerCase();
 
-        const user =
-          await prisma.user.findUnique({
-            where: {
-              email,
-            },
-          });
+        const user = await prisma.user.findUnique({
+          where: {
+            email,
+          },
+        });
 
         if (!user) {
           return null;
         }
 
-        const passwordMatches =
-          await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+        const passwordMatches = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
 
         if (!passwordMatches) {
           return null;
@@ -65,7 +71,7 @@ export const {
           id: user.id,
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          role: user.role,
+          role: user.role as UserRole,
         };
       },
     }),
@@ -95,8 +101,13 @@ export const {
 
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+        if (typeof token.id === "string") {
+          session.user.id = token.id;
+        }
+
+        if (isUserRole(token.role)) {
+          session.user.role = token.role;
+        }
       }
 
       return session;
