@@ -1,16 +1,12 @@
 // components/profile/ProfileActions.tsx
 
 interface ProfileActionsProps {
-  editing: boolean;
-  changingPassword: boolean;
-  onEdit: () => void;
+  onEditProfile: () => void;
   onChangePassword: () => void;
 }
 
 export function ProfileActions({
-  editing,
-  changingPassword,
-  onEdit,
+  onEditProfile,
   onChangePassword,
 }: ProfileActionsProps) {
   return (
@@ -28,22 +24,18 @@ export function ProfileActions({
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <button
           type="button"
-          onClick={onEdit}
-          disabled={editing}
-          className="rounded-lg border border-[#E2E8F0] px-5 py-2.5 text-sm font-medium text-[#1E293B] transition hover:bg-[#F8FAFC] disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={onEditProfile}
+          className="rounded-lg border border-[#E2E8F0] px-5 py-2.5 text-sm font-medium text-[#1E293B] transition hover:bg-[#F8FAFC]"
         >
-          {editing ? "Editing Profile..." : "Edit Profile"}
+          Edit Profile
         </button>
 
         <button
           type="button"
           onClick={onChangePassword}
-          disabled={changingPassword}
-          className="rounded-lg bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8]"
         >
-          {changingPassword
-            ? "Changing Password..."
-            : "Change Password"}
+          Change Password
         </button>
       </div>
     </div>
