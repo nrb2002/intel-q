@@ -6,10 +6,8 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 export default function DashboardPage() {
   return (
     <section className="space-y-8">
-
       {/* Dashboard Header */}
       <DashboardHeader />
-
 
       {/* Statistics */}
       <div
@@ -21,33 +19,14 @@ export default function DashboardPage() {
           lg:grid-cols-4
         "
       >
+        <StatsCard title="Waiting" value="24" description="Customers waiting" />
 
-        <StatsCard
-          title="Waiting"
-          value="24"
-          description="Customers waiting"
-        />
+        <StatsCard title="In Service" value="5" description="Currently served" />
 
-        <StatsCard
-          title="In Service"
-          value="5"
-          description="Currently served"
-        />
+        <StatsCard title="Completed" value="120" description="Completed today" />
 
-        <StatsCard
-          title="Completed"
-          value="120"
-          description="Completed today"
-        />
-
-        <StatsCard
-          title="Branches"
-          value="8"
-          description="Active branches"
-        />
-
+        <StatsCard title="Branches" value="8" description="Active branches" />
       </div>
-
 
       {/* Main Dashboard Content */}
       <div
@@ -58,21 +37,16 @@ export default function DashboardPage() {
           lg:grid-cols-3
         "
       >
-
         {/* Queue takes 2 columns */}
         <div className="lg:col-span-2">
           <QueueOverview />
         </div>
 
-
         {/* Actions */}
         <div>
           <QuickActions />
         </div>
-
       </div>
-
-
     </section>
   );
 }

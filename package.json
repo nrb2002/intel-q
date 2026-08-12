@@ -13,13 +13,16 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.9.1",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
-    "@neondatabase/serverless": "^1.1.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "lucide-react": "^1.25.0",
     "next": "16.2.10",
+    "next-auth": "^5.0.0-beta.32",
     "pg": "^8.22.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -27,19 +30,19 @@
     "use-debounce": "^10.1.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
-    
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "eslint-config-prettier": "^10.1.8",
+    "postcss": "^8.5.26",
     "prettier": "^3.9.6",
     "prisma": "^7.9.1",
-
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
   }
 }

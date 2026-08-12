@@ -10,7 +10,7 @@ const navigationItems = [
     href: "/",
   },
   {
-    label: "Login",
+    label: "myIntelQ",
     href: "/login",
   },
   {
