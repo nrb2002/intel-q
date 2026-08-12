@@ -74,7 +74,7 @@ export default function LoginForm() {
           </h1>
 
           <p className="mt-2 text-sm text-[#64748B]">
-            Sign in as a regular to manage queues.
+            Sign in with your credentials to manage queues.
           </p>
         </div>
 
