@@ -11,10 +11,7 @@ export async function PATCH(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -28,33 +25,24 @@ export async function PATCH(request: Request) {
       typeof newPassword !== "string" ||
       typeof confirmPassword !== "string"
     ) {
-      return NextResponse.json(
-        { error: "Invalid password data." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid password data." }, { status: 400 });
     }
 
-    if (
-      !currentPassword ||
-      !newPassword ||
-      !confirmPassword
-    ) {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       return NextResponse.json(
         {
-          error:
-            "Please complete all password fields.",
+          error: "Please complete all password fields.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (newPassword.length < 8) {
       return NextResponse.json(
         {
-          error:
-            "New password must be at least 8 characters.",
+          error: "New password must be at least 8 characters.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,17 +51,16 @@ export async function PATCH(request: Request) {
         {
           error: "New passwords do not match.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (currentPassword === newPassword) {
       return NextResponse.json(
         {
-          error:
-            "New password must be different from your current password.",
+          error: "New password must be different from your current password.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -88,31 +75,21 @@ export async function PATCH(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found." }, { status: 404 });
     }
 
-    const passwordMatches = await bcrypt.compare(
-      currentPassword,
-      user.password
-    );
+    const passwordMatches = await bcrypt.compare(currentPassword, user.password);
 
     if (!passwordMatches) {
       return NextResponse.json(
         {
-          error:
-            "Current password is incorrect.",
+          error: "Current password is incorrect.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const hashedPassword = await bcrypt.hash(
-      newPassword,
-      12
-    );
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
 
     await prisma.user.update({
       where: {
@@ -127,14 +104,8 @@ export async function PATCH(request: Request) {
       message: "Password changed successfully.",
     });
   } catch (error) {
-    console.error(
-      "PATCH /api/users/me/password error:",
-      error
-    );
+    console.error("PATCH /api/users/me/password error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to change password." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to change password." }, { status: 500 });
   }
 }

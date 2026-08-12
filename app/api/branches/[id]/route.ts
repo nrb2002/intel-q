@@ -13,18 +13,12 @@ interface RouteContext {
 
 // GET /api/branches/[id]
 
-export async function GET(
-  _request: Request,
-  context: RouteContext
-) {
+export async function GET(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await context.params;
@@ -43,10 +37,7 @@ export async function GET(
     });
 
     if (!branch) {
-      return NextResponse.json(
-        { error: "Branch not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Branch not found." }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -59,46 +50,31 @@ export async function GET(
       updatedAt: branch.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error(
-      "GET /api/branches/[id] error:",
-      error
-    );
+    console.error("GET /api/branches/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch branch." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch branch." }, { status: 500 });
   }
 }
 
 // PATCH /api/branches/[id]
 // STAFF and ADMIN only.
 
-export async function PATCH(
-  request: Request,
-  context: RouteContext
-) {
+export async function PATCH(request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     if (!isStaff) {
       return NextResponse.json(
         {
-          error:
-            "Only staff members can update branches.",
+          error: "Only staff members can update branches.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -111,10 +87,7 @@ export async function PATCH(
     });
 
     if (!existingBranch) {
-      return NextResponse.json(
-        { error: "Branch not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Branch not found." }, { status: 404 });
     }
 
     const body = await request.json();
@@ -129,10 +102,7 @@ export async function PATCH(
       const name = body.name.trim();
 
       if (!name) {
-        return NextResponse.json(
-          { error: "Branch name cannot be empty." },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Branch name cannot be empty." }, { status: 400 });
       }
 
       data.name = name;
@@ -142,10 +112,7 @@ export async function PATCH(
       const address = body.address.trim();
 
       if (!address) {
-        return NextResponse.json(
-          { error: "Branch address cannot be empty." },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Branch address cannot be empty." }, { status: 400 });
       }
 
       data.address = address;
@@ -155,10 +122,7 @@ export async function PATCH(
       const city = body.city.trim();
 
       if (!city) {
-        return NextResponse.json(
-          { error: "Branch city cannot be empty." },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Branch city cannot be empty." }, { status: 400 });
       }
 
       data.city = city;
@@ -167,10 +131,9 @@ export async function PATCH(
     if (Object.keys(data).length === 0) {
       return NextResponse.json(
         {
-          error:
-            "At least one branch field must be provided.",
+          error: "At least one branch field must be provided.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -198,46 +161,31 @@ export async function PATCH(
       updatedAt: branch.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error(
-      "PATCH /api/branches/[id] error:",
-      error
-    );
+    console.error("PATCH /api/branches/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to update branch." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update branch." }, { status: 500 });
   }
 }
 
 // DELETE /api/branches/[id]
 // STAFF and ADMIN only.
 
-export async function DELETE(
-  _request: Request,
-  context: RouteContext
-) {
+export async function DELETE(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     if (!isStaff) {
       return NextResponse.json(
         {
-          error:
-            "Only staff members can delete branches.",
+          error: "Only staff members can delete branches.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -257,19 +205,15 @@ export async function DELETE(
     });
 
     if (!branch) {
-      return NextResponse.json(
-        { error: "Branch not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Branch not found." }, { status: 404 });
     }
 
     if (branch._count.queueTickets > 0) {
       return NextResponse.json(
         {
-          error:
-            "This branch cannot be deleted because it has queue tickets.",
+          error: "This branch cannot be deleted because it has queue tickets.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -283,14 +227,8 @@ export async function DELETE(
       message: "Branch deleted successfully.",
     });
   } catch (error) {
-    console.error(
-      "DELETE /api/branches/[id] error:",
-      error
-    );
+    console.error("DELETE /api/branches/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to delete branch." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to delete branch." }, { status: 500 });
   }
 }

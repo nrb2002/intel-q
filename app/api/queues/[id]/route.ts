@@ -14,18 +14,12 @@ interface RouteContext {
 
 // GET /api/queues/[id]
 
-export async function GET(
-  _request: Request,
-  context: RouteContext
-) {
+export async function GET(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await context.params;
@@ -55,24 +49,13 @@ export async function GET(
     });
 
     if (!ticket) {
-      return NextResponse.json(
-        { error: "Queue ticket not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Queue ticket not found." }, { status: 404 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
-    if (
-      !isStaff &&
-      ticket.customerId !== session.user.id
-    ) {
-      return NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      );
+    if (!isStaff && ticket.customerId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     return NextResponse.json({
@@ -89,75 +72,49 @@ export async function GET(
   } catch (error) {
     console.error("GET /api/queues/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch queue ticket." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch queue ticket." }, { status: 500 });
   }
 }
 
 // PATCH /api/queues/[id]
 
-export async function PATCH(
-  request: Request,
-  context: RouteContext
-) {
+export async function PATCH(request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await context.params;
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     if (!isStaff) {
       return NextResponse.json(
         {
           error: "Only staff members can update queue tickets.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     const body = await request.json();
 
-    const status =
-      typeof body.status === "string"
-        ? body.status
-        : undefined;
+    const status = typeof body.status === "string" ? body.status : undefined;
 
-    if (
-      status &&
-      !Object.values(QueueStatus).includes(
-        status as QueueStatus
-      )
-    ) {
-      return NextResponse.json(
-        { error: "Invalid queue status." },
-        { status: 400 }
-      );
+    if (status && !Object.values(QueueStatus).includes(status as QueueStatus)) {
+      return NextResponse.json({ error: "Invalid queue status." }, { status: 400 });
     }
 
-    const existingTicket =
-      await prisma.queueTicket.findUnique({
-        where: {
-          id,
-        },
-      });
+    const existingTicket = await prisma.queueTicket.findUnique({
+      where: {
+        id,
+      },
+    });
 
     if (!existingTicket) {
-      return NextResponse.json(
-        { error: "Queue ticket not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Queue ticket not found." }, { status: 404 });
     }
 
     const updateData: {
@@ -170,8 +127,7 @@ export async function PATCH(
       updateData.status = status as QueueStatus;
 
       if (status === "IN_SERVICE") {
-        updateData.calledAt =
-          existingTicket.calledAt ?? new Date();
+        updateData.calledAt = existingTicket.calledAt ?? new Date();
       }
 
       if (status === "COMPLETED") {
@@ -225,32 +181,20 @@ export async function PATCH(
       completedAt: ticket.completedAt?.toISOString(),
     });
   } catch (error) {
-    console.error(
-      "PATCH /api/queues/[id] error:",
-      error
-    );
+    console.error("PATCH /api/queues/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to update queue ticket." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update queue ticket." }, { status: 500 });
   }
 }
 
 // DELETE /api/queues/[id]
 
-export async function DELETE(
-  _request: Request,
-  context: RouteContext
-) {
+export async function DELETE(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await context.params;
@@ -262,24 +206,13 @@ export async function DELETE(
     });
 
     if (!ticket) {
-      return NextResponse.json(
-        { error: "Queue ticket not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Queue ticket not found." }, { status: 404 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
-    if (
-      !isStaff &&
-      ticket.customerId !== session.user.id
-    ) {
-      return NextResponse.json(
-        { error: "Forbidden" },
-        { status: 403 }
-      );
+    if (!isStaff && ticket.customerId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     await prisma.queueTicket.delete({
@@ -292,14 +225,8 @@ export async function DELETE(
       message: "Queue ticket deleted successfully.",
     });
   } catch (error) {
-    console.error(
-      "DELETE /api/queues/[id] error:",
-      error
-    );
+    console.error("DELETE /api/queues/[id] error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to delete queue ticket." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to delete queue ticket." }, { status: 500 });
   }
 }

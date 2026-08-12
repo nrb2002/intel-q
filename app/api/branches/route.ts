@@ -13,10 +13,7 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const branches = await prisma.branch.findMany({
@@ -46,15 +43,12 @@ export async function GET() {
         queueTicketCount: branch._count.queueTickets,
         createdAt: branch.createdAt.toISOString(),
         updatedAt: branch.updatedAt.toISOString(),
-      }))
+      })),
     );
   } catch (error) {
     console.error("GET /api/branches error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch branches." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch branches." }, { status: 500 });
   }
 }
 
@@ -67,49 +61,34 @@ export async function POST(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     if (!isStaff) {
       return NextResponse.json(
         {
           error: "Only staff members can create branches.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     const body = await request.json();
 
-    const name =
-      typeof body.name === "string"
-        ? body.name.trim()
-        : "";
+    const name = typeof body.name === "string" ? body.name.trim() : "";
 
-    const address =
-      typeof body.address === "string"
-        ? body.address.trim()
-        : "";
+    const address = typeof body.address === "string" ? body.address.trim() : "";
 
-    const city =
-      typeof body.city === "string"
-        ? body.city.trim()
-        : "";
+    const city = typeof body.city === "string" ? body.city.trim() : "";
 
     if (!name || !address || !city) {
       return NextResponse.json(
         {
-          error:
-            "Branch name, address, and city are required.",
+          error: "Branch name, address, and city are required.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -131,14 +110,11 @@ export async function POST(request: Request) {
         createdAt: branch.createdAt.toISOString(),
         updatedAt: branch.updatedAt.toISOString(),
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("POST /api/branches error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to create branch." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create branch." }, { status: 500 });
   }
 }

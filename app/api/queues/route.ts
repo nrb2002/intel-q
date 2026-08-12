@@ -17,15 +17,10 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     const tickets = await prisma.queueTicket.findMany({
       where: isStaff
@@ -72,10 +67,7 @@ export async function GET() {
   } catch (error) {
     console.error("GET /api/queues error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch queue tickets." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch queue tickets." }, { status: 500 });
   }
 }
 
@@ -87,30 +79,21 @@ export async function POST(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
 
-    const branchId =
-      typeof body.branchId === "string"
-        ? body.branchId.trim()
-        : "";
+    const branchId = typeof body.branchId === "string" ? body.branchId.trim() : "";
 
-    const serviceType =
-      typeof body.serviceType === "string"
-        ? body.serviceType.trim()
-        : "";
+    const serviceType = typeof body.serviceType === "string" ? body.serviceType.trim() : "";
 
     if (!branchId || !serviceType) {
       return NextResponse.json(
         {
           error: "Branch and service type are required.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -125,7 +108,7 @@ export async function POST(request: Request) {
         {
           error: "Branch not found.",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -143,8 +126,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const ticketNumber =
-      (latestTicket?.ticketNumber ?? 0) + 1;
+    const ticketNumber = (latestTicket?.ticketNumber ?? 0) + 1;
 
     const ticket = await prisma.queueTicket.create({
       data: {
@@ -186,14 +168,11 @@ export async function POST(request: Request) {
         calledAt: ticket.calledAt?.toISOString(),
         completedAt: ticket.completedAt?.toISOString(),
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("POST /api/queues error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to create queue ticket." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create queue ticket." }, { status: 500 });
   }
 }
