@@ -5,7 +5,6 @@ import { HowItWorksSection } from "@/components/layout/home/HowItWorksSection";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 
-
 export default function HomePage() {
   return (
     <div
@@ -15,11 +14,9 @@ export default function HomePage() {
         text-[#1E293B]
       "
     >
-
       <Header />
 
       <main>
-
         <HeroSection />
 
         <FeaturesSection />
@@ -27,12 +24,9 @@ export default function HomePage() {
         <HowItWorksSection />
 
         <CTASection />
-
       </main>
 
-
       <Footer />
-
     </div>
   );
 }

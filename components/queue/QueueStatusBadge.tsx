@@ -1,29 +1,18 @@
-import { cn } from "@/lib/utils";
+// components/queue/QueueStatusBadge.tsx
 
-type QueueStatus =
-  | "WAITING"
-  | "IN_SERVICE"
-  | "COMPLETED"
-  | "CANCELLED";
+import type { QueueStatus } from "@/types/queue";
+import { cn } from "@/lib/utils";
 
 interface QueueStatusBadgeProps {
   status: QueueStatus;
 }
 
 const statusStyles: Record<QueueStatus, string> = {
-  WAITING:
-    "bg-amber-100 text-amber-700",
-
-  IN_SERVICE:
-    "bg-blue-100 text-blue-700",
-
-  COMPLETED:
-    "bg-green-100 text-green-700",
-
-  CANCELLED:
-    "bg-red-100 text-red-700",
+  WAITING: "bg-amber-100 text-amber-700",
+  IN_SERVICE: "bg-blue-100 text-blue-700",
+  COMPLETED: "bg-green-100 text-green-700",
+  CANCELLED: "bg-red-100 text-red-700",
 };
-
 
 const statusLabels: Record<QueueStatus, string> = {
   WAITING: "Waiting",
@@ -32,11 +21,9 @@ const statusLabels: Record<QueueStatus, string> = {
   CANCELLED: "Cancelled",
 };
 
-
 export function QueueStatusBadge({
   status,
 }: QueueStatusBadgeProps) {
-
   return (
     <span
       className={cn(

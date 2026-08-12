@@ -24,7 +24,7 @@ const navigation = [
   },
   {
     name: "Logout",
-    href: "/",
+    href: "/login",
   }
 ];
 
