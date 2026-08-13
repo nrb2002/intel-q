@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createTicketSchema = z.object({
-  ticketNumber: z.string().min(1),
+  ticketNumber: z.coerce.number().int().positive(),
   customerId: z.string().cuid(),
   branchId: z.string().cuid(),
   serviceType: z.string().min(2),

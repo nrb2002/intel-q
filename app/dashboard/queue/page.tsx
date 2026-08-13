@@ -1,5 +1,6 @@
 // app/dashboard/queue/page.tsx
 
+import { JoinQueueForm } from "@/components/queue/QueueForm";
 import { QueueList } from "@/components/queue/QueueList";
 import type { QueueTicket } from "@/types/queue";
 
@@ -61,7 +62,54 @@ export default function QueuePage() {
           Monitor customer tickets and manage the current queue.
         </p>
       </div>
+      {/* Join Queue */}
+      <JoinQueueForm />
 
+      {/* Queue Statistics */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-[#64748B]">
+            Waiting
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-[#1E293B]">
+            {waitingTickets.length}
+          </p>
+
+          <p className="mt-1 text-sm text-[#64748B]">
+            Customers waiting
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-[#64748B]">
+            In Service
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-[#1E293B]">
+            {inServiceTickets.length}
+          </p>
+
+          <p className="mt-1 text-sm text-[#64748B]">
+            Currently being served
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
+          <p className="text-sm font-medium text-[#64748B]">
+            Completed
+          </p>
+
+          <p className="mt-2 text-3xl font-bold text-[#1E293B]">
+            {completedTickets.length}
+          </p>
+
+          <p className="mt-1 text-sm text-[#64748B]">
+            Completed tickets
+          </p>
+        </div>
+      </div>
+      
       {/* Queue Statistics */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">

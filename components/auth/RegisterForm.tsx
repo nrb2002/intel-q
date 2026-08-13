@@ -1,10 +1,9 @@
-// components/auth/RegisterForm.tsx
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { registerSchema } from "@/lib/validation/register";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -18,42 +17,33 @@ export default function RegisterForm() {
   });
 
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
-  function handleChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setFormData((current) => ({ ...current, [name]: value }));
   }
 
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setError("");
+    setFieldErrors({});
 
-    if (
-      !formData.firstName.trim() ||
-      !formData.lastName.trim() ||
-      !formData.email.trim() ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      setError("Please complete all fields.");
-      return;
-    }
+    const parsed = registerSchema.safeParse({
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
+      email: formData.email.trim().toLowerCase(),
+      password: formData.password,
+    });
 
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+    if (!parsed.success) {
+      setFieldErrors(parsed.error.flatten().fieldErrors as Record<string, string[]>);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+      setFieldErrors({ confirmPassword: ["Passwords do not match."] });
       return;
     }
 
@@ -62,21 +52,14 @@ export default function RegisterForm() {
 
       const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          email: formData.email.trim().toLowerCase(),
-          password: formData.password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed.data),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed.");
+        setError(data.error || "Registration failed. Please try again.");
         return;
       }
 
@@ -94,18 +77,13 @@ export default function RegisterForm() {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-[#F8FAFC] px-4 py-4">
       <div className="w-full max-w-md rounded-2xl border border-[#E2E8F0] bg-white p-8 shadow-lg">
-        {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1E293B]">
-            Register
-          </h1>
-
+          <h1 className="text-3xl font-bold text-[#1E293B]">Register</h1>
           <p className="mt-2 text-sm text-[#64748B]">
             Join Intel-Q and start managing your queue experience.
           </p>
         </div>
 
-        {/* Error */}
         {error && (
           <div
             role="alert"
@@ -115,18 +93,12 @@ export default function RegisterForm() {
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Names */}
+        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label
-                htmlFor="firstName"
-                className="mb-2 block text-sm font-medium text-[#1E293B]"
-              >
+              <label htmlFor="firstName" className="mb-2 block text-sm font-medium text-[#1E293B]">
                 First name
               </label>
-
               <input
                 id="firstName"
                 name="firstName"
@@ -134,19 +106,20 @@ export default function RegisterForm() {
                 value={formData.firstName}
                 onChange={handleChange}
                 autoComplete="given-name"
-                required
+                aria-describedby="firstName-error"
                 className={inputClassName}
               />
+              <div id="firstName-error" aria-live="polite" className="mt-1 text-sm text-red-600">
+                {fieldErrors.firstName?.map((err) => (
+                  <p key={err}>{err}</p>
+                ))}
+              </div>
             </div>
 
             <div>
-              <label
-                htmlFor="lastName"
-                className="mb-2 block text-sm font-medium text-[#1E293B]"
-              >
+              <label htmlFor="lastName" className="mb-2 block text-sm font-medium text-[#1E293B]">
                 Last name
               </label>
-
               <input
                 id="lastName"
                 name="lastName"
@@ -154,21 +127,21 @@ export default function RegisterForm() {
                 value={formData.lastName}
                 onChange={handleChange}
                 autoComplete="family-name"
-                required
+                aria-describedby="lastName-error"
                 className={inputClassName}
               />
+              <div id="lastName-error" aria-live="polite" className="mt-1 text-sm text-red-600">
+                {fieldErrors.lastName?.map((err) => (
+                  <p key={err}>{err}</p>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-[#1E293B]"
-            >
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-[#1E293B]">
               Email address
             </label>
-
             <input
               id="email"
               name="email"
@@ -176,20 +149,20 @@ export default function RegisterForm() {
               value={formData.email}
               onChange={handleChange}
               autoComplete="email"
-              required
+              aria-describedby="email-error"
               className={inputClassName}
             />
+            <div id="email-error" aria-live="polite" className="mt-1 text-sm text-red-600">
+              {fieldErrors.email?.map((err) => (
+                <p key={err}>{err}</p>
+              ))}
+            </div>
           </div>
 
-          {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-[#1E293B]"
-            >
+            <label htmlFor="password" className="mb-2 block text-sm font-medium text-[#1E293B]">
               Password
             </label>
-
             <input
               id="password"
               name="password"
@@ -197,25 +170,21 @@ export default function RegisterForm() {
               value={formData.password}
               onChange={handleChange}
               autoComplete="new-password"
-              required
-              minLength={8}
+              aria-describedby="password-error"
               className={inputClassName}
             />
-
-            <p className="mt-1 text-xs text-[#64748B]">
-              Use at least 8 characters.
-            </p>
+            <p className="mt-1 text-xs text-[#64748B]">Use at least 8 characters.</p>
+            <div id="password-error" aria-live="polite" className="mt-1 text-sm text-red-600">
+              {fieldErrors.password?.map((err) => (
+                <p key={err}>{err}</p>
+              ))}
+            </div>
           </div>
 
-          {/* Confirm Password */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="mb-2 block text-sm font-medium text-[#1E293B]"
-            >
+            <label htmlFor="confirmPassword" className="mb-2 block text-sm font-medium text-[#1E293B]">
               Confirm password
             </label>
-
             <input
               id="confirmPassword"
               name="confirmPassword"
@@ -223,13 +192,16 @@ export default function RegisterForm() {
               value={formData.confirmPassword}
               onChange={handleChange}
               autoComplete="new-password"
-              required
-              minLength={8}
+              aria-describedby="confirmPassword-error"
               className={inputClassName}
             />
+            <div id="confirmPassword-error" aria-live="polite" className="mt-1 text-sm text-red-600">
+              {fieldErrors.confirmPassword?.map((err) => (
+                <p key={err}>{err}</p>
+              ))}
+            </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -239,13 +211,9 @@ export default function RegisterForm() {
           </button>
         </form>
 
-        {/* Login link */}
         <p className="mt-6 text-center text-sm text-[#64748B]">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-[#2563EB] hover:underline"
-          >
+          <Link href="/login" className="font-semibold text-[#2563EB] hover:underline">
             Sign in
           </Link>
         </p>
