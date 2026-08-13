@@ -70,7 +70,7 @@ export default function LoginForm() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-[#1E293B]">
-            User Login
+            Login
           </h1>
 
           <p className="mt-2 text-sm text-[#64748B]">
