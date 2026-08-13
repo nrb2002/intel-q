@@ -39,11 +39,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.9.0
+ * Prisma Client JS version: 7.9.1
  * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.9.0",
+  client: "7.9.1",
   engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
@@ -161,7 +161,7 @@ exports.Prisma.ModelName = {
  */
 const config = {
   "previewFeatures": [],
-  "clientVersion": "7.9.0",
+  "clientVersion": "7.9.1",
   "engineVersion": "e922089b7d7502aff4249d5da3420f6fa55fc6ad",
   "activeProvider": "postgresql",
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum UserRole {\n  customer\n  staff\n  admin\n}\n\nenum TicketStatus {\n  waiting\n  called\n  completed\n  cancelled\n}\n\nmodel User {\n  id        String        @id @default(cuid())\n  firstName String\n  lastName  String\n  email     String        @unique\n  password  String\n  role      UserRole      @default(customer)\n  tickets   QueueTicket[]\n  createdAt DateTime      @default(now())\n  updatedAt DateTime      @updatedAt\n\n  @@map(\"users\")\n}\n\nmodel Branch {\n  id        String        @id @default(cuid())\n  name      String        @unique\n  address   String\n  city      String\n  tickets   QueueTicket[]\n  createdAt DateTime      @default(now())\n  updatedAt DateTime      @updatedAt\n\n  @@map(\"branches\")\n}\n\nmodel QueueTicket {\n  id           String       @id @default(cuid())\n  ticketNumber String       @unique\n  customer     User         @relation(fields: [customerId], references: [id])\n  customerId   String\n  branch       Branch       @relation(fields: [branchId], references: [id])\n  branchId     String\n  serviceType  String\n  status       TicketStatus @default(waiting)\n  calledAt     DateTime?\n  completedAt  DateTime?\n  createdAt    DateTime     @default(now())\n\n  @@index([branchId, status, createdAt])\n  @@map(\"queue_tickets\")\n}\n"
