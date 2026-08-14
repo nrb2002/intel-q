@@ -43,10 +43,7 @@ export async function PATCH(request: Request) {
     //
     // The API receives currentPassword and newPassword.
     // confirmPassword is a client-side concern.
-    const result =
-  changePasswordRequestSchema.safeParse(body);
-
-  
+    const result = changePasswordRequestSchema.safeParse(body);
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};

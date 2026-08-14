@@ -48,22 +48,17 @@ export async function GET() {
         name: branch.name,
         address: branch.address,
         city: branch.city,
-        queueTicketCount:
-          branch._count.queueTickets,
+        queueTicketCount: branch._count.queueTickets,
         createdAt: branch.createdAt.toISOString(),
         updatedAt: branch.updatedAt.toISOString(),
       })),
     );
   } catch (error) {
-    console.error(
-      "GET /api/branches error:",
-      error,
-    );
+    console.error("GET /api/branches error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to load branches. Please try again.",
+        error: "Unable to load branches. Please try again.",
       },
       {
         status: 500,
@@ -90,15 +85,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     if (!isStaff) {
       return NextResponse.json(
         {
-          error:
-            "You do not have permission to create a branch.",
+          error: "You do not have permission to create a branch.",
         },
         {
           status: 403,
@@ -126,13 +118,11 @@ export async function POST(request: Request) {
     const parsed = createBranchSchema.safeParse(body);
 
     if (!parsed.success) {
-      const fieldErrors =
-        parsed.error.flatten().fieldErrors;
+      const fieldErrors = parsed.error.flatten().fieldErrors;
 
       return NextResponse.json(
         {
-          error:
-            "Please correct the highlighted fields.",
+          error: "Please correct the highlighted fields.",
           fieldErrors,
         },
         {
@@ -141,11 +131,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const {
-      name,
-      address,
-      city,
-    } = parsed.data;
+    const { name, address, city } = parsed.data;
 
     try {
       const branch = await prisma.branch.create({
@@ -158,18 +144,15 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         {
-          message:
-            "Branch created successfully.",
+          message: "Branch created successfully.",
           branch: {
             id: branch.id,
             name: branch.name,
             address: branch.address,
             city: branch.city,
             queueTicketCount: 0,
-            createdAt:
-              branch.createdAt.toISOString(),
-            updatedAt:
-              branch.updatedAt.toISOString(),
+            createdAt: branch.createdAt.toISOString(),
+            updatedAt: branch.updatedAt.toISOString(),
           },
         },
         {
@@ -178,15 +161,10 @@ export async function POST(request: Request) {
       );
     } catch (error) {
       // Handle database-level unique constraint errors.
-      if (
-        error instanceof
-          Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2002"
-      ) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
         return NextResponse.json(
           {
-            error:
-              "A branch with these details already exists.",
+            error: "A branch with these details already exists.",
           },
           {
             status: 409,
@@ -197,15 +175,11 @@ export async function POST(request: Request) {
       throw error;
     }
   } catch (error) {
-    console.error(
-      "POST /api/branches error:",
-      error,
-    );
+    console.error("POST /api/branches error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to create the branch. Please try again.",
+        error: "Unable to create the branch. Please try again.",
       },
       {
         status: 500,

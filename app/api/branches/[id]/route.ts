@@ -18,10 +18,7 @@ function isStaffOrAdmin(role: unknown) {
 
 // GET /api/branches/[id]
 
-export async function GET(
-  _request: Request,
-  context: RouteContext,
-) {
+export async function GET(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
@@ -83,15 +80,11 @@ export async function GET(
       updatedAt: branch.updatedAt.toISOString(),
     });
   } catch (error) {
-    console.error(
-      "GET /api/branches/[id] error:",
-      error,
-    );
+    console.error("GET /api/branches/[id] error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to load the branch. Please try again.",
+        error: "Unable to load the branch. Please try again.",
       },
       {
         status: 500,
@@ -103,10 +96,7 @@ export async function GET(
 // PATCH /api/branches/[id]
 // STAFF and ADMIN only.
 
-export async function PATCH(
-  request: Request,
-  context: RouteContext,
-) {
+export async function PATCH(request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
@@ -124,8 +114,7 @@ export async function PATCH(
     if (!isStaffOrAdmin(session.user.role)) {
       return NextResponse.json(
         {
-          error:
-            "You do not have permission to update branches.",
+          error: "You do not have permission to update branches.",
         },
         {
           status: 403,
@@ -146,12 +135,11 @@ export async function PATCH(
       );
     }
 
-    const existingBranch =
-      await prisma.branch.findUnique({
-        where: {
-          id,
-        },
-      });
+    const existingBranch = await prisma.branch.findUnique({
+      where: {
+        id,
+      },
+    });
 
     if (!existingBranch) {
       return NextResponse.json(
@@ -187,18 +175,14 @@ export async function PATCH(
       for (const issue of result.error.issues) {
         const field = issue.path[0];
 
-        if (
-          typeof field === "string" &&
-          !fieldErrors[field]
-        ) {
+        if (typeof field === "string" && !fieldErrors[field]) {
           fieldErrors[field] = issue.message;
         }
       }
 
       return NextResponse.json(
         {
-          error:
-            "Please correct the highlighted fields.",
+          error: "Please correct the highlighted fields.",
           fieldErrors,
         },
         {
@@ -232,24 +216,17 @@ export async function PATCH(
         name: branch.name,
         address: branch.address,
         city: branch.city,
-        queueTicketCount:
-          branch._count.queueTickets,
-        createdAt:
-          branch.createdAt.toISOString(),
-        updatedAt:
-          branch.updatedAt.toISOString(),
+        queueTicketCount: branch._count.queueTickets,
+        createdAt: branch.createdAt.toISOString(),
+        updatedAt: branch.updatedAt.toISOString(),
       },
     });
   } catch (error) {
-    console.error(
-      "PATCH /api/branches/[id] error:",
-      error,
-    );
+    console.error("PATCH /api/branches/[id] error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to update the branch. Please try again.",
+        error: "Unable to update the branch. Please try again.",
       },
       {
         status: 500,
@@ -261,10 +238,7 @@ export async function PATCH(
 // DELETE /api/branches/[id]
 // STAFF and ADMIN only.
 
-export async function DELETE(
-  _request: Request,
-  context: RouteContext,
-) {
+export async function DELETE(_request: Request, context: RouteContext) {
   try {
     const session = await auth();
 
@@ -282,8 +256,7 @@ export async function DELETE(
     if (!isStaffOrAdmin(session.user.role)) {
       return NextResponse.json(
         {
-          error:
-            "You do not have permission to delete branches.",
+          error: "You do not have permission to delete branches.",
         },
         {
           status: 403,
@@ -331,8 +304,7 @@ export async function DELETE(
     if (branch._count.queueTickets > 0) {
       return NextResponse.json(
         {
-          error:
-            "This branch cannot be deleted because it has queue tickets associated with it.",
+          error: "This branch cannot be deleted because it has queue tickets associated with it.",
         },
         {
           status: 409,
@@ -350,15 +322,11 @@ export async function DELETE(
       message: "Branch deleted successfully.",
     });
   } catch (error) {
-    console.error(
-      "DELETE /api/branches/[id] error:",
-      error,
-    );
+    console.error("DELETE /api/branches/[id] error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to delete the branch. Please try again.",
+        error: "Unable to delete the branch. Please try again.",
       },
       {
         status: 500,
