@@ -181,3 +181,64 @@ Do not reveal sensitive information such as whether an email address exists in t
 ## Expected Outcome
 
 After completing Issue 08, Intel-Q should provide a consistent user experience for validation, loading, empty, success, and error states. Users should always have a clear indication of what happened after performing an action and what they can do next when an operation fails.
+
+## Testing Requirements
+
+The following scenarios must be tested before Issue 08 is considered complete.
+
+### Form Validation
+
+* [ ] Login rejects an empty email.
+* [ ] Login rejects an empty password.
+* [ ] Login rejects an invalid email format.
+* [ ] Registration rejects missing required fields.
+* [ ] Registration rejects invalid email addresses.
+* [ ] Registration rejects passwords that do not meet requirements.
+* [ ] Registration rejects mismatched password confirmation.
+* [ ] Profile editing validates required fields.
+* [ ] Password changes validate the current password.
+* [ ] Password changes reject mismatched passwords.
+* [ ] Queue ticket forms reject missing or invalid data.
+* [ ] Branch forms reject missing or invalid data.
+
+### API and Error Handling
+
+* [ ] Failed API requests display a user-friendly error message.
+* [ ] Database errors do not expose technical details.
+* [ ] Unauthorized requests return an appropriate error.
+* [ ] Not-found requests are handled correctly.
+* [ ] Duplicate data is handled without crashing the application.
+* [ ] Users can retry appropriate failed operations.
+
+### Loading States
+
+* [ ] Login displays a loading state during authentication.
+* [ ] Registration displays a loading state during submission.
+* [ ] Profile updates display a loading state.
+* [ ] Password changes display a loading state.
+* [ ] Queue ticket creation displays a loading state.
+* [ ] Branch operations display a loading state.
+* [ ] Submit buttons are disabled while requests are processing.
+
+### Empty States
+
+* [ ] Empty queue ticket lists display an appropriate message.
+* [ ] Empty branch lists display an appropriate message.
+* [ ] Empty dashboard data displays an appropriate message where applicable.
+* [ ] Empty states provide an appropriate action where necessary.
+
+### Success Feedback
+
+* [ ] Successful profile updates display a confirmation message.
+* [ ] Successful password changes display a confirmation message.
+* [ ] Successful queue ticket creation displays a confirmation message.
+* [ ] Successful branch creation displays a confirmation message.
+* [ ] Successful branch updates display a confirmation message.
+* [ ] Successful branch deletion displays a confirmation message.
+
+### Build Verification
+
+* [ ] `npm run lint` completes successfully.
+* [ ] `npx tsc --noEmit` completes successfully.
+* [ ] `npx prisma generate` completes successfully.
+* [ ] `npm run build` completes successfully.

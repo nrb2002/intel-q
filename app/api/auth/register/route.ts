@@ -4,23 +4,19 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
 import { prisma } from "@/lib/db";
+import { registerSchema } from "@/lib/validations/register";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: unknown;
 
-    const { firstName, lastName, email, password } = body;
-
-    // Validate required fields
-    if (
-      typeof firstName !== "string" ||
-      typeof lastName !== "string" ||
-      typeof email !== "string" ||
-      typeof password !== "string"
-    ) {
+    // Safely parse request body
+    try {
+      body = await request.json();
+    } catch {
       return NextResponse.json(
         {
-          error: "All fields are required.",
+          error: "Invalid request data.",
         },
         {
           status: 400,
@@ -28,15 +24,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const cleanFirstName = firstName.trim();
-    const cleanLastName = lastName.trim();
-    const cleanEmail = email.trim().toLowerCase();
+    // Server-side Zod validation
+    const parsed = registerSchema.safeParse(body);
 
-    // Basic validation
-    if (!cleanFirstName || !cleanLastName || !cleanEmail || !password) {
+    if (!parsed.success) {
+      const fieldErrors =
+        parsed.error.flatten().fieldErrors;
+
       return NextResponse.json(
         {
-          error: "All fields are required.",
+          error: "Please correct the highlighted fields.",
+          fieldErrors,
         },
         {
           status: 400,
@@ -44,28 +42,26 @@ export async function POST(request: Request) {
       );
     }
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        {
-          error: "Password must be at least 8 characters.",
-        },
-        {
-          status: 400,
-        },
-      );
-    }
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+    } = parsed.data;
 
-    // Check whether the user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email: cleanEmail,
-      },
-    });
+    // Check whether the email is already registered
+    const existingUser =
+      await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
 
     if (existingUser) {
       return NextResponse.json(
         {
-          error: "An account with this email already exists.",
+          error:
+            "An account with this email already exists.",
         },
         {
           status: 409,
@@ -74,29 +70,32 @@ export async function POST(request: Request) {
     }
 
     // Hash password before storing it
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword =
+      await bcrypt.hash(password, 12);
 
     // Create user
-    const user = await prisma.user.create({
-      data: {
-        firstName: cleanFirstName,
-        lastName: cleanLastName,
-        email: cleanEmail,
-        password: hashedPassword,
-        role: "CUSTOMER",
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        role: true,
-      },
-    });
+    const user =
+      await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          role: "CUSTOMER",
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true,
+        },
+      });
 
     return NextResponse.json(
       {
-        message: "Account created successfully.",
+        message:
+          "Account created successfully.",
         user,
       },
       {
@@ -104,11 +103,15 @@ export async function POST(request: Request) {
       },
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error(
+      "POST /api/auth/register error:",
+      error,
+    );
 
     return NextResponse.json(
       {
-        error: "Unable to create account. Please try again.",
+        error:
+          "Unable to create your account. Please try again.",
       },
       {
         status: 500,
