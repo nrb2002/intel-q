@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { changePasswordSchema } from "@/lib/validations/password";
+import { changePasswordRequestSchema } from "@/lib/validations/password";
 
 export async function PATCH(request: Request) {
   try {
@@ -43,12 +43,10 @@ export async function PATCH(request: Request) {
     //
     // The API receives currentPassword and newPassword.
     // confirmPassword is a client-side concern.
-    const requestSchema = changePasswordSchema.pick({
-      currentPassword: true,
-      newPassword: true,
-    });
+    const result =
+  changePasswordRequestSchema.safeParse(body);
 
-    const result = requestSchema.safeParse(body);
+  
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};

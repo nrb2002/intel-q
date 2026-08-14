@@ -1,26 +1,36 @@
-import { object, string } from "zod";
+// lib/validations/password.ts
 
-export const changePasswordSchema = object({
-  currentPassword: string().min(
-    1,
-    "Current password is required."
-  ),
+import { z } from "zod";
 
-  newPassword: string()
-    .min(
-      8,
-      "New password must be at least 8 characters."
-    )
-    .max(
-      32,
-      "New password must be at most 32 characters."
-    ),
+/**
+ * Schema used by the client form.
+ *
+ * Includes confirmPassword and cross-field refinements.
+ */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, "Current password is required."),
 
-  confirmPassword: string().min(
-    1,
-    "Please confirm your new password."
-  ),
-})
+    newPassword: z
+      .string()
+      .min(
+        8,
+        "New password must be at least 8 characters."
+      )
+      .max(
+        32,
+        "New password must be at most 32 characters."
+      ),
+
+    confirmPassword: z
+      .string()
+      .min(
+        1,
+        "Please confirm your new password."
+      ),
+  })
   .refine(
     (data) =>
       data.newPassword === data.confirmPassword,
@@ -39,6 +49,35 @@ export const changePasswordSchema = object({
     }
   );
 
-export type ChangePasswordInput = ReturnType<
-  typeof changePasswordSchema.parse
+/**
+ * Schema used by the API.
+ *
+ * IMPORTANT:
+ * Do not use .pick() on changePasswordSchema
+ * because changePasswordSchema contains refinements.
+ */
+export const changePasswordRequestSchema =
+  z.object({
+    currentPassword: z
+      .string()
+      .min(1, "Current password is required."),
+
+    newPassword: z
+      .string()
+      .min(
+        8,
+        "New password must be at least 8 characters."
+      )
+      .max(
+        32,
+        "New password must be at most 32 characters."
+      ),
+  });
+
+export type ChangePasswordInput = z.infer<
+  typeof changePasswordSchema
+>;
+
+export type ChangePasswordRequest = z.infer<
+  typeof changePasswordRequestSchema
 >;
