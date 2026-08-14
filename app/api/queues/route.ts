@@ -5,22 +5,33 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { QueueStatus } from "@/generated/prisma";
+import { createTicketSchema } from "@/lib/validations/queue";
 
 // GET /api/queues
+//
 // Returns queue tickets for the authenticated user.
 //
-// Staff/Admin users can see all tickets.
-// Customers can only see their own tickets.
+// STAFF and ADMIN users can see all tickets.
+// CUSTOMER users can only see their own tickets.
 
 export async function GET() {
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        {
+          error: "Unauthorized.",
+        },
+        {
+          status: 401,
+        },
+      );
     }
 
-    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
+    const isStaff =
+      session.user.role === "STAFF" ||
+      session.user.role === "ADMIN";
 
     const tickets = await prisma.queueTicket.findMany({
       where: isStaff
@@ -28,6 +39,7 @@ export async function GET() {
         : {
             customerId: session.user.id,
           },
+
       include: {
         customer: {
           select: {
@@ -37,6 +49,7 @@ export async function GET() {
             email: true,
           },
         },
+
         branch: {
           select: {
             id: true,
@@ -46,6 +59,7 @@ export async function GET() {
           },
         },
       },
+
       orderBy: {
         createdAt: "desc",
       },
@@ -63,40 +77,82 @@ export async function GET() {
       completedAt: ticket.completedAt?.toISOString(),
     }));
 
-    return NextResponse.json(formattedTickets);
+    return NextResponse.json(formattedTickets, {
+      status: 200,
+    });
   } catch (error) {
     console.error("GET /api/queues error:", error);
 
-    return NextResponse.json({ error: "Failed to fetch queue tickets." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          "Unable to load queue tickets. Please try again.",
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }
 
 // POST /api/queues
+//
 // Creates a queue ticket for the authenticated customer.
 
 export async function POST(request: Request) {
   try {
     const session = await auth();
 
+    // Make sure the user is authenticated.
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await request.json();
-
-    const branchId = typeof body.branchId === "string" ? body.branchId.trim() : "";
-
-    const serviceType = typeof body.serviceType === "string" ? body.serviceType.trim() : "";
-
-    if (!branchId || !serviceType) {
       return NextResponse.json(
         {
-          error: "Branch and service type are required.",
+          error: "Unauthorized.",
         },
-        { status: 400 },
+        {
+          status: 401,
+        },
       );
     }
 
+    // Safely parse the request body.
+    let body: unknown;
+
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        {
+          error: "Invalid request data.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    // Validate the request using the shared Zod schema.
+    const parsed = createTicketSchema.safeParse(body);
+
+    if (!parsed.success) {
+      const fieldErrors =
+        parsed.error.flatten().fieldErrors;
+
+      return NextResponse.json(
+        {
+          error:
+            "Please correct the highlighted fields.",
+          fieldErrors,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const { branchId, serviceType } = parsed.data;
+
+    // Verify that the selected branch exists.
     const branch = await prisma.branch.findUnique({
       where: {
         id: branchId,
@@ -106,73 +162,109 @@ export async function POST(request: Request) {
     if (!branch) {
       return NextResponse.json(
         {
-          error: "Branch not found.",
+          error:
+            "The selected branch could not be found.",
+
+          fieldErrors: {
+            branchId: [
+              "Please select a valid branch.",
+            ],
+          },
         },
-        { status: 404 },
+        {
+          status: 404,
+        },
       );
     }
 
-    // Find the highest ticket number currently used
-    // by this branch and create the next number.
-    const latestTicket = await prisma.queueTicket.findFirst({
-      where: {
-        branchId,
-      },
-      orderBy: {
-        ticketNumber: "desc",
-      },
-      select: {
-        ticketNumber: true,
-      },
-    });
+    // Find the latest ticket number for this branch.
+    const latestTicket =
+      await prisma.queueTicket.findFirst({
+        where: {
+          branchId,
+        },
 
-    const ticketNumber = (latestTicket?.ticketNumber ?? 0) + 1;
+        orderBy: {
+          ticketNumber: "desc",
+        },
 
-    const ticket = await prisma.queueTicket.create({
-      data: {
-        ticketNumber,
-        customerId: session.user.id,
-        branchId,
-        serviceType,
-        status: QueueStatus.WAITING,
-      },
-      include: {
-        customer: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
+        select: {
+          ticketNumber: true,
+        },
+      });
+
+    // Generate the next ticket number.
+    const ticketNumber =
+      (latestTicket?.ticketNumber ?? 0) + 1;
+
+    // Create the queue ticket.
+    const ticket =
+      await prisma.queueTicket.create({
+        data: {
+          ticketNumber,
+          customerId: session.user.id,
+          branchId,
+          serviceType,
+          status: QueueStatus.WAITING,
+        },
+
+        include: {
+          customer: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+
+          branch: {
+            select: {
+              id: true,
+              name: true,
+              address: true,
+              city: true,
+            },
           },
         },
-        branch: {
-          select: {
-            id: true,
-            name: true,
-            address: true,
-            city: true,
-          },
-        },
-      },
-    });
+      });
 
+    // Return the newly created ticket.
     return NextResponse.json(
       {
-        id: ticket.id,
-        ticketNumber: ticket.ticketNumber,
-        customerName: `${ticket.customer.firstName} ${ticket.customer.lastName}`,
-        branchName: ticket.branch.name,
-        serviceType: ticket.serviceType,
-        status: ticket.status,
-        createdAt: ticket.createdAt.toISOString(),
-        calledAt: ticket.calledAt?.toISOString(),
-        completedAt: ticket.completedAt?.toISOString(),
+        message:
+          "Queue ticket created successfully.",
+
+        ticket: {
+          id: ticket.id,
+          ticketNumber: ticket.ticketNumber,
+          customerName: `${ticket.customer.firstName} ${ticket.customer.lastName}`,
+          branchName: ticket.branch.name,
+          serviceType: ticket.serviceType,
+          status: ticket.status,
+          createdAt:
+            ticket.createdAt.toISOString(),
+          calledAt:
+            ticket.calledAt?.toISOString(),
+          completedAt:
+            ticket.completedAt?.toISOString(),
+        },
       },
-      { status: 201 },
+      {
+        status: 201,
+      },
     );
   } catch (error) {
     console.error("POST /api/queues error:", error);
 
-    return NextResponse.json({ error: "Failed to create queue ticket." }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          "Unable to create your queue ticket. Please try again.",
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }
