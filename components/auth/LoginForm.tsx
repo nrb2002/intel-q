@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-import { signInSchema } from "@/lib/validations/signIn";
+import { loginSchema } from "@/lib/validations/login";
 
 type FieldErrors = {
   email?: string[];
@@ -60,7 +60,7 @@ export default function LoginForm() {
     setError("");
     setFieldErrors({});
 
-    const parsed = signInSchema.safeParse({
+    const parsed = loginSchema.safeParse({
       email: formData.email,
       password: formData.password,
     });

@@ -1,6 +1,8 @@
+// lib/validations/signIn.ts
+
 import { z } from "zod";
 
-export const signInSchema = z.object({
+export const loginSchema = z.object({
   email: z
     .string()
     .trim()
@@ -16,4 +18,4 @@ export const signInSchema = z.object({
     .min(1, "Password is required."),
 });
 
-export type SignInInput = z.infer<typeof signInSchema>;
+export type SignInInput = z.infer<typeof loginSchema>;

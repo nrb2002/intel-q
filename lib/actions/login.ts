@@ -2,7 +2,7 @@
 
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
-import { signInSchema } from "@/lib/validations/signIn";
+import { loginSchema } from "@/lib/validations/login";
 
 export type LoginState = {
   error?: string;
@@ -13,7 +13,7 @@ export async function loginUser(
   _prevState: LoginState,
   formData: FormData
 ): Promise<LoginState> {
-  const parsed = signInSchema.safeParse({
+  const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
