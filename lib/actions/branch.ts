@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { createBranchSchema } from "@/lib/validation/branch";
+import { createBranchSchema } from "@/lib/validations/branch";
 
 export type BranchState = {
   error?: string;

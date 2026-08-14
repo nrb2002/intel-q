@@ -1,3 +1,5 @@
+// app/dashboard/queue/page.tsx
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -26,9 +28,7 @@ export default function QueuePage() {
       try {
         data = await response.json();
       } catch {
-        setError(
-          "Unable to load your queue tickets. Please try again."
-        );
+        setError("Unable to load your queue tickets. Please try again.");
         return;
       }
 
@@ -41,46 +41,40 @@ export default function QueuePage() {
         ) {
           setError(data.error);
         } else {
-          setError(
-            "Unable to load your queue tickets. Please try again."
-          );
+          setError("Unable to load your queue tickets. Please try again.");
         }
 
         return;
       }
 
       if (!Array.isArray(data)) {
-        setError(
-          "Unable to load your queue tickets. Please try again."
-        );
+        setError("Unable to load your queue tickets. Please try again.");
         return;
       }
 
       setTickets(data as QueueTicket[]);
     } catch {
-      setError(
-        "Unable to connect to the server. Please try again."
-      );
+      setError("Unable to connect to the server. Please try again.");
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchTickets();
+    const timeoutId = window.setTimeout(() => {
+      fetchTickets();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [fetchTickets]);
 
-  const waitingTickets = tickets.filter(
-    (ticket) => ticket.status === "WAITING"
-  );
+  const waitingTickets = tickets.filter((ticket) => ticket.status === "WAITING");
 
-  const inServiceTickets = tickets.filter(
-    (ticket) => ticket.status === "IN_SERVICE"
-  );
+  const inServiceTickets = tickets.filter((ticket) => ticket.status === "IN_SERVICE");
 
-  const completedTickets = tickets.filter(
-    (ticket) => ticket.status === "COMPLETED"
-  );
+  const completedTickets = tickets.filter((ticket) => ticket.status === "COMPLETED");
 
   function handleQueueSuccess() {
     // Refresh the queue after successfully creating
@@ -92,20 +86,15 @@ export default function QueuePage() {
     <section className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#1E293B]">
-          Queue Management
-        </h1>
+        <h1 className="text-3xl font-bold text-[#1E293B]">Queue Management</h1>
 
         <p className="mt-2 text-[#64748B]">
-          Monitor customer tickets and manage the current
-          queue.
+          Monitor customer tickets and manage the current queue.
         </p>
       </div>
 
       {/* Join Queue */}
-      <JoinQueueForm
-        onSuccess={handleQueueSuccess}
-      />
+      <JoinQueueForm onSuccess={handleQueueSuccess} />
 
       {/* API Error */}
       {error && (
@@ -132,45 +121,27 @@ export default function QueuePage() {
       {!loading && !error && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-[#64748B]">
-              Waiting
-            </p>
+            <p className="text-sm font-medium text-[#64748B]">Waiting</p>
 
-            <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-              {waitingTickets.length}
-            </p>
+            <p className="mt-2 text-3xl font-bold text-[#1E293B]">{waitingTickets.length}</p>
 
-            <p className="mt-1 text-sm text-[#64748B]">
-              Customers waiting
-            </p>
+            <p className="mt-1 text-sm text-[#64748B]">Customers waiting</p>
           </div>
 
           <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-[#64748B]">
-              In Service
-            </p>
+            <p className="text-sm font-medium text-[#64748B]">In Service</p>
 
-            <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-              {inServiceTickets.length}
-            </p>
+            <p className="mt-2 text-3xl font-bold text-[#1E293B]">{inServiceTickets.length}</p>
 
-            <p className="mt-1 text-sm text-[#64748B]">
-              Currently being served
-            </p>
+            <p className="mt-1 text-sm text-[#64748B]">Currently being served</p>
           </div>
 
           <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-[#64748B]">
-              Completed
-            </p>
+            <p className="text-sm font-medium text-[#64748B]">Completed</p>
 
-            <p className="mt-2 text-3xl font-bold text-[#1E293B]">
-              {completedTickets.length}
-            </p>
+            <p className="mt-2 text-3xl font-bold text-[#1E293B]">{completedTickets.length}</p>
 
-            <p className="mt-1 text-sm text-[#64748B]">
-              Completed tickets
-            </p>
+            <p className="mt-1 text-sm text-[#64748B]">Completed tickets</p>
           </div>
         </div>
       )}
@@ -178,13 +149,10 @@ export default function QueuePage() {
       {/* Queue */}
       <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-[#1E293B]">
-            Current Queue
-          </h2>
+          <h2 className="text-xl font-semibold text-[#1E293B]">Current Queue</h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
-            View the current customer tickets and their
-            status.
+            View the current customer tickets and their status.
           </p>
         </div>
 
@@ -195,13 +163,10 @@ export default function QueuePage() {
             aria-live="polite"
             className="rounded-lg border border-dashed border-[#CBD5E1] bg-[#F8FAFC] px-6 py-10 text-center"
           >
-            <p className="text-sm font-medium text-[#475569]">
-              Loading queue tickets...
-            </p>
+            <p className="text-sm font-medium text-[#475569]">Loading queue tickets...</p>
 
             <p className="mt-1 text-sm text-[#64748B]">
-              Please wait while we retrieve the latest
-              queue information.
+              Please wait while we retrieve the latest queue information.
             </p>
           </div>
         )}

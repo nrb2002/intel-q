@@ -38,6 +38,11 @@ export default function RegisterForm() {
     useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
 
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -304,20 +309,93 @@ export default function RegisterForm() {
               Password
             </label>
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              autoComplete="new-password"
-              aria-describedby="password-help password-error"
-              aria-invalid={!!fieldErrors.password}
-              disabled={loading}
-              className={getInputClassName(
-                "password"
-              )}
-            />
+            {/* Input + Eye Button */}
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="new-password"
+                aria-describedby="password-help password-error"
+                aria-invalid={!!fieldErrors.password}
+                disabled={loading}
+                className={`${getInputClassName(
+                  "password"
+                )} pr-12`}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowPassword((current) => !current)
+                }
+                disabled={loading}
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showPassword ? (
+                  // Eye off
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 3l18 18"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.584 10.587a2 2 0 002.829 2.829"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.88 5.09A10.94 10.94 0 0112 4.5c5.5 0 9.5 5.5 9.5 7.5a9.9 9.9 0 01-2.05 3.33"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.61 6.61C4.35 8.1 2.5 10.63 2.5 12c0 2 4 7.5 9.5 7.5a10.9 10.9 0 004.1-.8"
+                    />
+                  </svg>
+                ) : (
+                  // Eye
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.5 12s3.5-7.5 9.5-7.5 9.5 7.5 9.5 7.5-3.5 7.5-9.5 7.5S2.5 12 2.5 12z"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
 
             <p
               id="password-help"
@@ -349,22 +427,99 @@ export default function RegisterForm() {
               Confirm password
             </label>
 
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              autoComplete="new-password"
-              aria-describedby="confirmPassword-error"
-              aria-invalid={
-                !!fieldErrors.confirmPassword
-              }
-              disabled={loading}
-              className={getInputClassName(
-                "confirmPassword"
-              )}
-            />
+            {/* Input + Eye Button */}
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                autoComplete="new-password"
+                aria-describedby="confirmPassword-error"
+                aria-invalid={
+                  !!fieldErrors.confirmPassword
+                }
+                disabled={loading}
+                className={`${getInputClassName(
+                  "confirmPassword"
+                )} pr-12`}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    (current) => !current
+                  )
+                }
+                disabled={loading}
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password"
+                    : "Show confirm password"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showConfirmPassword ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 3l18 18"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.584 10.587a2 2 0 002.829 2.829"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.88 5.09A10.94 10.94 0 0112 4.5c5.5 0 9.5 5.5 9.5 7.5a9.9 9.9 0 01-2.05 3.33"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.61 6.61C4.35 8.1 2.5 10.63 2.5 12c0 2 4 7.5 9.5 7.5a10.9 10.9 0 004.1-.8"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.5 12s3.5-7.5 9.5-7.5 9.5 7.5 9.5 7.5-3.5 7.5-9.5 7.5S2.5 12 2.5 12z"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
 
             <div
               id="confirmPassword-error"

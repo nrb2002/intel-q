@@ -17,9 +17,7 @@ export default function GlobalError({
   return (
     <div className="mx-auto max-w-md py-24 text-center">
       <h2 className="text-xl font-semibold text-[#1E293B]">Something went wrong</h2>
-      <p className="mt-2 text-[#64748B]">
-        We ran into an unexpected problem. Please try again.
-      </p>
+      <p className="mt-2 text-[#64748B]">We ran into an unexpected problem. Please try again.</p>
       <div className="mt-6 flex justify-center gap-4">
         <button
           onClick={reset}

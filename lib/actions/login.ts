@@ -2,7 +2,7 @@
 
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
-import { signInSchema } from "@/lib/validation/signIn";
+import { signInSchema } from "@/lib/validations/signIn";
 
 export type LoginState = {
   error?: string;

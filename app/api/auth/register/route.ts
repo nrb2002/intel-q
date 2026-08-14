@@ -28,8 +28,7 @@ export async function POST(request: Request) {
     const parsed = registerSchema.safeParse(body);
 
     if (!parsed.success) {
-      const fieldErrors =
-        parsed.error.flatten().fieldErrors;
+      const fieldErrors = parsed.error.flatten().fieldErrors;
 
       return NextResponse.json(
         {
@@ -42,26 +41,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-    } = parsed.data;
+    const { firstName, lastName, email, password } = parsed.data;
 
     // Check whether the email is already registered
-    const existingUser =
-      await prisma.user.findUnique({
-        where: {
-          email,
-        },
-      });
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
     if (existingUser) {
       return NextResponse.json(
         {
-          error:
-            "An account with this email already exists.",
+          error: "An account with this email already exists.",
         },
         {
           status: 409,
@@ -70,32 +62,29 @@ export async function POST(request: Request) {
     }
 
     // Hash password before storing it
-    const hashedPassword =
-      await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create user
-    const user =
-      await prisma.user.create({
-        data: {
-          firstName,
-          lastName,
-          email,
-          password: hashedPassword,
-          role: "CUSTOMER",
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          role: true,
-        },
-      });
+    const user = await prisma.user.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        role: "CUSTOMER",
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        role: true,
+      },
+    });
 
     return NextResponse.json(
       {
-        message:
-          "Account created successfully.",
+        message: "Account created successfully.",
         user,
       },
       {
@@ -103,15 +92,11 @@ export async function POST(request: Request) {
       },
     );
   } catch (error) {
-    console.error(
-      "POST /api/auth/register error:",
-      error,
-    );
+    console.error("POST /api/auth/register error:", error);
 
     return NextResponse.json(
       {
-        error:
-          "Unable to create your account. Please try again.",
+        error: "Unable to create your account. Please try again.",
       },
       {
         status: 500,

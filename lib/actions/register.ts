@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { PasswordHasher } from "@/util";
-import { registerSchema } from "@/lib/validation/register";
+import { registerSchema } from "@/lib/validations/register";
 
 export type RegisterState = {
   error?: string;

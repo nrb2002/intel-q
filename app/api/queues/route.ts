@@ -29,9 +29,7 @@ export async function GET() {
       );
     }
 
-    const isStaff =
-      session.user.role === "STAFF" ||
-      session.user.role === "ADMIN";
+    const isStaff = session.user.role === "STAFF" || session.user.role === "ADMIN";
 
     const tickets = await prisma.queueTicket.findMany({
       where: isStaff
@@ -85,8 +83,7 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        error:
-          "Unable to load queue tickets. Please try again.",
+        error: "Unable to load queue tickets. Please try again.",
       },
       {
         status: 500,
@@ -135,13 +132,11 @@ export async function POST(request: Request) {
     const parsed = createTicketSchema.safeParse(body);
 
     if (!parsed.success) {
-      const fieldErrors =
-        parsed.error.flatten().fieldErrors;
+      const fieldErrors = parsed.error.flatten().fieldErrors;
 
       return NextResponse.json(
         {
-          error:
-            "Please correct the highlighted fields.",
+          error: "Please correct the highlighted fields.",
           fieldErrors,
         },
         {
@@ -162,13 +157,10 @@ export async function POST(request: Request) {
     if (!branch) {
       return NextResponse.json(
         {
-          error:
-            "The selected branch could not be found.",
+          error: "The selected branch could not be found.",
 
           fieldErrors: {
-            branchId: [
-              "Please select a valid branch.",
-            ],
+            branchId: ["Please select a valid branch."],
           },
         },
         {
@@ -178,62 +170,58 @@ export async function POST(request: Request) {
     }
 
     // Find the latest ticket number for this branch.
-    const latestTicket =
-      await prisma.queueTicket.findFirst({
-        where: {
-          branchId,
-        },
+    const latestTicket = await prisma.queueTicket.findFirst({
+      where: {
+        branchId,
+      },
 
-        orderBy: {
-          ticketNumber: "desc",
-        },
+      orderBy: {
+        ticketNumber: "desc",
+      },
 
-        select: {
-          ticketNumber: true,
-        },
-      });
+      select: {
+        ticketNumber: true,
+      },
+    });
 
     // Generate the next ticket number.
-    const ticketNumber =
-      (latestTicket?.ticketNumber ?? 0) + 1;
+    const ticketNumber = (latestTicket?.ticketNumber ?? 0) + 1;
 
     // Create the queue ticket.
-    const ticket =
-      await prisma.queueTicket.create({
-        data: {
-          ticketNumber,
-          customerId: session.user.id,
-          branchId,
-          serviceType,
-          status: QueueStatus.WAITING,
-        },
+    const ticket = await prisma.queueTicket.create({
+      data: {
+        ticketNumber,
+        customerId: session.user.id,
+        branchId,
+        serviceType,
+        status: QueueStatus.WAITING,
+      },
 
-        include: {
-          customer: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
-          },
-
-          branch: {
-            select: {
-              id: true,
-              name: true,
-              address: true,
-              city: true,
-            },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
           },
         },
-      });
+
+        branch: {
+          select: {
+            id: true,
+            name: true,
+            address: true,
+            city: true,
+          },
+        },
+      },
+    });
 
     // Return the newly created ticket.
     return NextResponse.json(
       {
-        message:
-          "Queue ticket created successfully.",
+        message: "Queue ticket created successfully.",
 
         ticket: {
           id: ticket.id,
@@ -242,12 +230,9 @@ export async function POST(request: Request) {
           branchName: ticket.branch.name,
           serviceType: ticket.serviceType,
           status: ticket.status,
-          createdAt:
-            ticket.createdAt.toISOString(),
-          calledAt:
-            ticket.calledAt?.toISOString(),
-          completedAt:
-            ticket.completedAt?.toISOString(),
+          createdAt: ticket.createdAt.toISOString(),
+          calledAt: ticket.calledAt?.toISOString(),
+          completedAt: ticket.completedAt?.toISOString(),
         },
       },
       {
@@ -259,8 +244,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          "Unable to create your queue ticket. Please try again.",
+        error: "Unable to create your queue ticket. Please try again.",
       },
       {
         status: 500,

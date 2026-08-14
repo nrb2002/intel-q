@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PasswordHasher } from "@/util";
-import { changePasswordSchema } from "@/lib/validation/password";
+import { changePasswordSchema } from "@/lib/validations/password";
 
 export type PasswordState = {
   error?: string;

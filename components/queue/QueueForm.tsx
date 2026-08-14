@@ -3,6 +3,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+
 import { createTicketSchema } from "@/lib/validations/queue";
 
 type Branch = {
@@ -24,8 +25,13 @@ type QueueTicket = {
   completedAt?: string;
 };
 
+type FieldErrors = {
+  branchId?: string[];
+  serviceType?: string[];
+};
+
 interface JoinQueueFormProps {
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 const serviceTypes = [
@@ -42,16 +48,20 @@ export function JoinQueueForm({
   const [branchId, setBranchId] = useState("");
   const [serviceType, setServiceType] = useState("");
 
-  const [loadingBranches, setLoadingBranches] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingBranches, setLoadingBranches] =
+    useState(true);
+
+  const [submitting, setSubmitting] =
+    useState(false);
 
   const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<
-    Record<string, string[]>
-  >({});
+
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const [success, setSuccess] = useState("");
-  const [ticket, setTicket] = useState<QueueTicket | null>(null);
+
+  const [ticket, setTicket] =
+    useState<QueueTicket | null>(null);
 
   useEffect(() => {
     async function loadBranches() {
@@ -59,7 +69,13 @@ export function JoinQueueForm({
         setLoadingBranches(true);
         setError("");
 
-        const response = await fetch("/api/branches");
+        const response = await fetch(
+          "/api/branches",
+          {
+            method: "GET",
+            cache: "no-store",
+          }
+        );
 
         let data: unknown;
 
@@ -98,7 +114,10 @@ export function JoinQueueForm({
 
         setBranches(data as Branch[]);
       } catch (error) {
-        console.error("Failed to load branches:", error);
+        console.error(
+          "Failed to load branches:",
+          error
+        );
 
         setError(
           "Unable to connect to the server. Please try again."
@@ -116,7 +135,7 @@ export function JoinQueueForm({
 
     setFieldErrors((previous) => ({
       ...previous,
-      branchId: [],
+      branchId: undefined,
     }));
 
     setError("");
@@ -128,7 +147,7 @@ export function JoinQueueForm({
 
     setFieldErrors((previous) => ({
       ...previous,
-      serviceType: [],
+      serviceType: undefined,
     }));
 
     setError("");
@@ -152,7 +171,8 @@ export function JoinQueueForm({
 
     if (!parsed.success) {
       setFieldErrors(
-        parsed.error.flatten().fieldErrors as Record<
+        parsed.error.flatten()
+          .fieldErrors as Record<
           string,
           string[]
         >
@@ -168,13 +188,16 @@ export function JoinQueueForm({
     try {
       setSubmitting(true);
 
-      const response = await fetch("/api/queues", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(parsed.data),
-      });
+      const response = await fetch(
+        "/api/queues",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(parsed.data),
+        }
+      );
 
       let data: unknown;
 
@@ -182,8 +205,9 @@ export function JoinQueueForm({
         data = await response.json();
       } catch {
         setError(
-          "Unable to create your ticket. Please try again."
+          "The server returned an invalid response. Please try again."
         );
+
         return;
       }
 
@@ -196,7 +220,10 @@ export function JoinQueueForm({
           data.fieldErrors !== null
         ) {
           setFieldErrors(
-            data.fieldErrors as Record<string, string[]>
+            data.fieldErrors as Record<
+              string,
+              string[]
+            >
           );
         }
 
@@ -216,14 +243,24 @@ export function JoinQueueForm({
         return;
       }
 
-      const createdTicket =
-        typeof data === "object" &&
-        data !== null &&
-        "ticket" in data
-          ? data.ticket
-          : data;
+      if (
+        typeof data !== "object" ||
+        data === null ||
+        !("ticket" in data) ||
+        typeof data.ticket !== "object" ||
+        data.ticket === null
+      ) {
+        setError(
+          "The server returned an invalid ticket response. Please try again."
+        );
 
-      setTicket(createdTicket as QueueTicket);
+        return;
+      }
+
+      const createdTicket =
+        data.ticket as QueueTicket;
+
+      setTicket(createdTicket);
 
       setSuccess(
         "Your queue ticket has been created successfully."
@@ -233,8 +270,8 @@ export function JoinQueueForm({
       setServiceType("");
       setFieldErrors({});
 
-      // Tell the queue page to refresh its ticket list.
-      onSuccess?.();
+      // Refresh the queue list on the parent page.
+      onSuccess();
     } catch (error) {
       console.error(
         "Queue ticket request failed:",
@@ -252,8 +289,19 @@ export function JoinQueueForm({
   const inputClassName =
     "w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 text-[#1E293B] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 disabled:cursor-not-allowed disabled:bg-[#F1F5F9]";
 
+  function getInputClassName(
+    field: keyof FieldErrors
+  ) {
+    if (fieldErrors[field]?.length) {
+      return `${inputClassName} border-red-500 focus:border-red-500 focus:ring-red-500/20`;
+    }
+
+    return inputClassName;
+  }
+
   return (
     <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
+      {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-[#1E293B]">
           Join the Queue
@@ -265,6 +313,7 @@ export function JoinQueueForm({
         </p>
       </div>
 
+      {/* General Error */}
       {error && (
         <div
           role="alert"
@@ -275,6 +324,7 @@ export function JoinQueueForm({
         </div>
       )}
 
+      {/* Success */}
       {success && (
         <div
           role="status"
@@ -285,9 +335,11 @@ export function JoinQueueForm({
         </div>
       )}
 
+      {/* Created Ticket */}
       {ticket && (
         <div
           role="status"
+          aria-live="polite"
           className="mb-6 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] p-5"
         >
           <p className="text-sm font-medium text-[#64748B]">
@@ -299,7 +351,8 @@ export function JoinQueueForm({
           </p>
 
           <p className="mt-2 text-sm text-[#64748B]">
-            {ticket.branchName} · {ticket.serviceType}
+            {ticket.branchName} ·{" "}
+            {ticket.serviceType}
           </p>
 
           <p className="mt-1 text-sm font-medium text-[#64748B]">
@@ -308,6 +361,7 @@ export function JoinQueueForm({
         </div>
       )}
 
+      {/* Branch Loading */}
       {loadingBranches ? (
         <div
           role="status"
@@ -317,6 +371,7 @@ export function JoinQueueForm({
           Loading available branches...
         </div>
       ) : branches.length === 0 ? (
+        /* Empty Branch State */
         <div
           role="status"
           className="rounded-lg border border-dashed border-[#CBD5E1] bg-[#F8FAFC] p-6 text-center"
@@ -336,6 +391,7 @@ export function JoinQueueForm({
           noValidate
           className="space-y-5"
         >
+          {/* Branch */}
           <div>
             <label
               htmlFor="branchId"
@@ -349,14 +405,18 @@ export function JoinQueueForm({
               name="branchId"
               value={branchId}
               onChange={(event) =>
-                handleBranchChange(event.target.value)
+                handleBranchChange(
+                  event.target.value
+                )
               }
               disabled={submitting}
               aria-invalid={
                 !!fieldErrors.branchId?.length
               }
               aria-describedby="branchId-error"
-              className={inputClassName}
+              className={getInputClassName(
+                "branchId"
+              )}
             >
               <option value="">
                 Select a branch
@@ -375,14 +435,17 @@ export function JoinQueueForm({
             <div
               id="branchId-error"
               aria-live="polite"
-              className="mt-1 text-sm text-red-600"
+              className="mt-1 min-h-5 text-sm text-red-600"
             >
-              {fieldErrors.branchId?.map((message) => (
-                <p key={message}>{message}</p>
-              ))}
+              {fieldErrors.branchId?.map(
+                (message) => (
+                  <p key={message}>{message}</p>
+                )
+              )}
             </div>
           </div>
 
+          {/* Service */}
           <div>
             <label
               htmlFor="serviceType"
@@ -396,14 +459,18 @@ export function JoinQueueForm({
               name="serviceType"
               value={serviceType}
               onChange={(event) =>
-                handleServiceChange(event.target.value)
+                handleServiceChange(
+                  event.target.value
+                )
               }
               disabled={submitting}
               aria-invalid={
                 !!fieldErrors.serviceType?.length
               }
               aria-describedby="serviceType-error"
-              className={inputClassName}
+              className={getInputClassName(
+                "serviceType"
+              )}
             >
               <option value="">
                 Select a service
@@ -422,17 +489,21 @@ export function JoinQueueForm({
             <div
               id="serviceType-error"
               aria-live="polite"
-              className="mt-1 text-sm text-red-600"
+              className="mt-1 min-h-5 text-sm text-red-600"
             >
-              {fieldErrors.serviceType?.map((message) => (
-                <p key={message}>{message}</p>
-              ))}
+              {fieldErrors.serviceType?.map(
+                (message) => (
+                  <p key={message}>{message}</p>
+                )
+              )}
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={submitting}
+            aria-busy={submitting}
             className="w-full rounded-lg bg-[#1E293B] px-5 py-3 font-medium text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting

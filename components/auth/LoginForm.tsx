@@ -1,3 +1,5 @@
+// components/auth/LoginForm.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -24,6 +26,9 @@ export default function LoginForm() {
   const [fieldErrors, setFieldErrors] =
     useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+
+  // Controls whether the password is visible.
+  const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>
@@ -183,19 +188,98 @@ export default function LoginForm() {
               Password
             </label>
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              aria-describedby="password-error"
-              aria-invalid={!!fieldErrors.password}
-              disabled={loading}
-              className={getInputClassName("password")}
-            />
+            {/* Password input + eye button */}
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                aria-describedby="password-error"
+                aria-invalid={!!fieldErrors.password}
+                disabled={loading}
+                className={`${getInputClassName(
+                  "password"
+                )} pr-12`}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowPassword(
+                    (current) => !current
+                  )
+                }
+                disabled={loading}
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-2 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showPassword ? (
+                  /* Eye-off icon */
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 3l18 18"
+                    />
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.584 10.587a2 2 0 002.829 2.829"
+                    />
+
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.88 4.24A9.77 9.77 0 0112 4c5 0 8.27 4.11 9 8-.25 1.31-.79 2.54-1.53 3.6M6.61 6.61C4.85 7.83 3.7 9.63 3 12c.73 3.89 4 8 9 8 1.61 0 3.08-.41 4.38-1.11"
+                    />
+                  </svg>
+                ) : (
+                  /* Eye icon */
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12s3.75-7.5 9.75-7.5 9.75 7.5 9.75 7.5-3.75 7.5-9.75 7.5S2.25 12 2.25 12z"
+                    />
+
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
 
             <div
               id="password-error"

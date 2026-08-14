@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { updateProfileSchema } from "@/lib/validation/profile";
+import { updateProfileSchema } from "@/lib/validations/profile";
 
 export type ProfileState = {
   error?: string;

@@ -11,10 +11,7 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -33,10 +30,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found." }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -55,10 +49,9 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        error:
-          "Unable to load your profile. Please try again.",
+        error: "Unable to load your profile. Please try again.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -69,10 +62,7 @@ export async function PATCH(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
     // Read request body
@@ -81,10 +71,7 @@ export async function PATCH(request: Request) {
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: "Invalid request data." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid request data." }, { status: 400 });
     }
 
     // Validate request
@@ -96,10 +83,7 @@ export async function PATCH(request: Request) {
       for (const issue of result.error.issues) {
         const field = issue.path[0];
 
-        if (
-          typeof field === "string" &&
-          !fieldErrors[field]
-        ) {
+        if (typeof field === "string" && !fieldErrors[field]) {
           fieldErrors[field] = issue.message;
         }
       }
@@ -109,7 +93,7 @@ export async function PATCH(request: Request) {
           error: "Please correct the highlighted fields.",
           fieldErrors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -153,10 +137,9 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          "Unable to update your profile. Please try again.",
+        error: "Unable to update your profile. Please try again.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

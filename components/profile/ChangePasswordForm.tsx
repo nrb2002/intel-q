@@ -37,6 +37,16 @@ export function ChangePasswordForm({
 
   const [loading, setLoading] = useState(false);
 
+  // Password visibility states
+  const [showCurrentPassword, setShowCurrentPassword] =
+    useState(false);
+
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   function clearFieldError(
     field: keyof FieldErrors
   ) {
@@ -155,6 +165,11 @@ export function ChangePasswordForm({
       setConfirmPassword("");
       setFieldErrors({});
 
+      // Reset visibility states
+      setShowCurrentPassword(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
+
       onSuccess();
     } catch {
       onError(
@@ -164,6 +179,9 @@ export function ChangePasswordForm({
       setLoading(false);
     }
   }
+
+  const inputClassName =
+    "w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 pr-12 text-sm text-[#1E293B] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 disabled:cursor-not-allowed disabled:bg-[#F8FAFC]";
 
   return (
     <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-sm">
@@ -193,23 +211,51 @@ export function ChangePasswordForm({
               Current Password
             </label>
 
-            <input
-              id="currentPassword"
-              name="currentPassword"
-              type="password"
-              value={currentPassword}
-              onChange={(event) => {
-                setCurrentPassword(event.target.value);
-                clearFieldError("currentPassword");
-              }}
-              autoComplete="current-password"
-              aria-describedby="currentPassword-error"
-              aria-invalid={
-                !!fieldErrors.currentPassword
-              }
-              disabled={loading}
-              className="w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 text-sm text-[#1E293B] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 disabled:cursor-not-allowed disabled:bg-[#F8FAFC]"
-            />
+            <div className="relative">
+              <input
+                id="currentPassword"
+                name="currentPassword"
+                type={
+                  showCurrentPassword
+                    ? "text"
+                    : "password"
+                }
+                value={currentPassword}
+                onChange={(event) => {
+                  setCurrentPassword(event.target.value);
+                  clearFieldError("currentPassword");
+                }}
+                autoComplete="current-password"
+                aria-describedby="currentPassword-error"
+                aria-invalid={
+                  !!fieldErrors.currentPassword
+                }
+                disabled={loading}
+                className={inputClassName}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowCurrentPassword(
+                    (current) => !current
+                  )
+                }
+                disabled={loading}
+                aria-label={
+                  showCurrentPassword
+                    ? "Hide current password"
+                    : "Show current password"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showCurrentPassword ? (
+                  <EyeOffIcon />
+                ) : (
+                  <EyeIcon />
+                )}
+              </button>
+            </div>
 
             <div
               id="currentPassword-error"
@@ -231,21 +277,51 @@ export function ChangePasswordForm({
               New Password
             </label>
 
-            <input
-              id="newPassword"
-              name="newPassword"
-              type="password"
-              value={newPassword}
-              onChange={(event) => {
-                setNewPassword(event.target.value);
-                clearFieldError("newPassword");
-              }}
-              autoComplete="new-password"
-              aria-describedby="newPassword-help newPassword-error"
-              aria-invalid={!!fieldErrors.newPassword}
-              disabled={loading}
-              className="w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 text-sm text-[#1E293B] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 disabled:cursor-not-allowed disabled:bg-[#F8FAFC]"
-            />
+            <div className="relative">
+              <input
+                id="newPassword"
+                name="newPassword"
+                type={
+                  showNewPassword
+                    ? "text"
+                    : "password"
+                }
+                value={newPassword}
+                onChange={(event) => {
+                  setNewPassword(event.target.value);
+                  clearFieldError("newPassword");
+                }}
+                autoComplete="new-password"
+                aria-describedby="newPassword-help newPassword-error"
+                aria-invalid={
+                  !!fieldErrors.newPassword
+                }
+                disabled={loading}
+                className={inputClassName}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowNewPassword(
+                    (current) => !current
+                  )
+                }
+                disabled={loading}
+                aria-label={
+                  showNewPassword
+                    ? "Hide new password"
+                    : "Show new password"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showNewPassword ? (
+                  <EyeOffIcon />
+                ) : (
+                  <EyeIcon />
+                )}
+              </button>
+            </div>
 
             <p
               id="newPassword-help"
@@ -275,23 +351,51 @@ export function ChangePasswordForm({
               Confirm New Password
             </label>
 
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => {
-                setConfirmPassword(event.target.value);
-                clearFieldError("confirmPassword");
-              }}
-              autoComplete="new-password"
-              aria-describedby="confirmPassword-error"
-              aria-invalid={
-                !!fieldErrors.confirmPassword
-              }
-              disabled={loading}
-              className="w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-3 text-sm text-[#1E293B] outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 disabled:cursor-not-allowed disabled:bg-[#F8FAFC]"
-            />
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                value={confirmPassword}
+                onChange={(event) => {
+                  setConfirmPassword(event.target.value);
+                  clearFieldError("confirmPassword");
+                }}
+                autoComplete="new-password"
+                aria-describedby="confirmPassword-error"
+                aria-invalid={
+                  !!fieldErrors.confirmPassword
+                }
+                disabled={loading}
+                className={inputClassName}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    (current) => !current
+                  )
+                }
+                disabled={loading}
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password"
+                    : "Show confirm password"
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {showConfirmPassword ? (
+                  <EyeOffIcon />
+                ) : (
+                  <EyeIcon />
+                )}
+              </button>
+            </div>
 
             <div
               id="confirmPassword-error"
@@ -329,5 +433,71 @@ export function ChangePasswordForm({
         </form>
       </div>
     </div>
+  );
+}
+
+/* Eye Icon */
+function EyeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.5 12s3.5-7.5 9.5-7.5 9.5 7.5 9.5 7.5-3.5 7.5-9.5 7.5S2.5 12 2.5 12z"
+      />
+
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+  );
+}
+
+/* Eye Off Icon */
+function EyeOffIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 3l18 18"
+      />
+
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10.584 10.587a2 2 0 002.829 2.829"
+      />
+
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.88 5.09A10.94 10.94 0 0112 4.5c5.5 0 9.5 5.5 9.5 7.5a9.9 9.9 0 01-2.05 3.33"
+      />
+
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.61 6.61C4.35 8.1 2.5 10.63 2.5 12c0 2 4 7.5 9.5 7.5a10.9 10.9 0 004.1-.8"
+      />
+    </svg>
   );
 }
