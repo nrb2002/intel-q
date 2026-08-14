@@ -1,23 +1,12 @@
-// components/branch/BranchForm.tsx
+// components/branch/CreateBranchForm.tsx
 
 "use client";
 
-import {
-  FormEvent,
-  useState,
-} from "react";
+import { FormEvent, useState } from "react";
 
 import { createBranchSchema } from "@/lib/validations/branch";
 
-export interface BranchFormData {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-}
-
-interface BranchFormProps {
-  branch: BranchFormData;
+interface CreateBranchFormProps {
   onSuccess: () => void;
   onError: (message: string) => void;
   onCancel: () => void;
@@ -29,32 +18,39 @@ type FieldErrors = {
   city?: string;
 };
 
-export function BranchForm({
-  branch,
+type ApiResponse = {
+  message?: string;
+  error?: string;
+  fieldErrors?: Record<string, string[]>;
+};
+
+export function CreateBranchForm({
   onSuccess,
   onError,
   onCancel,
-}: BranchFormProps) {
-  const [name, setName] = useState(branch.name);
-  const [address, setAddress] = useState(branch.address);
-  const [city, setCity] = useState(branch.city);
+}: CreateBranchFormProps) {
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
 
   const [fieldErrors, setFieldErrors] =
     useState<FieldErrors>({});
 
   const [loading, setLoading] = useState(false);
 
-  function clearFieldError(
-    field: keyof FieldErrors,
-  ) {
-    if (!fieldErrors[field]) {
-      return;
-    }
+  function clearFieldError(field: keyof FieldErrors) {
+    setFieldErrors((current) => {
+      if (!current[field]) {
+        return current;
+      }
 
-    setFieldErrors((current) => ({
-      ...current,
-      [field]: undefined,
-    }));
+      return {
+        ...current,
+        [field]: undefined,
+      };
+    });
+
+    onError("");
   }
 
   async function handleSubmit(
@@ -65,16 +61,17 @@ export function BranchForm({
     onError("");
     setFieldErrors({});
 
-    const result = createBranchSchema.safeParse({
+    // Client-side validation.
+    const parsed = createBranchSchema.safeParse({
       name,
       address,
       city,
     });
 
-    if (!result.success) {
+    if (!parsed.success) {
       const errors: FieldErrors = {};
 
-      for (const issue of result.error.issues) {
+      for (const issue of parsed.error.issues) {
         const field = issue.path[0];
 
         if (
@@ -95,22 +92,17 @@ export function BranchForm({
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `/api/branches/${branch.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result.data),
+      const response = await fetch("/api/branches", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(parsed.data),
+      });
 
-      let data: {
-        error?: string;
-        fieldErrors?: FieldErrors;
-      };
+      let data: ApiResponse;
 
+      // Safely parse the API response.
       try {
         data = await response.json();
       } catch {
@@ -120,9 +112,27 @@ export function BranchForm({
         return;
       }
 
+      // Handle API errors.
       if (!response.ok) {
         if (data.fieldErrors) {
-          setFieldErrors(data.fieldErrors);
+          const serverErrors: FieldErrors = {};
+
+          if (data.fieldErrors.name?.[0]) {
+            serverErrors.name =
+              data.fieldErrors.name[0];
+          }
+
+          if (data.fieldErrors.address?.[0]) {
+            serverErrors.address =
+              data.fieldErrors.address[0];
+          }
+
+          if (data.fieldErrors.city?.[0]) {
+            serverErrors.city =
+              data.fieldErrors.city[0];
+          }
+
+          setFieldErrors(serverErrors);
         }
 
         if (response.status === 401) {
@@ -131,21 +141,28 @@ export function BranchForm({
           );
         } else if (response.status === 403) {
           onError(
-            "You do not have permission to update this branch.",
+            "You do not have permission to create a branch.",
           );
-        } else if (response.status === 404) {
+        } else if (response.status === 409) {
           onError(
-            "This branch could not be found. Please refresh the page and try again.",
+            data.error ||
+              "A branch with these details already exists.",
           );
         } else {
           onError(
             data.error ||
-              "Unable to update the branch. Please try again.",
+              "Unable to create the branch. Please try again.",
           );
         }
 
         return;
       }
+
+      // Clear the form after successful creation.
+      setName("");
+      setAddress("");
+      setCity("");
+      setFieldErrors({});
 
       onSuccess();
     } catch {
@@ -175,11 +192,11 @@ export function BranchForm({
       <div className="max-w-xl">
         <div>
           <h2 className="text-lg font-semibold text-[#1E293B]">
-            Edit Branch
+            Add Branch
           </h2>
 
           <p className="mt-1 text-sm text-[#64748B]">
-            Update the branch information below.
+            Add a new Intel-Q branch location.
           </p>
         </div>
 
@@ -191,14 +208,14 @@ export function BranchForm({
           {/* Branch Name */}
           <div>
             <label
-              htmlFor="edit-branch-name"
+              htmlFor="branch-name"
               className="mb-2 block text-sm font-medium text-[#1E293B]"
             >
               Branch name
             </label>
 
             <input
-              id="edit-branch-name"
+              id="branch-name"
               name="name"
               type="text"
               value={name}
@@ -206,14 +223,15 @@ export function BranchForm({
                 setName(event.target.value);
                 clearFieldError("name");
               }}
-              aria-describedby="edit-branch-name-error"
+              autoComplete="organization"
+              aria-describedby="branch-name-error"
               aria-invalid={!!fieldErrors.name}
               disabled={loading}
               className={getInputClassName("name")}
             />
 
             <div
-              id="edit-branch-name-error"
+              id="branch-name-error"
               aria-live="polite"
               className="mt-1 min-h-5 text-sm text-red-600"
             >
@@ -226,14 +244,14 @@ export function BranchForm({
           {/* Address */}
           <div>
             <label
-              htmlFor="edit-branch-address"
+              htmlFor="branch-address"
               className="mb-2 block text-sm font-medium text-[#1E293B]"
             >
               Address
             </label>
 
             <input
-              id="edit-branch-address"
+              id="branch-address"
               name="address"
               type="text"
               value={address}
@@ -241,14 +259,15 @@ export function BranchForm({
                 setAddress(event.target.value);
                 clearFieldError("address");
               }}
-              aria-describedby="edit-branch-address-error"
+              autoComplete="street-address"
+              aria-describedby="branch-address-error"
               aria-invalid={!!fieldErrors.address}
               disabled={loading}
               className={getInputClassName("address")}
             />
 
             <div
-              id="edit-branch-address-error"
+              id="branch-address-error"
               aria-live="polite"
               className="mt-1 min-h-5 text-sm text-red-600"
             >
@@ -261,14 +280,14 @@ export function BranchForm({
           {/* City */}
           <div>
             <label
-              htmlFor="edit-branch-city"
+              htmlFor="branch-city"
               className="mb-2 block text-sm font-medium text-[#1E293B]"
             >
               City
             </label>
 
             <input
-              id="edit-branch-city"
+              id="branch-city"
               name="city"
               type="text"
               value={city}
@@ -276,14 +295,15 @@ export function BranchForm({
                 setCity(event.target.value);
                 clearFieldError("city");
               }}
-              aria-describedby="edit-branch-city-error"
+              autoComplete="address-level2"
+              aria-describedby="branch-city-error"
               aria-invalid={!!fieldErrors.city}
               disabled={loading}
               className={getInputClassName("city")}
             />
 
             <div
-              id="edit-branch-city-error"
+              id="branch-city-error"
               aria-live="polite"
               className="mt-1 min-h-5 text-sm text-red-600"
             >
@@ -302,8 +322,8 @@ export function BranchForm({
               className="rounded-lg bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading
-                ? "Updating Branch..."
-                : "Update Branch"}
+                ? "Creating Branch..."
+                : "Add Branch"}
             </button>
 
             <button
